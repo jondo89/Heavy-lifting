@@ -17,6 +17,7 @@
   <div class="container">
 
     <h1>Admin</h1>
+    <p>Testing</p>
     <p>This is the primary database C.R.U.D.</p>
 
     <div>
@@ -65,7 +66,7 @@
        </div>
        <div class="col-md-6">
         <h3>Options</h3>
-        <textarea class="form-control" id="optons" name="optons"  style="height: 250px">
+        <textarea class="form-control" id="options" name="options"  style="height: 250px">
           {                         "helper": "Tell us what you think about Alpaca!",
           "fields": {
           "name": {
@@ -126,7 +127,7 @@
 
 
 
-  var schema=          {                "title":"User Feedback",
+  var schemdda=          {                "title":"User Feedback",
   "description":"What do you think about Alpaca?",
   "type":"object",
   "properties": {
@@ -145,7 +146,7 @@
    }
  }}
 
- var options = {                         "helper": "Tell us what you think about Alpaca!",
+ var optiondds = {                         "helper": "Tell us what you think about Alpaca!",
  "fields": {
   "name": {
     "size": 20,
@@ -177,13 +178,13 @@ $(document).ready(function(){
 
 
 $('#updateForm').click(function(){
- var schema = JSON.parse($('#schema').html())
- var optons = JSON.parse($('#optons').html())
- console.log(schema,options)
-formInit(schema,optons)
 
+ 
 
-
+  var schema = JSON.parse($('#schema').val())
+   var options = JSON.parse($('#options').val())
+  console.log(schema,options)
+  formInit(schema,options)
 })
 
 //////////////////////////////////////
@@ -191,12 +192,11 @@ formInit(schema,optons)
 ////////////////////////////////////
 
 
-function formInit(schema,optons){
-
-
+function formInit(schema,options){
+ 
   $("#form1").alpaca({
     "schema": schema,
-    "options": optons
+    "options": options
   });
 
 
