@@ -83,8 +83,8 @@ app.put('/account', userController.ensureAuthenticated, userController.accountPu
 app.delete('/account', userController.ensureAuthenticated, userController.accountDelete);
 app.get('/signup', userController.signupGet);
 app.post('/signup', userController.signupPost);
-app.get('/login', userController.loginGet);
-app.post('/login', userController.loginPost);
+app.get('/signin', userController.loginGet);
+app.post('/signin', userController.loginPost);
 app.get('/forgot', userController.forgotGet);
 app.post('/forgot', userController.forgotPost);
 app.get('/reset/:token', userController.resetGet);

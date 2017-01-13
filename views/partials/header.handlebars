@@ -6,27 +6,24 @@
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
             <span class="sr-only">Toggle navigation</span><i class="fa fa-bars"></i>
           </button>
-          <a class="navbar-brand page-scroll" href="/">{{siteName}}</a>
+         
+
+
+
+ 
+     <a class="navbar-brand" href="#" style="padding:0px">
+        <img alt="Brand" src="../img/logo.png" style="height: 62px"> 
+      </a>
+   
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
  
     <ul class="nav navbar-nav navbar-right">
             <li>
-              <a   href="/create"><i class="fa fa-plus" aria-hidden="true"></i></a>
+              <a   href="/">Menu Item</a>
             </li>    
-            <li>
-              <a   href="/assemblies"><i class="fa fa-cogs" aria-hidden="true"></i></a>
-            </li>
-            <li>
-              <a   href="/components"><i class="fa fa-cog" aria-hidden="true"></i></a>
-            </li>
-            <li>
-              <a   href="/database"><i class="fa fa-database" aria-hidden="true"></i></a>
-            </li>
-            <li>
-              <a   href="/shop"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
-            </li>
+ 
  
     {{#if user}}
       <li class="dropdown">
@@ -45,14 +42,14 @@
         </a>
         <ul class="dropdown-menu" style="width: 100%">
           <li><a href="/account">My Account</a></li>
-          <li><a href="/account">Dashboard</a></li>
-          <li><a href="/revisions">Revision History</a></li>
+          <li><a href="/">Dashboard</a></li>
+          <li><a href="/">Revision History</a></li>
           <li class="divider"></li>
           <li><a href="/logout">Logout</a></li>
         </ul>
       </li>
     {{else}}
-      <li class=""><a href="/login">Sign in</a></li>
+      <li class=""><a href="/signin">Sign in</a></li>
       <li class=""><a href="/signup">Sign up</a></li>
     {{/if}}
     </ul>
