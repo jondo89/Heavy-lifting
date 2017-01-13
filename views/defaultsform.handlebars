@@ -1,0 +1,614 @@
+<h3>Component Identification : {{info.iditem}}</h3>
+<div>
+	<!-- Nav tabs -->
+	<ul class="nav nav-tabs" role="tablist">
+		<li role="presentation" class="active"><a href="#detailsComp" aria-controls="detailsComp" role="tab" data-toggle="tab">Detail</a></li>
+		<li role="presentation"><a href="#editComp" aria-controls="editComp" role="tab" data-toggle="tab">Edit Component</a></li>
+		<li role="presentation"><a href="#histroy" aria-controls="histroy" role="tab" data-toggle="tab">Component History</a></li>
+	</ul>
+	<!-- Tab panes -->
+	<div class="tab-content" style="min-height: : 850px">
+		<div role="tabpanel" class="tab-pane active" id="detailsComp" style="min-height: : 850px">
+			<p></p>
+			<div id="details" style="min-height: : 850px"></div>
+		</div>
+		<div role="tabpanel" class="tab-pane" id="editComp" style="min-height: : 850px">
+			<p></p>
+			<h3>Edit Component</h3>
+			<div class="row">
+				<div class="col-md-7">
+					<div id="form1"  style="min-height: : 850px"></div>
+				</div>
+				<div class="col-md-5" style="padding-top: 35px">
+					<div id="mapholder"  ></div>
+				</div>
+			</div>
+		</div>
+		<div role="tabpanel" class="tab-pane" id="histroy" style="min-height: : 850px">
+			<p></p>
+			<h3>Component History</h3>
+			<div id="componentHistory"></div>
+		</div>
+	</div>
+	{{#if user}}
+
+
+<button type="button" class="btn btn-danger"   data-toggle="modal" data-target=".bs-example-modal-sm" onclick="deleteEntry()"  data-toggle="tooltip" data-placement="top" title="Delete this item">Delete</button>
+
+
+	{{else}}
+	<div class="btn-group" role="group" aria-label="...">
+		<a href="/login" class="btn btn-primary">Log in</a>
+		<a href="/signup" class="btn btn-default">Sign up</a>
+	</div>
+	{{/if}}
+</div>
+
+
+ 
+
+
+<script type="text/javascript">
+	var schema = {{{info.schema}}}
+	var menuItem = {{{info.default}}}
+	var mapBoolean = {{{info.map}}}
+	var values = {{{info.values}}}
+	var idActive = {{{info.iditem}}}
+	var alpacaObject = {}
+	var alpacaObjectOptions = []
+	var data ={}
+	var input;
+	var googleMapsObject
+	var completeHistory = {{{info.completeHistory}}}
+ 
+///////////////////////////////////////////////
+///////  DELETE ENTRY MODAL CONFIRMATION  ////
+/////////////////////////////////////////////
+function deleteEntry() {
+	var html = ''
+ 	html+= '<div style="text-align:center">'
+	html+= '<p>This action can be undone , review your revision history to resore this component.</p>'
+	html+= '<div class="btn-group" role="group" aria-label="...">'
+	html+= '  <button type="button" class="btn btn-danger" id="'+idActive+'" onClick="deleteComponent(this.id)"  data-dismiss="modal">Confirm</button>'
+	html+= '  <button type="button" class="btn btn-default"  data-dismiss="modal">Cancel</button>'
+	html+= '</div>'
+	html+= '</div>'
+	$('#modalTextArea').html(html)
+}
+
+////////////////////////////////////////
+///////  DELETE ENTRY SERVER CALL  ////
+//////////////////////////////////////
+function deleteComponent(idActive) {
+ 
+   jQuery.ajax({
+    'async': true,
+    'global': false,
+        'data':idActive,
+    'url': '/deleteComponent?data='+idActive,
+    'success': function (dataSchemaObject) {
+			//Trigger page refresh
+			window.location.reload();
+    }
+  });
+}
+
+
+
+	//default fallback on the map , it is quite inflexible.
+	if (mapBoolean==null) {
+		mapBoolean=false
+	}
+	for (var i = 0; i < schema.length; i++) {
+		var enums,max,min
+		//create the data variable for overlay into the form
+		if (schema[i]['Value']) {
+			data[schema[i]['_id']] = schema[i]['Value']
+		} else {
+			data[schema[i]['_id']] = '1'
+		}
+		switch (true){
+			case(schema[i]['Type']=='input'):
+			alpacaObject[schema[i]['_id']]= {
+				"type": 'select',
+				"title": schema[i]['Description'],
+			//"size": 20,
+			"helper": schema[i]['Detail'],
+			"placeholder": schema[i]['Value'],
+			"minimum": min,
+			"maximum": max,
+			"required":schema[i]['required'],
+			"dataSource": function(callback) {
+				jQuery.ajax({
+					'async': true,
+					'global': false,
+					'url': '/alpacainput?data='+this.name,
+					'success': function (dataSchemaObject) {
+						input = JSON.parse(dataSchemaObject);
+						callback(input);
+					}
+				});
+			},
+		}
+		break;
+		case(schema[i]['Type']=='any'):
+		enums =''
+		max = ''
+		min = ''
+		enums =''
+		max = parseFloat(schema[i]['Maximum'])
+		min = parseFloat(schema[i]['Minimum'])
+		alpacaObject[schema[i]['_id']]= {
+			"type": schema[i]['Type'],
+			"title": schema[i]['Description'],
+			//"size": 20,
+			"helper": schema[i]['Detail'],
+			"placeholder": schema[i]['Value'],
+			"enum" : '',
+			"minimum": min,
+			"maximum": max,
+			"required":schema[i]['required'],
+		}
+		break;
+		case(schema[i]['Type']=='number'):
+		enums =''
+		max = parseFloat(schema[i]['Maximum'])
+		min = parseFloat(schema[i]['Minimum'])
+		alpacaObject[schema[i]['_id']]= {
+			"type": schema[i]['Type'],
+			"title": schema[i]['Description'],
+			//"size": 20,
+			"helper": schema[i]['Detail'],
+			"placeholder": schema[i]['Value'],
+			"enum" : '',
+			"minimum": min,
+			"maximum": max,
+			"required":schema[i]['required'],
+		}
+		break;
+		case(schema[i]['Type']=='select'):
+		alpacaObject[schema[i]['_id']]= {
+			"type": schema[i]['Type'],
+			"title": schema[i]['Description'],
+			//"size": 20,
+			"helper": schema[i]['Detail'],
+			"placeholder": schema[i]['Value'],
+			"minimum": min,
+			"maximum": max,
+			"required":schema[i]['required'],
+			"dataSource": function(callback) {
+				jQuery.ajax({
+					'async': true,
+					'global': false,
+					'url': '/getformfield?data='+this.name,
+					'success': function (dataSchemaObject) {
+						input = JSON.parse(dataSchemaObject);
+						callback(input);
+					}
+				});
+			},
+		}
+		break;
+		default:
+		enums = schema[i]['enum']
+		max = ''
+		min = ''	
+		alpacaObject[schema[i]['_id']]= {
+			"type": schema[i]['Type'],
+			"title": schema[i]['Description'],
+			//"size": 20,
+			"helper": schema[i]['Detail'],
+			"placeholder": schema[i]['Value'],
+			"enum" : '',
+			"minimum": min,
+			"maximum": max,
+			"required":schema[i]['required'],
+		}
+		break;
+	}
+}
+
+$("#form1").alpaca({
+	"schema": {
+        //"title": {{{info.title}}},
+        "type": "object",
+        "properties": alpacaObject,
+    },
+    "options": {
+    	'focus' : "",
+    	"fields": alpacaObject,
+    	"form": {
+    		"buttons": {
+    			"submit": {
+    				"title": "Update",
+    				"click": function() {
+    					var value = this.getValue();
+    					addinputitem(value,'update')
+    					window.location = '/components'
+    				},
+    			},                "add": {
+    				"title": "Copy",
+    				"click": function() {
+    					var value = this.getValue();
+    					addinputitem(value,'copy')
+    					window.location = '/components'
+    				},
+    			},
+    		}
+    	},
+    },
+    "data": data,
+    "postRender": function(control) {
+    	//check if item exists
+    	if (values) {
+    		console.log($("#form1"))
+    		console.log(values,'this is the problem')
+			$("#form1").alpaca('get').setValue(values[0]['entry'])
+			//used to trigger the movement of the map and zoom.	
+    	}
+		triggerlatlongchange()	
+
+    }
+});
+
+function triggerlatlongchange() {
+	if (mapBoolean == true) { 
+		googleMapsObject = new google.maps.Map(document.getElementById('map_form'), {
+			zoom: 13,
+			center: new google.maps.LatLng($('[name="'+lat+'"]').val(), $('[name="'+long+'"]').val()),
+			mapTypeId: google.maps.MapTypeId.HYBRID
+		});
+		var myMarker = new google.maps.Marker({
+			position: new google.maps.LatLng($('[name="'+lat+'"]').val(), $('[name="'+long+'"]').val()),
+			draggable: true
+		});
+		var elevator = new google.maps.ElevationService;	
+		google.maps.event.addListener(myMarker, 'dragend', function (evt) {
+			document.getElementById('current').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
+			$('[name="'+lat+'"]').val(evt.latLng.lat().toFixed(4))
+			$('[name="'+long+'"]').val(evt.latLng.lng().toFixed(4))
+			//trigger form change
+			$('[name="'+lat+'"]').alpaca('blur')
+			$('[name="'+long+'"]').alpaca('blur')
+			displayLocationElevation(evt.latLng, elevator, infowindow);
+		});
+		myMarker.setMap(googleMapsObject);
+	}	
+}
+
+function addinputitem(data,type){
+  
+
+try {
+	cvid = values[0]['cvid']
+} catch(err) {
+	cvid = ''
+}
+
+
+switch (true){
+	case (cvid !=''):
+	var json = {
+		'cvid' : cvid,
+		'entry' :  data,   
+		'parentid' :  menuItem,  
+		'revision': 'update',
+		'userID': 'error',
+		'active': true,
+		'objectType' : 'component',
+	}
+	break;
+	default :
+	var json = {
+		'cvid' : cvid,
+		'entry' :  data,  
+		'parentid' :  menuItem,  
+		'revision': 'created',
+		'userID': 'error',
+		'active': true,
+		'objectType' : 'component',
+	}
+	break;
+}
+console.log(json,'herer')
+
+	jQuery.ajax({
+		'url': '/defaultcreate',
+		'type': 'POST', 
+		'contentType': 'application/json', 
+		'data': JSON.stringify(json),
+		'success': function (dataSchemaObject) {
+		}  
+	})  
+}
+if (mapBoolean == true) { 
+	$(document).ready(function() { 
+		$('#mapholder').html('<div id="map_form" style="height:250px;width:100%"></div>	<div class="alert alert-info" role="alert" id="current">Click and drag the marker to select the location of the conveyor.</div>')
+		switch(true){
+			case( menuItem =='5848fcb0b622bb53eca6ffd8'):
+			lat = '5850d9f05ef4b910ecaa7273'
+			long = '5850da085ef4b910ecaa7274'
+			break;
+			case( menuItem =='58491facd631cc30908f64c2'):
+			lat = '584920aed631cc30908f64c4'
+			long = '584920bfd631cc30908f64c5'
+			break;
+		} 
+		if (latitude == '' | latitude == null) {
+			latitude = 0
+		}
+		if (longitude == '' | longitude == null) {
+			longitude = 0
+		}
+		if (latitude !==null ) {
+			if (longitude !==null ) {
+				var googleMapsObject = new google.maps.Map(document.getElementById('map_form'), {
+					zoom: 3,
+					center: new google.maps.LatLng(latitude, longitude),
+					mapTypeId: google.maps.MapTypeId.HYBRID
+				});
+				var myMarker = new google.maps.Marker({
+					position: new google.maps.LatLng(latitude, longitude),
+					draggable: true
+				});
+			}
+		} else {
+			var googleMapsObject = new google.maps.Map(document.getElementById('map_form'), {
+				zoom: 13,
+				center: new google.maps.LatLng(0, 0),
+				mapTypeId: google.maps.MapTypeId.HYBRID
+			});
+
+
+
+			var myMarker = new google.maps.Marker({
+				position: new google.maps.LatLng(0, 0),
+				draggable: true
+			});
+		}
+		var latitude = $('[name="'+lat+'"]').val()
+		var longitude = $('[name="'+long+'"]').val()
+		var altitude = $('[name="584920e0d631cc30908f64c6"]').val()
+		var elevator = new google.maps.ElevationService;	
+		google.maps.event.addListener(myMarker, 'dragend', function (evt) {
+			document.getElementById('current').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
+			$('[name="'+lat+'"]').val(evt.latLng.lat().toFixed(4))
+			$('[name="'+long+'"]').val(evt.latLng.lng().toFixed(4))
+			//trigger form change
+			$('[name="'+lat+'"]').alpaca('blur')
+			$('[name="'+long+'"]').alpaca('blur')
+			displayLocationElevation(evt.latLng, elevator, infowindow);
+		});
+		myMarker.setMap(googleMapsObject);
+		if (mapBoolean==true) {
+
+
+
+
+	///////////////////////////////////////////
+	///////  HIGHCHARTS RERENDER ON LOAD  ////
+	//////////////////////////////////////////
+	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+		google.maps.event.trigger(googleMapsObject, 'resize');
+		googleMapsObject.setCenter(myMarker.position);
+		googleMapsObject.setZoom(13)
+		if (latitude !==null) {
+			googleMapsObject.setZoom(1)
+		}
+
+
+	});
+
+
+}
+})
+}
+
+$(' a[href="#editComp"]').tab('show') // Select tab by name
+function displayLocationElevation(location, elevator, infowindow) {
+        // Initiate the location request
+        elevator.getElevationForLocations({
+        	'locations': [location]
+        }, function(results, status) {
+        	infowindow.setPosition(location);
+        	if (status === 'OK') {
+            // Retrieve the first result
+            if (results[0]) {
+              // Open the infowindow indicating the elevation at the clicked position.
+              infowindow.setContent('The elevation at this point <br>is ' +
+              	results[0].elevation + ' meters.');
+              $('[name="584920e0d631cc30908f64c6"]').val(results[0].elevation.toFixed(2) )
+          } else {
+          	console.log('No results found');
+          }
+      } else {
+      	console.log('Elevation service failed due to: ' + status);
+      }
+  });
+    }
+    var defaults  = {{{info.schema}}}
+    var iditem  = {{{info.iditem}}}
+
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+tablelistdata = values	
+loadformatedinfo(iditem)
+tableload(completeHistory)
+
+
+
+//////////////////////////////////////
+////////    HTML FOR TABLE  /////////
+////////////////////////////////////
+function dataTableLoad (data,id,headings){
+	html = ''
+	html += '<thead><tr><th  style="width:1px"></th>'
+	for (var i = 0; i < headings.length; i++) {
+		html += '<th>'
+		html+=headings[i]
+		html += '</th>'
+	}
+	html += '</tr></thead>'
+	html += '<tbody>'
+	for (var i = 0; i < data.length; i++) {
+		html += '<tr><td class="details-control" style="text-align:center;vertical-align:middle; " id="'+data[i]['_id']+'"><i class="fa fa-plus-square-o" aria-hidden="true" ></i></td>'
+		for (var j = 0; j < headings.length; j++) {
+			html += '<td style=" vertical-align:middle">'
+			html += data[i][headings[j]]
+			html += '</td>'
+		}
+		html += '</tr>'
+	}
+	html += '<tbody>'
+	$('#'+id).html(html)
+} 
+
+function tableload(tablelistdata) {
+
+	var tempVarID = 'inputtable'
+	var headings =  [ 'active','revision','created','userid']
+//inject the ID html table into the page.
+$('#componentHistory').html('<table id="'+tempVarID+'" class="table table-bordered table-compressed table-hover" cellspacing="0" width="100%"></table>')
+//error message text
+var html = ''
+html += '<div class="alert alert-danger" role="alert"> '
+html += '<strong>'
+html += 'Oh snap!'
+html += '</strong> '
+html += 'Table error , Please let us know about this.'
+html += '</div>'
+//client side error check for the tables.
+if (tablelistdata !== null) {
+	if (tablelistdata.length !== 0) {
+		dataTableLoad (tablelistdata,tempVarID,headings)
+		loadDataTable(tempVarID)
+	} else {
+		$('#componentHistory').html(html)
+	}
+} else {
+	$('#componentHistory').html(html)
+}
+};
+
+function loadDataTable(id){
+	table = jQuery('#'+id).DataTable({
+		'destroy':true,
+		"pagingType": "numbers",
+//  'order': [[ 2, 'asc' ]] ,
+});
+//Add event listener for opening and closing details
+jQuery('#'+id +' tbody').on('click', 'td.details-control', function () {
+	var tr = jQuery(this).closest('tr');
+	var row = table.row( tr );
+	if ( row.child.isShown() ) {
+// This row is already open - close it
+row.child.hide();
+tr.removeClass('shown');
+}
+else {
+// Open this row
+//it is async , and the canvas is not rendered 
+row.child(formatDefault(this.id))
+row.child.show();
+tr.addClass('shown');
+}
+});
+
+////////////////////////////////////////////////////////////////////
+////////////        FORMIDABLE VIEW EXTRA DETAIL         ///////////
+///////////////////////////////////////////////////////////////////
+function formatDefault ( d ) {
+// `d` is the original data object for the row
+var html=''
+html +='<div class="row">'
+
+html +='  <div class="col-md-12">'
+html +='<h3>Entry Data</h3>'
+html += loadDetail(d)
+html +='</div>'
+html +='</div>'
+html +='<h4>Entry Options</h4>'
+html += '<div id="'+d+'_content" style="padding-top:0px;text-align:left" >'
+html += '<div class="btn-group" role="group" aria-label="..." style="padding-bottom:15px;padding-right:15px">'
+html += '<button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#myModal" id="'+d+'" onclick="">Restore this version</button>'
+html += '<button type="button" class="btn btn-default" id="'+d+'" onclick="readDatabase(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Download</button>'
+html += '<button type="button" class="btn btn-default" id="'+d+'" onclick="readDatabase(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Report Error</button>'
+html += '</div>'
+html += '<div class="btn-group" role="group" aria-label="..." style="padding-bottom:15px">'
+html += '<button type="button" class="btn btn-danger" data-_id="'+d+'" id="'+d+'_downloadlink" data-toggle="modal" data-target="#myModal" onclick="deleteinputdata(this.id)"  data-toggle="tooltip" data-placement="top" title="Delete this item">Delete</button>'
+html += '</div>'
+html += '</div>'
+return html;
+}
+}
+
+function loadDetail(id){
+	for (var i = 0; i < tablelistdata.length; i++) {
+		if (tablelistdata[i]['_id'] == id){
+			var str = JSON.stringify(tablelistdata[i], null, 2);
+			return  '<pre style="overflow:auto;max-width:550px">'+str+'</pre>'
+		}
+	}
+}
+
+function loadformatedinfo(id){
+	for (var i = 0; i < tablelistdata.length; i++) {
+		if (tablelistdata[i]['_id'] == id){
+			var idmenu = tablelistdata[i]['parentid']
+		}
+	}
+	var html = '<div style="text-align:center">'
+	html += '<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>'
+	html+='<span class="sr-only">Loading...</span>'
+	html += '</div>'
+	$('#details').html(html)
+	splicedata(defaults,id)
+	$('#details').html(tableformat(defaults))
+}
+
+
+//join the default array and add the values.
+function splicedata(defaults,id){
+	for (var i = 0; i < defaults.length; i++) {
+		defaults[i]
+		for (var j = 0; j < tablelistdata.length; j++) {
+			if (tablelistdata[j]['_id'] == id){
+				for (key in tablelistdata[j]['entry']){
+					if (key == defaults[i]['_id'] ) {
+						defaults[i]['Value'] = tablelistdata[j]['entry'][defaults[i]['_id']]
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+function tableformat(deafults){
+	var headings = ['Description','Value','Unit','Detail']
+//sued for standard dump table.
+html=''
+html+='<table class="table table-bordered table-condensed" >'
+html+='  <thead>'
+html+='    <tr>'
+for (var i = 0; i < headings.length; i++) {
+	html+= '<th>'+headings[i]+'</th>' 
+}
+html+='    </tr>'
+html+='  </thead>'
+html+='  <tbody>'
+for (var i = 0; i < deafults.length; i++) {
+	html+='    <tr>'
+	for (var j = 0; j < headings.length; j++) {
+		html+='      <td>'+deafults[i][headings[j]]+'</td>'
+	}
+	html+='    </tr>'
+}
+html+='  </tbody>'
+html+='</table>'
+return html
+}
+
+</script>

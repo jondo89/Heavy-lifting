@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
- 
+
   <title>{{title}}</title>
   {{> css}}
 </head>
@@ -16,34 +16,203 @@
 
   <div class="container">
 
-Admin Page
-    <div class="row">
-      <div class="col-md-7" style="padding-top: 45px">
- 
-            <h1> 
-              {{siteName}} is a design platform for Engineers in the <strong>Southern African</strong> mining sector.
-            </h1>
-            <h3> 
-              Use {{siteName}} to build personal projects, support your business, and work together on <Strong>open source</Strong> machine design designs.
-            </h3>
+    <h1>Admin</h1>
+    <p>This is the primary database C.R.U.D.</p>
 
-          
-      
-      </div>
-      <div class="col-md-5">
-        {{> signuphomepage}}
-      </div>
-    </div>
+    <div>
+
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#create" aria-controls="create" role="tab" data-toggle="tab">Create</a></li>
+        <li role="presentation"><a href="#read" aria-controls="read" role="tab" data-toggle="tab">Read</a></li>
+        <li role="presentation"><a href="#update" aria-controls="update" role="tab" data-toggle="tab">Update</a></li>
+        <li role="presentation"><a href="#delete" aria-controls="delete" role="tab" data-toggle="tab">Delete</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="create">
+          <p></p>
+          <div class="row">
+            <div class="col-md-6">
+              <div id="form1"></div>
+            </div>
+            <div class="col-md-6">
+              <!-- Textarea -->
+              <div class="row">
+                <div class="col-md-6">
+                  <h3>Schema</h3>
+                  <textarea class="form-control" id="schema" name="schema"  style="height: 250px">
+                   {                "title":"User Feedback",
+                   "description":"What do you think about Alpaca?",
+                   "type":"object",
+                   "properties": {
+                   "name": {
+                   "type":"string",
+                   "title":"Name"
+                 },
+                 "feedback": {
+                 "type":"string",
+                 "title":"Feedback"
+               },
+               "ranking": {
+               "type":"string",
+               "title":"Ranking",
+               "enum":["Awesome!", "It's Ok", "Hmm..."]
+             }
+           }}
+         </textarea>
+       </div>
+       <div class="col-md-6">
+        <h3>Options</h3>
+        <textarea class="form-control" id="optons" name="optons"  style="height: 250px">
+          {                         "helper": "Tell us what you think about Alpaca!",
+          "fields": {
+          "name": {
+          "size": 20,
+          "helper": "Please enter your name.",
+          "placeholder": "Enter your name"
+        },
+        "feedback" : {
+        "type": "textarea",
+        "rows": 5,
+        "cols": 40,
+        "helper": "Please enter your feedback."
+      },
+      "ranking": {
+      "type": "select",
+      "helper": "Select your ranking.",
+      "optionLabels": ["Awesome!", "It's Ok", "Hmm..."]
+    }
+  }}
+</textarea>
+</div>
+</div>
+<p></p>
+<div class="btn-group" role="group" aria-label="...">
+  <button type="button" class="btn btn-default" id="updateForm">Update Form</button>
+</div>
+<pre id="jsonArea"></pre>
+</div>
+</div>
+</div>
+<div role="tabpanel" class="tab-pane" id="read">...</div>
+<div role="tabpanel" class="tab-pane" id="update">...</div>
+<div role="tabpanel" class="tab-pane" id="delete">...</div>
+</div>
 
 </div>
- 
+
+</div>
+
+
+
+<script type="text/javascript">
+
+  var primer = {
+    'value' :'String',
+    'name' :'String',
+    'detail' :'String',
+    'objectType' :'form',
+    'entry' :'String',
+    'parentid' :'String',
+    'name' :'String',
+    'ID' :'String',
+    'userID' :'String',
+    'revision' :'String',
+    'created' : 'String',
+    'active' : 'String',
+  }
+
+
+
+  var schema=          {                "title":"User Feedback",
+  "description":"What do you think about Alpaca?",
+  "type":"object",
+  "properties": {
+   "name": {
+     "type":"string",
+     "title":"Name"
+   },
+   "feedback": {
+     "type":"string",
+     "title":"Feedback"
+   },
+   "ranking": {
+     "type":"string",
+     "title":"Ranking",
+     "enum":['excellent','ok','so so']
+   }
+ }}
+
+ var options = {                         "helper": "Tell us what you think about Alpaca!",
+ "fields": {
+  "name": {
+    "size": 20,
+    "helper": "Please enter your name.",
+    "placeholder": "Enter your name"
+  },
+  "feedback" : {
+    "type": "textarea",
+    "rows": 5,
+    "cols": 40,
+    "helper": "Please enter your feedback."
+  },
+  "ranking": {
+    "type": "select",
+    "helper": "Select your ranking.",
+    "optionLabels": ["Awesome!", "It's Ok", "Hmm..."]
+  }
+}}
+
+////////////////////////////////////
+////        INITIALIZE         //// 
+//////////////////////////////////
+$(document).ready(function(){
+ var str = JSON.stringify(primer, null, 2);
+ $('#jsonArea').html(str)
+
+
+});
+
+
+$('#updateForm').click(function(){
+ var schema = JSON.parse($('#schema').html())
+ var optons = JSON.parse($('#optons').html())
+ console.log(schema,options)
+formInit(schema,optons)
+
+
+
+})
+
+//////////////////////////////////////
+////        CREATE ENTRY         //// 
+////////////////////////////////////
+
+
+function formInit(schema,optons){
+
+
+  $("#form1").alpaca({
+    "schema": schema,
+    "options": optons
+  });
+
+
+
+
+}
 
 
 
 
 
+</script>
 
- {{> analytics}}
+
+
+{{> analytics}}
 
 
 

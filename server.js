@@ -19,7 +19,7 @@ dotenv.load();
 var HomeController = require('./controllers/home');
 var userController = require('./controllers/user');
 var contactController = require('./controllers/contact');
-
+var adminController = require('./controllers/admin');
 
 // Passport OAuth strategies
 require('./config/passport');
@@ -76,6 +76,26 @@ app.use(function(req, res, next) {
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', HomeController.index);
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////
+////        PRIMARY ADMINISTRATIVE DATABASE MODIFICATION         //// 
+////////////////////////////////////////////////////////////////////
+app.get('/admin', adminController.admin);
+app.get('/create',  adminController.create);
+app.get('/read',  adminController.read);
+app.get('/update',  adminController.update);
+app.get('/delete',  adminController.delete);
+
+
+
+
+
+
+
 app.get('/contact', contactController.contactGet);
 app.post('/contact', contactController.contactPost);
 app.get('/account', userController.ensureAuthenticated, userController.accountGet);
