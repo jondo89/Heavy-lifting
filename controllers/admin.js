@@ -1,4 +1,4 @@
-
+var heavyliftingModel      = require('../models/heavylifting.js');
 var siteName = 'Heavy-lifting'
 
 
@@ -7,7 +7,7 @@ exports.admin = function(req, res) {
 if (req.user) {
          userid = req.user.id
 switch (true){
-  case(userid=='586b5bbe935a6d19040c5447'):
+  case(userid == '586b5bbe935a6d19040c5447' || userid == '5878b000d1f7c0220c1d2903'):
     res.render('admin', {
       title: 'Admin Panel',
       siteName : siteName,
@@ -15,26 +15,42 @@ switch (true){
     });
   break;
   default:
-    res.render('admin', {
-      title: 'Home',
-      siteName : siteName,
-      layout: false,
-    });
+    res.redirect('/dashboard');
   break;
 }
        } else {
-         res.render('home', {
-      title: 'Home',
-      siteName : siteName,
-      layout: false,
-    });
+         res.redirect('/signin');
        }
 };
 
 //Create an entry
 exports.create = function(req, res) {
-
+if (req.user) {
+      userid = req.user.id
+//admin 1
+//'586b5bbe935a6d19040c5447'
+//admin 2
+//'5878b000d1f7c0220c1d2903'
+if (userid == '586b5bbe935a6d19040c5447' | userid == '5878b000d1f7c0220c1d2903') {
+console.log('this is retunred client side.',req.body)
+var create = new heavyliftingModel(req.body);  
+create.save(function (err, doc) {  
+  if (err) {
+    res.send(err);
+  } else{
+    res.redirect('/')
+  }
+});
+}
+ } else {
+   userid=''
+   res.redirect('/login');
+ }
 };
+
+
+
+
 
 //read an entry
 exports.read = function(req, res) {

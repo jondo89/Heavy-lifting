@@ -6,19 +6,18 @@ var heavylifting;
  
 
 var heavylifting = mongoose.Schema({
-'value' :String,
 'name' :String,
 'detail' :String,
 'objectType' :String,
 'entry' :Schema.Types.Mixed,
 'parentid' :String,
 'name' :String,
-'cvid' :String,
+'elemenetID' :String,
 'userID' :String,
 'revision' :{ type: String, default: 'created' },
 'created' : { type: Date, default: Date.now },
 'active' : { type: Boolean, default: true },
-}, { collection: 'inputdata' });
+}, { collection: 'heavylifting' });
 
 
 module.exports = heavylifting = mongoose.model('heavylifting', heavylifting);

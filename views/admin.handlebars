@@ -16,26 +16,27 @@
 
   <div class="container">
 
-    <h1>Admin</h1>
-    <p>CLIFF</p>
+    <h1>{{title}}</h1>
+
     <p>This is the primary database C.R.U.D.</p>
 
     <div>
 
       <!-- Nav tabs -->
       <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#create" aria-controls="create" role="tab" data-toggle="tab">Create</a></li>
-        <li role="presentation"><a href="#read" aria-controls="read" role="tab" data-toggle="tab">Read</a></li>
+        <li role="presentation"><a href="#create" aria-controls="create" role="tab" data-toggle="tab">Create</a></li>
+        <li role="presentation"  class="active"><a href="#read" aria-controls="read" role="tab" data-toggle="tab">Read</a></li>
         <li role="presentation"><a href="#update" aria-controls="update" role="tab" data-toggle="tab">Update</a></li>
         <li role="presentation"><a href="#delete" aria-controls="delete" role="tab" data-toggle="tab">Delete</a></li>
       </ul>
 
       <!-- Tab panes -->
       <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="create">
+        <div role="tabpanel" class="tab-pane " id="create">
           <p></p>
           <div class="row">
             <div class="col-md-6">
+              <div id='msgArea'></div>
               <div id="form1"></div>
             </div>
             <div class="col-md-6">
@@ -61,152 +62,132 @@
                "title":"Ranking",
                "enum":["Awesome!", "It's Ok", "Hmm..."]
              }
-           }}
-         </textarea>
-       </div>
-       <div class="col-md-6">
-        <h3>Options</h3>
-        <textarea class="form-control" id="options" name="options"  style="height: 250px">
-          {                         "helper": "Tell us what you think about Alpaca!",
-          "fields": {
-          "name": {
+           }}                  
+                  </textarea>
+                </div>
+                <div class="col-md-6">
+                  <h3>Options</h3>
+                  <textarea class="form-control" id="options" name="options"  style="height: 250px">
+                  </textarea>
+                </div>
+              </div>
+              <p></p>
+              <div class="btn-group" role="group" aria-label="...">
+                <button type="button" class="btn btn-default" id="updateForm">Update Form</button>
+              </div>
+              <pre id="jsonArea"></pre>
+            </div>
+          </div>
+        </div>
+        <div role="tabpanel" class="tab-pane active" id="read">
+          
+ 
+
+{{> tableload objectType="form"}}
+
+        </div>
+        <div role="tabpanel" class="tab-pane" id="update">...</div>
+        <div role="tabpanel" class="tab-pane" id="delete">...</div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <script type="text/javascript">
+
+
+
+    var data = {{{data}}}
+    console.log(data)
+    var options ={        
+      "form": {
+        "buttons": {
+          "submit": {
+            "title": "Update",
+            "click": function() {
+              var value = this.getValue();
+              clickSubmit(value)
+            },
+          }, 
+        }
+      },
+
+      "helper": "Tell us what you think about Alpaca!",
+      "fields": {
+        "name": {
           "size": 20,
           "helper": "Please enter your name.",
           "placeholder": "Enter your name"
         },
         "feedback" : {
-        "type": "textarea",
-        "rows": 5,
-        "cols": 40,
-        "helper": "Please enter your feedback."
-      },
-      "ranking": {
-      "type": "select",
-      "helper": "Select your ranking.",
-      "optionLabels": ["Awesome!", "It's Ok", "Hmm..."]
-    }
-  }}
-</textarea>
-</div>
-</div>
-<p></p>
-<div class="btn-group" role="group" aria-label="...">
-  <button type="button" class="btn btn-default" id="updateForm">Update Form</button>
-</div>
-<pre id="jsonArea"></pre>
-</div>
-</div>
-</div>
-<div role="tabpanel" class="tab-pane" id="read">...</div>
-<div role="tabpanel" class="tab-pane" id="update">...</div>
-<div role="tabpanel" class="tab-pane" id="delete">...</div>
-</div>
-
-</div>
-
-</div>
-
-
-
-<script type="text/javascript">
-
-  var primer = {
-    'value' :'String',
-    'name' :'String',
-    'detail' :'String',
-    'objectType' :'form',
-    'entry' :'String',
-    'parentid' :'String',
-    'name' :'String',
-    'ID' :'String',
-    'userID' :'String',
-    'revision' :'String',
-    'created' : 'String',
-    'active' : 'String',
-  }
-
-
-
-  var schemdda=          {                "title":"User Feedback",
-  "description":"What do you think about Alpaca?",
-  "type":"object",
-  "properties": {
-   "name": {
-     "type":"string",
-     "title":"Name"
-   },
-   "feedback": {
-     "type":"string",
-     "title":"Feedback"
-   },
-   "ranking": {
-     "type":"string",
-     "title":"Ranking",
-     "enum":['excellent','ok','so so']
-   }
- }}
-
- var optiondds = {                         "helper": "Tell us what you think about Alpaca!",
- "fields": {
-  "name": {
-    "size": 20,
-    "helper": "Please enter your name.",
-    "placeholder": "Enter your name"
-  },
-  "feedback" : {
-    "type": "textarea",
-    "rows": 5,
-    "cols": 40,
-    "helper": "Please enter your feedback."
-  },
-  "ranking": {
-    "type": "select",
-    "helper": "Select your ranking.",
-    "optionLabels": ["Awesome!", "It's Ok", "Hmm..."]
-  }
-}}
+          "type": "textarea",
+          "rows": 5,
+          "cols": 40,
+          "helper": "Please enter your feedback."
+        },
+        "ranking": {
+          "type": "select",
+          "helper": "Select your ranking.",
+          "optionLabels": ["Awesome!", "It's Ok", "Hmm..."]
+        }
+      }}
 
 ////////////////////////////////////
 ////        INITIALIZE         //// 
 //////////////////////////////////
 $(document).ready(function(){
- var str = JSON.stringify(primer, null, 2);
- $('#jsonArea').html(str)
-
 
 });
 
 
 $('#updateForm').click(function(){
-
- 
-
-  var schema = JSON.parse($('#schema').val())
-   var options = JSON.parse($('#options').val())
-  console.log(schema,options)
-  formInit(schema,options)
-})
+   
+   // var options = JSON.parse($('#options').val())
+   console.log(schema,options)
+   formInit(schema,options)
+ })
 
 //////////////////////////////////////
-////        CREATE ENTRY         //// 
+////        CREATE FORM          //// 
 ////////////////////////////////////
-
-
 function formInit(schema,options){
- 
   $("#form1").alpaca({
     "schema": schema,
     "options": options
   });
-
-
-
-
 }
 
 
-
-
+//////////////////////////////////////////////
+////        SUBMIT BUTTON CLICK          //// 
+////////////////////////////////////////////
+function clickSubmit(dataset){
+  var str = JSON.stringify(primer, null, 2);
+  $('#jsonArea').html(str)
+  var primer = {
+    'name' :'',
+    'detail' :'',
+    'objectType' :'form',
+    'entry':dataset,
+    'parentid' :'primer',
+    'elemenetID' :'String',
+    'userID' :'String',
+    'revision' :'created',//
+    'active' : true,//
+  }
+  jQuery.ajax({
+    'url': '/create',
+    'type': 'POST', 
+    'contentType': 'application/json', 
+    'data': JSON.stringify(primer),
+    'success': function (dataSchemaObject) {
+      $('#msgArea').html('<div class="alert alert-success" role="alert">Saved</div>')
+    }
+  });
+}
 
 </script>
 
