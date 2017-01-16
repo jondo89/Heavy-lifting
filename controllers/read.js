@@ -1,7 +1,6 @@
 var heavyliftingModel      = require('../models/heavylifting.js');
 var siteName = 'Heavy-lifting'
 
-
 exports.getCollectionData = function(req, res) {
 var types = req.param('objectType')
 var showall = req.param('showall')
@@ -29,8 +28,6 @@ query.exec(function (err, docs1) {
   })
 };
  
-
-
 ///////////////////////////////////////////////////
 ////       DEPLOY THE HANDLEBARS FORM         //// 
 /////////////////////////////////////////////////
@@ -46,30 +43,40 @@ var idItem = req.param('idItem')
     });
 }
 
-///////////////////////////////////////
-////       GET DATA BY IDS        //// 
-/////////////////////////////////////
+
+
+////////////////////////////////////////////////////
+////       GET FORM AND DATA | ONLY FORM       //// 
+//////////////////////////////////////////////////
 exports.getdata = function(req, res) {
-var ids = req.param('ids')
-  var query = heavyliftingModel.find(
+var formdata = req.param('formdata')
+var idItem = req.param('idItem')
+var query = heavyliftingModel.find(
 {
   $and : 
   [
   {$or: [
-    {"elementID": { $in: ids }},
-    {"_id": { $in: ids }}
+    {"elementID": formdata },
+    {"_id":  formdata }
     ]}, 
     {
       "active": true 
     }
     ]
   })
-
+var query1 = heavyliftingModel.find(
+{
+  "_id":  idItem 
+}
+)
 query.exec(function (err, docs1) {
   if (err) { return next(err); }
-  console.log(docs1)
-    res.send( docs1);
+  query1.exec(function (err, docs2) {
+    if (err) { return next(err); }
+    res.send({
+      formdata : docs1[0] , 
+      idItem : docs2[0] 
+    });
   })
-
-
+})
 }

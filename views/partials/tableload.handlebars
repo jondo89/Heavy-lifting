@@ -62,7 +62,7 @@ function getCollectionData(objectType){
 /////////////////////////////
 function tableload(tablelistdata) {
   var tempVarID = 'inputtable'
-  var headings =  ['_id','ID', 'active'  ]//,'userID']
+  var headings =  ['_id'  ]//,'userID']
 //inject the ID html table into the page.
 $('#loading').html('<table id="'+tempVarID+'" class="table table-bordered table-compressed table-hover" cellspacing="0" width="100%"></table>')
 //error message text
@@ -106,7 +106,14 @@ function dataTableLoad (data,id,headings){
       html += data[i][headings[j]]
       html += '</td>'
     }
-    html += '<td class="details-control" style="text-align:center;vertical-align:middle; " id="'+data[i]['_id']+'"><button type="button" class="btn btn-default">Edit</button></td></tr>'
+    html += '<td class="details-control" style="text-align:center;vertical-align:middle;min-width:160px "  >'
+    html +='<div class="btn-group" role="group" aria-label="...">'
+    html += '<button type="button" class="btn btn-default"  id="'+data[i]['_id']+'_use">Use</button>'
+    html += '<button type="button" class="btn btn-default"  id="'+data[i]['_id']+'_edit">Edit</button>'
+    html += '<button type="button" class="btn btn-default"  id="'+data[i]['_id']+'_raw">Raw</button>'
+    html +='</div>'
+    html += '</td>'
+    html += '</tr>'
   }
   html += '<tbody>'
   $('#'+id).html(html)
@@ -123,28 +130,35 @@ function loadDataTable(id){
 //  'order': [[ 2, 'asc' ]] ,
 });
 //Add event listener for opening and closing details
-jQuery('#'+id +' tbody').on('click', 'td.details-control', function () {
- 
-  loadformatedinfo(this.id,'')
- //html += loadDetail(d)
- //editDataRaw('587b51ee3ed9ea24e459f954',d)
- //editDataentry('587b4de03ed9ea24e459f953',d)
+jQuery('#'+id +' tbody').on('click', 'td div button', function () {
+var ids = this.id
+switch(true){
+  case(ids.search("_use") >1):
+    ids = ids.replace("_use","");
+    loadformatedinfo(ids,'')
+  break;
+  case(ids.search("_edit") >1):
+    ids = ids.replace("_edit","");
+    editDataRaw('587b4de03ed9ea24e459f953',ids)
+  break;
+  case(ids.search("_raw") >1):
+    ids = ids.replace("_raw","");
+    editDataentry('587b51ee3ed9ea24e459f954',ids)
+  break;  
+}
 });
-
  }
 
 //////////////////////////////////////
 ////////    GET FORM BY ID  /////////
 ////////////////////////////////////
 function loadformatedinfo(formdata,idItem){
- console.log(formdata,idItem,'loadformatedinfo')
   jQuery.ajax({
     'url': '/getform?formdata='+formdata+'&idItem='+idItem,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
  	    $('#formArea').html(dataSchemaObject)
-       
    }
  });
 }
@@ -153,14 +167,12 @@ function loadformatedinfo(formdata,idItem){
 ////////    EDIT THE RAW DATA /////////
 //////////////////////////////////////
 function editDataRaw(formdata,idItem){
- console.log(formdata,idItem,'editdataraw')
    jQuery.ajax({
     'url': '/getform?formdata='+formdata+'&idItem='+idItem,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
-    //  $('#'+idItem+'_raw').html(dataSchemaObject)
- 
+    $('#formArea').html(dataSchemaObject)
    }
  });
 }
@@ -169,14 +181,12 @@ function editDataRaw(formdata,idItem){
 ////////    EDIT ONLY THE ENTRY DATA  /////////
 //////////////////////////////////////////////
 function editDataentry(formdata,idItem){
- console.log(formdata,idItem,'editDataentry')
    jQuery.ajax({
     'url': '/getform?formdata='+formdata+'&idItem='+idItem,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
-    //  $('#'+idItem+'_entry').html(dataSchemaObject)
-      
+    $('#formArea').html(dataSchemaObject)
    }
  });
 }
