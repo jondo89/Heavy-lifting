@@ -13,3 +13,10 @@ port is set to 5000.
 <h3>Stage 2 - Database Methodology.</h3>
 
  
+
+             <h1> 
+             Heavy-lifting is a machine design platform for Engineers in the Southern African mining sector.
+            </h1>
+            <h3> 
+              Use Heavy-lifting to build design projects, support your business, and work together on open source machine design.
+            </h3>

@@ -2,22 +2,37 @@
 
 
 <p></p>
-<div >
-	
+<div>
   <input type="checkbox" id="toggle-user" checked data-toggle="toggle" data-on='On' data-off='Off'  data-onstyle="default"> Revision History
   </label>
+</div>
+<p></p>
 
+<div class="row">
+  <div class="col-md-6">
+        <div class="panel panel-default">
+  <div class="panel-body">
+    <div id="loading">
+  <table id="tableComps" class="table table-bordered table-compressed table-hover" cellspacing="0" width="100%"></table>
+</div>  
+  </div>
 </div>
 
 
-<p></p>
-        <div id="loading">
-            <table id="tableComps" class="table table-bordered table-compressed table-hover" cellspacing="0" width="100%"></table>
-        </div>  
+  </div>
+  <div class="col-md-6">
+    <div class="panel panel-default">
+  <div class="panel-body">
+     <div id="formArea"></div>
+  </div>
+</div>
+
+  </div>
+</div>
+  
 
 <script type="text/javascript">
 var objectType = "{{objectType}}"
-
 
 ///////////////////////////// 
 //////  INITIALISE    //////
@@ -25,10 +40,6 @@ var objectType = "{{objectType}}"
 $('document').ready(function(){
  getCollectionData(objectType)
 })
-
- 
-
-
 
 ///////////////////////////////
 //////  GET THE TABLE   //////
@@ -46,10 +57,12 @@ function getCollectionData(objectType){
  }); 
 }
 
-
+///////////////////////////////
+//////  LOAD THE TABLE  //////
+/////////////////////////////
 function tableload(tablelistdata) {
   var tempVarID = 'inputtable'
-  var headings =  ['_id','cvid','parentid','active','revision','created']//,'userID']
+  var headings =  ['_id','ID', 'active'  ]//,'userID']
 //inject the ID html table into the page.
 $('#loading').html('<table id="'+tempVarID+'" class="table table-bordered table-compressed table-hover" cellspacing="0" width="100%"></table>')
 //error message text
@@ -72,32 +85,37 @@ if (tablelistdata !== null) {
   $('#loading').html(html)
 }
 };
+
 //////////////////////////////////////
 ////////    HTML FOR TABLE  /////////
 ////////////////////////////////////
 function dataTableLoad (data,id,headings){
   html = ''
-  html += '<thead><tr><th  style="width:1px"></th>'
+  html += '<thead><tr>'
   for (var i = 0; i < headings.length; i++) {
     html += '<th>'
     html+=headings[i]
     html += '</th>'
   }
-  html += '</tr></thead>'
+  html += '<th  style="width:1px"></th></tr></thead>'
   html += '<tbody>'
   for (var i = 0; i < data.length; i++) {
-    html += '<tr><td class="details-control" style="text-align:center;vertical-align:middle; " id="'+data[i]['_id']+'"><i class="fa fa-plus-square-o" aria-hidden="true" ></i></td>'
+    html += '<tr>'
     for (var j = 0; j < headings.length; j++) {
       html += '<td style=" vertical-align:middle">'
       html += data[i][headings[j]]
       html += '</td>'
     }
-    html += '</tr>'
+    html += '<td class="details-control" style="text-align:center;vertical-align:middle; " id="'+data[i]['_id']+'"><button type="button" class="btn btn-default">Edit</button></td></tr>'
   }
   html += '<tbody>'
   $('#'+id).html(html)
 } 
 
+
+/////////////////////////////////////
+//////  ACTIVATE DATATABLES   //////
+///////////////////////////////////
 function loadDataTable(id){
   table = jQuery('#'+id).DataTable({
     'destroy':true,
@@ -106,70 +124,76 @@ function loadDataTable(id){
 });
 //Add event listener for opening and closing details
 jQuery('#'+id +' tbody').on('click', 'td.details-control', function () {
-  var tr = jQuery(this).closest('tr');
-  var row = table.row( tr );
-  if ( row.child.isShown() ) {
-// This row is already open - close it
-row.child.hide();
-tr.removeClass('shown');
-}
-else {
-// Open this row
-//it is async , and the canvas is not rendered 
-row.child(formatDefault(this.id))
-row.child.show();
-tr.addClass('shown');
-}
+ 
+  loadformatedinfo(this.id,'')
+ //html += loadDetail(d)
+ //editDataRaw('587b51ee3ed9ea24e459f954',d)
+ //editDataentry('587b4de03ed9ea24e459f953',d)
 });
 
+ }
 
-////////////////////////////////////////////////////////////////////
-////////////        FORMIDABLE VIEW EXTRA DETAIL         ///////////
-///////////////////////////////////////////////////////////////////
-function formatDefault ( d ) {
-// `d` is the original data object for the row
-var html=''
-html +='<div class="row">'
-html +='  <div class="col-md-6">'
-html +='<h3>Form</h3>'
-html +='  <div id="'+d+'_deta" >'
-loadformatedinfo(d)
-html +='  </div>'
-html +='  </div>'
-html +='  <div class="col-md-6">'
-html +='<h3>Entry Data</h3>'
-html += loadDetail(d)
-html +='</div>'
-html +='</div>'
-/*
-html +='<h4>Entry Options</h4>'
-html += '<div id="'+d+'_content" style="padding-top:0px;text-align:left" >'
-html += '<div class="btn-group" role="group" aria-label="..." style="padding-bottom:15px;padding-right:15px">'
-html += '<button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#myModal" id="'+d+'" onclick="">Restore this version</button>'
-html += '<button type="button" class="btn btn-default" id="'+d+'" onclick="readDatabase(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Download</button>'
-html += '<button type="button" class="btn btn-default" id="'+d+'" onclick="readDatabase(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Report Error</button>'
-html += '</div>'
-html += '<div class="btn-group" role="group" aria-label="..." style="padding-bottom:15px">'
-
-html += '<button type="button" class="btn btn-danger" data-_id="'+d+'" id="'+d+'_downloadlink" data-toggle="modal" data-target="#myModal" onclick="deleteinputdata(this.id)"  data-toggle="tooltip" data-placement="top" title="Delete this item">Delete</button>'
-html += '</div>'
-html += '</div>'*/
-return html;
-}
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+////////////////////////////////////
+function loadformatedinfo(formdata,idItem){
+ console.log(formdata,idItem,'loadformatedinfo')
+  jQuery.ajax({
+    'url': '/getform?formdata='+formdata+'&idItem='+idItem,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+ 	    $('#formArea').html(dataSchemaObject)
+       
+   }
+ });
 }
 
-function loadformatedinfo(id){
-
+////////////////////////////////////////
+////////    EDIT THE RAW DATA /////////
+//////////////////////////////////////
+function editDataRaw(formdata,idItem){
+ console.log(formdata,idItem,'editdataraw')
+   jQuery.ajax({
+    'url': '/getform?formdata='+formdata+'&idItem='+idItem,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+    //  $('#'+idItem+'_raw').html(dataSchemaObject)
  
+   }
+ });
 }
 
+////////////////////////////////////////////////
+////////    EDIT ONLY THE ENTRY DATA  /////////
+//////////////////////////////////////////////
+function editDataentry(formdata,idItem){
+ console.log(formdata,idItem,'editDataentry')
+   jQuery.ajax({
+    'url': '/getform?formdata='+formdata+'&idItem='+idItem,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+    //  $('#'+idItem+'_entry').html(dataSchemaObject)
+      
+   }
+ });
+}
+
+////////////////////////////////////////////////////
+////////    LOAD THE PRE PANEL WITH JSON  /////////
+//////////////////////////////////////////////////
 function loadDetail(id){
 for (var i = 0; i < tablelistdata.length; i++) {
   if (tablelistdata[i]['_id'] == id){
     var str = JSON.stringify(tablelistdata[i], null, 2);
-      return  '<pre style="overflow:auto;max-width:550px">'+str+'</pre>'
+      return  '<pre style="overflow:auto;max-width:550px;max-height:350px">'+str+'</pre>'
   }
 }
 }
+
+ 
+
 
 </script>

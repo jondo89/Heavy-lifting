@@ -100,8 +100,12 @@ app.get('/dashboard',  userInterfaceController.dashboard);
 /////////////////////////////////////////
 ////       READ CONTROLLERS         //// 
 ///////////////////////////////////////
+//admin page table view.
 app.get('/getCollectionData', readController.getCollectionData);
-
+//search for the form to load.
+app.get('/getform', readController.getform);
+//get data by array of ids.
+app.get('/getdata', readController.getdata);
 
 app.get('/contact', contactController.contactGet);
 app.post('/contact', contactController.contactPost);

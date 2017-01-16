@@ -12,7 +12,7 @@ var heavylifting = mongoose.Schema({
 'entry' :Schema.Types.Mixed,
 'parentid' :String,
 'name' :String,
-'elemenetID' :String,
+'elementID' :String,
 'userID' :String,
 'revision' :{ type: String, default: 'created' },
 'created' : { type: Date, default: Date.now },

@@ -4,70 +4,114 @@
   <meta charset="utf-8" />
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <title>{{title}}</title>
   {{> css}}
 </head>
 <body>
   {{> header}}
-
   {{> javascript}}
-
-
   <div class="container">
-
     <h1>{{title}}</h1>
-
     <p>This is the primary database C.R.U.D.</p>
-
     <div>
-
       <!-- Nav tabs -->
       <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation"><a href="#create" aria-controls="create" role="tab" data-toggle="tab">Create</a></li>
-        <li role="presentation"  class="active"><a href="#read" aria-controls="read" role="tab" data-toggle="tab">Read</a></li>
-        <li role="presentation"><a href="#update" aria-controls="update" role="tab" data-toggle="tab">Update</a></li>
-        <li role="presentation"><a href="#delete" aria-controls="delete" role="tab" data-toggle="tab">Delete</a></li>
+        <li role="presentation" ><a href="#create" aria-controls="create" role="tab" data-toggle="tab">Primer</a></li>
+        <li role="presentation" class="active"><a href="#read" aria-controls="read" role="tab" data-toggle="tab">Form List</a></li>
+        <li role="presentation"><a href="#raw" aria-controls="raw" role="tab" data-toggle="tab">Raw Edit</a></li>        
+        <li role="presentation"><a href="#entry" aria-controls="entry" role="tab" data-toggle="tab">Entry Edit</a></li>    
       </ul>
-
       <!-- Tab panes -->
       <div class="tab-content">
         <div role="tabpanel" class="tab-pane " id="create">
           <p></p>
+                            <p>Modify the schema and options to create initial database forms. Refer to <a href="http://www.alpacajs.org/" target="_blank">Alpaca.js</a> for details on the schema and options layout.</p>
           <div class="row">
-            <div class="col-md-6">
-              <div id='msgArea'></div>
-              <div id="form1"></div>
-            </div>
             <div class="col-md-6">
               <!-- Textarea -->
               <div class="row">
                 <div class="col-md-6">
                   <h3>Schema</h3>
-                  <textarea class="form-control" id="schema" name="schema"  style="height: 250px">
-                   {                "title":"User Feedback",
-                   "description":"What do you think about Alpaca?",
-                   "type":"object",
-                   "properties": {
-                   "name": {
-                   "type":"string",
-                   "title":"Name"
-                 },
-                 "feedback": {
-                 "type":"string",
-                 "title":"Feedback"
-               },
-               "ranking": {
-               "type":"string",
-               "title":"Ranking",
-               "enum":["Awesome!", "It's Ok", "Hmm..."]
-             }
-           }}                  
-                  </textarea>
+                  <textarea class="form-control " id="schema" name="schema"  style="height: 250px">
+{
+   "title": "Form Deployment",
+   "description": "Insert Schema and Options to design your form.",
+   "type": "object",
+   "properties": {
+      "name": {
+         "title": "name"
+      },
+      "detail": {
+         "title": "detail"
+      },
+      "objectType": {
+         "title": "objectType",
+         "enum": ["form", "data", "other"]
+      },
+      "entry": {
+         "title": "entry"
+         
+      },
+      "parentid": {
+         "title": "parentid"
+      },       
+      "elementID": {
+         "title": "elementID"
+      },  
+      "userID": {
+         "title": "userID"
+      },
+      "revision": {
+         "title": "revision",
+         "enum": ["created","updated","deleted"]
+      },     
+      "active": {
+         "title": "active",
+         "enum": ["true","false"]
+      }     
+   }
+}                </textarea>
                 </div>
                 <div class="col-md-6">
                   <h3>Options</h3>
                   <textarea class="form-control" id="options" name="options"  style="height: 250px">
+{
+   "form": {
+      "buttons": {
+         "submit": {
+            "title": "Submit",
+            "id": "submit",
+            "click": ""
+         }
+      }
+   },
+   "helper": "Insert Schema and Options to design your form.",
+   "fields": {
+      "detail": {
+         "type": "text",
+         "rows": 4,
+         "cols": 40,
+         "helper": "All entry data is stored here.",
+         "validate": true
+      },
+      "objectType": {
+         "type": "select"
+      },      
+      "revision": {
+         "type": "select"
+      },        
+      "active": {
+         "type": "select"
+      },         
+      "entry": {
+         "type": "json",
+         "rows": 4,
+         "cols": 40,
+         "helper": "All entry data is stored here.",
+         "validate": true
+      }
+   }
+}
                   </textarea>
                 </div>
               </div>
@@ -75,122 +119,101 @@
               <div class="btn-group" role="group" aria-label="...">
                 <button type="button" class="btn btn-default" id="updateForm">Update Form</button>
               </div>
-              <pre id="jsonArea"></pre>
+            </div>
+              <div class="col-md-6">
+              <div id='msgArea'></div>
+              <div id="form1"></div>
             </div>
           </div>
         </div>
         <div role="tabpanel" class="tab-pane active" id="read">
-          
- 
-
-{{> tableload objectType="form"}}
-
+          {{> tableload objectType="form"}}
         </div>
         <div role="tabpanel" class="tab-pane" id="update">...</div>
         <div role="tabpanel" class="tab-pane" id="delete">...</div>
       </div>
-
     </div>
-
   </div>
 
-
-
   <script type="text/javascript">
-
-
-
-    var data = {{{data}}}
-    console.log(data)
-    var options ={        
-      "form": {
-        "buttons": {
-          "submit": {
-            "title": "Update",
-            "click": function() {
-              var value = this.getValue();
-              clickSubmit(value)
-            },
-          }, 
-        }
-      },
-
-      "helper": "Tell us what you think about Alpaca!",
-      "fields": {
-        "name": {
-          "size": 20,
-          "helper": "Please enter your name.",
-          "placeholder": "Enter your name"
-        },
-        "feedback" : {
-          "type": "textarea",
-          "rows": 5,
-          "cols": 40,
-          "helper": "Please enter your feedback."
-        },
-        "ranking": {
-          "type": "select",
-          "helper": "Select your ranking.",
-          "optionLabels": ["Awesome!", "It's Ok", "Hmm..."]
-        }
-      }}
+var data = {{{data}}}
 
 ////////////////////////////////////
 ////        INITIALIZE         //// 
 //////////////////////////////////
 $(document).ready(function(){
-
+   var form = {
+    schema : JSON.parse($('#schema').val()) ,
+    options : JSON.parse($('#options').val())
+  }
+  formInit(form.schema,form.options)
 });
 
-
+////////////////////////////////////////////
+////        UPDATE FORM BUTTON         //// 
+//////////////////////////////////////////
 $('#updateForm').click(function(){
-   
-   // var options = JSON.parse($('#options').val())
-   console.log(schema,options)
-   formInit(schema,options)
+  var form = {
+    schema : JSON.parse($('#schema').val()) ,
+    options : JSON.parse($('#options').val())
+  }
+  //Test alpaca form for true , i.e if it exists , then destroy it.
+  control = $("#form1").alpaca("destroy");
+  if (control) {
+    formInit(form.schema,form.options)
+  } else { 
+    formInit(form.schema,form.options)
+  }
  })
 
 //////////////////////////////////////
 ////        CREATE FORM          //// 
 ////////////////////////////////////
 function formInit(schema,options){
+  //work areound for the special requirments on the submit button.
+  options.form.buttons.submit.click = function(e){
+    e.preventDefault()
+    var value = this.getValue();
+    clickSubmit(value)
+  }
   $("#form1").alpaca({
     "schema": schema,
-    "options": options
+    "options": options,
+
   });
 }
-
 
 //////////////////////////////////////////////
 ////        SUBMIT BUTTON CLICK          //// 
 ////////////////////////////////////////////
 function clickSubmit(dataset){
+  console.log(dataset,'hthitititi')
   var str = JSON.stringify(primer, null, 2);
   $('#jsonArea').html(str)
   var primer = {
     'name' :'',
     'detail' :'',
     'objectType' :'form',
-    'entry':dataset,
+    'entry': dataset,
     'parentid' :'primer',
-    'elemenetID' :'String',
+    'elementID' :'String', 
     'userID' :'String',
     'revision' :'created',//
     'active' : true,//
   }
-  jQuery.ajax({
+ jQuery.ajax({
     'url': '/create',
     'type': 'POST', 
+    'dataType': 'json',
     'contentType': 'application/json', 
     'data': JSON.stringify(primer),
     'success': function (dataSchemaObject) {
       $('#msgArea').html('<div class="alert alert-success" role="alert">Saved</div>')
     }
-  });
+  }); 
 }
 
 </script>
-
 
 
 {{> analytics}}

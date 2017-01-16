@@ -1,0 +1,107 @@
+<div id="formDelivery"></div>
+
+
+<script type="text/javascript">
+var formdata = {{{formdata}}}
+var idItem = {{{idItem}}}
+var formid = create_uid()
+
+//////////////////////////////////////////
+////        CREATE UNIQUE ID         //// 
+////////////////////////////////////////
+function create_uid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
+}
+
+////////////////////////////////////
+////        INITIALIZE         //// 
+//////////////////////////////////
+$(document).ready(function(){
+  jQuery('#formDelivery').attr("id",formid);
+  getdata([formdata])
+});
+
+////////////////////////////////////////////////////
+////////    GET DATABASE DATA WITH ARRAY  /////////
+//////////////////////////////////////////////////
+function getdata(ids){
+  jQuery.ajax({
+    'url': '/getdata?ids='+ids,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+       initiateForm(dataSchemaObject)
+   }
+ });
+}
+
+
+/////////////////////////////
+////        INIT        //// 
+////////////////////////////
+ function initiateForm(data){
+   var form = {
+    schema : data[0].entry['schema'],
+    options : data[0].entry['options']
+  }
+$('#'+formid).html("<div id='form_"+formdata+idItem+"'></div>")
+  //Test alpaca form for true , i.e if it exists , then destroy it.
+  control = $("#form_"+formdata+idItem).alpaca("destroy");
+  if (control) {
+    formInit(form.schema,form.options)
+  } else { 
+    formInit(form.schema,form.options)
+  }
+ } 
+
+//////////////////////////////////////
+////        CREATE FORM          //// 
+////////////////////////////////////
+function formInit(schema,options){
+  //work areound for the special requirments on the submit button.
+  options.form.buttons.submit.click = function(e){
+      e.preventDefault()
+      var value = this.getValue();
+      formPost(value)
+  }
+  $("#form_"+formdata+idItem).alpaca({
+    "schema": schema,
+    "options": options,
+  });
+}
+
+//////////////////////////////////////////////
+////        SUBMIT BUTTON CLICK          //// 
+////////////////////////////////////////////
+function formPost(dataset){
+ 
+  var primer = {
+    'name' :'',
+    'detail' :'',
+    'objectType' :'data',
+    'entry':dataset,
+    'parentid' :'primer',
+    'elementID' :'String',
+    'userID' :'String',
+    'revision' :'created',//
+    'active' : true,//
+  }
+ jQuery.ajax({
+    'url': '/create',
+    'type': 'POST', 
+    'dataType': 'json',
+    'contentType': 'application/json', 
+    'data': JSON.stringify(primer),
+    'success': function (dataSchemaObject) {
+      $('#msgArea').html('<div class="alert alert-success" role="alert">Saved</div>')
+    }
+  }); 
+}
+
+</script>
