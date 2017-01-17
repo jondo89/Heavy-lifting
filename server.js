@@ -22,6 +22,9 @@ var contactController = require('./controllers/contact');
 var adminController = require('./controllers/admin');
 var userInterfaceController = require('./controllers/userinterface');
 var readController = require('./controllers/read');
+var deleteController = require('./controllers/delete');
+
+
 
 // Passport OAuth strategies
 require('./config/passport');
@@ -106,6 +109,12 @@ app.get('/getCollectionData', readController.getCollectionData);
 app.get('/getform', readController.getform);
 //get data by array of ids.
 app.get('/getdata', readController.getdata);
+
+///////////////////////////////////////////
+////       DELETE CONTROLLERS         //// 
+/////////////////////////////////////////
+//get data by array of ids.
+app.get('/deleteentry', deleteController.deleteentry);
 
 app.get('/contact', contactController.contactGet);
 app.post('/contact', contactController.contactPost);

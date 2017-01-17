@@ -1,6 +1,22 @@
  
-
-
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        <div id="modal-body"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+ 
 <p></p>
 <div>
   <input type="checkbox" id="toggle-user" checked data-toggle="toggle" data-on='On' data-off='Off'  data-onstyle="default"> Revision History
@@ -29,7 +45,7 @@
 
   </div>
 </div>
-  
+
 
 <script type="text/javascript">
 var objectType = "{{objectType}}"
@@ -106,11 +122,12 @@ function dataTableLoad (data,id,headings){
       html += data[i][headings[j]]
       html += '</td>'
     }
-    html += '<td class="details-control" style="text-align:center;vertical-align:middle;min-width:160px "  >'
+    html += '<td class="details-control" style="text-align:center;vertical-align:middle;min-width:220px "  >'
     html +='<div class="btn-group" role="group" aria-label="...">'
     html += '<button type="button" class="btn btn-default"  id="'+data[i]['_id']+'_use">Use</button>'
     html += '<button type="button" class="btn btn-default"  id="'+data[i]['_id']+'_edit">Edit</button>'
     html += '<button type="button" class="btn btn-default"  id="'+data[i]['_id']+'_raw">Raw</button>'
+    html += '<button type="button" class="btn btn-danger"  id="'+data[i]['_id']+'_delete" data-toggle="modal" data-target="#myModal">Delete</button>'
     html +='</div>'
     html += '</td>'
     html += '</tr>'
@@ -145,6 +162,10 @@ switch(true){
     ids = ids.replace("_raw","");
     editDataentry('587b51ee3ed9ea24e459f954',ids)
   break;  
+  case(ids.search("_delete") >1):
+    ids = ids.replace("_delete","");
+    deleteEntryModal(ids)
+  break;   
 }
 });
  }
@@ -154,7 +175,7 @@ switch(true){
 ////////////////////////////////////
 function loadformatedinfo(formdata,idItem){
   jQuery.ajax({
-    'url': '/getform?formdata='+formdata+'&idItem='+idItem,
+    'url': '/getform?formdata='+formdata ,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
@@ -183,6 +204,45 @@ function editDataRaw(formdata,idItem){
 function editDataentry(formdata,idItem){
    jQuery.ajax({
     'url': '/getform?formdata='+formdata+'&idItem='+idItem,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+    $('#formArea').html(dataSchemaObject)
+   }
+ });
+}
+
+
+
+///////////////////////////////// 
+//////  DELETE ENTRY     ///////
+/////////////////////////////// 
+function deleteEntryModal(id){
+  $('#myModalLabel').html('Delete Data')
+ 
+  html = ''
+  html +='<div class="row" style="width:100%;text-align:center">'
+  html +='<i class="fa fa-question-circle fa-4x" aria-hidden="true" ></i>'
+  html += '<h3>Are you sure you what to do this ?</h3>'
+  html += '<p>This action cannot be undone.</p>'
+  html +='<div class="btn-group" role="group" aria-label="..." style="">'
+  html +='  <button type="button" class="btn btn-danger" onclick="deleteEntryYes('
+  html +="'"
+  html +=id
+  html +="'"
+  html +=')">Confirm</button>'
+  html +='</div>'
+  html +='</div>'
+  $('#modal-body').html(html)
+}
+
+
+////////////////////////////////////////////////
+////////    EDIT ONLY THE ENTRY DATA  /////////
+//////////////////////////////////////////////
+function deleteEntryYes(idItem){
+   jQuery.ajax({
+    'url': '/deleteentry?idItem='+idItem,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {

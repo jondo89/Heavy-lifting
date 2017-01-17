@@ -34,6 +34,10 @@ query.exec(function (err, docs1) {
 exports.getform = function(req, res) {
 var formdata = req.param('formdata')
 var idItem = req.param('idItem')
+
+if (!idItem) {
+  idItem ='emptystring'
+}
     res.render('form', {
       title: 'Form',
       siteName : siteName,
@@ -49,34 +53,39 @@ var idItem = req.param('idItem')
 ////       GET FORM AND DATA | ONLY FORM       //// 
 //////////////////////////////////////////////////
 exports.getdata = function(req, res) {
-var formdata = req.param('formdata')
-var idItem = req.param('idItem')
-var query = heavyliftingModel.find(
-{
-  $and : 
-  [
-  {$or: [
-    {"elementID": formdata },
-    {"_id":  formdata }
-    ]}, 
-    {
-      "active": true 
-    }
-    ]
-  })
-var query1 = heavyliftingModel.find(
-{
-  "_id":  idItem 
-}
-)
-query.exec(function (err, docs1) {
-  if (err) { return next(err); }
-  query1.exec(function (err, docs2) {
+  var formdata = req.param('formdata')
+  var idItem = req.param('idItem')
+  var temp =""
+  var query1 = heavyliftingModel.find(
+  {
+    "_id":  idItem 
+  }
+  )
+  var query = heavyliftingModel.find(
+  {
+    $and : 
+    [
+    {$or: [
+      {"elementID": formdata },
+      {"_id":  formdata }
+      ]}, 
+      {
+        "active": true 
+      }
+      ]
+    })
+  query.exec(function (err, docs1) {
     if (err) { return next(err); }
-    res.send({
-      formdata : docs1[0] , 
-      idItem : docs2[0] 
-    });
+    query1.exec(function (err, docs2) {
+      if (err) { return next(err); }
+      var temp = docs2[0] 
+      if (docs2.length ==0) {
+        temp=''
+      }
+      res.send({
+        formdata : docs1[0] , 
+        idItem : temp
+      });
+    })
   })
-})
 }

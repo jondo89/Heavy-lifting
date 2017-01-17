@@ -2,7 +2,7 @@ Heavy-lifting
 node.js | Express | Bootstrap | Handlebars | Mongodb - Component and Assembly Creator.
 Notes:
 Based on megabolierplate.
-<<<<<<< HEAD
+ 
 designed to imitate github
 
 port is set to 5000.
@@ -14,13 +14,13 @@ port is set to 5000.
 
  
 
-             <h1> 
-             Heavy-lifting is a machine design platform for Engineers in the Southern African mining sector.
-            </h1>
-            <h3> 
-              Use Heavy-lifting to build design projects, support your business, and work together on open source machine design.
-            </h3>
-=======
+<h1> 
+Heavy-lifting is a machine design platform for Engineers in the Southern African mining sector.
+</h1>
+<h3> 
+Use Heavy-lifting to build design projects, support your business, and work together on open source machine design.
+</h3>
+ 
 First Phase is to incorporate the Organizational aspect of user login (missing from Megabolier plate)
 Second Phase: incorporate form database. Using revision tracking. Forms will allow multiple means of CRUD.
 Port is set to 5000.
