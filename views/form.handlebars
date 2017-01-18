@@ -4,10 +4,11 @@
 <script type="text/javascript">
 var formdata = {{{formdata}}}
 var idItem = {{{idItem}}}
+var raw = {{{raw}}}
 var formid = create_uid()
 
- 
- 
+console.log(raw)
+
 //////////////////////////////////////////
 ////        CREATE UNIQUE ID         //// 
 ////////////////////////////////////////
@@ -35,6 +36,7 @@ $(document).ready(function(){
 ////////    GET DATABASE DATA WITH ARRAY  /////////
 //////////////////////////////////////////////////
 function getdata(formdata,idItem){
+
  if (idItem == 'emptystring' | idItem == '' ) {
   jQuery.ajax({
     'url': '/getdata?formdata='+formdata,
@@ -54,6 +56,8 @@ function getdata(formdata,idItem){
    }
  });
  }
+
+
 }
 
 /////////////////////////////
@@ -69,9 +73,9 @@ $('#'+formid).html("<div id='form_"+formdata+idItem+"'></div>")
   //Test alpaca form for true , i.e if it exists , then destroy it.
   control = $("#form_"+formdata+idItem).alpaca("destroy");
   if (control) {
-    formInit(form.schema,form.options,data.idItem.entry)
+    formInit(form.schema,form.options,data)
   } else { 
-    formInit(form.schema,form.options,data.idItem.entry)
+    formInit(form.schema,form.options,data)
   }
  } 
 
@@ -84,34 +88,60 @@ function formInit(schema,options,data){
       e.preventDefault()
       var value = this.getValue();
       formPost(value)
+      window.location.reload()
   }
+
+//Check if it is a raw edit .
+if (raw == true) {
+
+    $("#form_"+formdata+idItem).alpaca({
+    "schema": schema,
+    "options": options,
+    "postRender": function(control) {
+      //only set the data if the form is for use.
+      if (idItem !='emptystring') {
+        $("#form_"+formdata+idItem).alpaca('get').setValue(data.idItem)
+      }
+    }    
+  });
+} else  {
+ 
   $("#form_"+formdata+idItem).alpaca({
     "schema": schema,
     "options": options,
     "postRender": function(control) {
       //only set the data if the form is for use.
       if (idItem !='emptystring') {
-        $("#form_"+formdata+idItem).alpaca('get').setValue(data)
+        $("#form_"+formdata+idItem).alpaca('get').setValue(data.idItem.entry)
       }
     }    
   });
+}
 }
 
 //////////////////////////////////////////////
 ////        SUBMIT BUTTON CLICK          //// 
 ////////////////////////////////////////////
 function formPost(dataset){
-  var primer = {
+
+  if (raw == true) {
+
+    var primer = dataset
+
+  } else {
+     var primer = {
     'name' :'',
     'detail' :'',
-    'objectType' :'data',
+    'objectType' :'',
     'entry':dataset,
-    'parentid' :'primer',
-    'elementID' :'String',
-    'userID' :'String',
+    'parentid' :'',
+    'elementID' :'',
+    'userID' :'',
     'revision' :'created',//
     'active' : true,//
   }
+  }
+
  jQuery.ajax({
     'url': '/create',
     'type': 'POST', 
@@ -123,5 +153,6 @@ function formPost(dataset){
     }
   }); 
 }
+
 
 </script>

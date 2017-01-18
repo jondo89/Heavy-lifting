@@ -34,6 +34,12 @@ query.exec(function (err, docs1) {
 exports.getform = function(req, res) {
 var formdata = req.param('formdata')
 var idItem = req.param('idItem')
+var raw = req.param('raw')
+
+if (raw =='true') {
+} else {
+  raw ='false'
+}
 
 if (!idItem) {
   idItem ='emptystring'
@@ -43,6 +49,7 @@ if (!idItem) {
       siteName : siteName,
       formdata : JSON.stringify(formdata),
       idItem : JSON.stringify(idItem),
+      raw :raw ,
       layout: false,
     });
 }
@@ -55,6 +62,7 @@ if (!idItem) {
 exports.getdata = function(req, res) {
   var formdata = req.param('formdata')
   var idItem = req.param('idItem')
+
   var temp =""
   var query1 = heavyliftingModel.find(
   {

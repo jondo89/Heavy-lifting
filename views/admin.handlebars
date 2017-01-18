@@ -30,7 +30,77 @@
             <div class="col-md-6">
               <!-- Textarea -->
               <div class="row">
+              <h1>Primer</h1>
+              <p>Use as the first form.</p>
                 <div class="col-md-6">
+                  <h3>Schema</h3>
+                  <textarea class="form-control " id="schema" name="schema"  style="height: 250px">
+{
+   "title": "Form Deployment",
+   "description": "Insert Schema and Options to design your form.",
+   "type": "object",
+   "properties": {
+      "schema": {
+         "title": "Schema"
+      },
+      "options": {
+         "title": "Options"
+      }
+   }
+}               </textarea>
+                </div>
+                <div class="col-md-6">
+                  <h3>Options</h3>
+                  <textarea class="form-control" id="options" name="options"  style="height: 250px">
+{
+   "form": {
+      "buttons": {
+         "submit": {
+            "title": "Submit",
+            "id": "submit",
+            "click": ""
+         }
+      }
+   },
+   "helper": "Insert Schema and Options to design your form.",
+   "fields": {
+      "schema": {
+         "type": "json",
+         "rows": 4,
+         "cols": 40,
+         "helper": "Schema Set.",
+         "validate": false
+      },
+      "options": {
+         "type": "json",
+         "rows": 4,
+         "cols": 40,
+         "helper": "Schema Set.",
+         "validate": false
+      }
+   },
+   "focus": ""
+}
+                  </textarea>
+                </div>
+              </div>
+              <p></p>
+              <div class="btn-group" role="group" aria-label="...">
+                <button type="button" class="btn btn-default" id="updateForm">Update Form</button>
+              </div>
+            </div>
+              <div class="col-md-6">
+              <div id='msgArea'></div>
+              <div id="form1"></div>
+            </div>
+
+
+ <h1>Editor</h1>
+              <p>Use as the second form.</p>
+
+
+<div class="row">
+  <div class="col-md-6">
                   <h3>Schema</h3>
                   <textarea class="form-control " id="schema" name="schema"  style="height: 250px">
 {
@@ -46,31 +116,41 @@
       },
       "objectType": {
          "title": "objectType",
-         "enum": ["form", "data", "other"]
+         "enum": [
+            "form",
+            "data",
+            "other"
+         ]
       },
       "entry": {
          "title": "entry"
-         
       },
       "parentid": {
          "title": "parentid"
-      },       
+      },
       "elementID": {
          "title": "elementID"
-      },  
+      },
       "userID": {
          "title": "userID"
       },
       "revision": {
          "title": "revision",
-         "enum": ["created","updated","deleted"]
-      },     
+         "enum": [
+            "created",
+            "updated",
+            "deleted"
+         ]
+      },
       "active": {
          "title": "active",
-         "enum": ["true","false"]
-      }     
+         "enum": [
+            "true",
+            "false"
+         ]
+      }
    }
-}                </textarea>
+}              </textarea>
                 </div>
                 <div class="col-md-6">
                   <h3>Options</h3>
@@ -96,13 +176,13 @@
       },
       "objectType": {
          "type": "select"
-      },      
+      },
       "revision": {
          "type": "select"
-      },        
+      },
       "active": {
          "type": "select"
-      },         
+      },
       "entry": {
          "type": "json",
          "rows": 4,
@@ -110,20 +190,14 @@
          "helper": "All entry data is stored here.",
          "validate": true
       }
-   }
+   },
+   "focus": ""
 }
                   </textarea>
                 </div>
-              </div>
-              <p></p>
-              <div class="btn-group" role="group" aria-label="...">
-                <button type="button" class="btn btn-default" id="updateForm">Update Form</button>
-              </div>
-            </div>
-              <div class="col-md-6">
-              <div id='msgArea'></div>
-              <div id="form1"></div>
-            </div>
+            
+</div>
+
           </div>
         </div>
         <div role="tabpanel" class="tab-pane active" id="read">
@@ -196,8 +270,8 @@ function clickSubmit(dataset){
     'objectType' :'form',
     'entry': dataset,
     'parentid' :'primer',
-    'elementID' :'String', 
-    'userID' :'String',
+    'elementID' :'', 
+    'userID' :'',
     'revision' :'created',//
     'active' : true,//
   }

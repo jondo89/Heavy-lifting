@@ -19,7 +19,8 @@
  
 <p></p>
 <div>
-  <input type="checkbox" id="toggle-user" checked data-toggle="toggle" data-on='On' data-off='Off'  data-onstyle="default"> Revision History
+  <label class="checkbox-inline">
+  <input type="checkbox" id="toggle-event"   data-toggle="toggle" data-on='<span class="glyphicon glyphicon-time" aria-hidden="true"></span> ' data-off='<span class="glyphicon glyphicon-time" aria-hidden="true"></span>'  data-onstyle="default"> Revision History
   </label>
 </div>
 <p></p>
@@ -50,6 +51,16 @@
 <script type="text/javascript">
 var objectType = "{{objectType}}"
 
+
+ 
+/////////////////////////////////////////////////////////////////////////////
+////////  EVENT LISTNER ON THE TOOGGLE FOR REMOVING THE COMPONETNS   ///////
+///////////////////////////////////////////////////////////////////////////
+$('#toggle-event').change(function() {
+  //This function is defined in the component navigation template.
+  getCollectionData(objectType,$('#toggle-event').prop('checked'))
+})
+
 ///////////////////////////// 
 //////  INITIALISE    //////
 /////////////////////////// 
@@ -57,13 +68,13 @@ $('document').ready(function(){
  getCollectionData(objectType)
 })
 
+
 ///////////////////////////////
 //////  GET THE TABLE   //////
 /////////////////////////////
-function getCollectionData(objectType){
-  console.log(objectType)
+function getCollectionData(objectType,toggle){
   jQuery.ajax({
-    'url': '/getCollectionData?objectType='+objectType+'&showall='+true,
+    'url': '/getCollectionData?objectType='+objectType+'&showall='+toggle,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
@@ -78,7 +89,7 @@ function getCollectionData(objectType){
 /////////////////////////////
 function tableload(tablelistdata) {
   var tempVarID = 'inputtable'
-  var headings =  ['_id'  ]//,'userID']
+  var headings =  ['name'  ]//,'userID']
 //inject the ID html table into the page.
 $('#loading').html('<table id="'+tempVarID+'" class="table table-bordered table-compressed table-hover" cellspacing="0" width="100%"></table>')
 //error message text
@@ -152,15 +163,15 @@ var ids = this.id
 switch(true){
   case(ids.search("_use") >1):
     ids = ids.replace("_use","");
-    loadformatedinfo(ids,'')
+    loadformatedinfo(ids,'','true')
   break;
   case(ids.search("_edit") >1):
     ids = ids.replace("_edit","");
-    editDataRaw('587b4de03ed9ea24e459f953',ids)
+    editDataentry('587b4de03ed9ea24e459f953',ids)
   break;
   case(ids.search("_raw") >1):
     ids = ids.replace("_raw","");
-    editDataentry('587b51ee3ed9ea24e459f954',ids)
+    editDataRaw('587b51ee3ed9ea24e459f954',ids,'true')
   break;  
   case(ids.search("_delete") >1):
     ids = ids.replace("_delete","");
@@ -173,9 +184,9 @@ switch(true){
 //////////////////////////////////////
 ////////    GET FORM BY ID  /////////
 ////////////////////////////////////
-function loadformatedinfo(formdata,idItem){
+function loadformatedinfo(formdata,idItem,raw){
   jQuery.ajax({
-    'url': '/getform?formdata='+formdata ,
+    'url': '/getform?formdata='+formdata+'&raw='+raw ,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
@@ -187,9 +198,9 @@ function loadformatedinfo(formdata,idItem){
 ////////////////////////////////////////
 ////////    EDIT THE RAW DATA /////////
 //////////////////////////////////////
-function editDataRaw(formdata,idItem){
+function editDataRaw(formdata,idItem,raw){
    jQuery.ajax({
-    'url': '/getform?formdata='+formdata+'&idItem='+idItem,
+    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
@@ -201,7 +212,7 @@ function editDataRaw(formdata,idItem){
 ////////////////////////////////////////////////
 ////////    EDIT ONLY THE ENTRY DATA  /////////
 //////////////////////////////////////////////
-function editDataentry(formdata,idItem){
+function editDataentry(formdata,idItem,raw){
    jQuery.ajax({
     'url': '/getform?formdata='+formdata+'&idItem='+idItem,
     'async': true,
@@ -212,14 +223,11 @@ function editDataentry(formdata,idItem){
  });
 }
 
-
-
 ///////////////////////////////// 
 //////  DELETE ENTRY     ///////
 /////////////////////////////// 
 function deleteEntryModal(id){
   $('#myModalLabel').html('Delete Data')
- 
   html = ''
   html +='<div class="row" style="width:100%;text-align:center">'
   html +='<i class="fa fa-question-circle fa-4x" aria-hidden="true" ></i>'
@@ -235,7 +243,6 @@ function deleteEntryModal(id){
   html +='</div>'
   $('#modal-body').html(html)
 }
-
 
 ////////////////////////////////////////////////
 ////////    EDIT ONLY THE ENTRY DATA  /////////

@@ -21,6 +21,7 @@ var userController = require('./controllers/user');
 var contactController = require('./controllers/contact');
 var adminController = require('./controllers/admin');
 var userInterfaceController = require('./controllers/userinterface');
+var createController = require('./controllers/create');
 var readController = require('./controllers/read');
 var deleteController = require('./controllers/delete');
 
@@ -90,7 +91,7 @@ app.get('/', HomeController.index);
 ////        PRIMARY ADMINISTRATIVE DATABASE MODIFICATION         //// 
 ////////////////////////////////////////////////////////////////////
 app.get('/admin', adminController.admin);
-app.post('/create',  adminController.create);
+
 app.get('/read',  adminController.read);
 app.get('/update',  adminController.update);
 app.get('/delete',  adminController.delete);
@@ -99,6 +100,12 @@ app.get('/delete',  adminController.delete);
 ////        USER INTERFACE CONTROLLER         //// 
 /////////////////////////////////////////////////
 app.get('/dashboard',  userInterfaceController.dashboard);
+
+/////////////////////////////////////////
+////       CREATE CONTROLLERS       //// 
+///////////////////////////////////////
+app.post('/create',  createController.create);
+
 
 /////////////////////////////////////////
 ////       READ CONTROLLERS         //// 
