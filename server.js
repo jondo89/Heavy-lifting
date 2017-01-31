@@ -101,6 +101,14 @@ app.get('/delete',  adminController.delete);
 /////////////////////////////////////////////////
 app.get('/dashboard',  userInterfaceController.dashboard);
 
+
+/////////////////////////////////
+////        DATABASE        //// 
+///////////////////////////////
+app.get('/database',  readController.database);
+
+
+
 /////////////////////////////////////////
 ////       CREATE CONTROLLERS       //// 
 ///////////////////////////////////////
@@ -116,12 +124,18 @@ app.get('/getCollectionData', readController.getCollectionData);
 app.get('/getform', readController.getform);
 //get data by array of ids.
 app.get('/getdata', readController.getdata);
+//get data by array of ids.
+app.get('/data/_id', readController.data);
+
 
 ///////////////////////////////////////////
 ////       DELETE CONTROLLERS         //// 
 /////////////////////////////////////////
 //get data by array of ids.
 app.get('/deleteentry', deleteController.deleteentry);
+
+
+
 
 app.get('/contact', contactController.contactGet);
 app.post('/contact', contactController.contactPost);

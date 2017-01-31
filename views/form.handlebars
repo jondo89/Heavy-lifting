@@ -7,9 +7,6 @@ var idItem = {{{idItem}}}
 var raw = {{{raw}}}
 var formid = create_uid()
 
-console.log(raw)
-
-//////////////////////////////////////////
 ////        CREATE UNIQUE ID         //// 
 ////////////////////////////////////////
 function create_uid() {
@@ -37,25 +34,17 @@ $(document).ready(function(){
 //////////////////////////////////////////////////
 function getdata(formdata,idItem){
 
- if (idItem == 'emptystring' | idItem == '' ) {
-  jQuery.ajax({
-    'url': '/getdata?formdata='+formdata,
-    'async': true,
-    'global': false,
-    'success': function (dataSchemaObject) {
-       initiateForm(dataSchemaObject)
-   }
- });
- } else {
     jQuery.ajax({
-    'url': '/getdata?formdata='+formdata+'&idItem='+idItem,
+    'url': '/getdata?formdata='+formdata+'&idItem='+idItem+'&raw='+raw,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
        initiateForm(dataSchemaObject)
    }
  });
- }
+
+
+
 
 
 }
@@ -72,6 +61,7 @@ function getdata(formdata,idItem){
 $('#'+formid).html("<div id='form_"+formdata+idItem+"'></div>")
   //Test alpaca form for true , i.e if it exists , then destroy it.
   control = $("#form_"+formdata+idItem).alpaca("destroy");
+
   if (control) {
     formInit(form.schema,form.options,data)
   } else { 
@@ -83,65 +73,111 @@ $('#'+formid).html("<div id='form_"+formdata+idItem+"'></div>")
 ////        CREATE FORM          //// 
 ////////////////////////////////////
 function formInit(schema,options,data){
+
+
   //work areound for the special requirments on the submit button.
   options.form.buttons.submit.click = function(e){
       e.preventDefault()
       var value = this.getValue();
-      formPost(value)
-      window.location.reload()
+      formPost(value,data)
   }
 
-//Check if it is a raw edit .
-if (raw == true) {
+for(key in options.fields){
+  
+  if (options.fields[key]['type'] == 'select' ) {
+    //options.fields[key] ["dataSource"] = "/data/icecream-list.json"
+  }
+}
 
-    $("#form_"+formdata+idItem).alpaca({
-    "schema": schema,
-    "options": options,
-    "postRender": function(control) {
-      //only set the data if the form is for use.
-      if (idItem !='emptystring') {
-        $("#form_"+formdata+idItem).alpaca('get').setValue(data.idItem)
-      }
-    }    
-  });
-} else  {
  
+
+switch(true){
+
+  //the use button will require the form to remove any element ids as this will be a new entry.
+  case(raw=='use'):
+  $("#form_"+formdata+idItem).alpaca({
+    "schema": schema,
+    "options": options
+    
+  });
+  break;
+
+  case(raw=='edit'):
   $("#form_"+formdata+idItem).alpaca({
     "schema": schema,
     "options": options,
     "postRender": function(control) {
       //only set the data if the form is for use.
-      if (idItem !='emptystring') {
+      if (idItem !='') {
         $("#form_"+formdata+idItem).alpaca('get').setValue(data.idItem.entry)
       }
     }    
   });
+  break;
+
+  case(raw=='true'):
+    $("#form_"+formdata+idItem).alpaca({
+    "schema": schema,
+    "options": options,
+    "postRender": function(control) {
+      //only set the data if the form is for use.
+      if (idItem !='') {
+        $("#form_"+formdata+idItem).alpaca('get').setValue(data.idItem)
+      }
+    }    
+  });
+  break;
+  
 }
+
+
+
+
+
+
+
 }
 
 //////////////////////////////////////////////
 ////        SUBMIT BUTTON CLICK          //// 
 ////////////////////////////////////////////
-function formPost(dataset){
+function formPost(dataset,data){
 
-  if (raw == true) {
+console.log('Use this form :' , formdata , 'With this ID dataset' , idItem , 'Using this function on the edit type' , raw)
+//////////////////////////////////////////
+console.log(data,'identify the variables for use here')
 
+//routing for the various use cases on the switch
+switch(true){
+
+  //the use button will require the form to remove any element ids as this will be a new entry.
+  case(raw=='use'):
+    var primer = data.idItem
+    primer.entry = dataset
+    primer.elementID = ''
+    primer.revision = 'created'
+    primer.active = "true"
+    console.log(raw,' = use','use')
+  break;
+
+  case(raw=='edit'):
+    var primer = data.idItem
+    primer.entry = dataset
+    primer.revision = 'updated'
+    primer.elementID = data.idItem.elementID
+    primer.active = "true"
+    console.log(raw,' = false','edit')
+  break;
+
+  case(raw=='true'):
     var primer = dataset
+    console.log(raw,' = true','raw')
+  break;
 
-  } else {
-     var primer = {
-    'name' :'',
-    'detail' :'',
-    'objectType' :'',
-    'entry':dataset,
-    'parentid' :'',
-    'elementID' :'',
-    'userID' :'',
-    'revision' :'created',//
-    'active' : true,//
-  }
-  }
+}
 
+ 
+ 
  jQuery.ajax({
     'url': '/create',
     'type': 'POST', 
@@ -151,7 +187,8 @@ function formPost(dataset){
     'success': function (dataSchemaObject) {
       $('#msgArea').html('<div class="alert alert-success" role="alert">Saved</div>')
     }
-  }); 
+  });  
+
 }
 
 

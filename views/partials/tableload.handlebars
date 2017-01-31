@@ -1,21 +1,5 @@
  
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        <div id="modal-body"></div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+ 
  
 <p></p>
 <div>
@@ -32,6 +16,7 @@
     <div id="loading">
   <table id="tableComps" class="table table-bordered table-compressed table-hover" cellspacing="0" width="100%"></table>
 </div>  
+<p>There are a few more variances to be catured with this , specifically the changing of primary raw values on items. i.e if the item is a form or a database item etc. Could be included in the raw options , i.e this item type and created child item types.</p>
   </div>
 </div>
 
@@ -160,45 +145,40 @@ function loadDataTable(id){
 //Add event listener for opening and closing details
 jQuery('#'+id +' tbody').on('click', 'td div button', function () {
 var ids = this.id
+
+
+
+//This routing is key to database functionality.
 switch(true){
   case(ids.search("_use") >1):
     ids = ids.replace("_use","");
-    loadformatedinfo(ids,'','true')
+    getForm(ids,'','use')
   break;
   case(ids.search("_edit") >1):
     ids = ids.replace("_edit","");
-    editDataentry('587b4de03ed9ea24e459f953',ids)
+    getForm('edit',ids,'edit')
   break;
   case(ids.search("_raw") >1):
     ids = ids.replace("_raw","");
-    editDataRaw('587b51ee3ed9ea24e459f954',ids,'true')
+    getForm('raw',ids,'true')
   break;  
   case(ids.search("_delete") >1):
     ids = ids.replace("_delete","");
     deleteEntryModal(ids)
   break;   
 }
+
+
+
 });
  }
 
-//////////////////////////////////////
-////////    GET FORM BY ID  /////////
-////////////////////////////////////
-function loadformatedinfo(formdata,idItem,raw){
-  jQuery.ajax({
-    'url': '/getform?formdata='+formdata+'&raw='+raw ,
-    'async': true,
-    'global': false,
-    'success': function (dataSchemaObject) {
- 	    $('#formArea').html(dataSchemaObject)
-   }
- });
-}
+ 
 
 ////////////////////////////////////////
 ////////    EDIT THE RAW DATA /////////
 //////////////////////////////////////
-function editDataRaw(formdata,idItem,raw){
+function getForm(formdata,idItem,raw){
    jQuery.ajax({
     'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw,
     'async': true,
@@ -209,19 +189,7 @@ function editDataRaw(formdata,idItem,raw){
  });
 }
 
-////////////////////////////////////////////////
-////////    EDIT ONLY THE ENTRY DATA  /////////
-//////////////////////////////////////////////
-function editDataentry(formdata,idItem,raw){
-   jQuery.ajax({
-    'url': '/getform?formdata='+formdata+'&idItem='+idItem,
-    'async': true,
-    'global': false,
-    'success': function (dataSchemaObject) {
-    $('#formArea').html(dataSchemaObject)
-   }
- });
-}
+ 
 
 ///////////////////////////////// 
 //////  DELETE ENTRY     ///////

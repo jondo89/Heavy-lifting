@@ -6,17 +6,17 @@ var heavylifting;
  
 
 var heavylifting = mongoose.Schema({
-'name' :String,
+'name' :{ type: String, default: 'Inital Form' },
 'detail' :String,
 'objectType' :String,
 'entry' :Schema.Types.Mixed,
 'parentid' :String,
 'name' :String,
-'elementID' :String,
+'elementID' :{ type: String, default: '' },
 'userID' :String,
 'revision' :{ type: String, default: 'created' },
 'created' : { type: Date, default: Date.now },
-'active' : { type: Boolean, default: true },
+'active' : { type: String, default: "true" },
 }, { collection: 'heavylifting' });
 
 

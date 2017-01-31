@@ -1,0 +1,238 @@
+  <div class="container" style="padding-top: 45px">
+  <div class="row">
+    <div class="col-md-4" id="navMenuPanel">
+      <div class="panel panel-default">
+        <div class="panel-body">
+         <h5><strong>Navigation</strong> <small>Use the navigation tree to interact with the database.</small></h5>
+         <div class="panel">
+           <div style="padding-bottom:15px;padding-bottom:15px">
+            <input id="search_field" name="searchinput" type="search" placeholder="Search Navigation" class="form-control input-md">      
+          </div>
+          <div id="jstree"></div> 
+        </div>
+
+
+<div class="btn-group" role="group" aria-label="...">
+  <button type="button" class="btn btn-default" id="newForm" data-toggle="modal" data-target="#myModal">Add Item</button>
+</div>   
+
+
+
+
+
+
+
+
+      </div>
+    </div>
+  </div>  
+
+  
+  <div class="col-md-8" id="browserArea">
+ 
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div id="panel">  
+
+
+<div style="text-align: center;padding: 25px">
+  <h1>Welcome to the Shiftbulk database.</h1></div>
+  <p style="padding: 15px 25px 46px 25px">The database acts as the input control for all of the assemblies, components and forms on the site. The database is designed to be scalable, as such please let us know if you find any thing missing and we will add it.</p>
+
+          
+
+ <div class="col-md-12" style="padding-bottom:75px"> 
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-6" style="text-align: center">
+                        <div class="splash-item">
+                          <i class="fa fa-cogs fa-2x" aria-hidden="true"></i>
+                          <h3>Assemblies.</h3>
+                          <p class="text-muted">Assemblies are user created combinations of Components on the site. Users can create new or copy existing designs to speed up the creation of their designs.</p>
+                        </div>
+                      </div>
+                      <div class="col-md-6" style="text-align: center">
+                        <div class="splash-item">
+                          <i class="fa fa-cog fa-2x" aria-hidden="true"></i>
+                          <h3>Components.</h3>
+                          <p class="text-muted">Modular components are created from design collections stored in the database. Users can create new or copy existing designs to speed up the creation of their designs.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row" style="padding-top: 25px">
+                      <div class="col-md-6" style="text-align: center;color: #337ab7">
+                        <div class="splash-item" style=" color: #337ab7">
+                          <i class="fa fa-database  fa-2x"></i>
+                          <h3 style=" color: #337ab7">Database.</h3>
+                          <p style=" color: #337ab7" class="text-muted">The Shiftbulk database stores the forms inputs and design collection details to deploy the templates for the creation of new components.</p>
+                        </div>
+                      </div>
+                      <div class="col-md-6" style="text-align: center">
+                        <div class="splash-item">
+                          <i class="fa fa-shopping-cart fa-2x" aria-hidden="true"></i>
+                          <h3>Shop.</h3>
+                          <p class="text-muted">The store hold OEM equipment components (deployed from the database collections) that can be copied, referenced or modified to suit your design.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+      </div>
+ 
+
+    </div>
+
+  </div>
+      <div class="alert alert-info" role="alert"> <strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>
+  </div>
+</div>
+</div>
+
+
+<script type="text/javascript">
+ var databaseMenu = {{{database}}}
+ var temp =[]
+ 
+for (var i = 0; i < databaseMenu.length; i++) {
+	temp.push(databaseMenu[i].entry)
+}
+
+databaseMenu = temp
+ var table
+console.log(temp)
+ $( document ).ready(function() {
+ 
+
+  //manipulate data to work with the jstree
+  var jsTreeData = dataJStreeConvert (databaseMenu)
+  var location = 'jstree'
+  //load the jstree
+  loadNavMenu('jstree',jsTreeData)
+  
+});
+//change to format JS tree requires
+function dataJStreeConvert (databaseMenu){
+  var newData = []
+  for (var i = 0; i < databaseMenu.length; i++) {
+    var temp = {}
+    for (key in databaseMenu[i]){
+      switch (true){
+        case (key == '_id'):
+        temp['id'] =  databaseMenu[i][key]
+        if (databaseMenu[i][key]=='5848fc75b622bb53eca6ffd7') {
+          state       = {
+              "opened"    : true,  // is the node open
+            }
+            temp['state'] =  state
+          }
+          break;
+          case (key == 'parent'):
+          temp['parent'] =  databaseMenu[i][key]
+          break;
+          case (key == 'description'):
+          temp['text'] =  databaseMenu[i][key]
+          break;
+          case (key == 'icon'):
+          temp['icon'] =  databaseMenu[i][key]
+          break;
+        }
+      }
+      newData.push(temp)
+    }
+    return newData
+  }
+
+////////////////////////////////////////////////
+////////    LOAD NAV TREE INTO MEMORY   ///////
+//////////////////////////////////////////////
+function loadNavMenu(location,dataNav){
+  //console.log(dataNav)
+  var $root =jQuery('#'+location).jstree({ 
+    'core' : {
+      'data' : dataNav,        
+      'themes': {
+        'name': 'proton',
+        'responsive': true,
+        'stripes' : false,
+      },
+    } ,
+    "checkbox" : {
+      "keep_selected_style" : false
+    },
+    "multiple": false,
+    "plugins" : [ "wholerow" , "search" , "state"]
+  });
+
+/////////////////////////////////
+////////  SEARCH NAV MENU ///////
+/////////////////////////////////
+var to = false;
+jQuery('#search_field').keyup(function () {
+  if(to) { clearTimeout(to); }
+  to = setTimeout(function () {
+    var v = jQuery('#search_field').val();
+    jQuery('#'+location).jstree(true).search(v);
+  }, 250);
+});
+
+//////////////////////////////////////////////////
+////////  EVENT LISTNER ON THE TREE VIEW  ///////
+////////////////////////////////////////////////
+jQuery('#'+location)
+    // listen for event
+    .on('changed.jstree', function (e, dataTree) {
+      var i, j, r = []
+      for(i = 0, j = dataTree.selected.length; i < j; i++) {
+        var ids=(dataTree.instance.get_node(dataTree.selected[0]).id);
+        r.push(dataTree.instance.get_node(dataTree.selected[i]).text);
+      }
+      for (var i = 0; i < databaseMenu.length; i++) {
+        if (ids == databaseMenu[i]['_id']) {
+          //  console.log(data[i] ,'jstree click test')
+          //checks the page in use , then alloacates the menu browser function.
+            jQuery('#panel').html('<div style="width:100%;text-align:center;padding-top:55px" ><i class="fa fa-spinner fa-fw" aria-hidden="true"></i></div>')
+            NavMenuEventListinerDatabase(databaseMenu[i]['_id'])
+        }
+      }
+    })
+  }
+
+///////////////////////////////////////////////////////
+////////  EVENT LISTNER FUNCTION AREA DATABASE ///////
+/////////////////////////////////////////////////////
+function NavMenuEventListinerDatabase(schemaObject){
+  jQuery.ajax({
+    'async': true,
+    'global': false,
+    'data':schemaObject,
+    'url': '/menubrowser?data='+schemaObject,
+    'success': function (dataSchemaObject) {
+      jQuery('#panel').html("")
+      jQuery('#panel').html(dataSchemaObject)
+    }
+  });
+}
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK OPEN FORM  /////////
+////////////////////////////////////////////
+$('#newForm').click(function(){
+	loadformatedinfo('58901943fb6b6d430c68dbd1','','use')
+})
+
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+////////////////////////////////////
+function loadformatedinfo(formdata,idItem,raw){
+  jQuery.ajax({
+    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+ 	    $('#formArea').html(dataSchemaObject)
+   }
+ });
+}
+
+</script> 

@@ -140,7 +140,7 @@ footer {
 /* ------------------------- */
 
 .btn-toolbar > .btn {
-  float: none;
+  float: none!important; 
   margin-bottom: 5px;
 }
 
@@ -286,8 +286,4 @@ textarea {
 
  
 
-.full-page-header{
  
- 
-
-}
