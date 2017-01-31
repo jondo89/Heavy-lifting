@@ -40,7 +40,11 @@ Form Deployment is carried out with <a href="http://www.alpacajs.org/" target="_
   <li>Improved github deployment ( Simplification )</li>
 </ul>
 
+<p>
+At this point the installation of the system is fairly manual, it should ideally be deployable from NPM, with minimum fuss. Please dont hestiate to contact us for any queries.	
+</p>
+
+
 <p>Let us know if you would like use to assist on any other web based systm design.</p>
 <a href="http://www.isithelo.com/" target="_blank">Isithelo Technical Solutions</a>
  
-At this point the installation of the system is failry manual , it should ideally be deployable from NPM , with minium fuss.
