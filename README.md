@@ -1,10 +1,11 @@
 <h1> 
-Heavy-lifting is a machine design platform for Engineers in the Southern African mining sector.
+Heavy-lifting is a machine design platform for Engineers.
 </h1>
 <h3> 
 Use Heavy-lifting to build design projects, support your business, and work together on open source machine design.
 </h3>
- 
+<p>It is possible the frame work would work as a CMS system .</p>
+
 Based on <a href="https://github.com/sahat/megaboilerplate">Mega Boilerplate</a>.
 
 Port is set to 5000.
