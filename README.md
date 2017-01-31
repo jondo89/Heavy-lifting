@@ -18,6 +18,8 @@ Application Framework
 <a href="http://handlebarsjs.com/" target="_blank">Handlebars.js</a>
 <a href="http://getbootstrap.com/" target="_blank">Boostrap</a>
 
+Form Deployment is carried out with <a href="http://www.alpacajs.org/" target="_blank">Alpaca.js</a>
+
 <h1>To Do List</h1>
 <ul>
   <li>Create the Database Primer</li>
@@ -33,3 +35,12 @@ Application Framework
   <li>Creation of reporting systems</li>
   <li>and quite a bit more.</li>
 </ul>
+
+<ul>
+  <li>Improved github deployment ( Simplification )</li>
+</ul>
+
+<p>Let us know if you would like use to assist on any other web based systm design.</p>
+<a href="http://www.isithelo.com/" target="_blank">Isithelo Technical Solutions</a>
+ 
+At this point the installation of the system is failry manual , it should ideally be deployable from NPM , with minium fuss.
