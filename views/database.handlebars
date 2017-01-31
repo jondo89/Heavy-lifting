@@ -10,36 +10,19 @@
           </div>
           <div id="jstree"></div> 
         </div>
-
-
-<div class="btn-group" role="group" aria-label="...">
-  <button type="button" class="btn btn-default" id="newForm" data-toggle="modal" data-target="#myModal">Add Item</button>
-</div>   
-
-
-
-
-
-
-
-
       </div>
     </div>
   </div>  
 
   
   <div class="col-md-8" id="browserArea">
- 
     <div class="panel panel-default">
       <div class="panel-body">
         <div id="panel">  
 
-
 <div style="text-align: center;padding: 25px">
   <h1>Welcome to the Shiftbulk database.</h1></div>
   <p style="padding: 15px 25px 46px 25px">The database acts as the input control for all of the assemblies, components and forms on the site. The database is designed to be scalable, as such please let us know if you find any thing missing and we will add it.</p>
-
-          
 
  <div class="col-md-12" style="padding-bottom:75px"> 
                   <div class="container-fluid">
@@ -100,7 +83,7 @@ for (var i = 0; i < databaseMenu.length; i++) {
 
 databaseMenu = temp
  var table
-console.log(temp)
+
  $( document ).ready(function() {
  
 
@@ -115,8 +98,14 @@ console.log(temp)
 function dataJStreeConvert (databaseMenu){
   var newData = []
   for (var i = 0; i < databaseMenu.length; i++) {
+ 
     var temp = {}
     for (key in databaseMenu[i]){
+
+
+
+ 
+
       switch (true){
         case (key == '_id'):
         temp['id'] =  databaseMenu[i][key]
@@ -135,6 +124,12 @@ function dataJStreeConvert (databaseMenu){
           break;
           case (key == 'icon'):
           temp['icon'] =  databaseMenu[i][key]
+          break;
+          case (key == 'template'):
+			aclass = { 
+		      "data-template" : databaseMenu[i][key],
+		    }
+          temp['a_attr'] =  aclass
           break;
         }
       }
@@ -184,55 +179,44 @@ jQuery('#'+location)
     .on('changed.jstree', function (e, dataTree) {
       var i, j, r = []
       for(i = 0, j = dataTree.selected.length; i < j; i++) {
-        var ids=(dataTree.instance.get_node(dataTree.selected[0]).id);
-        r.push(dataTree.instance.get_node(dataTree.selected[i]).text);
+        var ids=(dataTree.instance.get_node(dataTree.selected[0]).a_attr['data-template']);
+         
+        r.push(dataTree.instance.get_node(dataTree.selected[i]).template);
       }
+
+	//This is temporary , used for the primary database viewer.
+	templateload(ids)
+
+      /*
       for (var i = 0; i < databaseMenu.length; i++) {
         if (ids == databaseMenu[i]['_id']) {
           //  console.log(data[i] ,'jstree click test')
           //checks the page in use , then alloacates the menu browser function.
             jQuery('#panel').html('<div style="width:100%;text-align:center;padding-top:55px" ><i class="fa fa-spinner fa-fw" aria-hidden="true"></i></div>')
-            NavMenuEventListinerDatabase(databaseMenu[i]['_id'])
         }
-      }
+      }*/
+
     })
   }
 
 ///////////////////////////////////////////////////////
 ////////  EVENT LISTNER FUNCTION AREA DATABASE ///////
 /////////////////////////////////////////////////////
-function NavMenuEventListinerDatabase(schemaObject){
-  jQuery.ajax({
-    'async': true,
-    'global': false,
-    'data':schemaObject,
-    'url': '/menubrowser?data='+schemaObject,
-    'success': function (dataSchemaObject) {
-      jQuery('#panel').html("")
-      jQuery('#panel').html(dataSchemaObject)
-    }
-  });
+function templateload(template){
+//Ensure that the first load error is covered , also any other errors.
+	if(template){
+		  jQuery.ajax({
+	    'async': true,
+	    'global': false,
+	    'url': '/templateload?template='+template,
+	    'success': function (dataSchemaObject) {
+	      jQuery('#panel').html("")
+	      jQuery('#panel').html(dataSchemaObject)
+	    }
+	  });
+	}
 }
 
-//////////////////////////////////////////////
-////////    BUTTON CLICK OPEN FORM  /////////
-////////////////////////////////////////////
-$('#newForm').click(function(){
-	loadformatedinfo('58901943fb6b6d430c68dbd1','','use')
-})
 
-//////////////////////////////////////
-////////    GET FORM BY ID  /////////
-////////////////////////////////////
-function loadformatedinfo(formdata,idItem,raw){
-  jQuery.ajax({
-    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw,
-    'async': true,
-    'global': false,
-    'success': function (dataSchemaObject) {
- 	    $('#formArea').html(dataSchemaObject)
-   }
- });
-}
 
 </script> 

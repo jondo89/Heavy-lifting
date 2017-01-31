@@ -1,19 +1,3 @@
-Heavy-lifting
-node.js | Express | Bootstrap | Handlebars | Mongodb - Component and Assembly Creator.
-Notes:
-Based on megabolierplate.
- 
-designed to imitate github
-
-port is set to 5000.
-
-
-<h3>Stage 1 - Creation of Orginisational managment and user log in.</h3>
-
-<h3>Stage 2 - Database Methodology.</h3>
-
- 
-
 <h1> 
 Heavy-lifting is a machine design platform for Engineers in the Southern African mining sector.
 </h1>
@@ -21,6 +5,18 @@ Heavy-lifting is a machine design platform for Engineers in the Southern African
 Use Heavy-lifting to build design projects, support your business, and work together on open source machine design.
 </h3>
  
+Based on <a href="https://github.com/sahat/megaboilerplate">Mega Boilerplate</a>.
+
+Port is set to 5000.
+designed to imitate GitHub
+
+Application Framework
+<a href="https://www.mongodb.com/">Mongodb</a>
+<a href="https://nodejs.org/en/">Node.js®</a>
+<a href="http://expressjs.com/">Express.js</a>
+<a href="http://handlebarsjs.com/">Handlebars.js</a>
+<a href="http://getbootstrap.com/">Boostrap</a>
+
 First Phase is to incorporate the Organizational aspect of user login (missing from Megabolier plate)
 Second Phase: incorporate form database. Using revision tracking. Forms will allow multiple means of CRUD.
 Port is set to 5000.

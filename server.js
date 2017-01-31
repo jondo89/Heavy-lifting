@@ -106,7 +106,8 @@ app.get('/dashboard',  userInterfaceController.dashboard);
 ////        DATABASE        //// 
 ///////////////////////////////
 app.get('/database',  readController.database);
-
+//Load Template
+app.get('/templateload', readController.templateload);
 
 
 /////////////////////////////////////////
@@ -124,8 +125,7 @@ app.get('/getCollectionData', readController.getCollectionData);
 app.get('/getform', readController.getform);
 //get data by array of ids.
 app.get('/getdata', readController.getdata);
-//get data by array of ids.
-app.get('/data/_id', readController.data);
+ 
 
 
 ///////////////////////////////////////////

@@ -7,6 +7,7 @@ var idItem = {{{idItem}}}
 var raw = {{{raw}}}
 var formid = create_uid()
 
+//////////////////////////////////////////
 ////        CREATE UNIQUE ID         //// 
 ////////////////////////////////////////
 function create_uid() {
@@ -26,14 +27,13 @@ $(document).ready(function(){
   //create a unique id for the form deployment.
   jQuery('#formDelivery').attr("id",formid);
   //check if the data id was sent as well as the form id
-  getdata(formdata,idItem)
+  getdata(formdata,idItem,raw)
 });
 
-////////////////////////////////////////////////////
-////////    GET DATABASE DATA WITH ARRAY  /////////
-//////////////////////////////////////////////////
-function getdata(formdata,idItem){
-
+/////////////////////////////////////////
+////////    GET FORM  AND DATA /////////
+///////////////////////////////////////
+function getdata(formdata,idItem,raw){
     jQuery.ajax({
     'url': '/getdata?formdata='+formdata+'&idItem='+idItem+'&raw='+raw,
     'async': true,
@@ -42,11 +42,6 @@ function getdata(formdata,idItem){
        initiateForm(dataSchemaObject)
    }
  });
-
-
-
-
-
 }
 
 /////////////////////////////
@@ -152,7 +147,9 @@ switch(true){
 
   //the use button will require the form to remove any element ids as this will be a new entry.
   case(raw=='use'):
+  console.log('this',data.idItem,data.formdata)
     var primer = data.idItem
+    primer.objectType = data.idItem.childType
     primer.entry = dataset
     primer.elementID = ''
     primer.revision = 'created'

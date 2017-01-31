@@ -9,6 +9,7 @@ var heavylifting = mongoose.Schema({
 'name' :{ type: String, default: 'Inital Form' },
 'detail' :String,
 'objectType' :String,
+'childType' :String,
 'entry' :Schema.Types.Mixed,
 'parentid' :String,
 'name' :String,

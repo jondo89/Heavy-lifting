@@ -58,6 +58,8 @@ var raw = req.param('raw')
 //This is used to pull the first 2 entries from the database. 
 //will return the ids for the form data on the primer and raw database entry.
 heavyliftingModel.find().limit(2).exec(function (err, forms) {
+  //The primer and Raw are the first 2 items in the database.
+  //This does mean the that the forms are not being edited.
   switch(true){
     case(formdata=='edit'):
     formdata = forms[0]._id
@@ -67,6 +69,7 @@ heavyliftingModel.find().limit(2).exec(function (err, forms) {
     break;
   }
 
+
   res.render('form', {
     title: 'Form',
     siteName : siteName,
@@ -75,6 +78,7 @@ heavyliftingModel.find().limit(2).exec(function (err, forms) {
     raw :JSON.stringify(raw) ,
     layout: false,
   });
+
 });
 }
 
@@ -85,9 +89,6 @@ heavyliftingModel.find().limit(2).exec(function (err, forms) {
 //////////////////////////////////////////////////
 exports.getdata = function(req, res) {
  
- 
-
-
 //Which id form to use.
 var formdata = req.param('formdata')
   if (!formdata) {
@@ -106,28 +107,31 @@ var raw = req.param('raw')
     raw ='false'
   }
 
+console.log('Loading on this side of the srver',formdata,idItem,raw)
+
   var temp =""
   var query1 = heavyliftingModel.find(
-  {
-    "_id":  idItem
-  }
+    {
+      "_id":  idItem
+    }
   )
   var query = heavyliftingModel.find(
   {
     $and : 
     [
-    {$or: [
-      {"elementID": formdata },
-      {"_id":  formdata }
-      ]}, 
-      {
-        "active": "true" 
-      }
+          {$or: [
+              {"elementID": formdata },
+              {"_id":  formdata }
+            ]}, 
+            {
+              "active": "true" 
+            }
       ]
     })
   query.exec(function (err, docs1) {
     if (err) { return next(err); }
     query1.exec(function (err, docs2) {
+
       if (err) { return next(err); }
       var temp = docs2[0] 
       //if the entry id is blank then autopopulate the entry ID with the current ID.
@@ -142,29 +146,38 @@ var raw = req.param('raw')
         formdata : docs1[0] , 
         idItem : temp
       });
+
     })
   })
 }
 
 
-///////////////////////////////////////////////////
-////       DEPLOY THE HANDLEBARS FORM         //// 
-/////////////////////////////////////////////////
-exports.data = function(req, res) {
+//////////////////////////////////////////////////////
+////       DEPLOY THE REQUESTED TEMPLATE         //// 
+////////////////////////////////////////////////////
+exports.templateload = function(req, res) {
 
- 
+//Which id data to use.
+var template = req.param('template')
+  if (!template) {
+    template =''
+  }
 
+  res.render(template, {
+    siteName : siteName,
+    layout: false,
+  });
 }
 
 ///////////////////////////////////////////////////
-////       DEPLOY THE HANDLEBARS FORM         //// 
+////       SEND THE DATABASE INFORMATION      //// 
 /////////////////////////////////////////////////
 exports.database = function(req, res) {
  
   var query = heavyliftingModel.find(
       {
         "active": "true" ,
-          "objectType": "data" ,      
+        "objectType": "data" ,      
       })
 
    query.exec(function (err, docs1) {
@@ -178,7 +191,5 @@ exports.database = function(req, res) {
 
 
   })
-
-
 
 }
