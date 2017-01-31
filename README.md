@@ -45,6 +45,6 @@ At this point the installation of the system is fairly manual, it should ideally
 </p>
 
 
-<p>Let us know if you would like use to assist on any other web based systm design.</p>
+<p>Let us know if you would like use to assist on any other web based system design.</p>
 <a href="http://www.isithelo.com/" target="_blank">Isithelo Technical Solutions</a>
  
