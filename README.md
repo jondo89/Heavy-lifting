@@ -4,7 +4,7 @@ Heavy-lifting is a machine design platform for Engineers.
 <h3> 
 Use Heavy-lifting to build design projects, support your business, and work together on open source machine design.
 </h3>
-<p>It is possible the frame work would work as a CMS system .</p>
+<p>It is possible the frame work would work as a CMS system.</p>
 
 Based on <a href="https://github.com/sahat/megaboilerplate">Mega Boilerplate</a>.
 
@@ -12,11 +12,11 @@ Port is set to 5000.
 designed to imitate GitHub
 
 Application Framework
-<a href="https://www.mongodb.com/" target="_blank">Mongodb</a>
+<a href="https://www.mongodb.com/" target="_blank">Mongo dB</a>
 <a href="https://nodejs.org/en/" target="_blank">Node.js®</a>
 <a href="http://expressjs.com/" target="_blank">Express.js</a>
 <a href="http://handlebarsjs.com/" target="_blank">Handlebars.js</a>
-<a href="http://getbootstrap.com/" target="_blank">Boostrap</a>
+<a href="http://getbootstrap.com/" target="_blank">Bootstrap</a>
 
 Form Deployment is carried out with <a href="http://www.alpacajs.org/" target="_blank">Alpaca.js</a>
 
@@ -37,11 +37,11 @@ Form Deployment is carried out with <a href="http://www.alpacajs.org/" target="_
 </ul>
 
 <ul>
-  <li>Improved github deployment ( Simplification )</li>
+  <li>Improved GitHub deployment ( Simplification )</li>
 </ul>
 
 <p>
-At this point the installation of the system is fairly manual, it should ideally be deployable from NPM, with minimum fuss. Please dont hestiate to contact us for any queries.	
+At this point the installation of the system is fairly manual, it should ideally be deployable from NPM, with minimum fuss. Please don’t hesitate to contact us for any queries.
 </p>
 
 
