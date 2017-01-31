@@ -52,20 +52,20 @@ if (dataset.elementID !='') {
 		  }
 	})
 }
-console.log(dataset,'the create dataset')
+
  
 var create = new heavyliftingModel(dataset);  
 create.save(function (err, doc) {  
   if (err) {
     res.send(err);
   } else{
-    res.redirect('/')
+  	res.send({redirect: '/database'});
   }
 });
 }
  } else {
    userid=''
-   res.redirect('/login');
+   res.send({redirect: '/signin'});
  }
 };
  

@@ -55,6 +55,12 @@ var raw = req.param('raw')
     raw ='false'
   }
 
+//used for the database items which require a location from which the data was created.
+var parentid = req.param('parentid')
+  if (!parentid) {
+    parentid ='false'
+  }
+
 //This is used to pull the first 2 entries from the database. 
 //will return the ids for the form data on the primer and raw database entry.
 heavyliftingModel.find().limit(2).exec(function (err, forms) {
@@ -75,6 +81,7 @@ heavyliftingModel.find().limit(2).exec(function (err, forms) {
     siteName : siteName,
     formdata : JSON.stringify(formdata),
     idItem : JSON.stringify(idItem),
+    parentid : JSON.stringify(parentid),
     raw :JSON.stringify(raw) ,
     layout: false,
   });
@@ -213,18 +220,23 @@ if (ids == '589038e2d3e99a4ebccb4fae') {
     query1.exec(function (err, databaseitems) {
       if (err) { return next(err); } 
 
-//undefined error handling on the template
-  if (!menuitem[0].entry.template){
-    menuitem[0].entry.template=''
-  }
+      //undefined error handling on the template
+      if (!menuitem[0].entry.template){
+        menuitem[0].entry.template=''
+      }
 
-//blank error handling on the template
+      //blank error handling on the template
       if (menuitem[0].entry.template !== ''){
         var template = menuitem[0].entry.template
       } else {
         var template = 'databasetablelist'  
       }
    
+        //the menu item elementid should arrive poulated to avoid confusion.
+        if(menuitem[0].elementID==''){
+          menuitem[0].elementID=menuitem[0]._id
+        }
+
         res.render(template, {
           databaseitems : JSON.stringify(databaseitems),
           menuitem : JSON.stringify(menuitem[0]),

@@ -1,43 +1,35 @@
  
- 
- 
 <p></p>
 <div>
   <label class="checkbox-inline">
-  <input type="checkbox" id="toggle-event"   data-toggle="toggle" data-on='<span class="glyphicon glyphicon-time" aria-hidden="true"></span> ' data-off='<span class="glyphicon glyphicon-time" aria-hidden="true"></span>'  data-onstyle="default"> Revision History
+    <input type="checkbox" id="toggle-event"   data-toggle="toggle" data-on='<span class="glyphicon glyphicon-time" aria-hidden="true"></span> ' data-off='<span class="glyphicon glyphicon-time" aria-hidden="true"></span>'  data-onstyle="default"> Revision History
   </label>
 </div>
 <p></p>
-
 <div class="row">
   <div class="col-md-6">
-        <div class="panel panel-default">
-  <div class="panel-body">
-    <div id="loading">
-  <table id="tableComps" class="table table-bordered table-compressed table-hover" cellspacing="0" width="100%"></table>
-</div>  
-<p>There are a few more variances to be catured with this , specifically the changing of primary raw values on items. i.e if the item is a form or a database item etc. Could be included in the raw options , i.e this item type and created child item types.</p>
-  </div>
-</div>
-
-
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div id="loading">
+          <table id="tableComps" class="table table-bordered table-compressed table-hover" cellspacing="0" width="100%"></table>
+        </div>  
+        <p>There are a few more variances to be catured with this , specifically the changing of primary raw values on items. i.e if the item is a form or a database item etc. Could be included in the raw options , i.e this item type and created child item types.</p>
+      </div>
+    </div>
   </div>
   <div class="col-md-6">
     <div class="panel panel-default">
-  <div class="panel-body">
-     <div id="formArea"></div>
-  </div>
-</div>
-
-  </div>
+      <div class="panel-body">
+       <div id="formArea"></div>
+     </div>
+   </div>
+ </div>
 </div>
 
 
 <script type="text/javascript">
-var objectType = "{{objectType}}"
+  var objectType = "{{objectType}}"
 
-
- 
 /////////////////////////////////////////////////////////////////////////////
 ////////  EVENT LISTNER ON THE TOOGGLE FOR REMOVING THE COMPONETNS   ///////
 ///////////////////////////////////////////////////////////////////////////
@@ -53,7 +45,6 @@ $('document').ready(function(){
  getCollectionData(objectType)
 })
 
-
 ///////////////////////////////
 //////  GET THE TABLE   //////
 /////////////////////////////
@@ -63,10 +54,10 @@ function getCollectionData(objectType,toggle){
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
-    tablelistdata = jQuery.parseJSON( dataSchemaObject );
-    tableload(tablelistdata)
-   }
- }); 
+      tablelistdata = jQuery.parseJSON( dataSchemaObject );
+      tableload(tablelistdata)
+    }
+  }); 
 }
 
 ///////////////////////////////
@@ -132,7 +123,6 @@ function dataTableLoad (data,id,headings){
   $('#'+id).html(html)
 } 
 
-
 /////////////////////////////////////
 //////  ACTIVATE DATATABLES   //////
 ///////////////////////////////////
@@ -144,52 +134,42 @@ function loadDataTable(id){
 });
 //Add event listener for opening and closing details
 jQuery('#'+id +' tbody').on('click', 'td div button', function () {
-var ids = this.id
-
-
-
+  var ids = this.id
 //This routing is key to database functionality.
 switch(true){
   case(ids.search("_use") >1):
-    ids = ids.replace("_use","");
-    getForm(ids,'','use')
+  ids = ids.replace("_use","");
+  getForm(ids,'','use')
   break;
   case(ids.search("_edit") >1):
-    ids = ids.replace("_edit","");
-    getForm('edit',ids,'edit')
+  ids = ids.replace("_edit","");
+  getForm('edit',ids,'edit')
   break;
   case(ids.search("_raw") >1):
-    ids = ids.replace("_raw","");
-    getForm('raw',ids,'true')
+  ids = ids.replace("_raw","");
+  getForm('raw',ids,'true')
   break;  
   case(ids.search("_delete") >1):
-    ids = ids.replace("_delete","");
-    deleteEntryModal(ids)
+  ids = ids.replace("_delete","");
+  deleteEntryModal(ids)
   break;   
 }
-
-
-
 });
- }
-
- 
+}
 
 ////////////////////////////////////////
 ////////    EDIT THE RAW DATA /////////
 //////////////////////////////////////
 function getForm(formdata,idItem,raw){
-   jQuery.ajax({
-    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw,
-    'async': true,
-    'global': false,
-    'success': function (dataSchemaObject) {
+ jQuery.ajax({
+  'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw,
+  'async': true,
+  'global': false,
+  'success': function (dataSchemaObject) {
     $('#formArea').html(dataSchemaObject)
-   }
- });
+  }
+});
 }
-
- 
 
 ///////////////////////////////// 
 //////  DELETE ENTRY     ///////
@@ -216,29 +196,25 @@ function deleteEntryModal(id){
 ////////    EDIT ONLY THE ENTRY DATA  /////////
 //////////////////////////////////////////////
 function deleteEntryYes(idItem){
-   jQuery.ajax({
-    'url': '/deleteentry?idItem='+idItem,
-    'async': true,
-    'global': false,
-    'success': function (dataSchemaObject) {
+ jQuery.ajax({
+  'url': '/deleteentry?idItem='+idItem,
+  'async': true,
+  'global': false,
+  'success': function (dataSchemaObject) {
     $('#formArea').html(dataSchemaObject)
-   }
- });
+  }
+});
 }
 
 ////////////////////////////////////////////////////
 ////////    LOAD THE PRE PANEL WITH JSON  /////////
 //////////////////////////////////////////////////
 function loadDetail(id){
-for (var i = 0; i < tablelistdata.length; i++) {
-  if (tablelistdata[i]['_id'] == id){
-    var str = JSON.stringify(tablelistdata[i], null, 2);
+  for (var i = 0; i < tablelistdata.length; i++) {
+    if (tablelistdata[i]['_id'] == id){
+      var str = JSON.stringify(tablelistdata[i], null, 2);
       return  '<pre style="overflow:auto;max-width:550px;max-height:350px">'+str+'</pre>'
+    }
   }
 }
-}
-
- 
-
-
 </script>
