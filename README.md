@@ -11,25 +11,24 @@ Port is set to 5000.
 designed to imitate GitHub
 
 Application Framework
-<a href="https://www.mongodb.com/">Mongodb</a>
-<a href="https://nodejs.org/en/">Node.js®</a>
-<a href="http://expressjs.com/">Express.js</a>
-<a href="http://handlebarsjs.com/">Handlebars.js</a>
-<a href="http://getbootstrap.com/">Boostrap</a>
+<a href="https://www.mongodb.com/" target="_blank">Mongodb</a>
+<a href="https://nodejs.org/en/" target="_blank">Node.js®</a>
+<a href="http://expressjs.com/" target="_blank">Express.js</a>
+<a href="http://handlebarsjs.com/" target="_blank">Handlebars.js</a>
+<a href="http://getbootstrap.com/" target="_blank">Boostrap</a>
 
-First Phase is to incorporate the Organizational aspect of user login (missing from Megabolier plate)
-Second Phase: incorporate form database. Using revision tracking. Forms will allow multiple means of CRUD.
-Port is set to 5000.
-Stage 1 - Creation of Organizational management and user log in.
-CRUD Controller for database primer.
-Create.
-25%
-Read.
-55%
-Update.
-0%
-Delete.
-0%
-Stage 2 - Database Methodology.
-Full revision control is critical. For all items (except users).
->>>>>>> origin/master
+<h1>To Do List</h1>
+<ul>
+  <li>Create the Database Primer</li>
+  <li>Create the Create the Raw Form Editor</li>
+  <li>Create the Template System</li>
+  <li>User login register and routing</li>
+  <li>User Organization creation and modification</li>
+  <li>Database item creation</li>
+  <li>Component Creation and modification</li>
+  <li>Assembly Creation and modification</li>
+  <li>Calculation Frame work</li>
+  <li>Solution surface modeling</li>
+  <li>Creation of reporting systems</li>
+  <li>and quite a bit more.</li>
+</ul>
