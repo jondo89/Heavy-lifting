@@ -7,22 +7,17 @@
 </div>
 <p></p>
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-7">
     <div class="panel panel-default">
       <div class="panel-body">
         <div id="loading">
           <table id="tableComps" class="table table-bordered table-compressed table-hover" cellspacing="0" width="100%"></table>
         </div>  
-        <p>There are a few more variances to be catured with this , specifically the changing of primary raw values on items. i.e if the item is a form or a database item etc. Could be included in the raw options , i.e this item type and created child item types.</p>
       </div>
     </div>
   </div>
-  <div class="col-md-6">
-    <div class="panel panel-default">
-      <div class="panel-body">
+  <div class="col-md-5">
        <div id="formArea"></div>
-     </div>
-   </div>
  </div>
 </div>
 
@@ -49,13 +44,22 @@ $('document').ready(function(){
 //////  GET THE TABLE   //////
 /////////////////////////////
 function getCollectionData(objectType,toggle){
+  
   jQuery.ajax({
     'url': '/getCollectionData?objectType='+objectType+'&showall='+toggle,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
+
       tablelistdata = jQuery.parseJSON( dataSchemaObject );
-      tableload(tablelistdata)
+
+
+
+
+ 
+
+tableload(tablelistdata)
+ 
     }
   }); 
 }
@@ -114,7 +118,8 @@ function dataTableLoad (data,id,headings){
     html += '<button type="button" class="btn btn-default"  id="'+data[i]['_id']+'_use">Use</button>'
     html += '<button type="button" class="btn btn-default"  id="'+data[i]['_id']+'_edit">Edit</button>'
     html += '<button type="button" class="btn btn-default"  id="'+data[i]['_id']+'_raw">Raw</button>'
-    html += '<button type="button" class="btn btn-danger"  id="'+data[i]['_id']+'_delete" data-toggle="modal" data-target="#myModal">Delete</button>'
+    html += '<button type="button" class="btn btn-danger"  id="'+data[i]['_id']+'_delete" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>'
+   
     html +='</div>'
     html += '</td>'
     html += '</tr>'
@@ -175,7 +180,7 @@ function getForm(formdata,idItem,raw){
 //////  DELETE ENTRY     ///////
 /////////////////////////////// 
 function deleteEntryModal(id){
-  $('#myModalLabel').html('Delete Data')
+ 
   html = ''
   html +='<div class="row" style="width:100%;text-align:center">'
   html +='<i class="fa fa-question-circle fa-4x" aria-hidden="true" ></i>'

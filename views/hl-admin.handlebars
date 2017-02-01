@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{title}}</title>
+  {{> css}}
+</head>
+<body>
+  {{> header}}
+  {{> javascript}}
+
+  <div class="bs-docs-header" id="content" > 
+    <div class="container">
+
+      <h1>{{title}}</h1>
+      <p style="color: #b0b0b0;">Database initialization and form creation/modification area.</p>
+
+    </div> 
+  </div>
+
+  
+
+  <style type="text/css">
+    /* Page headers */
+    .bs-docs-header {
+      margin-bottom: 40px;
+      font-size: 20px;
+    }
+    .bs-docs-header h1 {
+      margin-top: 0;
+      color: #fff;
+    }
+    .bs-docs-header p {
+      margin-bottom: 0;
+      font-weight: 300;
+      line-height: 1.4;
+    }
+    .bs-docs-header .container {
+      position: relative;
+    }
+
+    @media (min-width: 768px) {
+      .bs-docs-header {
+        padding-top: 60px;
+        padding-bottom: 60px;
+        font-size: 24px;
+        text-align: left;
+      }
+      .bs-docs-header h1 {
+        font-size: 60px;
+        line-height: 1;
+      }
+    }
+
+    @media (min-width: 992px) {
+      .bs-docs-header h1,
+      .bs-docs-header p {
+        margin-right: 380px;
+      }
+    }
+
+    /* Share masthead with page headers */
+    .bs-docs-masthead,
+    .bs-docs-header {
+      background: #212121;
+      background: -moz-linear-gradient(top, #373737, #212121);
+      background: -webkit-linear-gradient(top, #373737, #212121);
+      background: -ms-linear-gradient(top, #373737, #212121);
+      background: -o-linear-gradient(top, #373737, #212121);
+      background: linear-gradient(top, #373737, #212121);
+    }
+
+    #nav.affix {
+      position: fixed;
+      padding-top: 15px;
+      top: 0;
+      width: 263px;
+    }
+
+  </style>
+
+  <div class="container" id="databaseInit">
+    <div class="row">
+      <div class="col-md-12">
+        <p>Modify the schema and options to create initial database forms. Refer to <a href="http://www.alpacajs.org/" target="_blank">Alpaca.js</a> for details on the schema and options layout. This tab creates the 2 primary forms used for all database use.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-9">
+
+
+        <div id="stage1" class="row">
+          <div class="col-md-12"  >
+           <h1>Database Primer Form.</h1>
+           <p>Use the text areas below to push each stage form into the database.</p>
+         </div>
+         <div class="well col-md-12"  >
+           <div id="form1"></div>
+         </div>
+       </div>
+
+
+       <div id="stage2" class="row">
+        <div class="col-md-12">
+         <h1>Stage 1 - Create the Database Primer</h1>
+         <p>Edit the text areas below to customise the first primer form. Use the update for button to view the primer form.</p>
+       </div>
+       <div class="col-md-6">
+        <h3>Schema</h3>
+        <textarea class="form-control"  id="schema" name="schema"  style="height: 250px">
+          {"title": "Form Deployment", "description": "Insert Schema and Options to design your form.", "type": "object", "properties": {"schema": {"title": "Schema"}, "options": {"title": "Options"} } } </textarea>
+        </div>
+        <div class="col-md-6">
+          <h3>Options</h3>
+          <textarea class="form-control" id="options" name="options"  style="height: 250px">
+            {"form": {"buttons": {"submit": {"title": "Submit", "id": "submit", "click": ""} } }, "helper": "Insert Schema and Options to design your form.", "fields": {"schema": {"type": "json", "rows": 10, "cols": 40, "helper": "Schema Set.", "validate": false }, "options": {"type": "json", "rows": 10, "cols": 40, "helper": "Schema Set.", "validate": false } }, "focus": ""} </textarea>
+          </div>
+          <div class="col-md-12">
+            <p></p>
+            <div class="btn-group" role="group" aria-label="...">
+              <button type="button" class="btn btn-default" id="updateForm">Update Form</button>
+            </div>
+            <p></p>
+          </div>
+        </div>
+
+
+
+
+        <div id="stage3" class="row">
+          <div class="col-md-12">
+            <h1>Stage 2 - Push the raw entry edit form.</h1>
+            <p>Use the client side primer ( above ) to insert the raw edit form ( text areas below) to create the server side raw entry form.</p>
+          </div>
+          <div class="col-md-6">
+            <h3>Schema</h3>
+            <textarea class="form-control" class="language-json " id="schema" name="schema"  style="height: 250px">
+              {"title": "Form Deployment", "description": "Insert Schema and Options to design your form.", "type": "object", "properties": {"name": {"title": "name"}, "detail": {"title": "detail"}, "childType": {"title": "childType", "enum": ["form", "data", "databasemenu", "other"] }, "objectType": {"title": "objectType", "enum": ["form", "data", "databasemenu", "other"] }, "entry": {"title": "entry"}, "parentid": {"title": "parentid"}, "elementID": {"title": "elementID"}, "userID": {"title": "userID"}, "revision": {"title": "revision", "enum": ["created", "updated", "deleted"] }, "active": {"title": "active", "enum": ["true", "false"] } } } </textarea>
+            </div>
+            <div class="col-md-6">
+              <h3>Options</h3>
+              <textarea class="form-control"   id="options" name="options"  style="height: 250px">
+                {"form": {"buttons": {"submit": {"title": "Submit", "id": "submit", "click": ""} } }, "helper": "Insert Schema and Options to design your form.", "fields": {"detail": {"type": "text", "rows": 10, "cols": 40, "helper": "All entry data is stored here.", "validate": true }, "objectType": {"type": "select"}, "revision": {"type": "select"}, "active": {"type": "select", "required": false }, "entry": {"type": "json", "rows": 10, "cols": 40, "helper": "All entry data is stored here.", "validate": false } }, "focus": ""} </textarea>
+              </div>
+            </div>
+            <div id="stage4" class="row">
+              <div class="col-md-12">
+                <h1>Stage 3 - Push the Navigation Editor Form.</h1>
+                <p>Create the default navigation form.</p>
+              </div>
+              <div class="col-md-6">
+                <h3>Schema</h3>
+                <textarea class="form-control" class="form-control " id="schema" name="schema"  style="height: 250px">
+                  {"title": "Database Form", "type": "object", "properties": {"description": {"title": "Description"}, "value": {"title": "Value"}, "unit": {"title": "Unit"}, "detail": {"title": "Detail"}, "standard": {"title": "Standard"}, "parent": {"title": "Parent"}, "icon": {"title": "Icon"}, "template": {"title": "Template"} } } </textarea>
+                </div>
+                <div class="col-md-6">
+                  <h3>Options</h3>
+                  <textarea class="form-control"   id="options" name="options"  style="height: 250px">
+                    {"form": {"buttons": {"submit": {"title": "Submit", "id": "submit", "click": ""} } }, "helper": "Use this form to add menu items to the database.", "fields": {"detail": {"type": "text", "rows": 4, "cols": 40, "helper": "All entry data is stored here.", "validate": true }, "objectType": {"type": "select"}, "revision": {"type": "select"}, "active": {"type": "select", "required": false }, "entry": {"type": "json", "rows": 4, "cols": 40, "helper": "All entry data is stored here.", "validate": false } }, "focus": ""} </textarea> </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div id="nav" class="list-group" data-spy="affix" data-offset-top="275">
+                   <a href="#stage1" class="list-group-item active">Primer Form</a> 
+                   <a href="#stage2" class="list-group-item">Stage 1 - Primer</a>
+                   <a href="#stage3" class="list-group-item">Stage 2 - Raw Editor</a>
+                   <a href="#stage4" class="list-group-item">Stage 3 - Navigation Menus</a>
+                   <a href="#stage5" class="list-group-item">Stage 4 - Database Items</a>
+                 </div>
+               </div>
+             </div>
+           </div>
+
+
+<div class="container" id="admintable">
+
+<div>
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Database Forms</a></li>
+    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Navigation Menu</a></li>
+ 
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="home">
+
+             <div class="row"> 
+              <div class="col-md-12" id="stage5">
+                <h1>Database Forms</h1>
+                <p>Create or modify the database structure here.</p>
+              </div>
+              <div class="col-md-12">
+                {{> tableload objectType="form"}}
+              </div>
+
+
+              
+            </div>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="profile">
+
+             <div class="row"> 
+ 
+
+
+              <div class="col-md-12" id="stage5">
+                <h1>Navigation Menu</h1>
+                <p>Create or modify the navigation structure here.</p>
+              </div>
+              <div class="col-md-12">
+                <div id="databasemenu"></div> 
+              </div>
+            </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+
+      
+          </div>
+
+
+
+
+
+          <!-- Modal -->
+          <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+
+                <div class="modal-body">
+                 <div id="modal-body"></div>
+                 <div id="formAreaModal"></div>
+
+               </div>
+               <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+
+
+        <script type="text/javascript">
+  //first run used the primer as the name.
+  var names = ''
+  var description = ''
+  var childType = ''
+
+
+
+///////////////////////////////////////////////////////////////////
+//////  DETERMINE WHAT IS STILL REQUIRED FOR THE DATABASE   //////
+/////////////////////////////////////////////////////////////////
+function getthecurrentForms(objectType,toggle){
+  jQuery.ajax({
+    'url': '/getCollectionData?objectType='+objectType+'&showall='+toggle,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+     tablelistdata = jQuery.parseJSON( dataSchemaObject );
+
+     switch(true){
+      case(tablelistdata.length == 0) :
+      names = 'Primer Form'
+      description = 'The first form added to the database , Used for the creation of all new forms.'
+      childType ='form'
+      $('#admintable').html('')
+      break;
+      case(tablelistdata.length == 1) :
+      names = 'Raw Editor Form'
+      description = 'The second form added to the database , Used for the editing of all elements in the database.'
+      childType ='form'
+      $('#admintable').html('')
+      break;
+      case(tablelistdata.length == 2) :
+      names = 'Navigation Menus'
+      description = 'This form is used for the creation of the Navigation jstree Structures.'
+      childType ='databasemenu'
+      $('#admintable').html('')
+      break;
+/*
+  case(tablelistdata.length == 3) :
+      names = 'Database Items'
+      description = 'This form is used to add database items to all of the Navigation structures'
+      $('#admintable').html('')
+  break;
+  */
+  case(tablelistdata.length >= 3) :
+  $('#databaseInit').html('')
+  break;
+} 
+
+
+
+}
+}); 
+}
+
+
+
+////////////////////////////////////
+////        INITIALIZE         //// 
+//////////////////////////////////
+$(document).ready(function(){
+
+  getthecurrentForms('form','true')
+
+  var form = {
+    schema : JSON.parse($('#schema').val()) ,
+    options : JSON.parse($('#options').val())
+  }
+  formInit(form.schema,form.options)
+
+  loadDataBaseMenu('5891b0378f87e51c3caacd09')
+
+
+
+});
+
+////////////////////////////////////////////
+////        UPDATE FORM BUTTON         //// 
+//////////////////////////////////////////
+$('#updateForm').click(function(){
+  var form = {
+    schema : JSON.parse($('#schema').val()) ,
+    options : JSON.parse($('#options').val())
+  }
+
+
+
+
+
+
+
+  //Test alpaca form for true , i.e if it exists , then destroy it.
+  control = $("#form1").alpaca("destroy");
+  if (control) {
+    formInit(form.schema,form.options)
+  } else { 
+    formInit(form.schema,form.options)
+  }
+})
+
+//////////////////////////////////////
+////        CREATE FORM          //// 
+////////////////////////////////////
+function formInit(schema,options){
+  //work areound for the special requirments on the submit button.
+  options.form.buttons.submit.click = function(e){
+    e.preventDefault()
+    var value = this.getValue();
+    clickSubmit(value)
+  }
+  $("#form1").alpaca({
+    "schema": schema,
+    "options": options,
+  });
+}
+
+//////////////////////////////////////////////
+////        SUBMIT BUTTON CLICK          //// 
+////////////////////////////////////////////
+function clickSubmit(dataset){
+
+  var str = JSON.stringify(primer, null, 2);
+  $('#jsonArea').html(str)
+  var primer = {
+    'name' :names,
+    'detail' : description,
+    'entry': dataset,
+    'parentid' :'',
+    'elementID' :'', 
+    'userID' :'',
+    'childType' : childType ,
+    'objectType':'form',
+    'revision' :'created',//
+    'active' : "true",//
+  }
+  jQuery.ajax({
+    'url': '/create',
+    'type': 'POST', 
+    'dataType': 'json',
+    'contentType': 'application/json', 
+    'data': JSON.stringify(primer),
+    'success': function (dataSchemaObject) {
+      window.location = dataSchemaObject.redirect
+    },
+    'error' :function (dataSchemaObject) {
+      window.location = dataSchemaObject.redirect
+    },
+  }); 
+}
+
+
+
+
+
+///////////////////////////////////////////////////////
+////////  EVENT LISTNER FUNCTION AREA DATABASE ///////
+/////////////////////////////////////////////////////
+function loadDataBaseMenu(ids){
+//Ensure that the first load error is covered , also any other errors.
+if(ids){
+  jQuery.ajax({
+   'async': true,
+   'global': false,
+   'url': '/parentid?ids='+ids,
+   'success': function (dataSchemaObject) {
+     jQuery('#databasemenu').html("")
+     jQuery('#databasemenu').html(dataSchemaObject)
+   }
+ });
+}
+}
+
+
+
+
+
+
+
+</script>
+
+{{> footer}}
+{{> analytics}}
+
+
+
+</body>
+</html>

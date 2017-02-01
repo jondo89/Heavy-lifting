@@ -8,8 +8,8 @@ if (req.user) {
          userid = req.user.id
 switch (true){
   case(userid == '586b5bbe935a6d19040c5447' || userid == '5878b000d1f7c0220c1d2903'):
-    res.render('admin', {
-      title: 'Admin Panel',
+    res.render('hl-admin', {
+      title: 'Database Admin',
       siteName : siteName,
       layout: false,
     });

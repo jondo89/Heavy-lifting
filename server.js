@@ -90,7 +90,7 @@ app.get('/', HomeController.index);
 //////////////////////////////////////////////////////////////////////
 ////        PRIMARY ADMINISTRATIVE DATABASE MODIFICATION         //// 
 ////////////////////////////////////////////////////////////////////
-app.get('/admin', adminController.admin);
+app.get('/hl-admin', adminController.admin);
 
 app.get('/read',  adminController.read);
 app.get('/update',  adminController.update);
@@ -125,7 +125,8 @@ app.get('/getCollectionData', readController.getCollectionData);
 app.get('/getform', readController.getform);
 //get data by array of ids.
 app.get('/getdata', readController.getdata);
- 
+ //get data by parentid
+app.get('/parentid', readController.parentid);
 
 
 ///////////////////////////////////////////

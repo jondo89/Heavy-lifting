@@ -59,7 +59,8 @@ create.save(function (err, doc) {
   if (err) {
     res.send(err);
   } else{
-  	res.send({redirect: '/database'});
+res.send({redirect: '/'});
+  	
   }
 });
 }

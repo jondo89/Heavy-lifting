@@ -11,6 +11,6 @@ exports.deleteentry = function(req, res) {
   }).
   exec(function (err, docs) {
     if (err) { return next(err); } 
-    res.redirect('/admin');
+    res.redirect('/hl-admin');
   });
 }

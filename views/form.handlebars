@@ -49,13 +49,15 @@ function getdata(formdata,idItem,raw){
 ////        INIT        //// 
 ////////////////////////////
  function initiateForm(data){
+ 
    var form = {
     schema : data.formdata.entry['schema'],
     options : data.formdata.entry['options']
   }
-  $('#'+formid).html("<div id='form_"+formdata+idItem+"'></div>")
+  console.log(data)
+  $('#'+formid).html("<div id='form_"+formdata+idItem+formid+"'></div>")
   //Test alpaca form for true , i.e if it exists , then destroy it.
-  control = $("#form_"+formdata+idItem).alpaca("destroy");
+  control = $("#form_"+formdata+idItem+formid).alpaca("destroy");
 
   if (control) {
     formInit(form.schema,form.options,data)
@@ -69,6 +71,7 @@ function getdata(formdata,idItem,raw){
 ////////////////////////////////////
 function formInit(schema,options,data){
   //work areound for the special requirments on the submit button.
+  console.log(options)
   options.form.buttons.submit.click = function(e){
       e.preventDefault()
       var value = this.getValue();
@@ -86,32 +89,32 @@ switch(true){
 
   //the use button will require the form to remove any element ids as this will be a new entry.
   case(raw=='use'):
-  $("#form_"+formdata+idItem).alpaca({
+  $("#form_"+formdata+idItem+formid).alpaca({
     "schema": schema,
     "options": options
     
   });
   break;
   case(raw=='edit'):
-  $("#form_"+formdata+idItem).alpaca({
+  $("#form_"+formdata+idItem+formid).alpaca({
     "schema": schema,
     "options": options,
     "postRender": function(control) {
       //only set the data if the form is for use.
       if (idItem !='') {
-        $("#form_"+formdata+idItem).alpaca('get').setValue(data.idItem.entry)
+        $("#form_"+formdata+idItem+formid).alpaca('get').setValue(data.idItem.entry)
       }
     }    
   });
   break;
   case(raw=='true'):
-    $("#form_"+formdata+idItem).alpaca({
+    $("#form_"+formdata+idItem+formid).alpaca({
     "schema": schema,
     "options": options,
     "postRender": function(control) {
       //only set the data if the form is for use.
       if (idItem !='') {
-        $("#form_"+formdata+idItem).alpaca('get').setValue(data.idItem)
+        $("#form_"+formdata+idItem+formid).alpaca('get').setValue(data.idItem)
       }
     }    
   });
@@ -127,17 +130,20 @@ function formPost(dataset,data){
 switch(true){
   //the use button will require the form to remove any element ids as this will be a new entry.
   case(raw=='use'):
-  console.log('this',data.idItem,data.formdata)
+ 
     var primer = data.idItem
     primer.objectType = data.idItem.childType
     if (data.idItem.childType=='data') {
           primer.parentid = parentid
     }
+    if (data.idItem.childType=='databasemenu') {
+          primer.parentid = data.idItem.elementID
+    }    
     primer.entry = dataset
     primer.elementID = ''
     primer.revision = 'created'
     primer.active = "true"
-    console.log(raw,' = use','use')
+   // console.log(raw,' = use','use')
   break;
   case(raw=='edit'):
     var primer = data.idItem
@@ -145,11 +151,11 @@ switch(true){
     primer.revision = 'updated'
     primer.elementID = data.idItem.elementID
     primer.active = "true"
-    console.log(raw,' = false','edit')
+   // console.log(raw,' = false','edit')
   break;
   case(raw=='true'):
     var primer = dataset
-    console.log(raw,' = true','raw')
+    //console.log(raw,' = true','raw')
   break;
 }
  jQuery.ajax({

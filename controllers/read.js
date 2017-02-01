@@ -162,14 +162,11 @@ var raw = req.param('raw')
 ////////////////////////////////////////////////////
 exports.templateload = function(req, res) {
 
-
 //Which id data to use.
 var ids = req.param('ids')
   if (!ids) {
     ids =''
   }
-
- 
   //Query to find the menu item selected.
   var query = heavyliftingModel.find(
   {
@@ -210,12 +207,8 @@ if (ids == '589038e2d3e99a4ebccb4fae') {
 
 }
 
-
-
-
   query.exec(function (err, menuitem) {
     if (err) { return next(err); } 
-
 
     query1.exec(function (err, databaseitems) {
       if (err) { return next(err); } 
@@ -246,8 +239,6 @@ if (ids == '589038e2d3e99a4ebccb4fae') {
       })
   })
  
-
-
 }
 
 ///////////////////////////////////////////////////
@@ -258,7 +249,7 @@ exports.database = function(req, res) {
   var query = heavyliftingModel.find(
       {
         "active": "true" ,
-        "objectType": "databasemenu" ,      
+        "parentid": "58908d5caf41062750330b59" ,      
       })
 
    query.exec(function (err, docs1) {
@@ -273,4 +264,89 @@ exports.database = function(req, res) {
 
   })
 
+}
+
+
+//////////////////////////////////////////////////////
+////       DEPLOY THE REQUESTED TEMPLATE         //// 
+////////////////////////////////////////////////////
+exports.parentid = function(req, res) {
+
+//Which id data to use.
+var ids = req.param('ids')
+  if (!ids) {
+    ids =''
+  }
+  //Query to find the menu item selected.
+  var query = heavyliftingModel.find(
+  {
+    $and : 
+    [
+          {$or: [
+              {"elementID": ids },
+              {"_id":  ids }
+            ]}, 
+            {
+              "active": "true" 
+            }
+      ]
+    })
+
+//hardwired , needs to be improved.
+if (ids == '589038e2d3e99a4ebccb4fae') {
+  //Query to find all of the database items for that menu.
+  var query1 = heavyliftingModel.find(
+        {
+        "active": "true" 
+      })
+
+} else {
+  //Query to find all of the database items for that menu.
+  var query1 = heavyliftingModel.find(
+  {
+    $and : 
+    [
+      {
+        "parentid": ids 
+      }, 
+      {
+        "active": "true" 
+      }
+      ]
+    })
+
+}
+
+  query.exec(function (err, menuitem) {
+    if (err) { return next(err); } 
+
+    query1.exec(function (err, databaseitems) {
+      if (err) { return next(err); } 
+
+      //undefined error handling on the template
+      if (!menuitem[0].entry.template){
+        menuitem[0].entry.template=''
+      }
+
+      //blank error handling on the template
+      if (menuitem[0].entry.template !== ''){
+        var template = menuitem[0].entry.template
+      } else {
+        var template = 'databasetablelist'  
+      }
+   
+        //the menu item elementid should arrive poulated to avoid confusion.
+        if(menuitem[0].elementID==''){
+          menuitem[0].elementID=menuitem[0]._id
+        }
+
+        res.render(template, {
+          databaseitems : JSON.stringify(databaseitems),
+          menuitem : JSON.stringify(menuitem[0]),
+          layout:false,
+        });
+
+      })
+  })
+ 
 }
