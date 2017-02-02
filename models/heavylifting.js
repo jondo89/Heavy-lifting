@@ -9,6 +9,7 @@ var heavylifting = mongoose.Schema({
 'name' :{ type: String, default: 'Inital Form' },
 'detail' :String,
 'objectType' :String,
+//child type will be a form id , used for determining what component is created by the form.
 'childType' :String,
 'entry' :Schema.Types.Mixed,
 'parentid' :String,

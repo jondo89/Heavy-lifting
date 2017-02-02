@@ -7,20 +7,18 @@
   <title>{{title}}</title>
   {{> css}}
 </head>
+
 <body>
+
   {{> header}}
   {{> javascript}}
 
   <div class="bs-docs-header" id="content" > 
     <div class="container">
-
       <h1>{{title}}</h1>
       <p style="color: #b0b0b0;">Database initialization and form creation/modification area.</p>
-
     </div> 
   </div>
-
-  
 
   <style type="text/css">
     /* Page headers */
@@ -40,7 +38,6 @@
     .bs-docs-header .container {
       position: relative;
     }
-
     @media (min-width: 768px) {
       .bs-docs-header {
         padding-top: 60px;
@@ -53,14 +50,12 @@
         line-height: 1;
       }
     }
-
     @media (min-width: 992px) {
       .bs-docs-header h1,
       .bs-docs-header p {
         margin-right: 380px;
       }
     }
-
     /* Share masthead with page headers */
     .bs-docs-masthead,
     .bs-docs-header {
@@ -78,29 +73,24 @@
       top: 0;
       width: 263px;
     }
-
   </style>
 
   <div class="container" id="databaseInit">
+
+so here is the concern , 
+
+When creating a navigation menu , there is a requiremnt that the browser for the navigation menu allow for the compoent creation of a database item.
+
+At this point the child 
+
+
     <div class="row">
       <div class="col-md-12">
         <p>Modify the schema and options to create initial database forms. Refer to <a href="http://www.alpacajs.org/" target="_blank">Alpaca.js</a> for details on the schema and options layout. This tab creates the 2 primary forms used for all database use.</p>
       </div>
     </div>
     <div class="row">
-      <div class="col-md-9">
-
-
-        <div id="stage1" class="row">
-          <div class="col-md-12"  >
-           <h1>Database Primer Form.</h1>
-           <p>Use the text areas below to push each stage form into the database.</p>
-         </div>
-         <div class="well col-md-12"  >
-           <div id="form1"></div>
-         </div>
-       </div>
-
+      <div class="col-md-6">
 
        <div id="stage2" class="row">
         <div class="col-md-12">
@@ -110,12 +100,12 @@
        <div class="col-md-6">
         <h3>Schema</h3>
         <textarea class="form-control"  id="schema" name="schema"  style="height: 250px">
-          {"title": "Form Deployment", "description": "Insert Schema and Options to design your form.", "type": "object", "properties": {"schema": {"title": "Schema"}, "options": {"title": "Options"} } } </textarea>
+{"title": "Form Deployment", "description": "Insert Schema and Options to design your form.", "type": "object", "properties": {"schema": {"title": "Schema"}, "options": {"title": "Options"} } } </textarea>
         </div>
         <div class="col-md-6">
           <h3>Options</h3>
           <textarea class="form-control" id="options" name="options"  style="height: 250px">
-            {"form": {"buttons": {"submit": {"title": "Submit", "id": "submit", "click": ""} } }, "helper": "Insert Schema and Options to design your form.", "fields": {"schema": {"type": "json", "rows": 10, "cols": 40, "helper": "Schema Set.", "validate": false }, "options": {"type": "json", "rows": 10, "cols": 40, "helper": "Schema Set.", "validate": false } }, "focus": ""} </textarea>
+{"form": {"buttons": {"submit": {"title": "Submit", "id": "submit", "click": ""} } }, "helper": "Insert Schema and Options to design your form.", "fields": {"schema": {"type": "json", "rows": 10, "cols": 40, "helper": "Schema Set.", "validate": false }, "options": {"type": "json", "rows": 10, "cols": 40, "helper": "Option Set.", "validate": false } }, "focus": ""}  </textarea>
           </div>
           <div class="col-md-12">
             <p></p>
@@ -126,23 +116,31 @@
           </div>
         </div>
 
-
-
-
         <div id="stage3" class="row">
           <div class="col-md-12">
             <h1>Stage 2 - Push the raw entry edit form.</h1>
             <p>Use the client side primer ( above ) to insert the raw edit form ( text areas below) to create the server side raw entry form.</p>
           </div>
+
+                        <div class="col-md-12">
+  <div class="form-group">
+    <label for="exampleInputEmail1">Name</label>
+    <input type="email" class="form-control" id="nameArea" placeholder="" value="Raw Editor">
+  </div>
+ <div class="form-group">
+    <label for="exampleInputEmail1">Detail</label>
+    <input type="email" class="form-control" id="DetailArea" placeholder="" value="This for is used to edit the raw database items.">
+  </div>  
+              </div>
           <div class="col-md-6">
             <h3>Schema</h3>
             <textarea class="form-control" class="language-json " id="schema" name="schema"  style="height: 250px">
-              {"title": "Form Deployment", "description": "Insert Schema and Options to design your form.", "type": "object", "properties": {"name": {"title": "name"}, "detail": {"title": "detail"}, "childType": {"title": "childType", "enum": ["form", "data", "databasemenu", "other"] }, "objectType": {"title": "objectType", "enum": ["form", "data", "databasemenu", "other"] }, "entry": {"title": "entry"}, "parentid": {"title": "parentid"}, "elementID": {"title": "elementID"}, "userID": {"title": "userID"}, "revision": {"title": "revision", "enum": ["created", "updated", "deleted"] }, "active": {"title": "active", "enum": ["true", "false"] } } } </textarea>
+{"title": "Form Deployment", "description": "Insert Schema and Options to design your form.", "type": "object", "properties": {"name": {"title": "name"}, "detail": {"title": "detail"}, "childType": {"title": "childType"}, "objectType": {"title": "objectType", "enum": ["form", "data", "databasemenu", "other"] }, "entry": {"title": "entry"}, "parentid": {"title": "parentid"}, "elementID": {"title": "elementID"}, "userID": {"title": "userID"}, "revision": {"title": "revision", "enum": ["created", "updated", "deleted"] }, "active": {"title": "active", "enum": ["true", "false"] } } } </textarea>
             </div>
             <div class="col-md-6">
               <h3>Options</h3>
               <textarea class="form-control"   id="options" name="options"  style="height: 250px">
-                {"form": {"buttons": {"submit": {"title": "Submit", "id": "submit", "click": ""} } }, "helper": "Insert Schema and Options to design your form.", "fields": {"detail": {"type": "text", "rows": 10, "cols": 40, "helper": "All entry data is stored here.", "validate": true }, "objectType": {"type": "select"}, "revision": {"type": "select"}, "active": {"type": "select", "required": false }, "entry": {"type": "json", "rows": 10, "cols": 40, "helper": "All entry data is stored here.", "validate": false } }, "focus": ""} </textarea>
+{"form": {"buttons": {"submit": {"title": "Submit", "id": "submit", "click": ""} } }, "helper": "Insert Schema and Options to design your form.", "fields": {"detail": {"type": "text"}, "objectType": {"type": "select"}, "revision": {"type": "select"}, "active": {"type": "select", "required": false }, "entry": {"type": "json", "rows": 10, "cols": 40, "helper": "All entry data is stored here.", "validate": false } }, "focus": ""} </textarea>
               </div>
             </div>
             <div id="stage4" class="row">
@@ -150,117 +148,133 @@
                 <h1>Stage 3 - Push the Navigation Editor Form.</h1>
                 <p>Create the default navigation form.</p>
               </div>
-              <div class="col-md-6">
-                <h3>Schema</h3>
-                <textarea class="form-control" class="form-control " id="schema" name="schema"  style="height: 250px">
-                  {"title": "Database Form", "type": "object", "properties": {"description": {"title": "Description"}, "value": {"title": "Value"}, "unit": {"title": "Unit"}, "detail": {"title": "Detail"}, "standard": {"title": "Standard"}, "parent": {"title": "Parent"}, "icon": {"title": "Icon"}, "template": {"title": "Template"} } } </textarea>
-                </div>
-                <div class="col-md-6">
-                  <h3>Options</h3>
-                  <textarea class="form-control"   id="options" name="options"  style="height: 250px">
-                    {"form": {"buttons": {"submit": {"title": "Submit", "id": "submit", "click": ""} } }, "helper": "Use this form to add menu items to the database.", "fields": {"detail": {"type": "text", "rows": 4, "cols": 40, "helper": "All entry data is stored here.", "validate": true }, "objectType": {"type": "select"}, "revision": {"type": "select"}, "active": {"type": "select", "required": false }, "entry": {"type": "json", "rows": 4, "cols": 40, "helper": "All entry data is stored here.", "validate": false } }, "focus": ""} </textarea> </div>
-                  </div>
-                </div>
-                <div class="col-md-3">
-                  <div id="nav" class="list-group" data-spy="affix" data-offset-top="275">
-                   <a href="#stage1" class="list-group-item active">Primer Form</a> 
-                   <a href="#stage2" class="list-group-item">Stage 1 - Primer</a>
-                   <a href="#stage3" class="list-group-item">Stage 2 - Raw Editor</a>
-                   <a href="#stage4" class="list-group-item">Stage 3 - Navigation Menus</a>
-                   <a href="#stage5" class="list-group-item">Stage 4 - Database Items</a>
-                 </div>
-               </div>
-             </div>
-           </div>
-
-
-<div class="container" id="admintable">
-
-<div>
-
-  <!-- Nav tabs -->
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Database Forms</a></li>
-    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Navigation Menu</a></li>
- 
-  </ul>
-
-  <!-- Tab panes -->
-  <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="home">
-
-             <div class="row"> 
-              <div class="col-md-12" id="stage5">
-                <h1>Database Forms</h1>
-                <p>Create or modify the database structure here.</p>
+              <div class="col-md-12">
+                <h3>Data Set</h3>
+                <textarea class="form-control" class="form-control " id="schema3" name="schema"  style="height: 250px">
+{"name":"Database Items", "detail":"Use for the creation database items.", "objectType":"form", "entry":{"options": {"form": {"buttons": {"submit": {"title": "Submit", "id": "submit", "click": ""} } }, "helper": "Use this form to add menu items to the navigation menu.", "fields": {"detail": {"type": "text", "rows": 4, "cols": 40, "helper": "All entry data is stored here.", "validate": true }, "objectType": {"type": "select"}, "revision": {"type": "select"}, "active": {"type": "select", "required": false }, "entry": {"type": "json", "rows": 4, "cols": 40, "helper": "All entry data is stored here.", "validate": false } }, "focus": ""}, "schema": {"title": "Navigation Menu", "type": "object", "properties": {"description": {"title": "Description"}, "value": {"title": "Value"}, "unit": {"title": "Unit"}, "detail": {"title": "Detail"}, "standard": {"title": "Standard"}, "parent": {"title": "Parent"}, "icon": {"title": "Icon"}, "template": {"title": "Template"}, "headings": {"title": "Headings", "enum": ["value", "detail"] } } } } } </textarea>
               </div>
               <div class="col-md-12">
-                {{> tableload objectType="form"}}
+                <p></p>
+                <div class="btn-group" role="group" aria-label="...">
+                  <button type="button" class="btn btn-default" id="setData1">Set Form Data</button>
+                </div>
+                <p></p>
               </div>
-
-
-              
             </div>
-    </div>
-    <div role="tabpanel" class="tab-pane" id="profile">
-
-             <div class="row"> 
- 
-
-
-              <div class="col-md-12" id="stage5">
-                <h1>Navigation Menu</h1>
-                <p>Create or modify the navigation structure here.</p>
+            <div id="stage5" class="row">
+              <div class="col-md-12">
+                <h1>Stage 4 - Push the Database Items Form.</h1>
+                <p>Create the default database generation structure.</p>
               </div>
               <div class="col-md-12">
-                <div id="databasemenu"></div> 
+                <h3>Data Set</h3>
+                <textarea class="form-control" class="form-control " id="schema4" name="schema"  style="height: 250px">
+{"name":"Navigation Menu", "detail":"Use for the creation of Navigation jstree structures.", "objectType":"form", "entry":{"options" : {"form": {"buttons": {"submit": {"title": "Submit", "id": "submit", "click": ""} } }, "helper": "Use this form to add menu items to the navigation menu.", "fields": {"detail": {"type": "text", "rows": 4, "cols": 40, "helper": "All entry data is stored here.", "validate": true }, "objectType": {"type": "select"}, "revision": {"type": "select"}, "active": {"type": "select", "required": false }, "entry": {"type": "json", "rows": 4, "cols": 40, "helper": "All entry data is stored here.", "validate": false } }, "focus": ""},"schema" : {"title": "Navigation Menu", "type": "object", "properties": {"description": {"title": "Description"}, "value": {"title": "Value"}, "unit": {"title": "Unit"}, "detail": {"title": "Detail"}, "standard": {"title": "Standard"}, "parent": {"title": "Parent"}, "icon": {"title": "Icon"}, "template": {"title": "Template"} } } }} </textarea>
               </div>
+              <div class="col-md-12">
+                <p></p>
+                <div class="btn-group" role="group" aria-label="...">
+                  <button type="button" class="btn btn-default" id="setData2">Set Form Data</button>
+                </div>
+                <p></p>
+              </div>
+
             </div>
-    </div>
-
-  </div>
-
-</div>
-
-
-
-      
           </div>
-
-
-
-
-
-          <!-- Modal -->
-          <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-
-                <div class="modal-body">
-                 <div id="modal-body"></div>
-                 <div id="formAreaModal"></div>
-
-               </div>
-               <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-
-              </div>
+          <div class="col-md-6">
+           <div class="col-md-12"  >
+             <h1>Form Area.</h1>
+             <p>Use the form below to push each stage form into the database.</p>
+           </div>
+           <div class="well col-md-12"  >
+             <div id="form1"></div>
+           </div>
+         </div>
+       </div>
+     </div>
+     <div class="container" id="admintable">
+      <div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Primer Forms</a></li>
+          <li role="presentation"><a href="#formtab" aria-controls="formtab" role="tab" data-toggle="tab">Database Forms</a></li>
+          <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Navigation Menu</a></li>
+          <li role="presentation"><a href="#databaseitems" aria-controls="databaseitems" role="tab" data-toggle="tab">Database Items</a></li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane active" id="home">
+           <div class="row"> 
+            <div class="col-md-12" id="stage5">
+              <h1>Primer Forms</h1>
+              <p>The database primer forms.</p>
+            </div>
+            <div class="col-md-12">
+             {{> tableload objectType="primer"}}
             </div>
           </div>
         </div>
+        <div role="tabpanel" class="tab-pane" id="formtab">
+         <div class="row"> 
+          <div class="col-md-12" id="stage5">
+            <h1>Database Forms</h1>
+            <p>Create or modify the database structure here.</p>
+          </div>
 
+          <div class="col-md-12">
+            <div id="formsTable"></div> 
+          </div>
+        </div>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="profile">
+       <div class="row"> 
+        <div class="col-md-12" id="stage5">
+          <h1>Navigation Menu</h1>
+          <p>Create or modify the navigation structure here.</p>
+        </div>
+        <div class="col-md-12">
 
+        <div id="navigationTable"></div>
+        </div>
+      </div>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="databaseitems">
+     <div class="row"> 
+      <div class="col-md-12" id="stage5">
+        <h1>Database Items</h1>
+        <p>Create or modify database items here.</p>
+      </div>
+      <div class="col-md-12">
 
+         <div id="databaseItemsTable"></div> 
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
 
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+       <div id="modal-body"></div>
+       <div id="formAreaModal"></div>
+     </div>
+     <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+  </div>
+</div>
+</div>
 
-
-
-        <script type="text/javascript">
+<script type="text/javascript">
   //first run used the primer as the name.
   var names = ''
   var description = ''
   var childType = ''
-
+  var primer
 
 
 ///////////////////////////////////////////////////////////////////
@@ -268,68 +282,74 @@
 /////////////////////////////////////////////////////////////////
 function getthecurrentForms(objectType,toggle){
   jQuery.ajax({
-    'url': '/getCollectionData?objectType='+objectType+'&showall='+toggle,
+    'url': '/getshortdata',
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
-     tablelistdata = jQuery.parseJSON( dataSchemaObject );
-
+     dataset = jQuery.parseJSON( dataSchemaObject );
      switch(true){
-      case(tablelistdata.length == 0) :
+      case(dataset.length == 0) :
       names = 'Primer Form'
       description = 'The first form added to the database , Used for the creation of all new forms.'
-      childType ='form'
+      childType =''
+      var form = {
+        schema : JSON.parse($('#schema').val()) ,
+        options : JSON.parse($('#options').val())
+      }
+      formInit(form.schema,form.options)
+      $('#stage3').html('')
+      $('#stage4').html('')
+      $('#stage5').html('')
       $('#admintable').html('')
       break;
-      case(tablelistdata.length == 1) :
+      case(dataset.length == 1) :
       names = 'Raw Editor Form'
       description = 'The second form added to the database , Used for the editing of all elements in the database.'
-      childType ='form'
+      starterForms('','','use','')
+      $('#stage2').html('')
+      $('#stage4').html('')
+      $('#stage5').html('')
       $('#admintable').html('')
       break;
-      case(tablelistdata.length == 2) :
+      case(dataset.length == 2) :
       names = 'Navigation Menus'
       description = 'This form is used for the creation of the Navigation jstree Structures.'
-      childType ='databasemenu'
+      starterForms('','','raw','')
+      $('#stage2').html('')
+      $('#stage3').html('')
+      $('#stage5').html('')
       $('#admintable').html('')
       break;
-/*
-  case(tablelistdata.length == 3) :
+      case(dataset.length == 3) :
       names = 'Database Items'
-      description = 'This form is used to add database items to all of the Navigation structures'
+      description = 'This form is used to create the default database generation structure'
+      starterForms('','','raw','')
+      $('#stage2').html('')
+      $('#stage3').html('')
+      $('#stage4').html('')
       $('#admintable').html('')
-  break;
-  */
-  case(tablelistdata.length >= 3) :
-  $('#databaseInit').html('')
-  break;
-} 
+      break;
+      case(dataset.length >= 4) :
+      $('#databaseInit').html('')
 
 
+      //Table loading area
+      loadDataBaseMenu('','formsTable')    
+      //loadDataBaseMenu(dataset[3]._id,'navigationTable')
+      //loadDataBaseMenu('58932bde206cc62c147eaa63','databaseItemsTable')
 
+
+        break;
+      } 
+    }
+  }); 
 }
-}); 
-}
-
-
 
 ////////////////////////////////////
 ////        INITIALIZE         //// 
 //////////////////////////////////
 $(document).ready(function(){
-
   getthecurrentForms('form','true')
-
-  var form = {
-    schema : JSON.parse($('#schema').val()) ,
-    options : JSON.parse($('#options').val())
-  }
-  formInit(form.schema,form.options)
-
-  loadDataBaseMenu('5891b0378f87e51c3caacd09')
-
-
-
 });
 
 ////////////////////////////////////////////
@@ -340,13 +360,6 @@ $('#updateForm').click(function(){
     schema : JSON.parse($('#schema').val()) ,
     options : JSON.parse($('#options').val())
   }
-
-
-
-
-
-
-
   //Test alpaca form for true , i.e if it exists , then destroy it.
   control = $("#form1").alpaca("destroy");
   if (control) {
@@ -364,7 +377,7 @@ function formInit(schema,options){
   options.form.buttons.submit.click = function(e){
     e.preventDefault()
     var value = this.getValue();
-    clickSubmit(value)
+    clickSubmit1(value)
   }
   $("#form1").alpaca({
     "schema": schema,
@@ -375,11 +388,10 @@ function formInit(schema,options){
 //////////////////////////////////////////////
 ////        SUBMIT BUTTON CLICK          //// 
 ////////////////////////////////////////////
-function clickSubmit(dataset){
-
+function clickSubmit1(dataset){
   var str = JSON.stringify(primer, null, 2);
   $('#jsonArea').html(str)
-  var primer = {
+  primer = {
     'name' :names,
     'detail' : description,
     'entry': dataset,
@@ -387,7 +399,7 @@ function clickSubmit(dataset){
     'elementID' :'', 
     'userID' :'',
     'childType' : childType ,
-    'objectType':'form',
+    'objectType':'primer',
     'revision' :'created',//
     'active' : "true",//
   }
@@ -406,40 +418,77 @@ function clickSubmit(dataset){
   }); 
 }
 
-
-
-
-
-///////////////////////////////////////////////////////
-////////  EVENT LISTNER FUNCTION AREA DATABASE ///////
-/////////////////////////////////////////////////////
-function loadDataBaseMenu(ids){
+///////////////////////////////////////////////
+////////  TABLE LOADING FROM PARENT ID ///////
+/////////////////////////////////////////////
+function loadDataBaseMenu(ids,location){
 //Ensure that the first load error is covered , also any other errors.
-if(ids){
+jQuery.ajax({
+ 'async': true,
+ 'global': false,
+ 'url': '/parentid?ids='+ids,
+ 'success': function (dataSchemaObject) {
+   jQuery('#'+location).html("")
+   jQuery('#'+location).html(dataSchemaObject)
+ }
+});
+}
+
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+////////////////////////////////////                                                                                                              
+function starterForms(formdata,idItem,raw,parentid){
   jQuery.ajax({
-   'async': true,
-   'global': false,
-   'url': '/parentid?ids='+ids,
-   'success': function (dataSchemaObject) {
-     jQuery('#databasemenu').html("")
-     jQuery('#databasemenu').html(dataSchemaObject)
-   }
- });
-}
+    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      $('#form1').html(dataSchemaObject)
+    }
+  });
 }
 
+//////////////////////////////////////
+////////    SET FORM DATA   /////////
+//////////////////////////////////// 
+$('#setData1').click(function(){
+ var temp = JSON.parse($('#schema3').val())
+//get the id for the raw edit form.
+jQuery.ajax({
+  'url': '/getshortdata',
+  'async': true,
+  'global': false,
+  'success': function (dataSchemaObject) {
+   dataset = jQuery.parseJSON( dataSchemaObject );
+   temp.parentid = dataset[1]._id
+   $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(temp)
+ }
+})
+})
 
-
-
-
-
+//////////////////////////////////////
+////////    SET FORM DATA   /////////
+//////////////////////////////////// 
+$('#setData2').click(function(){
+ var temp = JSON.parse($('#schema4').val())
+//get the id for the raw edit form.
+jQuery.ajax({
+  'url': '/getshortdata',
+  'async': true,
+  'global': false,
+  'success': function (dataSchemaObject) {
+   dataset = jQuery.parseJSON( dataSchemaObject );
+   temp.parentid = dataset[1]._id
+   temp.childType = dataset[2]._id
+   $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(temp)
+ }
+})
+})
 
 </script>
 
 {{> footer}}
 {{> analytics}}
-
-
 
 </body>
 </html>

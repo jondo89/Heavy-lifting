@@ -1,56 +1,57 @@
   <div class="container" style="padding-top: 45px">
-  <div class="row">
-    <div class="col-md-4" id="navMenuPanel">
+    <div class="row">
+      <div class="col-md-4" id="navMenuPanel">
+        <div class="panel panel-default">
+          <div class="panel-body">
+           <h5><strong>Navigation</strong> <small>Use the navigation tree to interact with the database.</small></h5>
+           <div class="panel">
+             <div style="padding-bottom:15px;padding-bottom:15px">
+              <input id="search_field" name="searchinput" type="search" placeholder="Search Navigation" class="form-control input-md">      
+            </div>
+            <div id="jstree"></div> 
+
+
+
+          </div>
+          <div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
+            <button type="button" class="btn btn-default" id="newMenuItem" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></button> 
+          </div>
+        </div>
+      </div>
+    </div>  
+
+    
+    <div class="col-md-8" id="browserArea">
       <div class="panel panel-default">
         <div class="panel-body">
-         <h5><strong>Navigation</strong> <small>Use the navigation tree to interact with the database.</small></h5>
-         <div class="panel">
-           <div style="padding-bottom:15px;padding-bottom:15px">
-            <input id="search_field" name="searchinput" type="search" placeholder="Search Navigation" class="form-control input-md">      
+          <div id="panel">  
+
+            What are we trying to acheive here ?
+
+            We need to start setting up the requiremnts for the drop down lists on all of the forms. 
+
+            This can only be done if the lists can be created and modified.
+
+            As such there is a requirement for a navaigation system , as well as the actual data items.
+
+            The data items will use the menuitem field to hold there linked menu items. This works.
+
+            The menu items will use the menu item are ideally as well , rather than the data type , although changing this is not to difficult.
+
+            First port of call is a complete list of database items. This can then have a series of filters for each type of item that is requested through the navaigation strucutre.
+
+            So it will be object type : database menu 
+
+            Use the database menu id aquired to return to the server the id to find . 
+
+            Then return the menu item selected as well as the list of items with that menu item in the " menu item " field.
+
           </div>
-          <div id="jstree"></div> 
-
-
-
         </div>
-        <div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
-</div>
       </div>
-    </div>
-  </div>  
-
-  
-  <div class="col-md-8" id="browserArea">
-    <div class="panel panel-default">
-      <div class="panel-body">
-        <div id="panel">  
-
-        What are we trying to acheive here ?
-
-        We need to start setting up the requiremnts for the drop down lists on all of the forms. 
-
-        This can only be done if the lists can be created and modified.
-
-        As such there is a requirement for a navaigation system , as well as the actual data items.
-
-        The data items will use the menuitem field to hold there linked menu items. This works.
-
-        The menu items will use the menu item are ideally as well , rather than the data type , although changing this is not to difficult.
-
-        First port of call is a complete list of database items. This can then have a series of filters for each type of item that is requested through the navaigation strucutre.
-
-        So it will be object type : database menu 
-
-        Use the database menu id aquired to return to the server the id to find . 
-
-        Then return the menu item selected as well as the list of items with that menu item in the " menu item " field.
-
-      </div>
-    </div>
-  </div>
       <div class="alert alert-info" role="alert"> <strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>
+    </div>
   </div>
-</div>
 </div>
 
 
@@ -67,14 +68,14 @@
       }else{
         databaseMenu[i].entry.id = databaseMenu[i]['elementID']
       }
-  	temp.push(databaseMenu[i].entry)
-  }
-  databaseMenu = temp
+      temp.push(databaseMenu[i].entry)
+    }
+    databaseMenu = temp
 
 
 
 
- $( document ).ready(function() {
+    $( document ).ready(function() {
   //manipulate data to work with the jstree
   var jsTreeData = dataJStreeConvert (databaseMenu)
   var location = 'jstree'
@@ -108,15 +109,26 @@ function dataJStreeConvert (databaseMenu){
           temp['icon'] = databaseMenu[i][key]
           break;
           case (key == 'template'):
-    			aclass = { 
-    		      "data-template" : databaseMenu[i][key],
-    		    }
+          aclass = { 
+            "data-template" : databaseMenu[i][key],
+          }
           temp['a_attr'] =  aclass
           break;
         }
       }
       newData.push(temp)
     }
+
+
+//error trap the menu.
+for (var i = 0; i < newData.length; i++) {
+  console.log(newData[i])
+if (!newData[i].parent) {
+  newData[i].parent = '#'
+}
+
+}
+
     return newData
   }
 
@@ -166,11 +178,7 @@ jQuery('#'+location)
         var template=(dataTree.instance.get_node(dataTree.selected[0]).a_attr['data-template']);
         r.push(dataTree.instance.get_node(dataTree.selected[i]).template);
       }
- 
-  	templateload(ids)
-
- 
-
+      templateload(ids)
     })
   }
 
@@ -179,17 +187,17 @@ jQuery('#'+location)
 /////////////////////////////////////////////////////
 function templateload(ids){
 //Ensure that the first load error is covered , also any other errors.
-	if(ids){
-		  jQuery.ajax({
-	    'async': true,
-	    'global': false,
-	    'url': '/templateload?ids='+ids,
-	    'success': function (dataSchemaObject) {
-	      jQuery('#panel').html("")
-	      jQuery('#panel').html(dataSchemaObject)
-	    }
-	  });
-	}
+if(ids){
+  jQuery.ajax({
+   'async': true,
+   'global': false,
+   'url': '/templateload?ids='+ids,
+   'success': function (dataSchemaObject) {
+     jQuery('#panel').html("")
+     jQuery('#panel').html(dataSchemaObject)
+   }
+ });
+}
 }
 
 //////////////////////////////////////////////

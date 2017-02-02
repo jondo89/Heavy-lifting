@@ -61,21 +61,32 @@ var parentid = req.param('parentid')
     parentid ='false'
   }
 
+ 
 //This is used to pull the first 2 entries from the database. 
 //will return the ids for the form data on the primer and raw database entry.
-heavyliftingModel.find().limit(2).exec(function (err, forms) {
+heavyliftingModel.find().limit(3).exec(function (err, forms) {
+  if (err) { return next(err); }
   //The primer and Raw are the first 2 items in the database.
   //This does mean the that the forms are not being edited.
+
+
   switch(true){
-    case(formdata=='edit'):
-    formdata = forms[0]._id
+    case(raw == 'edit'):
+      formdata = forms[0]._id
     break;
-    case(formdata=='raw'):
-    formdata = forms[1]._id
+    case(raw == 'raw'):
+      formdata = forms[1]._id
+    break;
+    case(forms.length == 1  ):
+      formdata = forms[0]._id
+    break;
+    case(forms.length == 2  ):
+      formdata = forms[1]._id
     break;
   }
+ 
 
-
+ 
   res.render('form', {
     title: 'Form',
     siteName : siteName,
@@ -96,6 +107,8 @@ heavyliftingModel.find().limit(2).exec(function (err, forms) {
 //////////////////////////////////////////////////
 exports.getdata = function(req, res) {
  
+ 
+
 //Which id form to use.
 var formdata = req.param('formdata')
   if (!formdata) {
@@ -114,12 +127,26 @@ var raw = req.param('raw')
     raw ='false'
   }
 
+//used for the database items which require a location from which the data was created.
+var parentid = req.param('parentid')
+  if (!parentid) {
+    parentid ='false'
+  }
+
   var temp =""
   var query1 = heavyliftingModel.find(
-    {
-      "_id":  idItem
-    }
-  )
+  {
+    $and : 
+    [
+          {$or: [
+              {"elementID": idItem },
+              {"_id":  idItem }
+            ]}, 
+            {
+              "active": "true" 
+            }
+      ]
+    })
   var query = heavyliftingModel.find(
   {
     $and : 
@@ -182,15 +209,7 @@ var ids = req.param('ids')
       ]
     })
 
-//hardwired , needs to be improved.
-if (ids == '589038e2d3e99a4ebccb4fae') {
-  //Query to find all of the database items for that menu.
-  var query1 = heavyliftingModel.find(
-        {
-        "active": "true" 
-      })
 
-} else {
   //Query to find all of the database items for that menu.
   var query1 = heavyliftingModel.find(
   {
@@ -205,8 +224,7 @@ if (ids == '589038e2d3e99a4ebccb4fae') {
       ]
     })
 
-}
-
+ 
   query.exec(function (err, menuitem) {
     if (err) { return next(err); } 
 
@@ -249,7 +267,7 @@ exports.database = function(req, res) {
   var query = heavyliftingModel.find(
       {
         "active": "true" ,
-        "parentid": "58908d5caf41062750330b59" ,      
+        "parentid": "58932bde206cc62c147eaa63" ,      
       })
 
    query.exec(function (err, docs1) {
@@ -270,14 +288,25 @@ exports.database = function(req, res) {
 //////////////////////////////////////////////////////
 ////       DEPLOY THE REQUESTED TEMPLATE         //// 
 ////////////////////////////////////////////////////
-exports.parentid = function(req, res) {
+exports.parentid = function(req, res ) {
 
+ 
 //Which id data to use.
 var ids = req.param('ids')
   if (!ids) {
-    ids =''
+    ids =""
   }
-  //Query to find the menu item selected.
+
+  if (ids == "") {
+    
+heavyliftingModel.find().limit(2).exec(function (err, data) {
+  if (err) { return next(err); }
+ 
+ ids = data[1]._id
+   console.log(ids,'this is the first check area')
+
+
+//Query to find the menu item selected.
   var query = heavyliftingModel.find(
   {
     $and : 
@@ -292,22 +321,14 @@ var ids = req.param('ids')
       ]
     })
 
-//hardwired , needs to be improved.
-if (ids == '589038e2d3e99a4ebccb4fae') {
-  //Query to find all of the database items for that menu.
-  var query1 = heavyliftingModel.find(
-        {
-        "active": "true" 
-      })
-
-} else {
+ 
   //Query to find all of the database items for that menu.
   var query1 = heavyliftingModel.find(
   {
     $and : 
     [
       {
-        "parentid": ids 
+        "parentid": ids
       }, 
       {
         "active": "true" 
@@ -315,38 +336,160 @@ if (ids == '589038e2d3e99a4ebccb4fae') {
       ]
     })
 
-}
-
+ 
+  //Gratuitous hack here for the err check on the empty string search. What a mess.
   query.exec(function (err, menuitem) {
-    if (err) { return next(err); } 
-
+     if (err) { return next(err); }  
     query1.exec(function (err, databaseitems) {
       if (err) { return next(err); } 
 
-      //undefined error handling on the template
-      if (!menuitem[0].entry.template){
-        menuitem[0].entry.template=''
-      }
+        console.log(databaseitems,ids, 'This needs to be longer than zero length')
 
-      //blank error handling on the template
-      if (menuitem[0].entry.template !== ''){
-        var template = menuitem[0].entry.template
-      } else {
-        var template = 'databasetablelist'  
-      }
-   
-        //the menu item elementid should arrive poulated to avoid confusion.
-        if(menuitem[0].elementID==''){
-          menuitem[0].elementID=menuitem[0]._id
+
+
+        if (menuitem) {
+            //undefined error handling on the template
+          if (!menuitem[0].entry.template){
+            menuitem[0].entry.template=''
+          }
+
+          //blank error handling on the template
+          if (menuitem[0].entry.template !== ''){
+            var template = menuitem[0].entry.template
+          } else {
+            var template = 'databasetablelist'  
+          }
+
+          //the menu item elementid should arrive populated to avoid confusion.
+          if(menuitem[0].elementID==''){
+            menuitem[0].elementID = menuitem[0]._id
+          }
+
+          var temp = menuitem[0]
+
+        } else {
+
+          var temp = ""
+          var template = 'databasetablelist'  
         }
+
 
         res.render(template, {
           databaseitems : JSON.stringify(databaseitems),
-          menuitem : JSON.stringify(menuitem[0]),
+          menuitem : JSON.stringify(temp),
           layout:false,
         });
 
       })
   })
+
+
+
+
+
+
+
+
+});
+
+
+
+  } else {
+//Query to find the menu item selected.
+  var query = heavyliftingModel.find(
+  {
+    $and : 
+    [
+          {$or: [
+              {"elementID": ids },
+              {"_id":  ids }
+            ]}, 
+            {
+              "active": "true" 
+            }
+      ]
+    })
+
  
+  //Query to find all of the database items for that menu.
+  var query1 = heavyliftingModel.find(
+  {
+    $and : 
+    [
+      {
+        "parentid": ids
+      }, 
+      {
+        "active": "true" 
+      }
+      ]
+    })
+
+ 
+  //Gratuitous hack here for the err check on the empty string search. What a mess.
+  query.exec(function (err, menuitem) {
+      if (err) { return next(err); } 
+    query1.exec(function (err, databaseitems) {
+      if (err) { return next(err); } 
+
+        console.log(databaseitems,ids, 'This needs to be longer than zero length')
+
+
+
+        if (menuitem) {
+            //undefined error handling on the template
+          if (!menuitem[0].entry.template){
+            menuitem[0].entry.template=''
+          }
+
+          //blank error handling on the template
+          if (menuitem[0].entry.template !== ''){
+            var template = menuitem[0].entry.template
+          } else {
+            var template = 'databasetablelist'  
+          }
+
+          //the menu item elementid should arrive populated to avoid confusion.
+          if(menuitem[0].elementID==''){
+            menuitem[0].elementID = menuitem[0]._id
+          }
+
+          var temp = menuitem[0]
+
+        } else {
+
+          var temp = ""
+          var template = 'databasetablelist'  
+        }
+
+
+        res.render(template, {
+          databaseitems : JSON.stringify(databaseitems),
+          menuitem : JSON.stringify(temp),
+          layout:false,
+        });
+
+      })
+  })
+  }
+ 
+
+  
+ 
+}
+
+
+
+/////////////////////////////////////
+////       GET DATABASE         //// 
+///////////////////////////////////
+exports.getshortdata = function(req, res) {
+
+heavyliftingModel.find().limit(4).exec(function (err, data) {
+  if (err) { return next(err); }
+ 
+ 
+  res.send(JSON.stringify(data));
+
+});
 }

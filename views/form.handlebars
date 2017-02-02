@@ -6,7 +6,9 @@ var formdata = {{{formdata}}}
 var idItem = {{{idItem}}}
 var raw = {{{raw}}}
 var parentid = {{{parentid}}}
-var formid = create_uid()
+var formid1 = create_uid()
+
+console.log('1',formdata,'2',idItem,'3',raw,'4',parentid)
 
 //////////////////////////////////////////
 ////        CREATE UNIQUE ID         //// 
@@ -26,7 +28,7 @@ function create_uid() {
 //////////////////////////////////
 $(document).ready(function(){
   //create a unique id for the form deployment.
-  jQuery('#formDelivery').attr("id",formid);
+  jQuery('#formDelivery').attr("id",formid1);
   //check if the data id was sent as well as the form id
   getdata(formdata,idItem,raw)
 });
@@ -54,10 +56,11 @@ function getdata(formdata,idItem,raw){
     schema : data.formdata.entry['schema'],
     options : data.formdata.entry['options']
   }
-  console.log(data)
-  $('#'+formid).html("<div id='form_"+formdata+idItem+formid+"'></div>")
+
+  $('#'+formid1).html("<div id='form_"+formdata+idItem+formid1+"'></div>")
+  $("#form_"+formdata+idItem+formid1).html("")
   //Test alpaca form for true , i.e if it exists , then destroy it.
-  control = $("#form_"+formdata+idItem+formid).alpaca("destroy");
+  control = $("#form_"+formdata+idItem+formid1).alpaca("destroy");
 
   if (control) {
     formInit(form.schema,form.options,data)
@@ -71,7 +74,10 @@ function getdata(formdata,idItem,raw){
 ////////////////////////////////////
 function formInit(schema,options,data){
   //work areound for the special requirments on the submit button.
-  console.log(options)
+ 
+ if (options) {
+
+
   options.form.buttons.submit.click = function(e){
       e.preventDefault()
       var value = this.getValue();
@@ -81,69 +87,98 @@ function formInit(schema,options,data){
     if (options.fields[key]['type'] == 'select' ) {
     //options.fields[key] ["dataSource"] = "/data/icecream-list.json"
   }
-}
+} 
 
+ 
+ 
  
 
 switch(true){
 
   //the use button will require the form to remove any element ids as this will be a new entry.
   case(raw=='use'):
-  $("#form_"+formdata+idItem+formid).alpaca({
+  $("#form_"+formdata+idItem+formid1).alpaca({
     "schema": schema,
     "options": options
     
   });
   break;
   case(raw=='edit'):
-  $("#form_"+formdata+idItem+formid).alpaca({
+  $("#form_"+formdata+idItem+formid1).alpaca({
     "schema": schema,
     "options": options,
     "postRender": function(control) {
       //only set the data if the form is for use.
       if (idItem !='') {
-        $("#form_"+formdata+idItem+formid).alpaca('get').setValue(data.idItem.entry)
+        $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(data.idItem.entry)
       }
     }    
   });
   break;
-  case(raw=='true'):
-    $("#form_"+formdata+idItem+formid).alpaca({
+  case(raw=='raw'):
+    $("#form_"+formdata+idItem+formid1).alpaca({
     "schema": schema,
     "options": options,
     "postRender": function(control) {
       //only set the data if the form is for use.
       if (idItem !='') {
-        $("#form_"+formdata+idItem+formid).alpaca('get').setValue(data.idItem)
+        $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(data.idItem)
       }
     }    
   });
   break;
 }
 
+
+
+} else {
+    var html = ''
+    html += '<div class="alert alert-danger" role="alert"> '
+    html += '<strong>'
+    html += 'Oh snap!'
+    html += '</strong> '
+    html += 'Form error , This dataset is not a form , Please let us know about this.'
+    html += '</div>'
+
+
+  $("#form_"+formdata+idItem+formid1).html(html)
+}
+
+
 }
 //////////////////////////////////////////////
 ////        SUBMIT BUTTON CLICK          //// 
 ////////////////////////////////////////////
 function formPost(dataset,data){
+
+  var name = $('#nameArea').val()
+  var detail = $('#DetailArea').val()
+
+
+
+
+
 //routing for the various use cases on the switch
 switch(true){
   //the use button will require the form to remove any element ids as this will be a new entry.
   case(raw=='use'):
- 
     var primer = data.idItem
-    primer.objectType = data.idItem.childType
-    if (data.idItem.childType=='data') {
-          primer.parentid = parentid
-    }
-    if (data.idItem.childType=='databasemenu') {
-          primer.parentid = data.idItem.elementID
-    }    
     primer.entry = dataset
+
+ 
+    if (name || detail) {
+        primer.name = name
+        primer.detail = detail
+    }
+    if (parentid) {
+      primer.parentid=parentid
+    }
+
+ 
+
     primer.elementID = ''
     primer.revision = 'created'
     primer.active = "true"
-   // console.log(raw,' = use','use')
   break;
   case(raw=='edit'):
     var primer = data.idItem
@@ -151,13 +186,13 @@ switch(true){
     primer.revision = 'updated'
     primer.elementID = data.idItem.elementID
     primer.active = "true"
-   // console.log(raw,' = false','edit')
   break;
-  case(raw=='true'):
+  case(raw=='raw'):
     var primer = dataset
-    //console.log(raw,' = true','raw')
   break;
 }
+
+ 
  jQuery.ajax({
     'url': '/create',
     'type': 'POST', 
@@ -170,7 +205,9 @@ switch(true){
     'error' :function (dataSchemaObject) {
       window.location = dataSchemaObject.redirect
     },
-  });  
+  });    
+
+ 
 }
 
 </script>

@@ -127,7 +127,8 @@ app.get('/getform', readController.getform);
 app.get('/getdata', readController.getdata);
  //get data by parentid
 app.get('/parentid', readController.parentid);
-
+ //get data 
+app.get('/getshortdata', readController.getshortdata);
 
 ///////////////////////////////////////////
 ////       DELETE CONTROLLERS         //// 
