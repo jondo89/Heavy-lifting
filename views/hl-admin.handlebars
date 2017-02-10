@@ -77,12 +77,7 @@
 
   <div class="container" id="databaseInit">
 
-so here is the concern , 
-
-When creating a navigation menu , there is a requiremnt that the browser for the navigation menu allow for the compoent creation of a database item.
-
-At this point the child 
-
+ 
 
     <div class="row">
       <div class="col-md-12">
@@ -134,12 +129,12 @@ At this point the child
               </div>
           <div class="col-md-6">
             <h3>Schema</h3>
-            <textarea class="form-control" class="language-json " id="schema" name="schema"  style="height: 250px">
+            <textarea class="form-control" class="language-json " id="schema2" name="schema"  style="height: 250px">
 {"title": "Form Deployment", "description": "Insert Schema and Options to design your form.", "type": "object", "properties": {"name": {"title": "name"}, "detail": {"title": "detail"}, "childType": {"title": "childType"}, "objectType": {"title": "objectType", "enum": ["form", "data", "databasemenu", "other"] }, "entry": {"title": "entry"}, "parentid": {"title": "parentid"}, "elementID": {"title": "elementID"}, "userID": {"title": "userID"}, "revision": {"title": "revision", "enum": ["created", "updated", "deleted"] }, "active": {"title": "active", "enum": ["true", "false"] } } } </textarea>
             </div>
             <div class="col-md-6">
               <h3>Options</h3>
-              <textarea class="form-control"   id="options" name="options"  style="height: 250px">
+              <textarea class="form-control"   id="options2" name="options"  style="height: 250px">
 {"form": {"buttons": {"submit": {"title": "Submit", "id": "submit", "click": ""} } }, "helper": "Insert Schema and Options to design your form.", "fields": {"detail": {"type": "text"}, "objectType": {"type": "select"}, "revision": {"type": "select"}, "active": {"type": "select", "required": false }, "entry": {"type": "json", "rows": 10, "cols": 40, "helper": "All entry data is stored here.", "validate": false } }, "focus": ""} </textarea>
               </div>
             </div>
@@ -205,9 +200,9 @@ At this point the child
         <div class="tab-content">
           <div role="tabpanel" class="tab-pane active" id="home">
            <div class="row"> 
-            <div class="col-md-12" id="stage5">
+            <div class="col-md-12" id="stage6">
               <h1>Primer Forms</h1>
-              <p>The database primer forms.</p>
+              <p>The database primer forms. These are the 2 initialization forms for the database, and can be used to edit all subsequent database information.</p>
             </div>
             <div class="col-md-12">
              {{> tableload objectType="primer"}}
@@ -216,9 +211,9 @@ At this point the child
         </div>
         <div role="tabpanel" class="tab-pane" id="formtab">
          <div class="row"> 
-          <div class="col-md-12" id="stage5">
+          <div class="col-md-12" id="stage7">
             <h1>Database Forms</h1>
-            <p>Create or modify the database structure here.</p>
+            <p>Create or modify the database structure here. This area can be used to create data tables of many types and structures. What would likely be required in future versions is a form hierarchy , that creates forms with different hardwired properties defining separate data type i.e. which template to use or which parent id etc. could be achieved with some kind of data parse like the short code in WordPress.</p>
           </div>
 
           <div class="col-md-12">
@@ -228,7 +223,7 @@ At this point the child
       </div>
       <div role="tabpanel" class="tab-pane" id="profile">
        <div class="row"> 
-        <div class="col-md-12" id="stage5">
+        <div class="col-md-12" id="stage8">
           <h1>Navigation Menu</h1>
           <p>Create or modify the navigation structure here.</p>
         </div>
@@ -240,7 +235,7 @@ At this point the child
     </div>
     <div role="tabpanel" class="tab-pane" id="databaseitems">
      <div class="row"> 
-      <div class="col-md-12" id="stage5">
+      <div class="col-md-12" id="stage9">
         <h1>Database Items</h1>
         <p>Create or modify database items here.</p>
       </div>
@@ -255,7 +250,7 @@ At this point the child
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="myModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-body">
@@ -335,8 +330,8 @@ function getthecurrentForms(objectType,toggle){
 
       //Table loading area
       loadDataBaseMenu('','formsTable')    
-      //loadDataBaseMenu(dataset[3]._id,'navigationTable')
-      //loadDataBaseMenu('58932bde206cc62c147eaa63','databaseItemsTable')
+      loadDataBaseMenu(dataset[3]._id,'navigationTable')
+     // loadDataBaseMenu(dataset[2]._id,'databaseItemsTable')
 
 
         break;
@@ -350,6 +345,19 @@ function getthecurrentForms(objectType,toggle){
 //////////////////////////////////
 $(document).ready(function(){
   getthecurrentForms('form','true')
+
+// Warning Duplicate IDs
+            $('[id]').each(function(){
+              var ids = $('[id="'+this.id+'"]');
+
+              if(ids.length>1 && ids[0]==this){
+                 $( this ).css( "color", "red" )
+                 $( this ).css( "background", "green" )
+                console.warn('Multiple IDs #'+this.id);
+              }
+               
+            });
+  
 });
 
 ////////////////////////////////////////////
@@ -485,6 +493,9 @@ jQuery.ajax({
 })
 })
 
+
+
+ 
 </script>
 
 {{> footer}}

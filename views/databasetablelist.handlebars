@@ -1,5 +1,18 @@
+<div class="alert alert-warning" role="alert">
+<h3>Where you left off.</h3>
+<ul>
+ 
+<li>Getting the Headings Menu to work</li> 
+<li>Getting the revision data to work</li> 
+ 
+  
+</ul>
+
+</div>
+
+
 <div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
-  <button type="button" class="btn btn-primary" id="changeButton" onclick="deployForm(this.id)" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></button> 
+  <button type="button" class="btn btn-default" id="changeButton" onclick="deployForm(this.id)" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></button> 
 </div>
 <div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
   <label class="checkbox-inline">
@@ -14,8 +27,18 @@
 var tablelistdata = {{{databaseitems}}};
 var items = {{{menuitem}}}
 var formids = create_uid()
+var templateload = {{{templateload}}}
  
- console.log(items)
+
+console.log( 'databasetablelist loading' )
+console.log( '-------------------------' )
+console.log( tablelistdata )
+console.log( items )
+console.log( formids )
+console.log( templateload )
+console.log( '-------------------------' )
+console.log( 'databasetablelist loading' )
+
 
 ///////////////////////////////////////////////////
 ////        REQUIRED FORMATING OF DATA        //// 
@@ -58,7 +81,7 @@ function create_uid() {
 ///////////////////////////////////////////////
 ////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
 /////////////////////////////////////////////
-$('#changeButton').attr('id', items.elementID);
+$('#changeButton').attr('id', items.childType);
 jQuery('#formDelivery').attr("id",formids);
 jQuery('#toggle-one').attr("id",formids+'_toggle');
 
@@ -86,6 +109,7 @@ $('document').ready(function(){
 //////  LOAD THE TABLE  //////
 /////////////////////////////
 function datableload(tablelistdata) {
+ 
     items.headings = ['name','detail','userID','id','parentid','childType','description']
     var tempVarIDs = formids+'tableloadID'
     //inject the ID html table into the page.
@@ -123,7 +147,6 @@ function loadDataTable(id){
 
   //Add event listener for opening and closing details
   jQuery('#'+id +' tbody').on('click', 'td.details-control', function () {
-    
       var tr = jQuery(this).closest('tr');
       var row = table.row( tr );
       if ( row.child.isShown() ) {
@@ -137,12 +160,25 @@ function loadDataTable(id){
             row.child(formatDefault(this.id))
             row.child.show();
             tr.addClass('shown');
+
+            // Warning Duplicate IDs
+            $('[id]').each(function(){
+              var ids = $('[id="'+this.id+'"]');
+              if(ids.length>1 && ids[0]==this){
+                 $( this ).css( "color", "red" )
+                 $( this ).css( "background", "green" )
+                console.warn('Multiple IDs #'+this.id);
+              }
+            });
+
           }
   });
 
 
 
 }
+
+
 
 ////////////////////////////////////////////////////////////////////
 ////////////        FORMIDsABLE VIEW EXTRA DETAIL         ///////////
@@ -155,12 +191,12 @@ function formatDefault ( d ) {
   html='<h4>Options</h4>'
   html += '<div id="'+d+'_content" style="padding-top:0px;text-align:left">'
   html += '<div class="btn-group" role="group" aria-label="..." style="padding-bottom:15px">'
-  html += '<button type="button" class="btn btn-default" id="'+d+'" onclick="useForm(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Use Form</button>'
-  html += '<button type="button" class="btn btn-default" id="'+d+'" onclick="readDatabase(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Modify</button>'
-  html += '<button type="button" class="btn btn-default" data-_id="'+d+'" id="'+d+'_downloadlink" data-toggle="modal" data-target="#myModal" onclick="deleteEntry(this.id)"  data-toggle="tooltip" data-placement="top" title="Delete this item">Delete</button>'
+  html += '<button type="button" class="btn btn-default" id="'+d+'_use" onclick="useForm(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Use Form</button>'
+  html += '<button type="button" class="btn btn-default" id="'+d+'_read" onclick="readDatabase(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Modify</button>'
+  html += '<button type="button" class="btn btn-default" data-_id="'+d+'" id="'+d+'_del" data-toggle="modal" data-target="#myModal" onclick="deleteEntry(this.id)"  data-toggle="tooltip" data-placement="top" title="Delete this item">Delete</button>'
   html += '</div>'
   html += '<div class="btn-group" role="group" aria-label="..." style="padding-bottom:15px">'
-  html += '<button type="button" class="btn btn-default" id="'+d+'" onclick="createComp(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Create component</button>'
+  html += '<button type="button" class="btn btn-default"  id="'+d+'_comp" onclick="createComp(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Create component</button>'
   html += '</div>'
   html += '</div>'
   html += '<div id="'+d+'_loadingArea" ></div>'
@@ -174,6 +210,7 @@ function formatDefault ( d ) {
 //////  DELETE CONVEYOR  ///////
 /////////////////////////////// 
 function deleteEntry(id){
+  id = id.replace('_del', '');  
  _id = $( "#"+id ).data( "_id" )  
  html = ''
  html +='<div class="row" style="width:100%;text-align:center">'
@@ -239,7 +276,7 @@ function dataTableLoad (data,id,headings){
   html += '<tbody>'
   for (var i = 0; i < data.length; i++) {
      
-    html += '<tr><td class="details-control" style="text-align:center;vertical-align:middle; " id="'+data[i]['id']+'" data-childType="'+data[i]['childType']+'"><i class="fa fa-plus-square-o" aria-hidden="true" ></i></td>'
+    html += '<tr><td class="details-control" style="text-align:center;vertical-align:middle; " id="'+data[i]['id']+'" data-parentid="'+data[i]['parentid']+'" data-childType="'+data[i]['childType']+'"><i class="fa fa-plus-square-o" aria-hidden="true" ></i></td>'
     for (var j = 0; j < headings.length; j++) {
       html += '<td style=" vertical-align:middle">'
       html += data[i][headings[j]]
@@ -256,7 +293,7 @@ function dataTableLoad (data,id,headings){
 ////////////////////////////////////////////
 function deployForm(parentid){
   //This is hard wired , and likely to cause issues.
-  loadformModal(items.elementID,'','use',parentid)
+  loadformModal(parentid,'','use',templateload)
 }
 
 //////////////////////////////////////
@@ -277,6 +314,7 @@ function loadformModal(formdata,idItem,raw,parentid){
 //////  USE        //////
 ////////////////////////
 function useForm(id){
+  id = id.replace('_use', '');
   loadformModal(id,'','use',id)
 }
 
@@ -284,6 +322,7 @@ function useForm(id){
 //////  MODIFY     //////
 ////////////////////////
 function readDatabase(id){
+  id = id.replace('_read', '');
   loadformModal(id,id,'raw',id)
 }
 
@@ -291,15 +330,20 @@ function readDatabase(id){
 //////  CREATE COMPONENT     //////
 //////////////////////////////////
 function createComp(id){
-  var childType = $('#'+id+'').data('childtype')
-  console.log(childType,'fgfgfg')
+  id = id.replace('_comp', '');
+    childType = $('#'+id+'').data('childtype')
+  //there is some kind of wierd lowcase requiremtns.
+ parentid = $('#'+id+'').data('parentid')
+
   if (!childType) {
     console.log(childType,'fgfgfg')
     loadformModal(childType,'','use',id)
   } else {
     console.log('childType')
-    loadformModal('5893369ab1ac091a988c856b','','use',id)
+    loadformModal(parentid,'','use',id)
   }
+
+  
 }
 
 ///////////////////////////////// 
@@ -342,5 +386,9 @@ jQuery.ajax({
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
+
+ 
+
+
 
 </script>

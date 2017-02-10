@@ -13,12 +13,7 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
       <ul class="nav navbar-nav navbar-right">
-        <li>
-          <a href="/database">Database</a>
-        </li>        
-        <li>
-
-        </li>    
+        {{> navbar}}   
         {{#if user}}
         <li class="dropdown">
           <a href="#" data-toggle="dropdown" class="navbar-avatar dropdown-toggle">
@@ -37,7 +32,7 @@
           <ul class="dropdown-menu" style="width: 100%">
             <li><a href="/account">My Account</a></li>
             <li><a href="/">Dashboard</a></li>
-            <li><a href="/">Revision History</a></li>
+ 
             <li><a href="/hl-admin">Admin Panel</a> </li>           
             <li class="divider"></li>
             <li><a href="/logout">Logout</a></li>

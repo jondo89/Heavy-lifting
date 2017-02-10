@@ -252,6 +252,7 @@ var ids = req.param('ids')
           databaseitems : JSON.stringify(databaseitems),
           menuitem : JSON.stringify(menuitem[0]),
           layout:false,
+          templateload : JSON.stringify(ids)
         });
 
       })
@@ -263,25 +264,32 @@ var ids = req.param('ids')
 ////       SEND THE DATABASE INFORMATION      //// 
 /////////////////////////////////////////////////
 exports.database = function(req, res) {
- 
+//get the forth element id in the database
+heavyliftingModel.find().limit(5).exec(function (err, forms) {
+  if (err) { return next(err); }
+   res.render('database', {
+    title: 'Database',
+    siteName : siteName,
+    databaseId : JSON.stringify(forms[4]._id), 
+  });
+});
+}
+
+//////////////////////////////////////////////
+////       GET AND SEND JSTREE DATA      //// 
+////////////////////////////////////////////
+exports.jstree = function(req, res) {
+  var ids = req.param('ids')
   var query = heavyliftingModel.find(
       {
         "active": "true" ,
-        "parentid": "58932bde206cc62c147eaa63" ,      
+        "parentid": ids,      
       })
 
    query.exec(function (err, docs1) {
     if (err) { return next(err); } 
-
-  res.render('database', {
-    title: 'Database',
-    siteName : siteName,
-    database : JSON.stringify(docs1), 
-  });
-
-
+      res.send(JSON.stringify(docs1))
   })
-
 }
 
 
@@ -289,23 +297,17 @@ exports.database = function(req, res) {
 ////       DEPLOY THE REQUESTED TEMPLATE         //// 
 ////////////////////////////////////////////////////
 exports.parentid = function(req, res ) {
-
- 
 //Which id data to use.
 var ids = req.param('ids')
   if (!ids) {
     ids =""
   }
-
   if (ids == "") {
     
 heavyliftingModel.find().limit(2).exec(function (err, data) {
   if (err) { return next(err); }
- 
  ids = data[1]._id
    console.log(ids,'this is the first check area')
-
-
 //Query to find the menu item selected.
   var query = heavyliftingModel.find(
   {
@@ -321,7 +323,6 @@ heavyliftingModel.find().limit(2).exec(function (err, data) {
       ]
     })
 
- 
   //Query to find all of the database items for that menu.
   var query1 = heavyliftingModel.find(
   {
@@ -486,6 +487,31 @@ heavyliftingModel.find().limit(2).exec(function (err, data) {
 exports.getshortdata = function(req, res) {
 
 heavyliftingModel.find().limit(4).exec(function (err, data) {
+  if (err) { return next(err); }
+ 
+ 
+  res.send(JSON.stringify(data));
+
+});
+}
+
+
+///////////////////////////////////////////////////
+////       SEND THE DATABASE INFORMATION      //// 
+/////////////////////////////////////////////////
+exports.tree = function(req, res) {
+   res.render('tree', {
+    title: 'Tree',
+    siteName : siteName,
+ 
+  });
+}
+
+///////////////////////////////////////////////////
+////       SEND THE DATABASE INFORMATION      //// 
+/////////////////////////////////////////////////
+exports.getDataTree = function(req, res) {
+heavyliftingModel.find().exec(function (err, data) {
   if (err) { return next(err); }
  
  

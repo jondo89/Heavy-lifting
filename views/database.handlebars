@@ -56,11 +56,39 @@
 
 
 <script type="text/javascript">
-  var databaseMenu = {{{database}}}
-  var temp =[]
-  var table 
+var databaseid = {{{databaseId}}};
+var databaseMenu = []
+var temp =[]
+var table 
 
-  //This is where the id is injected into the menu item . Crude hacky work around , not sure how to improve.
+
+ 
+
+/////////////////////////////////// 
+//////  GET JSTREE BY ID    //////
+///////////////////////////////// 
+function jstreeGet(ids){
+  jQuery.ajax({
+    'url': '/jstree?ids='+ids,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      var dataSchemaObject = JSON.parse(dataSchemaObject)
+      var dataSchemaObject = fitstFormat(dataSchemaObject)
+    //manipulate data to work with the jstree
+      var jsTreeData = dataJStreeConvert (dataSchemaObject)
+      var location = 'jstree'
+      //load the jstree
+      loadNavMenu('jstree',jsTreeData)
+    }
+  });
+}
+
+ 
+
+
+function fitstFormat(databaseMenu){
+    //This is where the id is injected into the menu item . Crude hacky work around , not sure how to improve.
   for (var i = 0; i < databaseMenu.length; i++) {
       //the add the id to the array going into the menu .
       if (databaseMenu[i]['elementID'] == "") {
@@ -71,16 +99,17 @@
       temp.push(databaseMenu[i].entry)
     }
     databaseMenu = temp
+    return databaseMenu
+}
 
 
 
 
-    $( document ).ready(function() {
-  //manipulate data to work with the jstree
-  var jsTreeData = dataJStreeConvert (databaseMenu)
-  var location = 'jstree'
-  //load the jstree
-  loadNavMenu('jstree',jsTreeData)
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+$( document ).ready(function() {
+  jstreeGet(databaseid)
 });
 
 //change to format JS tree requires
@@ -122,15 +151,15 @@ function dataJStreeConvert (databaseMenu){
 
 //error trap the menu.
 for (var i = 0; i < newData.length; i++) {
-  console.log(newData[i])
-if (!newData[i].parent) {
-  newData[i].parent = '#'
-}
-
-}
-
-    return newData
+ 
+  if (!newData[i].parent) {
+    newData[i].parent = '#'
   }
+
+}
+
+return newData
+}
 
 ////////////////////////////////////////////////
 ////////    LOAD NAV TREE INTO MEMORY   ///////
@@ -178,14 +207,14 @@ jQuery('#'+location)
         var template=(dataTree.instance.get_node(dataTree.selected[0]).a_attr['data-template']);
         r.push(dataTree.instance.get_node(dataTree.selected[i]).template);
       }
-      templateload(ids)
+      templateloading(ids)
     })
   }
 
 ///////////////////////////////////////////////////////
 ////////  EVENT LISTNER FUNCTION AREA DATABASE ///////
 /////////////////////////////////////////////////////
-function templateload(ids){
+function templateloading(ids){
 //Ensure that the first load error is covered , also any other errors.
 if(ids){
   jQuery.ajax({

@@ -10,6 +10,17 @@ var formid1 = create_uid()
 
 console.log('1',formdata,'2',idItem,'3',raw,'4',parentid)
 
+console.log( 'form loading' )
+console.log( '-------------------------' )
+console.log( formdata )
+console.log( idItem )
+console.log( raw )
+console.log( parentid )
+console.log( formid1 )
+console.log( '-------------------------' )
+console.log( 'form loading' )
+
+
 //////////////////////////////////////////
 ////        CREATE UNIQUE ID         //// 
 ////////////////////////////////////////
@@ -179,6 +190,12 @@ switch(true){
     primer.elementID = ''
     primer.revision = 'created'
     primer.active = "true"
+
+
+ 
+
+
+
   break;
   case(raw=='edit'):
     var primer = data.idItem
@@ -192,7 +209,9 @@ switch(true){
   break;
 }
 
- 
+
+
+
  jQuery.ajax({
     'url': '/create',
     'type': 'POST', 
@@ -205,8 +224,7 @@ switch(true){
     'error' :function (dataSchemaObject) {
       window.location = dataSchemaObject.redirect
     },
-  });    
-
+  });   
  
 }
 

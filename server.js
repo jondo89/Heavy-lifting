@@ -129,6 +129,10 @@ app.get('/getdata', readController.getdata);
 app.get('/parentid', readController.parentid);
  //get data 
 app.get('/getshortdata', readController.getshortdata);
+ //get jstree 
+app.get('/jstree', readController.jstree);
+ 
+
 
 ///////////////////////////////////////////
 ////       DELETE CONTROLLERS         //// 
