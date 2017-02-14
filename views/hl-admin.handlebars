@@ -164,7 +164,8 @@
               <div class="col-md-12">
                 <h3>Data Set</h3>
                 <textarea class="form-control" class="form-control " id="schema4" name="schema"  style="height: 250px">
-{"name":"Navigation Menu", "detail":"Use for the creation of Navigation jstree structures.", "objectType":"form", "entry":{"options" : {"form": {"buttons": {"submit": {"title": "Submit", "id": "submit", "click": ""} } }, "helper": "Use this form to add menu items to the navigation menu.", "fields": {"detail": {"type": "text", "rows": 4, "cols": 40, "helper": "All entry data is stored here.", "validate": true }, "objectType": {"type": "select"}, "revision": {"type": "select"}, "active": {"type": "select", "required": false }, "entry": {"type": "json", "rows": 4, "cols": 40, "helper": "All entry data is stored here.", "validate": false } }, "focus": ""},"schema" : {"title": "Navigation Menu", "type": "object", "properties": {"description": {"title": "Description"}, "value": {"title": "Value"}, "unit": {"title": "Unit"}, "detail": {"title": "Detail"}, "standard": {"title": "Standard"}, "parent": {"title": "Parent"}, "icon": {"title": "Icon"}, "template": {"title": "Template"} } } }} </textarea>
+{"name":"Navigation Menu", "detail":"Use for the creation of Navigation jstree structures.", "objectType":"form", "entry":{"options": {"form": {"buttons": {"submit": {"title": "Submit", "id": "submit", "click": ""} } }, "helper": "Use this form to add menu items to the navigation menu.", "fields": {"detail": {"type": "text", "rows": 4, "cols": 40, "helper": "All entry data is stored here.", "validate": true }, "objectType": {"type": "select"}, "revision": {"type": "select"}, "active": {"type": "select", "required": false }, "entry": {"type": "json", "rows": 4, "cols": 40, "helper": "All entry data is stored here.", "validate": false } }, "focus": ""}, "schema": {"title": "Navigation Menu", "type": "object", "properties": {"description": {"title": "Description"}, "value": {"title": "Value"}, "unit": {"title": "Unit"}, "detail": {"title": "Detail"}, "standard": {"title": "Standard"}, "parent": {"title": "Parent"}, "icon": {"title": "Icon"}, "template": {"title": "Template"}, "headings": {"title": "Headings", "enum": ["value", "detail"] } } } } }
+</textarea>
               </div>
               <div class="col-md-12">
                 <p></p>
@@ -228,7 +229,7 @@
           <p>Create or modify the navigation structure here.</p>
         </div>
         <div class="col-md-12">
-
+            {{> navigation databaseId="'58a135d99a783a3c60688762'"}}
         <div id="navigationTable"></div>
         </div>
       </div>
@@ -331,8 +332,7 @@ function getthecurrentForms(objectType,toggle){
       //Table loading area
       loadDataBaseMenu('','formsTable')    
       loadDataBaseMenu(dataset[3]._id,'navigationTable')
-     // loadDataBaseMenu(dataset[2]._id,'databaseItemsTable')
-
+ 
 
         break;
       } 
@@ -345,19 +345,15 @@ function getthecurrentForms(objectType,toggle){
 //////////////////////////////////
 $(document).ready(function(){
   getthecurrentForms('form','true')
-
 // Warning Duplicate IDs
             $('[id]').each(function(){
               var ids = $('[id="'+this.id+'"]');
-
               if(ids.length>1 && ids[0]==this){
                  $( this ).css( "color", "red" )
                  $( this ).css( "background", "green" )
                 console.warn('Multiple IDs #'+this.id);
               }
-               
             });
-  
 });
 
 ////////////////////////////////////////////

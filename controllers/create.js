@@ -5,8 +5,8 @@ var ObjectId = require('mongodb').ObjectID;
 
 //Create an entry
 exports.create = function(req, res) {
-var dataset = req.body	
-if (dataset.revision != 'created') {
+	var dataset = req.body	
+	if (dataset.revision != 'created') {
 //this is the area where the items are assigned the Elment ID.
 //In the event of the revision being created , the element ID will need to be blank.
 if (!dataset.elementID) {
@@ -49,19 +49,30 @@ if (userid == '586b5bbe935a6d19040c5447' | userid == '5878b000d1f7c0220c1d2903')
 	})
 		}
 
- 
-
-		var create = new heavyliftingModel(dataset);  
-		create.save(function (err, doc) {  
-			if (err) {
-				res.send(err);
-			} else{
-				res.send({redirect: '/'});
-
-			}
-		});
-
-
+		if (dataset.childType == "" || !dataset.childType) {
+			heavyliftingModel.find().limit(5).exec(function (err, forms) {
+				if (err) { return next(err); }
+				dataset.childType = forms[2]._id
+				dataset.objectType = "database"
+				var create = new heavyliftingModel(dataset);  
+				create.save(function (err, doc) {  
+					if (err) {
+						res.send(err);
+					} else{
+						res.send({redirect: '/database'});
+					}
+				});
+			});
+		} else {
+			var create = new heavyliftingModel(dataset);  
+			create.save(function (err, doc) {  
+				if (err) {
+					res.send(err);
+				} else{
+						res.send({redirect: '/database'});
+				}
+			});
+		}
 	}
 } else {
 	userid=''

@@ -2,24 +2,24 @@
 <div id="formDelivery"></div>
 
 <script type="text/javascript">
-var formdata = {{{formdata}}}
-var idItem = {{{idItem}}}
-var raw = {{{raw}}}
-var parentid = {{{parentid}}}
-var formid1 = create_uid()
+  var formdata = {{{formdata}}}
+  var idItem = {{{idItem}}}
+  var raw = {{{raw}}}
+  var parentid = {{{parentid}}}
+  var formid1 = create_uid()
 
-console.log('1',formdata,'2',idItem,'3',raw,'4',parentid)
-
+////////////////////////////////////
+////        DEBUG AREA         //// 
+//////////////////////////////////
 console.log( 'form loading' )
 console.log( '-------------------------' )
-console.log( formdata )
-console.log( idItem )
-console.log( raw )
-console.log( parentid )
-console.log( formid1 )
+console.log( 'formdata :',formdata )
+console.log( 'idItem :',idItem )
+console.log( 'raw :',raw )
+console.log( 'parentid :',parentid )
+console.log( 'formid1 :',formid1 )
 console.log( '-------------------------' )
 console.log( 'form loading' )
-
 
 //////////////////////////////////////////
 ////        CREATE UNIQUE ID         //// 
@@ -27,11 +27,11 @@ console.log( 'form loading' )
 function create_uid() {
   function s4() {
     return Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
+    .toString(16)
+    .substring(1);
   }
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-    s4() + '-' + s4() + s4() + s4();
+  s4() + '-' + s4() + s4() + s4();
 }
 
 ////////////////////////////////////
@@ -48,70 +48,76 @@ $(document).ready(function(){
 ////////    GET FORM  AND DATA /////////
 ///////////////////////////////////////
 function getdata(formdata,idItem,raw){
-    jQuery.ajax({
+  jQuery.ajax({
     'url': '/getdata?formdata='+formdata+'&idItem='+idItem+'&raw='+raw,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
-       initiateForm(dataSchemaObject)
+     initiateForm(dataSchemaObject)
    }
  });
 }
 
-/////////////////////////////
-////        INIT        //// 
-////////////////////////////
- function initiateForm(data){
- 
-   var form = {
-    schema : data.formdata.entry['schema'],
-    options : data.formdata.entry['options']
-  }
-
-  $('#'+formid1).html("<div id='form_"+formdata+idItem+formid1+"'></div>")
-  $("#form_"+formdata+idItem+formid1).html("")
+////////////////////////////////////////
+////        CREATE THE FORM        //// 
+////////////////////////////////////////
+function initiateForm(data){
+ var form = {
+  schema : data.formdata.entry['schema'],
+  options : data.formdata.entry['options']
+}
+console.log(data)
+$('#'+formid1).html("<div id='form_"+formdata+idItem+formid1+"'></div>")
+$("#form_"+formdata+idItem+formid1).html("")
   //Test alpaca form for true , i.e if it exists , then destroy it.
   control = $("#form_"+formdata+idItem+formid1).alpaca("destroy");
-
   if (control) {
     formInit(form.schema,form.options,data)
   } else { 
     formInit(form.schema,form.options,data)
   }
- } 
+} 
 
 //////////////////////////////////////
 ////        CREATE FORM          //// 
 ////////////////////////////////////
 function formInit(schema,options,data){
   //work areound for the special requirments on the submit button.
- 
- if (options) {
-
-
-  options.form.buttons.submit.click = function(e){
+  if (options) {
+    options.form.buttons.submit.click = function(e){
       e.preventDefault()
       var value = this.getValue();
       formPost(value,data)
-  }
-  for(key in options.fields){
-    if (options.fields[key]['type'] == 'select' ) {
-    //options.fields[key] ["dataSource"] = "/data/icecream-list.json"
-  }
-} 
+    }
 
- 
- 
- 
+
+//Special case varible use to ensure timing issue the index variable passing into the form dropdown.
+var arr = options.fields
+$.each(arr, function(index, value) {
+      if (arr[index]['type'] == 'select' ) {
+       arr[index]["dataSource"] = function(callback) {
+            jQuery.ajax({
+              'async': true,
+              'global': false,
+              'url': '/getformfield?data='+index,
+              'success': function (dataSchemaObject) {
+
+                var inputs = JSON.parse(dataSchemaObject);
+                callback(inputs);
+              }
+            }); 
+          }
+  }
+});
+
+
 
 switch(true){
-
   //the use button will require the form to remove any element ids as this will be a new entry.
   case(raw=='use'):
   $("#form_"+formdata+idItem+formid1).alpaca({
     "schema": schema,
     "options": options
-    
   });
   break;
   case(raw=='edit'):
@@ -127,7 +133,7 @@ switch(true){
   });
   break;
   case(raw=='raw'):
-    $("#form_"+formdata+idItem+formid1).alpaca({
+  $("#form_"+formdata+idItem+formid1).alpaca({
     "schema": schema,
     "options": options,
     "postRender": function(control) {
@@ -138,94 +144,114 @@ switch(true){
     }    
   });
   break;
+  case(raw=='self'):
+  $("#form_"+formdata+idItem+formid1).alpaca({
+    "schema": schema,
+    "options": options,
+    "postRender": function(control) {
+      //only set the data if the form is for use.
+      if (idItem !='') {
+        $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(data.idItem.entry)
+      }
+    }    
+  });
+  break;
+default :
+  var html = ''
+  html += '<div class="alert alert-danger" role="alert"> '
+  html += '<strong>'
+  html += 'Oh snap!'
+  html += '</strong> '
+  html += 'Form error , form usage type is not defined.'
+  html += '</div>'
+  $("#form_"+formdata+idItem+formid1).html(html)
+ break;
+
 }
-
-
-
 } else {
-    var html = ''
-    html += '<div class="alert alert-danger" role="alert"> '
-    html += '<strong>'
-    html += 'Oh snap!'
-    html += '</strong> '
-    html += 'Form error , This dataset is not a form , Please let us know about this.'
-    html += '</div>'
-
-
+  var html = ''
+  html += '<div class="alert alert-danger" role="alert"> '
+  html += '<strong>'
+  html += 'Oh snap!'
+  html += '</strong> '
+  html += 'Form error , This dataset is not a form , Please let us know about this.'
+  html += '</div>'
   $("#form_"+formdata+idItem+formid1).html(html)
 }
-
-
 }
+
 //////////////////////////////////////////////
 ////        SUBMIT BUTTON CLICK          //// 
 ////////////////////////////////////////////
 function formPost(dataset,data){
 
-  var name = $('#nameArea').val()
-  var detail = $('#DetailArea').val()
-
-
-
-
+//work around for naming of the from .
+var name = $('#nameArea').val()
+var detail = $('#DetailArea').val()
 
 //routing for the various use cases on the switch
 switch(true){
-  //the use button will require the form to remove any element ids as this will be a new entry.
   case(raw=='use'):
     var primer = data.idItem
     primer.entry = dataset
-
- 
     if (name || detail) {
-        primer.name = name
-        primer.detail = detail
+      primer.name = name
+      primer.detail = detail
     }
     if (parentid) {
       primer.parentid=parentid
     }
-
- 
-
     primer.elementID = ''
     primer.revision = 'created'
     primer.active = "true"
-
-
- 
-
-
-
   break;
+  case(raw=='self'):
+      var primer = data.idItem
+      primer.entry = dataset
+      primer.revision = 'updated'
+      primer.elementID = data.idItem.elementID
+      primer.active = "true"
+  break;
+
+
   case(raw=='edit'):
-    var primer = data.idItem
-    primer.entry = dataset
-    primer.revision = 'updated'
-    primer.elementID = data.idItem.elementID
-    primer.active = "true"
+      var primer = data.idItem
+      primer.entry = dataset
+      primer.revision = 'updated'
+      primer.elementID = data.idItem.elementID
+      primer.active = "true"
   break;
   case(raw=='raw'):
-    var primer = dataset
+      var primer = dataset
   break;
+default :
+  var html = ''
+  html += '<div class="alert alert-danger" role="alert"> '
+  html += '<strong>'
+  html += 'Oh snap!'
+  html += '</strong> '
+  html += 'Form error , form usage type is not defined.'
+  html += '</div>'
+  $("#form_"+formdata+idItem+formid1).html(html)
+ break;
+
 }
 
+//Jquery send to server
+jQuery.ajax({
+  'url': '/create',
+  'type': 'POST', 
+  'dataType': 'json',
+  'contentType': 'application/json', 
+  'data': JSON.stringify(primer),
+  'success': function (dataSchemaObject) {
+    window.location = dataSchemaObject.redirect
+  },
+  'error' :function (dataSchemaObject) {
+    window.location = dataSchemaObject.redirect
+  },
+});   
 
-
-
- jQuery.ajax({
-    'url': '/create',
-    'type': 'POST', 
-    'dataType': 'json',
-    'contentType': 'application/json', 
-    'data': JSON.stringify(primer),
-    'success': function (dataSchemaObject) {
-      window.location = dataSchemaObject.redirect
-    },
-    'error' :function (dataSchemaObject) {
-      window.location = dataSchemaObject.redirect
-    },
-  });   
- 
 }
 
 </script>

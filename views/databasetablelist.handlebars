@@ -1,14 +1,4 @@
-<div class="alert alert-warning" role="alert">
-<h3>Where you left off.</h3>
-<ul>
- 
-<li>Getting the Headings Menu to work</li> 
-<li>Getting the revision data to work</li> 
- 
-  
-</ul>
 
-</div>
 
 
 <div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
@@ -22,7 +12,17 @@
 <p>
 </p>
 <div id='formDelivery'></div>
+<div class="alert alert-warning" role="alert">
+<h3>Where you left off.</h3>
+<ul>
+ 
+ 
+<li>Getting the revision data to work</li> 
+ 
+  
+</ul>
 
+</div>
 <script type="text/javascript">
 var tablelistdata = {{{databaseitems}}};
 var items = {{{menuitem}}}
@@ -30,12 +30,15 @@ var formids = create_uid()
 var templateload = {{{templateload}}}
  
 
+/////////////////////////////
+////     DEBUG AREA     //// 
+///////////////////////////
 console.log( 'databasetablelist loading' )
 console.log( '-------------------------' )
-console.log( tablelistdata )
-console.log( items )
-console.log( formids )
-console.log( templateload )
+console.log( 'tablelistdata : ',tablelistdata )
+console.log( 'items : ',items )
+console.log( 'formids : ',formids )
+console.log( 'templateload : ',templateload )
 console.log( '-------------------------' )
 console.log( 'databasetablelist loading' )
 
@@ -56,7 +59,7 @@ var temp = []
     tablelistdata[i].entry.name = tablelistdata[i]['name']
     tablelistdata[i].entry.childType = tablelistdata[i]['childType']
     tablelistdata[i].entry.name = tablelistdata[i]['name']
-    tablelistdata[i].entry.detail = tablelistdata[i]['detail']
+   // tablelistdata[i].entry.detail1 = tablelistdata[i]['detail']
     tablelistdata[i].entry.userID = tablelistdata[i]['userID']
     tablelistdata[i].entry.parentid = tablelistdata[i]['parentid']
     temp.push(tablelistdata[i].entry)
@@ -109,8 +112,15 @@ $('document').ready(function(){
 //////  LOAD THE TABLE  //////
 /////////////////////////////
 function datableload(tablelistdata) {
+  
+if (items.entry.headings) {
+  var tableHeadings = items.entry.headings
+} else {
+  var tableHeadings = ['name','detail','userID','id','parentid','childType','description']
+}
+
  
-    items.headings = ['name','detail','userID','id','parentid','childType','description']
+
     var tempVarIDs = formids+'tableloadID'
     //inject the ID html table into the page.
     $('#'+formids).html('<table id="'+tempVarIDs+'" class="table table-bordered table-compressed table-hover" cellspacing="0" width="100%"></table>')
@@ -125,7 +135,7 @@ function datableload(tablelistdata) {
 //client side error check for the tables.
 if (tablelistdata !== null) {
   if (tablelistdata.length !== 0) {
-    dataTableLoad (tablelistdata,tempVarIDs,items.headings)
+    dataTableLoad (tablelistdata,tempVarIDs,tableHeadings)
     loadDataTable(tempVarIDs)
   } else {
     $('#'+formids).html(html)
@@ -192,11 +202,14 @@ function formatDefault ( d ) {
   html += '<div id="'+d+'_content" style="padding-top:0px;text-align:left">'
   html += '<div class="btn-group" role="group" aria-label="..." style="padding-bottom:15px">'
   html += '<button type="button" class="btn btn-default" id="'+d+'_use" onclick="useForm(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Use Form</button>'
-  html += '<button type="button" class="btn btn-default" id="'+d+'_read" onclick="readDatabase(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Modify</button>'
-  html += '<button type="button" class="btn btn-default" data-_id="'+d+'" id="'+d+'_del" data-toggle="modal" data-target="#myModal" onclick="deleteEntry(this.id)"  data-toggle="tooltip" data-placement="top" title="Delete this item">Delete</button>'
+  html += '<button type="button" class="btn btn-default" id="'+d+'_read" onclick="modifyItem(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Modify</button>'
+
+  html += '<button type="button" class="btn btn-default" id="'+d+'raw" onclick="raw(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Raw</button>'  
+
+  html += '<button type="button" class="btn btn-danger" data-_id="'+d+'" id="'+d+'_del" data-toggle="modal" data-target="#myModal" onclick="deleteEntry(this.id)"  data-toggle="tooltip" data-placement="top" title="Delete this item"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>'
   html += '</div>'
-  html += '<div class="btn-group" role="group" aria-label="..." style="padding-bottom:15px">'
-  html += '<button type="button" class="btn btn-default"  id="'+d+'_comp" onclick="createComp(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Create component</button>'
+  html += '<div class="btn-group" role="group" aria-label="..." style="padding-bottom:15px;padding-left:15px">'
+  html += '<button type="button" class="btn btn-default"  id="'+d+'_comp" onclick="createComp(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Create child item.">Create component</button>'
   html += '</div>'
   html += '</div>'
   html += '<div id="'+d+'_loadingArea" ></div>'
@@ -321,9 +334,29 @@ function useForm(id){
 //////////////////////////
 //////  MODIFY     //////
 ////////////////////////
-function readDatabase(id){
+function modifyItem(id){
   id = id.replace('_read', '');
-  loadformModal(id,id,'raw',id)
+  childType = $('#'+id+'').data('childtype')
+  //Used for the check self when modifiing.
+  if (!childType) {
+    loadformModal(id,id,'self',id)
+  } else {
+    loadformModal(childType,id,'self',id)
+  }
+}
+
+//////////////////////////
+//////  MODIFY     //////
+////////////////////////
+function raw(id){
+  id = id.replace('raw', '');
+  childType = $('#'+id+'').data('childtype')
+  //Used for the check self when modifiing.
+  if (!childType) {
+    loadformModal(id,id,'raw',id)
+  } else {
+    loadformModal(childType,id,'raw',id)
+  }
 }
 
 ////////////////////////////////////
@@ -331,19 +364,14 @@ function readDatabase(id){
 //////////////////////////////////
 function createComp(id){
   id = id.replace('_comp', '');
-    childType = $('#'+id+'').data('childtype')
+  childType = $('#'+id+'').data('childtype')
   //there is some kind of wierd lowcase requiremtns.
- parentid = $('#'+id+'').data('parentid')
-
+  parentid = $('#'+id+'').data('parentid')
   if (!childType) {
-    console.log(childType,'fgfgfg')
     loadformModal(childType,'','use',id)
   } else {
-    console.log('childType')
     loadformModal(parentid,'','use',id)
   }
-
-  
 }
 
 ///////////////////////////////// 

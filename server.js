@@ -131,7 +131,8 @@ app.get('/parentid', readController.parentid);
 app.get('/getshortdata', readController.getshortdata);
  //get jstree 
 app.get('/jstree', readController.jstree);
- 
+  //get the select ddrop down items
+app.get('/getformfield', readController.getformfield);
 
 
 ///////////////////////////////////////////
