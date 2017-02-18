@@ -296,10 +296,17 @@ exports.database = function(req, res) {
 //get the forth element id in the database
 heavyliftingModel.find().limit(5).exec(function (err, forms) {
   if (err) { return next(err); }
+
+  //error tramp for the initation of the database.
+  if (forms.length >5) {
+    var tempVar = forms[4]._id
+  } else {
+    var tempVar = ''
+  }
    res.render('database', {
     title: 'Database',
     siteName : siteName,
-    databaseId : JSON.stringify(forms[4]._id), 
+    databaseId : JSON.stringify(tempVar), 
   });
 });
 }

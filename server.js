@@ -32,6 +32,9 @@ require('./config/passport');
 
 var app = express();
 
+//favicon location
+var favicon = require('serve-favicon');
+app.use(favicon(__dirname + '/public/img//favicon/favicon-16x16.png')); 
 
 mongoose.connect(process.env.MONGODB);
 mongoose.connection.on('error', function() {
@@ -99,7 +102,7 @@ app.get('/delete',  adminController.delete);
 ///////////////////////////////////////////////////
 ////        USER INTERFACE CONTROLLER         //// 
 /////////////////////////////////////////////////
-app.get('/dashboard',  userInterfaceController.dashboard);
+app.get('/settings',  userInterfaceController.settings);
 
 
 /////////////////////////////////
