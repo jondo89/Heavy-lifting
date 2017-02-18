@@ -12,17 +12,7 @@
 <p>
 </p>
 <div id='formDelivery'></div>
-<div class="alert alert-warning" role="alert">
-<h3>Where you left off.</h3>
-<ul>
  
- 
-<li>Getting the revision data to work</li> 
- 
-  
-</ul>
-
-</div>
 <script type="text/javascript">
 var tablelistdata = {{{databaseitems}}};
 var items = {{{menuitem}}}
@@ -114,7 +104,15 @@ $('document').ready(function(){
 function datableload(tablelistdata) {
   
 if (items.entry.headings) {
+
+
   var tableHeadings = items.entry.headings
+if (tableHeadings[1]) {
+  tableHeadings = [tableHeadings]
+  console.log(tableHeadings,'th')
+}
+console.log(tableHeadings)
+
 } else {
   var tableHeadings = ['name','detail','userID','id','parentid','childType','description']
 }

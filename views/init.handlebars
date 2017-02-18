@@ -1,0 +1,266 @@
+
+
+ 
+<h1>Reset this Database</h1>
+<p>This template is used to reset the Mongo dB database to defaults.</p>
+ 
+    <div id="detailArea">Initializing Database   
+      <i class="fa fa-spinner fa-spin fa-1x fa-fw"></i>
+<span class="sr-only">Loading...</span>
+    </div>
+ 
+
+ <script type="text/javascript">
+
+////////////////////////////////////
+////        INITIALIZE         //// 
+//////////////////////////////////
+$(document).ready(function(){
+Initializing()
+});
+
+//////////////////////////////
+//////  REQUEST DATA  ///////
+////////////////////////////
+function Initializing(){
+ 
+ 
+  jQuery.ajax({
+    'url': '/getshortdata',
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+     dataset = jQuery.parseJSON( dataSchemaObject );
+      
+
+ 
+var records = dataset.length
+
+
+  switch(true){
+    case ( records > 4 ):
+      existingRecords(records);
+    break
+    case (records == 4 ):
+      getjson5(records);
+    break
+    case (records == 3 ):
+      getjson4(records);
+    break
+    case (records == 2 ):
+      getjson3(records);
+    break
+    case (records == 0 ):
+      getjson1(records);
+    break
+  }
+
+// Warning Duplicate IDs
+            $('[id]').each(function(){
+              var ids = $('[id="'+this.id+'"]');
+              if(ids.length>1 && ids[0]==this){
+                 $( this ).css( "color", "red" )
+                 $( this ).css( "background", "green" )
+                console.warn('Multiple IDs #'+this.id);
+              }
+            });
+
+
+
+
+
+
+
+
+    },
+    'error' :function (dataSchemaObject) {
+      window.location = '/init'
+    },
+  });  
+  
+}
+
+
+///////////////////////////////////////////////
+//////  IF THERE ARE EXISTING RECORDS  ///////
+/////////////////////////////////////////////
+function existingRecords(records){
+	var html = ''
+	 	var html = ''
+  html += 'Database Status :   <span class="label label-success">Active</span>'
+	$('#detailArea').html(html)
+html+='<p></p>'
+html+='<div class="row">'
+html+='<div class="col-md-8">'
+	html+= '<div class="alert alert-warning" role="alert"> <strong>Warning!</strong> There are ' + records + ' records in this database</div>'
+html+='</div>'
+html+='<div class="col-md-4">'
+ html +='<div class="btn-group" role="group" aria-label="..." style="align:center">'
+ html += '<a type="button" class="btn btn-default" href="/hl-admin">Admin</a>'
+  html += '<button type="button" class="btn btn-danger"  id="_del" data-toggle="modal" data-target="#myModal" onclick="deleteEntry(this.id)"  data-toggle="tooltip" data-placement="top" title="Delete this item">Reset</button>'
+html+='</div>'
+html+='</div>'
+
+	$('#detailArea').html(html)
+}
+
+
+
+/////////////////////////////////////// 
+//////  DELETE ENTIRE DATABAE  ///////
+///////////////////////////////////// 
+function deleteEntry(id){
+  id = id.replace('_del', '');  
+ _id = $( "#"+id ).data( "_id" )  
+ html = ''
+ html +='<div class="row" style="width:100%;text-align:center">'
+ 
+ html += '<h3>Are you sure you what to do this ?</h3>'
+ html += '<p>This action cannot be undone.</p>'
+ html +='<div class="btn-group" role="group" aria-label="..." style="align:center">'
+ html +='  <button type="button" class="btn btn-danger" onclick="deleteEntrys()"">Confirm</button>'
+ html +='</div>'
+ $('#formAreaModal').html(html)
+}
+
+
+function deleteEntrys(){
+  jQuery.ajax({
+    'url': '/deletedb',
+    'type': 'GET', 
+ 
+ })
+  window.location = '/init'
+}
+
+
+//////////////////////////// 
+//////  GET JSON #1 ///////
+////////////////////////// 
+function getjson1(){
+var temp = 1
+  $.getJSON('../json/'+temp+'.json', function (dataset) {
+  jQuery.ajax({
+    'url': '/create',
+    'type': 'POST', 
+    'dataType': 'json',
+    'contentType': 'application/json', 
+    'data': JSON.stringify(dataset),
+    'success': function (dataSchemaObject) {
+      getjson2()
+    },
+    'error' :function (dataSchemaObject) {
+      window.location = '/init'
+    },
+  });  
+  });
+}
+
+//////////////////////////// 
+//////  GET JSON #2 ///////
+////////////////////////// 
+function getjson2(){
+var temp = 2
+  $.getJSON('../json/'+temp+'.json', function (dataset) {
+  jQuery.ajax({
+    'url': '/create',
+    'type': 'POST', 
+    'dataType': 'json',
+    'contentType': 'application/json', 
+    'data': JSON.stringify(dataset),
+    'success': function (dataSchemaObject) {
+      window.location = '/init'
+    },
+    'error' :function (dataSchemaObject) {
+      window.location = '/init'
+    },
+  });  
+  });
+}
+
+
+//////////////////////////// 
+//////  GET JSON #3 ///////
+////////////////////////// 
+function getjson3(){
+var temp = 3
+  $.getJSON('../json/'+temp+'.json', function (dataset) {
+console.log(database)
+dataset.parentid = database[1]._id,
+ 
+
+  jQuery.ajax({
+    'url': '/create',
+    'type': 'POST', 
+    'dataType': 'json',
+    'contentType': 'application/json', 
+    'data': JSON.stringify(dataset),
+    'success': function (dataSchemaObject) {
+      window.location = '/init'
+    },
+    'error' :function (dataSchemaObject) {
+      window.location = '/init'
+    },
+  });  
+  });
+}
+
+////////////////////////////
+//////  GET JSON #4 ///////
+////////////////////////// 
+function getjson4(){
+var temp = 4
+  $.getJSON('../json/'+temp+'.json', function (dataset) {
+
+dataset.parentid = database[1]._id,
+dataset.childType = database[2]._id,
+
+  jQuery.ajax({
+    'url': '/create',
+    'type': 'POST', 
+    'dataType': 'json',
+    'contentType': 'application/json', 
+    'data': JSON.stringify(dataset),
+    'success': function (dataSchemaObject) {
+     	window.location = '/init'
+    },
+    'error' :function (dataSchemaObject) {
+      window.location = '/init'
+    },
+  });  
+  });
+}
+
+////////////////////////////
+//////  GET JSON #5 ///////
+////////////////////////// 
+function getjson5(){
+var temp = 5
+  $.getJSON('../json/'+temp+'.json', function (dataset) {
+
+dataset.parentid = database[3]._id,
+dataset.childType = database[2]._id,
+  jQuery.ajax({
+    'url': '/create',
+    'type': 'POST', 
+    'dataType': 'json',
+    'contentType': 'application/json', 
+    'data': JSON.stringify(dataset),
+    'success': function (dataSchemaObject) {
+     	window.location = '/init'
+    },
+    'error' :function (dataSchemaObject) {
+      window.location = '/init'
+    },
+  });  
+  });
+}
+
+
+
+ 
+
+ </script>
+
+ 
+ 

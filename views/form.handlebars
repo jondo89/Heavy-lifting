@@ -93,7 +93,7 @@ function formInit(schema,options,data){
 
 //Special case varible use to ensure timing issue the index variable passing into the form dropdown.
 var arr = options.fields
-$.each(arr, function(index, value) {
+$.each(arr, function(index, value) { 
       if (arr[index]['type'] == 'select' ) {
        arr[index]["dataSource"] = function(callback) {
             jQuery.ajax({

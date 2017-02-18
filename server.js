@@ -16,6 +16,7 @@ var passport = require('passport');
 dotenv.load();
 
 // Controllers
+var initController = require('./controllers/initialize');
 var HomeController = require('./controllers/home');
 var userController = require('./controllers/user');
 var contactController = require('./controllers/contact');
@@ -88,12 +89,19 @@ app.get('/', HomeController.index);
 
 
 
-
+////////////////////////////////////////////
+////       INITIALIZE DATABASE         //// 
+//////////////////////////////////////////
+ 
+app.get('/deletedb', initController.deletedb);
 
 //////////////////////////////////////////////////////////////////////
 ////        PRIMARY ADMINISTRATIVE DATABASE MODIFICATION         //// 
 ////////////////////////////////////////////////////////////////////
-app.get('/hl-admin', adminController.admin);
+app.get('/hl-admin', adminController.hadmin);
+app.get('/admin', adminController.admin);
+
+
 
 app.get('/read',  adminController.read);
 app.get('/update',  adminController.update);

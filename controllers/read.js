@@ -470,7 +470,7 @@ heavyliftingModel.find().limit(2).exec(function (err, data) {
 ////       GET DATABASE         //// 
 ///////////////////////////////////
 exports.getshortdata = function(req, res) {
-heavyliftingModel.find().limit(4).exec(function (err, data) {
+heavyliftingModel.find().limit(10).exec(function (err, data) {
   if (err) { return next(err); }
   res.send(JSON.stringify(data));
 });

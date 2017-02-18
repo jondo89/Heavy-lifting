@@ -2,7 +2,7 @@ var heavyliftingModel      = require('../models/heavylifting.js');
 var siteName = 'Heavy-lifting'
 
 
-exports.admin = function(req, res) {
+exports.hadmin = function(req, res) {
 //Perform Routing for Varios user type on the home page.
 if (req.user) {
          userid = req.user.id
@@ -22,6 +22,51 @@ switch (true){
          res.redirect('/signin');
        }
 };
+
+
+
+exports.admin = function(req, res) {
+//Perform Routing for Varios user type on the home page.
+if (req.user) {
+         userid = req.user.id
+switch (true){
+  case(userid == '586b5bbe935a6d19040c5447' || userid == '5878b000d1f7c0220c1d2903'):
+
+
+
+
+      heavyliftingModel.find().limit(5).exec(function (err, init) {
+        if (err) { return next(err); }
+
+var ids = init[4]._id
+var Formids = init[3]._id
+
+    res.render('admin', {
+      title: 'Database Admin',
+      siteName : siteName,
+      layout: false,
+      items : JSON.stringify(ids),
+      Formids : JSON.stringify(Formids)
+    });
+
+
+
+
+ });
+
+
+
+
+  break;
+  default:
+    res.redirect('/database');
+  break;
+}
+       } else {
+         res.redirect('/signin');
+       }
+};
+
 
 //Create an entry
 exports.create = function(req, res) {
