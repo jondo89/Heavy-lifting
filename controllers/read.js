@@ -293,22 +293,18 @@ var ids = req.param('ids')
 ////       SEND THE DATABASE INFORMATION      //// 
 /////////////////////////////////////////////////
 exports.database = function(req, res) {
-//get the forth element id in the database
-heavyliftingModel.find().limit(5).exec(function (err, forms) {
-  if (err) { return next(err); }
-
-  //error tramp for the initation of the database.
-  if (forms.length >5) {
-    var tempVar = forms[4]._id
-  } else {
-    var tempVar = ''
-  }
-   res.render('database', {
-    title: 'Database',
-    siteName : siteName,
-    databaseId : JSON.stringify(tempVar), 
+  heavyliftingModel.find().limit(5).exec(function (err, init) {
+    if (err) { return next(err); }
+    var ids = init[2]._id
+    var Formids = init[3]._id
+    res.render('database', {
+      title: 'Database Admin',
+      siteName : siteName,
+      layout: false,
+      items : JSON.stringify(ids),
+      Formids : JSON.stringify(Formids)
+    });
   });
-});
 }
 
 //////////////////////////////////////////////

@@ -313,4 +313,6 @@ z-index: -10;
  }
 
 
- 
+ .navbar {
+     border-radius: 0px !important;  
+   }

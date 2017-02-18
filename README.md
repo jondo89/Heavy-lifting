@@ -1,8 +1,8 @@
 <h1> 
-Heavy-lifting is a machine design platform for Engineers. Mainly based on data management and analysis. 
+Heavy-lifting is a design platform for Engineers.
 </h1>
 <h3> 
-Use Heavy-lifting to build and design projects, support your business, and work together on <strong>open source </strong> machine design.
+Use Heavy-lifting to build, design and create projects, support your business, and work together on <strong>open source </strong> engineering databases.
 </h3>
 <p>It is possible the frame work would work as a CMS system.</p>
 
