@@ -22,7 +22,16 @@ Application Framework
 </ul>
 Form Deployment is carried out with <a href="http://www.alpacajs.org/" target="_blank">Alpaca.js</a>
 
- 
+Installation instructions.
+>Step 1 - Install Node.js
+>Step 2 - Install mongdb | follow the set up instructions on the website. (the trick is to create the c:/data/db directory then run mongod.exe)
+>Step 3 - Sign up for Github , install the windows gihub client , clone the repository.
+>Step 4 - The node.js installation allowed for the installation of the NPM service  , go into the directory where heavy-lifting was cloned using your preferred command prompt (DOS) and type npm install npm@latest -g , this should be typed into your preferred command prompt package. NPM will now download and install into the cloned directory. If this does not work , try install again using : npm install
+>Step 5 - in order to bring in the favicon server , use the cmd prompt to install npm install serve-favicon
+>Step 6 - to make life much easier , install nodemon. Nodemon restarts the server on crash , type into the cmd prompt npm install -g nodemon.
+>Step 7 - in order to communicate between the mongo server and the client side , expressjs needs to be installed. type into the cmd prompt npm install express.
+>Step 8 - Robomongo is a very useful tool for viewing the mongodb database structure. Install from their website.
+
 
 >>>>>>>  
 <p>Let us know if you would like us to assist on any other web based system design.</p>
