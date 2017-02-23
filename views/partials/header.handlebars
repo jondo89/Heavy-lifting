@@ -1,4 +1,3 @@
-
 <nav id="mainNav" class="navbar navbar-inverse ">
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -6,12 +5,10 @@
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
         <span class="sr-only">Toggle navigation</span><i class="fa fa-bars"></i>
       </button>
-      <a href="../" class="navbar-brand">heavy-lifting</a>
-      
+      <a href="../" class="navbar-brand">Heavy-lifting</a>
     </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-
       <ul class="nav navbar-nav navbar-right">
         {{> navbar}}   
         {{#if user}}
@@ -22,21 +19,18 @@
             {{else}}
             <img src="{{user.gravatar}}" class="navbar-avatar-pic">
             {{/if}}
-            {{#if user.name}}
-            {{user.name}}
-            {{else}}
-            {{user.email}}
-            {{/if}}
+ 
             <i class="caret"></i>
           </a>
           <ul class="dropdown-menu" style="width: 100%">
             <li><a href="/account">Your Profile</a></li>
             <li><a href="/account">Your Account</a></li>
+            <li><a href="/account">Help</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="/admin">Admin Panel</a> </li>
+            <li class="divider"></li>       
             <li><a href="/settings">Settings</a></li>
-  
-            <li><a href="/admin">Admin Panel</a> </li>           
-            <li class="divider"></li>
-            <li><a href="/logout">Logout</a></li>
+            <li><a href="/signout">Sign out</a></li>
           </ul>
         </li>
         {{else}}
@@ -44,8 +38,6 @@
         <li class=""><a href="/signup">Sign up</a></li>
         {{/if}}
       </ul>
-
-
     </div>
     <!-- /.navbar-collapse -->
   </div>

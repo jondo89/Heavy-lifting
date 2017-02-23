@@ -1,0 +1,18 @@
+var heavyliftingModel      = require('../models/heavylifting.js');
+var siteName = 'Heavy-lifting'
+var ObjectId = require('mongodb').ObjectID;
+
+
+/////////////////////////////////////////
+////////// ORGINISTAION PAGE ///////////
+////////////////////////////////////////
+exports.orginization = function(req, res) {
+ 
+};
+
+/////////////////////////////////////////////
+////////// NEW ORGINISTAION PAGE ///////////
+///////////////////////////////////////////
+exports.new = function(req, res) {
+ 
+};

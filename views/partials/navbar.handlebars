@@ -1,3 +1,21 @@
- <li>
-<a href="/database"><i class="fa fa-database" aria-hidden="true"></i></a>
- </li>
+
+
+<li><a href="/assemblies"><i class="fa fa-book" aria-hidden="true"></i></a></li>
+<li><a href="/assemblies"><i class="fa fa-cogs" aria-hidden="true"></i></a></li>
+<li><a href="/components"><i class="fa fa-cog" aria-hidden="true"></i></a></li>
+<li><a href="/database"><i class="fa fa-database" aria-hidden="true"></i></a></li>
+<li><a href="/shop"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a></li>
+
+
+       {{#if user}}
+       <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-plus" aria-hidden="true"></i> <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">New assembly</a></li>
+            <li><a href="#">New component</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">New orginization</a></li>
+          </ul>
+        </li>
+
+                    {{/if}}
