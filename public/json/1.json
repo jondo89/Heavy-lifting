@@ -1,58 +1,53 @@
 {
- 
-    "name" : "Primer Form",
-    "detail" : "The first form added to the database , Used for the creation of all new forms.",
-    "entry" : {
-        "options" : {
-            "focus" : "",
-            "fields" : {
-                "options" : {
-                    "validate" : false,
-                    "helper" : "Option Set.",
-                    "cols" : 40,
-                    "rows" : 10,
-                    "type" : "json"
-                },
-                "schema" : {
-                    "validate" : false,
-                    "helper" : "Schema Set.",
-                    "cols" : 40,
-                    "rows" : 10,
-                    "type" : "json"
-                }
-            },
-            "helper" : "Insert Schema and Options to design your form.",
-            "form" : {
-                "buttons" : {
-                    "submit" : {
-                        "click" : "",
-                        "id" : "submit",
-                        "title" : "Submit"
-                    }
-                }
-            }
+  "name": "Primer Form",
+  "detail": "The first form added to the database , Used for the creation of all new forms.",
+  "entry": {
+    "options": {
+      "focus": "",
+      "fields": {
+        "options": {
+          "validate": false,
+          "helper": "Option Set.",
+          "cols": 40,
+          "rows": 10,
+          "type": "json"
         },
-        "schema" : {
-            "properties" : {
-                "options" : {
-                    "title" : "Options"
-                },
-                "schema" : {
-                    "title" : "Schema"
-                }
-            },
-            "type" : "object",
-            "description" : "Insert Schema and Options to design your form.",
-            "title" : "Form Deployment"
+        "schema": {
+          "validate": false,
+          "helper": "Schema Set.",
+          "cols": 40,
+          "rows": 10,
+          "type": "json"
         }
+      },
+      "helper": "Insert Schema and Options to design your form.",
+      "form": {
+        "buttons": {
+          "submit": {
+            "click": "",
+            "id": "submit",
+            "title": "Submit"
+          }
+        }
+      }
     },
-    "parentid" : "",
- 
-    "childType" : "",
-    "objectType" : "primer",
-    "active" : "true",
- 
-    "revision" : "created",
-    "elementID" : "",
-    "__v" : 0
+    "schema": {
+      "properties": {
+        "options": {
+          "title": "Options"
+        },
+        "schema": {
+          "title": "Schema"
+        }
+      },
+      "type": "object",
+      "description": "Insert Schema and Options to design your form.",
+      "title": "Form Deployment"
+    }
+  },
+  "objectType": "primer",
+  "__v": 0,
+  "active": "true",
+  "revision": "created",
+  "elementID": ""
 }

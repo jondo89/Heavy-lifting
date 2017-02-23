@@ -92,8 +92,9 @@ app.get('/', HomeController.index);
 ////////////////////////////////////////////
 ////       INITIALIZE DATABASE         //// 
 //////////////////////////////////////////
- 
+app.get('/init', initController.deletedb);
 app.get('/deletedb', initController.deletedb);
+app.get('/getdb', initController.getdb);
 
 //////////////////////////////////////////////////////////////////////
 ////        PRIMARY ADMINISTRATIVE DATABASE MODIFICATION         //// 
@@ -111,8 +112,6 @@ app.get('/delete',  adminController.delete);
 ////        USER INTERFACE CONTROLLER         //// 
 /////////////////////////////////////////////////
  
-
-
 /////////////////////////////////
 ////        DATABASE        //// 
 ///////////////////////////////

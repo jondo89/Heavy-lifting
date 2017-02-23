@@ -1,6 +1,7 @@
-<h1 id="name"></h1>
-<p id="detail"></p>
+ 
 
+
+ 
 <div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
   <button type="button" class="btn btn-default" id="changeButton" onclick="deployForm(this.id)" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></button> 
 </div>
@@ -13,22 +14,27 @@
 </p>
 <div id='formDelivery'></div>
 
+
+
+
+
+
+
+
+
+
+
 <script type="text/javascript">
   var tablelistdata = {{{databaseitems}}};
   var items = {{{menuitem}}}
   var formids = create_uid()
   var templateload = {{{templateload}}}
   
-/////////////////////////////////////
-////     HEADINGS AND STUFF     //// 
-///////////////////////////////////
-$('#name').html(items.name)
-$('#detail').html(items.detail)
-
 
 /////////////////////////////
 ////     DEBUG AREA     //// 
 ///////////////////////////
+console.log( '-------------------------' )
 console.log( 'databasetablelist loading' )
 console.log( '-------------------------' )
 console.log( 'tablelistdata : ',tablelistdata )
@@ -37,7 +43,7 @@ console.log( 'formids : ',formids )
 console.log( 'templateload : ',templateload )
 console.log( '-------------------------' )
 console.log( 'databasetablelist loading' )
-
+console.log( '-------------------------' )
 
 ///////////////////////////////////////////////////
 ////        REQUIRED FORMATING OF DATA        //// 
@@ -292,6 +298,7 @@ function dataTableLoad (data,id,headings){
   html += '</tr></thead>'
   html += '<tbody>'
   for (var i = 0; i < data.length; i++) {
+   
     html += '<tr><td class="details-control" style="text-align:center;vertical-align:middle; " id="'+data[i]['_id']+'" data-parentid="'+data[i]['parentid']+'" data-childType="'+data[i]['childType']+'"><i class="fa fa-plus-square-o" aria-hidden="true" ></i></td>'
     for (var j = 0; j < headings.length; j++) {
       html += '<td style=" vertical-align:middle">'

@@ -1,94 +1,96 @@
 {
- 
- 
-    "entry" : {
-        "schema" : {
-            "properties" : {
-                "headings" : {
-                    "enum" : [ 
-                       "value", 
-                        "detail",
-                        "description",
-                        "unit"
-                    ],
-                    "title" : "Headings"
-                },
-                "template" : {
-                    "title" : "Template"
-                },
-                "icon" : {
-                    "title" : "Icon"
-                },
-                "parent" : {
-                    "title" : "Parent"
-                },
-                "standard" : {
-                    "title" : "Standard"
-                },
-                "detail" : {
-                    "title" : "Detail"
-                },
-                "unit" : {
-                    "title" : "Unit"
-                },
-                "value" : {
-                    "title" : "Value"
-                },
-                "description" : {
-                    "title" : "Description"
-                }
-            },
-            "type" : "object",
-            "title" : "Navigation Menu"
+  "entry": {
+    "schema": {
+      "properties": {
+        "headings": {
+          "title": "Headings"
         },
-        "options" : {
-            "focus" : "",
-            "fields" : {
-                "entry" : {
-                    "validate" : false,
-                    "helper" : "All entry data is stored here.",
-                    "cols" : 40,
-                    "rows" : 4,
-                    "type" : "json"
-                },
-                "active" : {
-                    "required" : false,
-                    "type" : "select"
-                },
-                "revision" : {
-                    "type" : "select"
-                },
-                "objectType" : {
-                    "type" : "select"
-                },
-                "detail" : {
-                    "validate" : true,
-                    "helper" : "All entry data is stored here.",
-                    "cols" : 40,
-                    "rows" : 4,
-                    "type" : "text"
-                }
-            },
-            "helper" : "Use this form to add menu items to the navigation menu.",
-            "form" : {
-                "buttons" : {
-                    "submit" : {
-                        "click" : "",
-                        "id" : "submit",
-                        "title" : "Submit"
-                    }
-                }
-            }
+        "template": {
+          "title": "Template"
+        },
+        "icon": {
+          "title": "Icon"
+        },
+        "parent": {
+          "title": "Parent"
+        },
+        "standard": {
+          "title": "Standard"
+        },
+        "detail": {
+          "title": "Detail"
+        },
+        "unit": {
+          "title": "Unit"
+        },
+        "value": {
+          "title": "Value"
+        },
+        "description": {
+          "title": "Description"
         }
+      },
+      "type": "object",
+      "title": "Navigation Menu"
     },
-    "objectType" : "form",
- 
-    "detail" : "Use for the creation of Navigation jstree structures.",
-    "name" : "Navigation Menu",
- 
-    "active" : "true",
- 
-    "revision" : "created",
-    "elementID" : "",
-    "__v" : 0
+    "options": {
+      "focus": "",
+      "fields": {
+        "headings": {
+          "multiple": true,
+          "type": "select"
+        },
+        "icon": {
+          "type": "select"
+        },
+        "unit": {
+          "type": "select"
+        },
+        "template": {
+          "type": "select"
+        },
+        "entry": {
+          "validate": false,
+          "helper": "All entry data is stored here.",
+          "cols": 40,
+          "rows": 4,
+          "type": "json"
+        },
+        "active": {
+          "required": false,
+          "type": "select"
+        },
+        "revision": {
+          "type": "select"
+        },
+        "objectType": {
+          "type": "select"
+        },
+        "detail": {
+          "validate": true,
+          "helper": "All entry data is stored here.",
+          "cols": 40,
+          "rows": 4,
+          "type": "text"
+        }
+      },
+      "helper": "Use this form to add menu items to the navigation menu.",
+      "form": {
+        "buttons": {
+          "submit": {
+            "click": "",
+            "id": "submit",
+            "title": "Submit"
+          }
+        }
+      }
+    }
+  },
+  "objectType": "form",
+  "detail": "Use for the creation Navigation items.",
+  "name": "Navigation Items",
+  "__v": 0,
+  "active": "true",
+  "revision": "created",
+  "elementID": ""
 }

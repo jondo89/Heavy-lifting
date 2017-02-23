@@ -101,7 +101,6 @@ $.each(arr, function(index, value) {
               'global': false,
               'url': '/getformfield?data='+index,
               'success': function (dataSchemaObject) {
-
                 var inputs = JSON.parse(dataSchemaObject);
                 callback(inputs);
               }

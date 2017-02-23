@@ -83,7 +83,7 @@ console.log('step 7 - herere')
 					if (err) {
 						res.send(err);
 					} else{
-						res.send({redirect: '/database'});
+						res.send({redirect: '/admin'});
 					}
 				});
 			});
@@ -94,7 +94,7 @@ console.log('step 7 - herere')
 				if (err) {
 					res.send(err);
 				} else{
-						res.send({redirect: '/database'});
+						res.send({redirect: '/admin'});
 				}
 			});
 		}

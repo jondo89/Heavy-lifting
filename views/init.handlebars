@@ -1,158 +1,204 @@
-
-
  
-<h1>Reset this Database</h1>
+
+
+<h3>Reset this Database</h3>
 <p>This template is used to reset the Mongo dB database to defaults.</p>
- 
-    <div id="detailArea">Initializing Database   
-      <i class="fa fa-spinner fa-spin fa-1x fa-fw"></i>
-<span class="sr-only">Loading...</span>
-    </div>
+
+<div id="detailArea">   
+  <i class="fa fa-spinner fa-spin fa-1x fa-fw"></i>
+  <span class="sr-only">Initializing Database...</span>
+</div>
+
+ <p></p>
+   
+<div class="btn-group" role="group" aria-label="..." id="group"></div>
  
 
- <script type="text/javascript">
+
+<script type="text/javascript">
+  var database
 
 ////////////////////////////////////
 ////        INITIALIZE         //// 
 //////////////////////////////////
 $(document).ready(function(){
-Initializing()
+  Initializing()
 });
 
 //////////////////////////////
 //////  REQUEST DATA  ///////
 ////////////////////////////
 function Initializing(){
- 
- 
   jQuery.ajax({
     'url': '/getshortdata',
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
-     dataset = jQuery.parseJSON( dataSchemaObject );
-      
-
- 
-var records = dataset.length
-
-
-  switch(true){
-    case ( records > 4 ):
+     database = jQuery.parseJSON( dataSchemaObject );
+     var records = database.length
+    
+     switch(true){
+      case ( records >13):
       existingRecords(records);
-    break
-    case (records == 4 ):
+      break
+      case (records == 13):
+      getjson14(records);
+      break 
+      case (records == 12):
+      getjson13(records);
+      break 
+      case (records == 11):
+      getjson12(records);
+      break 
+      case (records == 10):
+      getjson11(records);
+      break 
+      case (records == 9):
+      getjson10(records);
+      break 
+      case (records == 8 ):
+      getjson9(records);
+      break 
+      case (records == 7 ):
+      getjson8(records);
+      break 
+      case (records == 6 ):
+      getjson7(records);
+      break 
+      case (records == 5 ):
+      getjson6(records);
+      break    
+      case (records == 4 ):
       getjson5(records);
-    break
-    case (records == 3 ):
+      break
+      case (records == 3 ):
       getjson4(records);
-    break
-    case (records == 2 ):
+      break
+      case (records == 2 ):
       getjson3(records);
-    break
-    case (records == 0 ):
+      break
+      case (records == 0 ):
       getjson1(records);
-    break
-  }
-
+      break
+    }
 // Warning Duplicate IDs
-            $('[id]').each(function(){
-              var ids = $('[id="'+this.id+'"]');
-              if(ids.length>1 && ids[0]==this){
-                 $( this ).css( "color", "red" )
-                 $( this ).css( "background", "green" )
-                console.warn('Multiple IDs #'+this.id);
-              }
-            });
-
-
-
-
-
-
-
-
-    },
-    'error' :function (dataSchemaObject) {
-      window.location = '/init'
-    },
-  });  
-  
+$('[id]').each(function(){
+  var ids = $('[id="'+this.id+'"]');
+  if(ids.length>1 && ids[0]==this){
+   $( this ).css( "color", "red" )
+   $( this ).css( "background", "green" )
+   console.warn('Multiple IDs #'+this.id);
+ }
+});
+},
+'error' :function (dataSchemaObject) {
+  window.location = '/'
+},
+});  
 }
-
 
 ///////////////////////////////////////////////
 //////  IF THERE ARE EXISTING RECORDS  ///////
 /////////////////////////////////////////////
 function existingRecords(records){
-	var html = ''
-	 	var html = ''
-  html += 'Database Status :   <span class="label label-success">Active</span>'
-	$('#detailArea').html(html)
-html+='<p></p>'
-html+='<div class="row">'
-html+='<div class="col-md-8">'
-	html+= '<div class="alert alert-warning" role="alert"> <strong>Warning!</strong> There are ' + records + ' records in this database</div>'
-html+='</div>'
-html+='<div class="col-md-4">'
+ var html = ''
+ var html = ''
+ html += 'Database Status :   <span class="label label-success">Active</span>'
+ $('#detailArea').html(html)
+ html+='<p></p>'
+ html+='<div class="row">'
+ html+='<div class="col-md-8">'
+ html+= '<div class="alert alert-warning" role="alert"> <strong>Warning!</strong> There are ' + records + ' records in this database</div>'
+ html+='</div>'
+ html+='<div class="col-md-4">'
  html +='<div class="btn-group" role="group" aria-label="..." style="align:center">'
  html += '<a type="button" class="btn btn-default" href="/hl-admin">Admin</a>'
-  html += '<button type="button" class="btn btn-danger"  id="_del" data-toggle="modal" data-target="#myModal" onclick="deleteEntry(this.id)"  data-toggle="tooltip" data-placement="top" title="Delete this item">Reset</button>'
-html+='</div>'
-html+='</div>'
-
-	$('#detailArea').html(html)
+ html += '<button type="button" class="btn btn-danger"  id="_del" data-toggle="modal" data-target="#myModal" onclick="deleteEntry(this.id)"   >Reset</button>'
+ html+='</div>'
+ html+='</div>'
+ html+='<div class="col-md-12">'
+ html +='<div class="btn-group" role="group" aria-label="..." style="align:center">'
+ 
+ html += '<button type="button" class="btn btn-default"  id="_backup"  onclick="backup()"  >Refresh Backup</button>'
+ html+='</div>'
+ html+='</div>'
+ $('#detailArea').html(html)
 }
 
-
+//////////////////////////////// 
+//////  REFRESH BACKUP  ///////
+////////////////////////////// 
+function backup(){
+  jQuery.ajax({
+    'url': '/getdb',
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      var data = []
+      dataSchemaObject = JSON.parse(dataSchemaObject)
+      for (var i = 0; i < dataSchemaObject.length; i++) {
+        var html = ""
+        var j = i+1
+        var obj = dataSchemaObject[i];
+        //Remove values that are specific to the database.
+        delete dataSchemaObject[i]['_id']
+        delete dataSchemaObject[i]['parentid']
+        delete dataSchemaObject[i]['childType']
+        delete dataSchemaObject[i]['userID']
+        delete dataSchemaObject[i]['created']
+        //Prettyfy and encode the json.
+        data.push("text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj, null, 2)))
+        html +='<a type="button" class="btn btn-default" id="'+j+'_downloads" href="data:' + data[i] + '" download="'+j+'.json">'+j+" : "+dataSchemaObject[i].name+'</a>'
+        $('#group').append(html)
+      }
+  }
+}); 
+}
 
 /////////////////////////////////////// 
-//////  DELETE ENTIRE DATABAE  ///////
+//////  DELETE ENTIRE DATABASE  ///////
 ///////////////////////////////////// 
 function deleteEntry(id){
   id = id.replace('_del', '');  
- _id = $( "#"+id ).data( "_id" )  
- html = ''
- html +='<div class="row" style="width:100%;text-align:center">'
- 
- html += '<h3>Are you sure you what to do this ?</h3>'
- html += '<p>This action cannot be undone.</p>'
- html +='<div class="btn-group" role="group" aria-label="..." style="align:center">'
- html +='  <button type="button" class="btn btn-danger" onclick="deleteEntrys()"">Confirm</button>'
- html +='</div>'
- $('#formAreaModal').html(html)
+  _id = $( "#"+id ).data( "_id" )  
+  html = ''
+  html +='<div class="row" style="width:100%;text-align:center">'
+  html += '<h3>Are you sure you what to do this ?</h3>'
+  html += '<p>This action cannot be undone.</p>'
+  html +='<div class="btn-group" role="group" aria-label="..." style="align:center">'
+  html +='  <button type="button" class="btn btn-danger" onclick="deleteEntrys()"">Confirm</button>'
+  html +='</div>'
+  $('#formAreaModal').html(html)
 }
-
 
 function deleteEntrys(){
   jQuery.ajax({
     'url': '/deletedb',
     'type': 'GET', 
- 
- })
-  window.location = '/init'
-}
 
+  })
+  window.location = '/'
+}
 
 //////////////////////////// 
 //////  GET JSON #1 ///////
 ////////////////////////// 
 function getjson1(){
-var temp = 1
+  var temp = 1
   $.getJSON('../json/'+temp+'.json', function (dataset) {
-  jQuery.ajax({
-    'url': '/create',
-    'type': 'POST', 
-    'dataType': 'json',
-    'contentType': 'application/json', 
-    'data': JSON.stringify(dataset),
-    'success': function (dataSchemaObject) {
-      getjson2()
-    },
-    'error' :function (dataSchemaObject) {
-      window.location = '/init'
-    },
-  });  
+    jQuery.ajax({
+      'url': '/create',
+      'type': 'POST', 
+      'dataType': 'json',
+      'contentType': 'application/json', 
+      'data': JSON.stringify(dataset),
+      'success': function (dataSchemaObject) {
+        getjson2()
+      },
+      'error' :function (dataSchemaObject) {
+        window.location = '/'
+      },
+    });  
   });
 }
 
@@ -160,48 +206,44 @@ var temp = 1
 //////  GET JSON #2 ///////
 ////////////////////////// 
 function getjson2(){
-var temp = 2
+  var temp = 2
   $.getJSON('../json/'+temp+'.json', function (dataset) {
-  jQuery.ajax({
-    'url': '/create',
-    'type': 'POST', 
-    'dataType': 'json',
-    'contentType': 'application/json', 
-    'data': JSON.stringify(dataset),
-    'success': function (dataSchemaObject) {
-      window.location = '/init'
-    },
-    'error' :function (dataSchemaObject) {
-      window.location = '/init'
-    },
-  });  
+    jQuery.ajax({
+      'url': '/create',
+      'type': 'POST', 
+      'dataType': 'json',
+      'contentType': 'application/json', 
+      'data': JSON.stringify(dataset),
+      'success': function (dataSchemaObject) {
+        window.location = '/'
+      },
+      'error' :function (dataSchemaObject) {
+        window.location = '/'
+      },
+    });  
   });
 }
-
 
 //////////////////////////// 
 //////  GET JSON #3 ///////
 ////////////////////////// 
 function getjson3(){
-var temp = 3
+  var temp = 3
   $.getJSON('../json/'+temp+'.json', function (dataset) {
-console.log(database)
-dataset.parentid = database[1]._id,
- 
-
-  jQuery.ajax({
-    'url': '/create',
-    'type': 'POST', 
-    'dataType': 'json',
-    'contentType': 'application/json', 
-    'data': JSON.stringify(dataset),
-    'success': function (dataSchemaObject) {
-      window.location = '/init'
-    },
-    'error' :function (dataSchemaObject) {
-      window.location = '/init'
-    },
-  });  
+    dataset.parentid = database[1]._id,
+    jQuery.ajax({
+      'url': '/create',
+      'type': 'POST', 
+      'dataType': 'json',
+      'contentType': 'application/json', 
+      'data': JSON.stringify(dataset),
+      'success': function (dataSchemaObject) {
+        window.location = '/'
+      },
+      'error' :function (dataSchemaObject) {
+        window.location = '/'
+      },
+    });  
   });
 }
 
@@ -209,25 +251,23 @@ dataset.parentid = database[1]._id,
 //////  GET JSON #4 ///////
 ////////////////////////// 
 function getjson4(){
-var temp = 4
+  var temp = 4
   $.getJSON('../json/'+temp+'.json', function (dataset) {
-
-dataset.parentid = database[1]._id,
-dataset.childType = database[2]._id,
-
-  jQuery.ajax({
-    'url': '/create',
-    'type': 'POST', 
-    'dataType': 'json',
-    'contentType': 'application/json', 
-    'data': JSON.stringify(dataset),
-    'success': function (dataSchemaObject) {
-     	window.location = '/init'
-    },
-    'error' :function (dataSchemaObject) {
-      window.location = '/init'
-    },
-  });  
+    dataset.parentid = database[1]._id,
+    dataset.childType = database[2]._id,
+    jQuery.ajax({
+      'url': '/create',
+      'type': 'POST', 
+      'dataType': 'json',
+      'contentType': 'application/json', 
+      'data': JSON.stringify(dataset),
+      'success': function (dataSchemaObject) {
+        window.location = '/'
+      },
+      'error' :function (dataSchemaObject) {
+        window.location = '/'
+      },
+    });  
   });
 }
 
@@ -235,32 +275,245 @@ dataset.childType = database[2]._id,
 //////  GET JSON #5 ///////
 ////////////////////////// 
 function getjson5(){
-var temp = 5
+  var temp = 5
   $.getJSON('../json/'+temp+'.json', function (dataset) {
+    dataset.parentid = database[3]._id,
+    dataset.childType = database[2]._id,
+    jQuery.ajax({
+      'url': '/create',
+      'type': 'POST', 
+      'dataType': 'json',
+      'contentType': 'application/json', 
+      'data': JSON.stringify(dataset),
+      'success': function (dataSchemaObject) {
+        window.location = '/'
+      },
+      'error' :function (dataSchemaObject) {
+        window.location = '/'
+      },
+    });  
+  });
+}
 
-dataset.parentid = database[3]._id,
-dataset.childType = database[2]._id,
-  jQuery.ajax({
-    'url': '/create',
-    'type': 'POST', 
-    'dataType': 'json',
-    'contentType': 'application/json', 
-    'data': JSON.stringify(dataset),
-    'success': function (dataSchemaObject) {
-     	window.location = '/init'
-    },
-    'error' :function (dataSchemaObject) {
-      window.location = '/init'
-    },
-  });  
+////////////////////////////
+//////  GET JSON #6 ///////
+////////////////////////// 
+function getjson6(){
+  var temp = 6
+  $.getJSON('../json/'+temp+'.json', function (dataset) {
+    dataset.parentid = database[4]._id,
+    dataset.childType = database[2]._id,
+    jQuery.ajax({
+      'url': '/create',
+      'type': 'POST', 
+      'dataType': 'json',
+      'contentType': 'application/json', 
+      'data': JSON.stringify(dataset),
+      'success': function (dataSchemaObject) {
+        window.location = '/'
+      },
+      'error' :function (dataSchemaObject) {
+        window.location = '/'
+      },
+    });  
+  });
+}
+
+////////////////////////////
+//////  GET JSON #7 ///////
+////////////////////////// 
+function getjson7(){
+  var temp = 7
+  $.getJSON('../json/'+temp+'.json', function (dataset) {
+    dataset.parentid = database[4]._id,
+    dataset.childType = database[2]._id,
+    jQuery.ajax({
+      'url': '/create',
+      'type': 'POST', 
+      'dataType': 'json',
+      'contentType': 'application/json', 
+      'data': JSON.stringify(dataset),
+      'success': function (dataSchemaObject) {
+        window.location = '/'
+      },
+      'error' :function (dataSchemaObject) {
+        window.location = '/'
+      },
+    });  
+  });
+}
+
+////////////////////////////
+//////  GET JSON #8 ///////
+////////////////////////// 
+function getjson8(){
+  var temp = 8
+  $.getJSON('../json/'+temp+'.json', function (dataset) {
+    dataset.parentid = database[6]._id,
+    dataset.childType = database[2]._id,
+    jQuery.ajax({
+      'url': '/create',
+      'type': 'POST', 
+      'dataType': 'json',
+      'contentType': 'application/json', 
+      'data': JSON.stringify(dataset),
+      'success': function (dataSchemaObject) {
+        window.location = '/'
+      },
+      'error' :function (dataSchemaObject) {
+        window.location = '/'
+      },
+    });  
+  });
+}
+
+////////////////////////////
+//////  GET JSON #9 ///////
+////////////////////////// 
+function getjson9(){
+  var temp = 9
+  $.getJSON('../json/'+temp+'.json', function (dataset) {
+    dataset.parentid = database[4]._id,
+    dataset.childType = database[2]._id,
+    jQuery.ajax({
+      'url': '/create',
+      'type': 'POST', 
+      'dataType': 'json',
+      'contentType': 'application/json', 
+      'data': JSON.stringify(dataset),
+      'success': function (dataSchemaObject) {
+        window.location = '/'
+      },
+      'error' :function (dataSchemaObject) {
+        window.location = '/'
+      },
+    });  
+  });
+}
+
+////////////////////////////
+//////  GET JSON #10 ///////
+////////////////////////// 
+function getjson10(){
+  var temp = 10
+  $.getJSON('../json/'+temp+'.json', function (dataset) {
+    dataset.parentid = database[4]._id,
+    dataset.childType = database[2]._id,
+    jQuery.ajax({
+      'url': '/create',
+      'type': 'POST', 
+      'dataType': 'json',
+      'contentType': 'application/json', 
+      'data': JSON.stringify(dataset),
+      'success': function (dataSchemaObject) {
+        window.location = '/'
+      },
+      'error' :function (dataSchemaObject) {
+        window.location = '/'
+      },
+    });  
+  });
+}
+
+////////////////////////////
+//////  GET JSON #11 ///////
+////////////////////////// 
+function getjson11(){
+  var temp = 11
+  $.getJSON('../json/'+temp+'.json', function (dataset) {
+    dataset.parentid = database[8]._id,
+    dataset.childType = database[2]._id,
+    jQuery.ajax({
+      'url': '/create',
+      'type': 'POST', 
+      'dataType': 'json',
+      'contentType': 'application/json', 
+      'data': JSON.stringify(dataset),
+      'success': function (dataSchemaObject) {
+        window.location = '/'
+      },
+      'error' :function (dataSchemaObject) {
+        window.location = '/'
+      },
+    });  
+  });
+}
+
+////////////////////////////
+//////  GET JSON #12 ///////
+////////////////////////// 
+function getjson12(){
+  var temp = 12
+  $.getJSON('../json/'+temp+'.json', function (dataset) {
+    dataset.parentid = database[9]._id,
+    dataset.childType = database[2]._id,
+    jQuery.ajax({
+      'url': '/create',
+      'type': 'POST', 
+      'dataType': 'json',
+      'contentType': 'application/json', 
+      'data': JSON.stringify(dataset),
+      'success': function (dataSchemaObject) {
+        window.location = '/'
+      },
+      'error' :function (dataSchemaObject) {
+        window.location = '/'
+      },
+    });  
   });
 }
 
 
+////////////////////////////
+//////  GET JSON #13 ///////
+////////////////////////// 
+function getjson13(){
+  var temp = 13
+  $.getJSON('../json/'+temp+'.json', function (dataset) {
+    dataset.parentid = database[4]._id,
+    dataset.childType = database[2]._id,
+    jQuery.ajax({
+      'url': '/create',
+      'type': 'POST', 
+      'dataType': 'json',
+      'contentType': 'application/json', 
+      'data': JSON.stringify(dataset),
+      'success': function (dataSchemaObject) {
+        window.location = '/'
+      },
+      'error' :function (dataSchemaObject) {
+        window.location = '/'
+      },
+    });  
+  });
+}
 
- 
 
- </script>
+////////////////////////////
+//////  GET JSON #14 ///////
+////////////////////////// 
+function getjson14(){
+  var temp = 14
+  $.getJSON('../json/'+temp+'.json', function (dataset) {
+    dataset.parentid = database[12]._id,
+    dataset.childType = database[2]._id,
+    jQuery.ajax({
+      'url': '/create',
+      'type': 'POST', 
+      'dataType': 'json',
+      'contentType': 'application/json', 
+      'data': JSON.stringify(dataset),
+      'success': function (dataSchemaObject) {
+        window.location = '/'
+      },
+      'error' :function (dataSchemaObject) {
+        window.location = '/'
+      },
+    });  
+  });
+}
 
- 
- 
+</script>
+
+
+

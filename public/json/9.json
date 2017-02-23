@@ -1,12 +1,9 @@
 {
   "entry": {
-    "icon": "glyphicon glyphicon-file",
-    "headings": [
-      "value",
-      "detail"
-    ],
+    "icon": "glyphicon glyphicon-headphones",
     "parent": "#",
-    "description": "Templates"
+    "description": "Headings",
+    "headings": "value"
   },
   "objectType": "form",
   "detail": "Use for the creation of Navigation jstree structures.",

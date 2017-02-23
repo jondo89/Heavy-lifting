@@ -1,12 +1,11 @@
 {
   "entry": {
-    "description": "Admin",
-    "parent": "#",
-    "headings": "description"
+    "value": "revision",
+    "description": "Include the toggle revision history button on the template."
   },
   "objectType": "database",
   "detail": "Use for the creation database items.",
-  "name": "Admin Panel",
+  "name": "Database Items",
   "__v": 0,
   "active": "true",
   "revision": "created",

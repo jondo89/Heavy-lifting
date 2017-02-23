@@ -1,12 +1,10 @@
 {
   "entry": {
-    "description": "Admin",
-    "parent": "#",
-    "headings": "description"
+    "value": "glyphicon glyphicon-road"
   },
   "objectType": "database",
   "detail": "Use for the creation database items.",
-  "name": "Admin Panel",
+  "name": "Database Items",
   "__v": 0,
   "active": "true",
   "revision": "created",
