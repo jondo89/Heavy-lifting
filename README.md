@@ -22,6 +22,22 @@ Application Framework
 </ul>
 Form Deployment is carried out with <a href="http://www.alpacajs.org/" target="_blank">Alpaca.js</a>
 
+<h3>Introduction.</h3>
+
+<h5>Heavy-lifting is a method of using forms to record data in a systematic fashion.</h5> 
+
+<p>In the engineering environment, there is a requirement to catalogue vast amounts of information. This information ranges from commercial contracts through to tables of bolts sizes. All of which would eventually be used for the reporting of data to a client or employer.  
+The cataloguing of this data is currently contained in standards and specifications spread out across the globe. These specifications are generally controlled by standards bodies which in turn commercialize the documentation. This commercialization fundamentally impleads the growth of new industries and creates barriers to entry to globalization of trade. 
+Included in this is vast amounts of duplication and erroneous mistakes that are not changes for years. </p>
+<h5>Heavy-lifting aims to improve this through shared data control.</h5>
+<p>At the core of the design of Heavy-lifting are the following considerations: </p>
+<ul>
+<li>Record changes in data over time, <li>
+<li>provide access to vast amounts of peer review information to all users, <li>
+<li>build component and assembly structures, <li>
+<li>have an open data structure which can be modular in nature.<li>
+</ul>
+
 <h3>Installation instructions.</h3>
 <ul>
 <li>Step 1 - Install Node.js</li>

@@ -83,13 +83,13 @@ function create_uid() {
 //////  PRINT IMAGE       //////
 /////////////////////////////// 
 function printImageCatagory (data) {
-  console.log(data.Image,'im')
+  console.log(data.entry.Image,'im')
   html=""
-  if ( data.Image!=="") {
+  if ( data.entry.Image ) {
     html+=  '<div class="col-sm-4 col-md-4" >'
     html+='<div class="thumbnail" style="min-height:360px">'
     html+='<img style="max-height:164px;min-height:90px" src="/img/catagories/'
-    html+= data.Image
+    html+= data.entry.Image
     html+='" alt="...">'
   } else {
     html+=  '<div class="col-sm-4 col-md-4" >'
