@@ -1,0 +1,23 @@
+<div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
+  <button type="button" class="btn btn-xs btn-default" id="parentraw" onclick="deployparentrawForm(this.id)" data-toggle="modal" data-target="#myModal" title="Edit the entry"><i class="fa fa-file-code-o" aria-hidden="true"></i></button> 
+</div>
+
+<script type="text/javascript">
+console.log( 'raw loading' )
+console.log( '-------------------------' )
+console.log( 'tablelistdata : ',tablelistdata )
+console.log( 'items : ',items )
+console.log( 'formids : ',formids )
+console.log( 'templateload : ',templateload )
+console.log( '-------------------------' )
+console.log( 'raw loading' )
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
+/////////////////////////////////////////////
+function uniqueIdforparentraw(){
+$('#parentraw').attr('id', items._id);
+}
+$('document').ready(function(){
+	uniqueIdforparentraw()
+})
+</script>

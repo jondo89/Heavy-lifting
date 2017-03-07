@@ -7,7 +7,7 @@
   var raw = {{{raw}}}
   var parentid = {{{parentid}}}
   var formid1 = create_uid()
-
+  var parentItem = {{{parentItem}}}
 ////////////////////////////////////
 ////        DEBUG AREA         //// 
 //////////////////////////////////
@@ -18,6 +18,7 @@ console.log( 'idItem :',idItem )
 console.log( 'raw :',raw )
 console.log( 'parentid :',parentid )
 console.log( 'formid1 :',formid1 )
+console.log( 'parentItem :',parentItem )
 console.log( '-------------------------' )
 console.log( 'form loading' )
 
@@ -66,7 +67,43 @@ function initiateForm(data){
   schema : data.formdata.entry['schema'],
   options : data.formdata.entry['options']
 }
-console.log(data)
+
+ 
+if (!raw) {
+//Used for the limiting of visible fields on the form. Specically the 'headings' field.
+//--------------------------------------------------------------------------------
+var tableHeadings =[]
+//General Heading error trap.  
+//When the heading is only 1 item , the printing of the headings loops throguh each character . THis checks if it is an array .
+if (parentItem.entry.headings) {
+  var tableHeadings = JSON.parse(JSON.stringify(parentItem.entry.headings))
+  if (!isArray(tableHeadings)) {
+    tableHeadings = [tableHeadings]
+  }  
+} else {
+  var tableHeadings = ['name','detail','userID','id','parentid','childType','description']
+}
+
+//check if there is a heading.
+if (tableHeadings) {
+for (key in form.schema['properties']){
+  if (jQuery.inArray( key, tableHeadings ) == -1 ) {
+    delete form.schema['properties'][key]
+  } else {
+  }
+}
+for (key in form.schema['options']){
+  if (jQuery.inArray( key, tableHeadings ) == -1 ) {
+    delete form.schema['options'][key]
+  } else {
+  }
+}
+}
+//--------------------------------------------------------------------------------
+}
+
+
+
 $('#'+formid1).html("<div id='form_"+formdata+idItem+formid1+"'></div>")
 $("#form_"+formdata+idItem+formid1).html("")
   //Test alpaca form for true , i.e if it exists , then destroy it.

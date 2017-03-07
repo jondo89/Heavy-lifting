@@ -62,11 +62,21 @@ var hbs = exphbs.create({
     },
     toJSON : function(object) {
       return JSON.stringify(object);
-    }
+    },
+     
+        partial: function (name) {
+            return name;
+        }
+    
   }
 });
 
+
+
+
 app.engine('handlebars', hbs.engine);
+
+
 app.set('view engine', 'handlebars');
 app.set('port', process.env.PORT || 5000);
 app.use(compression());
@@ -147,7 +157,11 @@ app.get('/getshortdata', readController.getshortdata);
 app.get('/jstree', readController.jstree);
   //get the select ddrop down items
 app.get('/getformfield', readController.getformfield);
-
+  //get the select templatename
+app.get('/templatename', readController.templatename);
+  //get the select groups
+app.get('/groups', readController.groups);
+ 
 
 ///////////////////////////////////////////
 ////       DELETE CONTROLLERS         //// 

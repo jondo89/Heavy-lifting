@@ -1,0 +1,43 @@
+<div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
+  <label class="checkbox-inline">
+    <input type="checkbox" data-size="mini" id="toggle-one" title="Revision History"  data-toggle="toggle" data-on='<span class="glyphicon glyphicon-time" aria-hidden="true"></span> ' data-off='<span class="glyphicon glyphicon-time" aria-hidden="true"></span>'  data-onstyle="default">
+  </label>
+</div>
+
+<script type="text/javascript">
+
+console.log( 'Revision loading' )
+console.log( '-------------------------' )
+console.log( 'tablelistdata : ',tablelistdata )
+console.log( 'items : ',items )
+console.log( 'formids : ',formids )
+console.log( 'templateload : ',templateload )
+console.log( '-------------------------' )
+console.log( 'Revision loading' )
+
+
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
+/////////////////////////////////////////////
+function uniqueIdfortoggleButton(){
+jQuery('#formDelivery').attr("id",formids);
+jQuery('#toggle-one').attr("id",formids+'_toggle');
+//////////////////////////////////////////
+////        INIT TOGGLE BUTTON       //// 
+////////////////////////////////////////
+$('#'+formids+'_toggle').bootstrapToggle();
+/////////////////////////////////////////////////////////////////////////////
+////////  EVENT LISTNER ON THE TOOGGLE FOR REMOVING THE COMPONETNS   ///////
+///////////////////////////////////////////////////////////////////////////
+$('#'+formids+'_toggle').change(function() {
+  //This function is defined in the component navigation template.
+  getCollectionData(objectType,$(this).prop('checked'))
+})
+}
+
+$('document').ready(function(){
+	uniqueIdfortoggleButton()	
+})
+
+ 
+</script>

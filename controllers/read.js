@@ -55,6 +55,25 @@ var parentid = req.param('parentid')
 if (!parentid) {
   parentid ='false'
 }
+
+//There is a requirement to limit the form size  , as such send the find and send the headings from the parent.
+var query1 = heavyliftingModel.find(
+{
+  $and : 
+  [
+  {$or: [
+    {"elementID": parentid },
+    {"_id":  parentid }
+    ]}, 
+    {
+      "active": "true" 
+    }
+    ]
+  })
+
+query1.exec(function (err, parentItem) {
+  if (err) { return next(err); }
+
 //This is used to pull the first 2 entries from the database. 
 //will return the ids for the form data on the primer and raw database entry.
 heavyliftingModel.find().limit(3).exec(function (err, forms) {
@@ -78,20 +97,22 @@ heavyliftingModel.find().limit(3).exec(function (err, forms) {
     formdata = forms[1]._id
     break;
   }
+
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
-/*
 console.log('-----------getform------------')
 console.log('formdata : ',JSON.stringify(formdata))
 console.log('idItem : ',JSON.stringify(idItem))
 console.log('parentid :' ,JSON.stringify(parentid))
 console.log('raw :',JSON.stringify(raw))
+console.log('parentItem :',JSON.stringify(parentItem[0]))
 console.log('-----------getform------------')
-*/
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
+
+
 res.render('form', {
   title: 'Form',
   siteName : siteName,
@@ -99,8 +120,13 @@ res.render('form', {
   idItem : JSON.stringify(idItem),
   parentid : JSON.stringify(parentid),
   raw :JSON.stringify(raw) ,
+  parentItem : JSON.stringify(parentItem[0]) ,
   layout: false,
 });
+
+
+});
+
 });
 }
 
@@ -126,15 +152,13 @@ if (!raw) {
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
-
-/*
+ 
 console.log('-----------getdata------------')
 console.log('formdata : ',JSON.stringify(formdata))
 console.log('idItem : ',JSON.stringify(idItem))
 console.log('raw :',JSON.stringify(raw))
 console.log('-----------getdata------------')
-*/
-
+ 
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
@@ -172,6 +196,10 @@ query.exec(function (err, docs1) {
   if (err) { return next(err); }
   query1.exec(function (err, docs2) {
 
+
+
+
+
     if (err) { return next(err); }
     var temp = docs2[0] 
       //if the entry id is blank then autopopulate the entry ID with the current ID.
@@ -184,14 +212,15 @@ query.exec(function (err, docs1) {
       }
 
 
- /////////////////////////////
+/////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
-
 /*
 console.log('-----------getdata stage 2------------')
 console.log('formdata : ',docs1[0])
 console.log('idItem : ',temp)
+console.log('docs1 :',docs1[0].entry)
+console.log('docs2 :',docs2[0].entry)
 console.log('-----------getdata stage 2------------')
 
 */
@@ -269,11 +298,13 @@ if (!ids) {
         if(menuitem[0].elementID==''){
           menuitem[0].elementID=menuitem[0]._id
         }
+
         query1.exec(function (err, databaseitems) {
           if (err) { return next(err); }
           res.render(template, {
             databaseitems : JSON.stringify(databaseitems),
             menuitem : JSON.stringify(menuitem[0]),
+            raw : JSON.stringify(menuitem[0].entry.layout),
             layout:false,
             templateload : JSON.stringify(ids)
           });
@@ -281,6 +312,22 @@ if (!ids) {
         })
       })
 }
+
+///////////////////////////////////////////////////
+////       SEND THE DATABASE INFORMATION      //// 
+/////////////////////////////////////////////////
+exports.templatename = function(req, res) {
+  var template = req.param('template') 
+  res.render('tools/'+template, {layout:false}, function(err, html) {
+    if(err) {
+      var html = ''
+        res.send(html);
+    } else {
+        res.send(html);
+    }
+  });
+}
+
 
 ///////////////////////////////////////////////////
 ////       SEND THE DATABASE INFORMATION      //// 
@@ -504,7 +551,7 @@ exports.getformfield = function(req, res) {
   console.log('////////////////////////////////')
   console.log('   Debug Enter Here')
   console.log('////////////////////////////////')
-  heavyliftingModel.find().limit(14).exec(function (err, init) {
+  heavyliftingModel.find().limit(50).exec(function (err, init) {
     if (err) { return next(err); }
 
 
@@ -518,6 +565,22 @@ exports.getformfield = function(req, res) {
       break;
       case (req.param('data') == 'active'):
       res.send(JSON.stringify(['true','false']));
+      break;
+
+
+
+      case (req.param('data') == 'layout'):
+      heavyliftingModel.find({
+        'parentid' : init[24]._id,
+        'active' : 'true'
+      }).exec(function (err, data) {
+        if (err) { return next(err); }
+        var temp = []
+        for (var i = 0; i < data.length; i++) {
+          temp.push(data[i].entry.value)
+        }
+        res.send(JSON.stringify(temp));
+      });
       break;
 
       case (req.param('data') == 'template'):
@@ -604,4 +667,22 @@ exports.getformfield = function(req, res) {
 
   })
 
+}
+
+//////////////////////////////////////////
+///////////   READ  GROUPS  /////////////
+////////////////////////////////////////
+exports.groups = function(req, res) {
+heavyliftingModel.
+  find({
+        'entry.parent' :req.param('data'),
+        'active' : 'true'
+  }).
+  exec(function (err, docs1) {
+    console.log('//////////////////////////')
+    console.log('//////// DEBUG  /////////')
+    console.log('//////////////////////////')
+    console.log(req.param('data'),':',docs1)
+    res.send(JSON.stringify(docs1));
+  });
 }
