@@ -40,6 +40,13 @@ var formdata = req.param('formdata')
 if (!formdata) {
   formdata =''
 }
+
+//Special heading for this form
+var headings = req.param('headings')
+if (!headings) {
+  headings =''
+}
+
 //Which id data to use.
 var idItem = req.param('idItem')
 if (!idItem) {
@@ -107,10 +114,12 @@ console.log('idItem : ',JSON.stringify(idItem))
 console.log('parentid :' ,JSON.stringify(parentid))
 console.log('raw :',JSON.stringify(raw))
 console.log('parentItem :',JSON.stringify(parentItem[0]))
+console.log('headings :',headings)
 console.log('-----------getform------------')
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
+
 
 
 res.render('form', {
@@ -119,6 +128,7 @@ res.render('form', {
   formdata : JSON.stringify(formdata),
   idItem : JSON.stringify(idItem),
   parentid : JSON.stringify(parentid),
+  headings : headings,
   raw :JSON.stringify(raw) ,
   parentItem : JSON.stringify(parentItem[0]) ,
   layout: false,
@@ -551,7 +561,7 @@ exports.getformfield = function(req, res) {
   console.log('////////////////////////////////')
   console.log('   Debug Enter Here')
   console.log('////////////////////////////////')
-  heavyliftingModel.find().limit(50).exec(function (err, init) {
+  heavyliftingModel.find().limit(100).exec(function (err, init) {
     if (err) { return next(err); }
 
 
@@ -567,7 +577,33 @@ exports.getformfield = function(req, res) {
       res.send(JSON.stringify(['true','false']));
       break;
 
+      case (req.param('data') == 'buttons'):
+      heavyliftingModel.find({
+        'parentid' : init[84]._id,
+        'active' : 'true'
+      }).exec(function (err, data) {
+        if (err) { return next(err); }
+        var temp = []
+        for (var i = 0; i < data.length; i++) {
+          temp.push(data[i].entry.value)
+        }
+        res.send(JSON.stringify(temp));
+      });
+      break;
 
+            case (req.param('data') == 'tabs'):
+      heavyliftingModel.find({
+        'parentid' : init[56]._id,
+        'active' : 'true'
+      }).exec(function (err, data) {
+        if (err) { return next(err); }
+        var temp = []
+        for (var i = 0; i < data.length; i++) {
+          temp.push(data[i].entry.value)
+        }
+        res.send(JSON.stringify(temp));
+      });
+      break;
 
       case (req.param('data') == 'layout'):
       heavyliftingModel.find({
@@ -679,10 +715,56 @@ heavyliftingModel.
         'active' : 'true'
   }).
   exec(function (err, docs1) {
-    console.log('//////////////////////////')
-    console.log('//////// DEBUG  /////////')
-    console.log('//////////////////////////')
+    if (err) { return next(err); }    
+    console.log('//////////////////////////////////')
+    console.log('//////// DEBUG  GROUPS  /////////')
+    console.log('////////////////////////////////')
     console.log(req.param('data'),':',docs1)
     res.send(JSON.stringify(docs1));
   });
 }
+
+//////////////////////////////////////////
+///////////   READ  GROUPS  /////////////
+////////////////////////////////////////
+exports.navmenuload = function(req, res) {
+  heavyliftingModel.find().limit(150).exec(function (err, init) {
+    if (err) { return next(err); }
+    var temp = init[109]._id
+    //objectid in mongo needs to be a string to query by.
+    temp = temp.toString()
+    heavyliftingModel.find({
+      'entry.parent' : temp,
+      'active' : 'true'
+    }).exec(function (err, navmenu) {
+    if (err) { return next(err); }      
+    console.log('//////////////////////////////////')
+    console.log('//////// DEBUG NAVMENU //////////')
+    console.log('////////////////////////////////')      
+    console.log(temp,':',navmenu)
+    res.send(JSON.stringify(navmenu));
+  });
+  })
+}
+/* Redundant
+//////////////////////////////////////////
+///////////   READ  GROUPS  /////////////
+////////////////////////////////////////
+exports.pageload = function(req, res) {
+heavyliftingModel.
+  find({
+        'parentid' :req.param('ids'),
+        'active' : 'true'
+  }).
+  exec(function (err, docs1) {
+    if (err) { return next(err); }    
+    console.log('//////////////////////////////////')
+    console.log('//////// DEBUG  PAGELOAD  /////////')
+    console.log('////////////////////////////////')
+    console.log(req.param('ids'),':',docs1)
+    res.send(JSON.stringify(docs1));
+  });
+}
+
+
+*/

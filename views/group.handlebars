@@ -66,9 +66,10 @@ function create_uid() {
       'global': false,
       'url': '/groups?data='+items.elementID,
       'success': function (dataSchemaObject) {
-        console.log(dataSchemaObject,'consososos')
+   
         input = JSON.parse(dataSchemaObject);
         groupShow(input)
+        layoutView() 
       }
     });
   })
@@ -83,7 +84,7 @@ function create_uid() {
 //////  PRINT IMAGE       //////
 /////////////////////////////// 
 function printImageCatagory (data) {
-  console.log(data.entry.Image,'im')
+ 
   html=""
   if ( data.entry.Image ) {
     html+=  '<div class="col-sm-4 col-md-4" >'
@@ -122,5 +123,66 @@ function viewCatagory(id){
 
 }
 
+/////////////////////////////
+////     LAYOUT VIEW    //// 
+///////////////////////////
+function layoutView() {
+if (items.entry.layout) {
+ for (var i = 0; i < items.entry.layout.length; i++) {
+    templateLoad(items.entry.layout[i],'toolbar')
+ }
+}  else {
+  templateLoad(['parentraw'],'toolbar')
+  templateLoad(['add'],'toolbar')
+}
+}
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK OPEN FORM  /////////
+////////////////////////////////////////////
+function deployForm(parentid){
+  //This is hard wired , and likely to cause issues.
+  loadformModal(parentid,'','use',templateload)
+}
+
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+////////////////////////////////////                                                                                                              
+function loadformModal(formdata,idItem,raw,parentid){
+  jQuery.ajax({
+    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      $('#formAreaModal').html(dataSchemaObject)
+    }
+  });
+}
+
+//////////////////////////////////////////////////
+////////    BUTTON CLICK OPEN RAW FORM  /////////
+////////////////////////////////////////////////
+function deployparentrawForm(parentid){
+ console.log('this is loading')
+    loadformModal(parentid,parentid,'raw',parentid)
+ 
+}
+
+///////////////////////////////////
+////////  LOADING OF TOOLS ///////
+/////////////////////////////////
+function templateLoad(template,location){
+//Ensure that the first load error is covered , also any other errors.
+if(template){
+  jQuery.ajax({
+   'async': true,
+   'global': false,
+   'url': '/templatename?template='+template,
+   'success': function (dataSchemaObject) {
+     jQuery('#'+location).append(dataSchemaObject)
+   }
+ });
+}
+}
 
 </script>

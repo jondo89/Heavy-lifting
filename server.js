@@ -161,8 +161,13 @@ app.get('/getformfield', readController.getformfield);
 app.get('/templatename', readController.templatename);
   //get the select groups
 app.get('/groups', readController.groups);
- 
+//get the navmenu
+app.get('/navmenuload', readController.navmenuload);
 
+/* Redundant
+//click to open with navmenu
+app.get('/pageload', readController.pageload);
+*/
 ///////////////////////////////////////////
 ////       DELETE CONTROLLERS         //// 
 /////////////////////////////////////////

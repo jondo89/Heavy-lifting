@@ -9,7 +9,7 @@
     </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav navbar-right">
+      <ul class="nav navbar-nav navbar-right" id="deploy">
         {{> navbar}}   
         {{#if user}}
         <li class="dropdown">
@@ -19,7 +19,6 @@
             {{else}}
             <img src="{{user.gravatar}}" class="navbar-avatar-pic">
             {{/if}}
- 
             <i class="caret"></i>
           </a>
           <ul class="dropdown-menu" style="width: 100%">
@@ -44,3 +43,66 @@
   <!-- /.container-fluid -->
 </nav>
 
+<script type="text/javascript">
+/////////////////////////////////////// 
+//////  LOAD NAVIGATION MENU    //////
+/////////////////////////////////////
+function LoadNavigationMenu(){
+  jQuery.ajax({
+   'async': true,
+   'global': false,
+   'url': '/navmenuload',
+   'success': function (dataSchemaObject) {
+    var navemenu = JSON.parse(dataSchemaObject)
+    var html=''
+    for (var i = 0; i < navemenu.length; i++) {
+      if (navemenu[i].elementID) {
+        html +='<li id="'+navemenu[i].elementID+'"><a href="#" >'+navemenu[i].entry.description+'</a></li>'
+      } else {
+        html +='<li><a href="#" id="'+navemenu[i]._id+'">'+navemenu[i].entry.description+'</a></li>'
+      }
+    }
+    $('#deploy').prepend(html)
+    for (var i = 0; i < navemenu.length; i++) {
+      if (navemenu[i].elementID) {
+       $('#'+navemenu[i].elementID).bind('click', NavbarClick);
+
+     } else {
+       $('#'+navemenu[i]._id).bind('click', NavbarClick);
+     }
+   }
+
+ }
+})
+}
+
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+$( document ).ready(function() {
+  LoadNavigationMenu()
+});
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK NAVBAR     /////////
+////////////////////////////////////////////
+function NavbarClick(){
+  var temp = $(this).attr('id')
+  if (temp!='noload') {
+    pageLoad(temp)
+  }
+}
+
+////////////////////////////////////
+////////    LOAD PAGE     /////////
+//////////////////////////////////
+function pageLoad(ids){
+  //Ensure that the first load error is covered , also any other errors.
+  if(ids){
+    console.log(ids)
+    jstreeGet(ids)
+  }
+}
+
+ 
+</script>
