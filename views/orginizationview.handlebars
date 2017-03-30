@@ -1,0 +1,90 @@
+<h1 id="name"></h1>
+ 
+
+
+ <div style="text-align: right">
+   <div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
+  <a type="button" class="btn btn-default" id="changeButton" href="/neworg"><i class="fa fa-plus" aria-hidden="true"></i>  New Organization</a> 
+</div>
+ 
+
+ </div>
+
+
+<div class="well">You are not a member of any organizations.</div>
+
+
+<p>
+</p>
+<div id='formDelivery'></div>
+
+<script type="text/javascript">
+  var tablelistdata = {{{databaseitems}}};
+  var items = {{{menuitem}}}
+  var formids = create_uid()
+  var templateload = {{{templateload}}}
+  
+  var raw = {{{raw}}}
+ 
+/////////////////////////////////////
+////     HEADINGS AND STUFF     //// 
+///////////////////////////////////
+$('#name').html(items.name)
+$('#detail').html(items.detail)
+
+
+/////////////////////////////
+////     DEBUG AREA     //// 
+///////////////////////////
+console.log( 'databasetablelist loading' )
+console.log( '-------------------------' )
+console.log( 'tablelistdata : ',tablelistdata )
+console.log( 'items : ',items )
+console.log( 'formids : ',formids )
+console.log( 'templateload : ',templateload )
+console.log( '-------------------------' )
+console.log( 'databasetablelist loading' )
+
+//////////////////////////////////////////
+////        CREATE UNIQUE ID         //// 
+////////////////////////////////////////
+function create_uid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+  s4() + '-' + s4() + s4() + s4();
+}
+
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
+/////////////////////////////////////////////
+$('#changeButton').attr('id', items.childType);
+jQuery('#formDelivery').attr("id",formids);
+jQuery('#toggle-one').attr("id",formids+'_toggle');
+
+//////////////////////////////////////////
+////        INIT TOGGLE BUTTON       //// 
+////////////////////////////////////////
+$('#'+formids+'_toggle').bootstrapToggle();
+
+/////////////////////////////////////////////////////////////////////////////
+////////  EVENT LISTNER ON THE TOOGGLE FOR REMOVING THE COMPONETNS   ///////
+///////////////////////////////////////////////////////////////////////////
+$('#'+formids+'_toggle').change(function() {
+  //This function is defined in the component navigation template.
+  getCollectionData(objectType,$(this).prop('checked'))
+})
+
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+$('document').ready(function(){
+ 
+})
+ 
+
+
+</script>

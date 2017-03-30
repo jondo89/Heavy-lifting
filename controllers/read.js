@@ -62,7 +62,11 @@ var parentid = req.param('parentid')
 if (!parentid) {
   parentid ='false'
 }
-
+//used for the database items which require a location from which the data was created.
+var entry = req.param('entry')
+if (!entry) {
+  entry =''
+}
 //There is a requirement to limit the form size  , as such send the find and send the headings from the parent.
 var query1 = heavyliftingModel.find(
 {
@@ -115,6 +119,7 @@ console.log('parentid :' ,JSON.stringify(parentid))
 console.log('raw :',JSON.stringify(raw))
 console.log('parentItem :',JSON.stringify(parentItem[0]))
 console.log('headings :',headings)
+console.log('entry :',entry)
 console.log('-----------getform------------')
 /////////////////////////////
 ////      DEBUG         //// 
@@ -131,6 +136,7 @@ res.render('form', {
   headings : headings,
   raw :JSON.stringify(raw) ,
   parentItem : JSON.stringify(parentItem[0]) ,
+  entry : entry, 
   layout: false,
 });
 
@@ -338,39 +344,47 @@ exports.templatename = function(req, res) {
   });
 }
 
-
-///////////////////////////////////////////////////
-////       SEND THE DATABASE INFORMATION      //// 
-/////////////////////////////////////////////////
-exports.database = function(req, res) {
-  heavyliftingModel.find().limit(5).exec(function (err, init) {
-    if (err) { return next(err); }
-    var ids = init[2]._id
-    var Formids = init[3]._id
-    res.render('database', {
-      title: 'Database Admin',
-      siteName : siteName,
-      layout: false,
-      items : JSON.stringify(ids),
-      Formids : JSON.stringify(Formids)
-    });
-  });
-}
+ 
 
 //////////////////////////////////////////////
 ////       GET AND SEND JSTREE DATA      //// 
 ////////////////////////////////////////////
 exports.jstree = function(req, res) {
   var ids = req.param('ids')
+
   var query = heavyliftingModel.find(
+  {
+    $and : 
+    [
+    {$or: [
+      {"elementID": ids },
+      {"_id":  ids }
+      ]}, 
+      {
+        "active": "true" 
+      }
+      ]
+    })
+
+  var query1 = heavyliftingModel.find(
   {
     "active": "true" ,
     "parentid": ids,      
   })
-  query.exec(function (err, docs1) {
+
+query.exec(function (err, docs) {
+  if (err) { return next(err); } 
+  query1.exec(function (err, docs1) {
     if (err) { return next(err); } 
-    res.send(JSON.stringify(docs1))
+    var temp ={
+      thisitem : docs,
+      children : docs1
+    }
+    res.send(JSON.stringify(temp))
   })
+})
+
+
 }
 
 //////////////////////////////////////////////////////
@@ -700,9 +714,7 @@ exports.getformfield = function(req, res) {
       });
       break;
     }
-
   })
-
 }
 
 //////////////////////////////////////////
@@ -719,13 +731,13 @@ heavyliftingModel.
     console.log('//////////////////////////////////')
     console.log('//////// DEBUG  GROUPS  /////////')
     console.log('////////////////////////////////')
-    console.log(req.param('data'),':',docs1)
+ 
     res.send(JSON.stringify(docs1));
   });
 }
 
 //////////////////////////////////////////
-///////////   READ  GROUPS  /////////////
+///////////   LOAD NAVMENU  /////////////
 ////////////////////////////////////////
 exports.navmenuload = function(req, res) {
   heavyliftingModel.find().limit(150).exec(function (err, init) {
@@ -741,30 +753,56 @@ exports.navmenuload = function(req, res) {
     console.log('//////////////////////////////////')
     console.log('//////// DEBUG NAVMENU //////////')
     console.log('////////////////////////////////')      
-    console.log(temp,':',navmenu)
-    res.send(JSON.stringify(navmenu));
+ 
+        res.send(JSON.stringify(navmenu));
   });
   })
 }
-/* Redundant
+ 
+////////////////////////////////////////////
+///////////   LOAD COMP MENU  /////////////
 //////////////////////////////////////////
-///////////   READ  GROUPS  /////////////
-////////////////////////////////////////
-exports.pageload = function(req, res) {
-heavyliftingModel.
-  find({
-        'parentid' :req.param('ids'),
-        'active' : 'true'
-  }).
-  exec(function (err, docs1) {
-    if (err) { return next(err); }    
-    console.log('//////////////////////////////////')
-    console.log('//////// DEBUG  PAGELOAD  /////////')
-    console.log('////////////////////////////////')
-    console.log(req.param('ids'),':',docs1)
-    res.send(JSON.stringify(docs1));
+exports.loadcompmenu = function(req, res) {
+var ids = '58d9f9d597285841701acbdb'
+    heavyliftingModel.find({
+      'parentid' : ids,
+      'active' : 'true'
+    }).exec(function (err, navmenu) {
+    if (err) { return next(err); }      
+    console.log('/////////////////////////////////////////')
+    console.log('//////// COMPONENT MENU DEBUG //////////')
+    console.log('///////////////////////////////////////')      
+ 
+    res.send(JSON.stringify(navmenu));
   });
 }
 
-
-*/
+////////////////////////////////////////////
+///////////   LOAD USER MENU  /////////////
+//////////////////////////////////////////
+exports.loadusermenu = function(req, res) {
+var usermenu = '58d9ea35c22b040488546f13'
+var adminmenu = '58d9faaf97285841701acbdf'
+    heavyliftingModel.find({
+      'parentid' : usermenu,
+      'active' : 'true'
+    }).exec(function (err, user) {
+    if (err) { return next(err); }   
+    heavyliftingModel.find({
+      'parentid' : adminmenu,
+      'active' : 'true'
+    }).exec(function (err, admin) {
+    if (err) { return next(err); }      
+    console.log('//////////////////////////////////')
+    console.log('//////// DEBUG NAVMENU //////////')
+    console.log('////////////////////////////////')      
+    var temp = {
+      user :user,
+      admin :admin
+    }
+    res.send(JSON.stringify(temp));
+  });
+  });
+}
+ 
+ 

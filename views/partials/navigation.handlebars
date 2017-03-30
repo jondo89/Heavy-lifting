@@ -135,11 +135,9 @@ function dataJStreeConvert (databaseMenu){
 
 //error trap the menu.
 for (var i = 0; i < newData.length; i++) {
- 
   if (!newData[i].parent) {
     newData[i].parent = '#'
   }
-
 }
 
 return newData
@@ -220,12 +218,7 @@ $('#newMenuItem').click(function(){
   console.log('click')
   //This is hard wired , and likely to cause issues.
     newMenuItems('58a135c69a783a3c60688761','','use','58a13a5f7481ac03d47ae7b5')
-  
 })
-
-
- 
-
 
 //////////////////////////////////////
 ////////    GET FORM BY ID  /////////

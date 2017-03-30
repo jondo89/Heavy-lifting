@@ -35,7 +35,7 @@ if (req.user) {
     res.render('admin', {
       title: 'Database Admin',
       siteName : siteName,
-      layout: false,
+     // layout: false,
       items : JSON.stringify(ids),
       Formids : JSON.stringify(Formids)
     });

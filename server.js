@@ -26,6 +26,7 @@ var createController = require('./controllers/create');
 var readController = require('./controllers/read');
 var deleteController = require('./controllers/delete');
 var orginizationController = require('./controllers/orginization');
+var pagesController = require('./controllers/pages');
 
 
 // Passport OAuth strategies
@@ -98,6 +99,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', HomeController.index);
 
 
+/////////////////////////////
+////       PAGES        //// 
+///////////////////////////
+app.get('/store', pagesController.store);
+app.get('/components', pagesController.components);
+app.get('/database', pagesController.database);
+app.get('/neworg', pagesController.neworg);
 
 ////////////////////////////////////////////
 ////       INITIALIZE DATABASE         //// 
@@ -119,7 +127,7 @@ app.get('/delete',  adminController.delete);
 ////        USER INTERFACE CONTROLLER         //// 
 /////////////////////////////////////////////////
 app.get('/settings',  userInterfaceController.settings);
-
+app.get('/profile', userInterfaceController.profile);
 /////////////////////////////////////
 ////       ORGINIZATION         //// 
 ///////////////////////////////////
@@ -129,7 +137,6 @@ app.get('/orginization/new',  orginizationController.new);
 /////////////////////////////////
 ////        DATABASE        //// 
 ///////////////////////////////
-app.get('/database',  readController.database);
 //Load Template
 app.get('/templateload', readController.templateload);
 
@@ -163,6 +170,10 @@ app.get('/templatename', readController.templatename);
 app.get('/groups', readController.groups);
 //get the navmenu
 app.get('/navmenuload', readController.navmenuload);
+//get the usermenu
+app.get('/loadusermenu', readController.loadusermenu);
+//get the loadcompmenu
+app.get('/loadcompmenu', readController.loadcompmenu);
 
 /* Redundant
 //click to open with navmenu
@@ -199,11 +210,16 @@ app.get('/auth/github', passport.authenticate('github', { scope: [ 'user:email p
 app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/', failureRedirect: '/login' }));
 
 
+
+ 
+
+
+
 /////////////////////////////
 ////       404          //// 
 ///////////////////////////
 app.get('*', function(req, res){
-  res.render('404', {layout: false});
+  res.render('404');
 });
 
 // Production error handler

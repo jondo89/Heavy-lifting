@@ -6,30 +6,47 @@ var siteName = 'Heavy-lifting'
 ////////// SETTINGS PAGE ///////////
 ///////////////////////////////////
 exports.settings = function(req, res) {
-          res.render('settings', {
-			title: 'Settings',
-			siteName : siteName,
-			layout: false,
-		});
-};
-
- 
-exports.settings = function(req, res) {
-//Perform Routing for Varios user type on the home page.
 if (req.user) {
  userid = req.user.id
-  heavyliftingModel.find().limit(50).exec(function (err, init) {
+ switch (true){
+  default:
+  heavyliftingModel.find().limit(5).exec(function (err, init) {
     if (err) { return next(err); }
-    var ids = init[36]._id
+    var ids = '58db2e4f6c196145e853955e'
     var Formids = init[3]._id
-          res.render('settings', {
-			title: 'Settings',
+    res.render('database', {
       siteName : siteName,
-      layout: false,
       items : JSON.stringify(ids),
       Formids : JSON.stringify(Formids)
     });
   });
+  break;
+}
+} else {
+ res.redirect('/signin');
+}
+};
+ 
+////////////////////////////////////
+////////// PROFILE PAGE ////////////
+///////////////////////////////////
+exports.profile = function(req, res) {
+if (req.user) {
+ userid = req.user.id
+ switch (true){
+  default:
+  heavyliftingModel.find().limit(5).exec(function (err, init) {
+    if (err) { return next(err); }
+    var ids = '58d9fa5797285841701acbdd'
+    var Formids = init[3]._id
+    res.render('account/profile', {
+      siteName : siteName,
+      items : JSON.stringify(ids),
+      Formids : JSON.stringify(Formids)
+    });
+  });
+  break;
+}
 } else {
  res.redirect('/signin');
 }

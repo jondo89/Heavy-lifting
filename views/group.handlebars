@@ -2,6 +2,7 @@
 
 <p id="detail"></p>
 <div id="toolbar"></div>
+ 
 <p></p>
  
 
@@ -19,7 +20,7 @@
  
 
 <script type="text/javascript">
-  var tablelistdata = {{{databaseitems}}};
+ 
   var items = {{{menuitem}}}
   var formids = create_uid()
   var templateload = {{{templateload}}}
@@ -35,14 +36,13 @@ $('#detail').html(items.detail)
 /////////////////////////////
 ////     DEBUG AREA     //// 
 ///////////////////////////
-console.log( 'databasetablelist loading' )
+console.log( 'Group loading' )
 console.log( '-------------------------' )
-console.log( 'tablelistdata : ',tablelistdata )
 console.log( 'items : ',items )
 console.log( 'formids : ',formids )
 console.log( 'templateload : ',templateload )
 console.log( '-------------------------' )
-console.log( 'databasetablelist loading' )
+console.log( 'Group loading' )
 
 //////////////////////////////////////////
 ////        CREATE UNIQUE ID         //// 
@@ -141,16 +141,40 @@ if (items.entry.layout) {
 ////////    BUTTON CLICK OPEN FORM  /////////
 ////////////////////////////////////////////
 function deployForm(parentid){
-  //This is hard wired , and likely to cause issues.
-  loadformModal(parentid,'','use',templateload)
+  //Inputs into the form deployment.
+    //formdata,idItem,raw,parentid,headings,entry
+  //Which form to use.
+    //formdata:
+  //idItem:
+    //Which item to edit.
+  //Use the raw function for defining how to edit the data :
+    //raw:['use' , 'self' , 'edit']
+  //parentid:
+    //Inject a parent id.
+  //Inject a default entry.
+    //entry is used to manually add additional information to the form.
+  //Find and inject the group menu id number.
+  if (items.elementID) {
+    var parentIdTemp = items.elementID
+  } else {
+    var parentIdTemp = items._id
+  }
+    var headings = ["description","detail","icon","headings"]
+  var entry = {
+                      parent : parentIdTemp,
+                  }
+  loadformModal(parentid,'','use',items.parentid,headings,entry)
 }
 
 //////////////////////////////////////
 ////////    GET FORM BY ID  /////////
 ////////////////////////////////////                                                                                                              
-function loadformModal(formdata,idItem,raw,parentid){
+function loadformModal(formdata,idItem,raw,parentid,headings,entry){
+  console.log(formdata,idItem,raw,parentid,headings)
+  var headings = JSON.stringify(headings)
+  var entry = JSON.stringify(entry)
   jQuery.ajax({
-    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid,
+    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings+'&entry='+entry,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
@@ -163,7 +187,7 @@ function loadformModal(formdata,idItem,raw,parentid){
 ////////    BUTTON CLICK OPEN RAW FORM  /////////
 ////////////////////////////////////////////////
 function deployparentrawForm(parentid){
- console.log('this is loading')
+ 
     loadformModal(parentid,parentid,'raw',parentid)
  
 }

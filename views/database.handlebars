@@ -1,27 +1,15 @@
-
-
-
- <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{title}}</title>
-  {{> css}}
-</head>
-
-<body>
-  {{> javascript}}
-  {{> header}}
-
  
 
-<div class="container" >
-     <div class="row">
+
+    <h1 id="descriptions"></h1>
+    <p id="details"></p>
+    <div class="row">
       <div class="col-md-4" id="navMenuPanel">
         <div class="panel panel-default">
           <div class="panel-body">
+          <div id="myProgress">
+  <div id="myBar"> </div>
+</div>
            <h5><strong>Navigation</strong> <small>Use the navigation tree to interact with the database.</small></h5>
            <div class="panel">
              <div style="padding-bottom:15px;padding-bottom:15px">
@@ -31,53 +19,41 @@
           </div>
           <div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
             <button type="button" class="btn btn-default" id="newMenuItem" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></button> 
-           </div>
+          </div>
         </div>
       </div>
     </div>  
-
-    
     <div class="col-md-8" id="browserArea">
- 
-          <div id="panel">  
-
-      <div class="alert alert-info" role="alert"> <strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>
- 
-          </div>
-   
-
+      <div id="panel">  
+        <div class="alert alert-info" role="alert"> <strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>
+      </div>
     </div>
   </div>
-
-</div>
-
-
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="myModal">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
-       <div id="modal-body"></div>
-       <div id="formAreaModal"></div>
-     </div>
-     <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-    </div>
-  </div>
-</div>
-</div>
+ 
  
 
- <script type="text/javascript">
-
-
-var databaseid = {{{items}}};
-var Formids = {{{Formids}}};
-
-var databaseMenu = []
+<script type="text/javascript">
+  var databaseid = {{{items}}};
+  var Formids = {{{Formids}}};
+  var navmenuHeadings = ['detail','description','icon','buttons','tabs','parent','template']
+  var databaseMenu = []
   var temp =[]
-  var table 
- 
+
+/////////////////////////////
+////     DEBUG AREA     //// 
+///////////////////////////
+console.log( 'admin loading' )
+console.log( '-------------------------' )
+console.log( 'databaseid : ',databaseid )
+console.log( 'Formids : ',Formids )
+console.log( 'navmenuHeadings : ',navmenuHeadings )
+console.log( 'databaseMenu : ',databaseMenu )
+console.log( 'temp : ',temp )
+console.log( '-------------------------' )
+console.log( 'admin loading' )
+
+
+
 
 /////////////////////////////////// 
 //////  GET JSTREE BY ID    //////
@@ -89,22 +65,30 @@ function jstreeGet(ids){
     'global': false,
     'success': function (dataSchemaObject) {
       var dataSchemaObject = JSON.parse(dataSchemaObject)
-      var dataSchemaObject = fitstFormat(dataSchemaObject)
-    //manipulate data to work with the jstree
-      var jsTreeData = dataJStreeConvert (dataSchemaObject)
+ 
+      
+      //Add the headings to the page.
+      $('#descriptions').html(dataSchemaObject.thisitem[0].name)
+      $('#details').html(dataSchemaObject.thisitem[0].detail)
+      $('#panel').html('')
+
+      var dataSchemaObject1 = fitstFormat(dataSchemaObject.children)
+      //manipulate data to work with the jstree
+      var jsTreeData = dataJStreeConvert (dataSchemaObject1)
       var location = 'jstree'
+      $('#'+location).html('')
       //load the jstree
-      loadNavMenu('jstree',jsTreeData)
+      //change the primary page id variable , used for the parent
+      databaseid = ids
+      loadNavMenu(location,jsTreeData)
     }
   });
 }
 
- 
-
-
 function fitstFormat(databaseMenu){
+  var temp =[]
     //This is where the id is injected into the menu item . Crude hacky work around , not sure how to improve.
-  for (var i = 0; i < databaseMenu.length; i++) {
+    for (var i = 0; i < databaseMenu.length; i++) {
       //the add the id to the array going into the menu .
       if (databaseMenu[i]['elementID'] == "") {
         databaseMenu[i].entry.id = databaseMenu[i]['_id']
@@ -115,11 +99,8 @@ function fitstFormat(databaseMenu){
     }
     databaseMenu = temp
     return databaseMenu
-}
-
-
-
-
+  }
+ 
 ///////////////////////////// 
 //////  INITIALISE    //////
 /////////////////////////// 
@@ -127,7 +108,9 @@ $( document ).ready(function() {
   jstreeGet(databaseid)
 });
 
-//change to format JS tree requires
+/////////////////////////////////////////
+//////  DATACONVERT FOR JSTREE    //////
+/////////////////////////////////////// 
 function dataJStreeConvert (databaseMenu){
   var newData = []
   for (var i = 0; i < databaseMenu.length; i++) {
@@ -158,22 +141,38 @@ function dataJStreeConvert (databaseMenu){
           }
           temp['a_attr'] =  aclass
           break;
+          case (key == 'field'):
+          aclass = { 
+            "data-field" : databaseMenu[i][key],
+          }
+          temp['a_attr'] =  aclass
+          break;          
         }
       }
       newData.push(temp)
     }
-
-
 //error trap the menu.
 for (var i = 0; i < newData.length; i++) {
- 
   if (!newData[i].parent) {
     newData[i].parent = '#'
   }
-
+}
+sortResults(newData,'text', true);
+return newData
 }
 
-return newData
+////////////////////////////////////////////////
+////////   CUSTOM JSON SORTING FUNCTION ///////
+//////////////////////////////////////////////
+function sortResults(json , prop, asc) {
+  json = json.sort(function(a, b) {
+    if (asc) {
+      return (a[prop] > b[prop]) ? 1 : ((a[prop] < b[prop]) ? -1 : 0);
+    } else {
+      return (b[prop] > a[prop]) ? 1 : ((b[prop] < a[prop]) ? -1 : 0);
+    }
+  });
+  return json;
 }
 
 ////////////////////////////////////////////////
@@ -181,6 +180,10 @@ return newData
 //////////////////////////////////////////////
 function loadNavMenu(location,dataNav){
   //console.log(dataNav)
+  //Destory the tree if it exists
+  if (jQuery('#'+location).jstree("destroy")) {
+    jQuery('#'+location).jstree("destroy");
+  }
   var $root =jQuery('#'+location).jstree({ 
     'core' : {
       'data' : dataNav,        
@@ -220,11 +223,37 @@ jQuery('#'+location)
         var ids=(dataTree.instance.get_node(dataTree.selected[0]).id);
         //keep useful code snippet , however no longer required.
         var template=(dataTree.instance.get_node(dataTree.selected[0]).a_attr['data-template']);
+        var field=(dataTree.instance.get_node(dataTree.selected[0]).a_attr['data-field']);
         r.push(dataTree.instance.get_node(dataTree.selected[i]).template);
       }
-      templateloading(ids)
+      if (field) {
+        templateloading(field)
+      }else{
+        templateloading(ids)
+      }
     })
-  }
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK OPEN FORM  /////////
+////////////////////////////////////////////
+$('#newMenuItem').click(function(){
+  //var temp = jQuery('#'+location).jstree("get_selected",true)
+  //console.log(temp[0].id)
+  newMenuItems(Formids,'','use',databaseid,'',navmenuHeadings)
+  })
+
+
+  console.log('Admin Page')
+  console.log('---------------------------')
+  console.log(' databaseid :', databaseid )
+  console.log(' Formids :', Formids )
+  console.log(' navmenuHeadings :', navmenuHeadings )
+  console.log(' databaseMenu :', databaseMenu )
+  console.log(' temp :', temp )
+  console.log('---------------------------')
+  console.log('Admin Page')
+
+}
 
 ///////////////////////////////////////////////////////
 ////////  EVENT LISTNER FUNCTION AREA DATABASE ///////
@@ -244,26 +273,39 @@ if(ids){
 }
 }
 
-//////////////////////////////////////////////
-////////    BUTTON CLICK OPEN FORM  /////////
-////////////////////////////////////////////
-$('#newMenuItem').click(function(){
- 
-  //This is hard wired , and likely to cause issues.
-    newMenuItems(Formids,'','use',databaseid)
-  
-})
+//////////////////////////////////////
+////////    PROGRESS BAR    /////////
+////////////////////////////////////
+function move() {
+  var elem = document.getElementById("myBar");   
+  elem.style.height = '5px'; 
+  elem.style.background = '#4c8ffd'; 
+  var width = 10;
+  var id = setInterval(frame, 1);
+  function frame() {
+    if (width >= 100) {
+      clearInterval(id);
+      collapse()
+    } else {
+      width++; 
+      elem.style.width = width + '%'; 
+    }
+  }
+}
 
-
- 
-
+function collapse() {
+  var elem = document.getElementById("myBar");   
+  elem.style.background = 'white'; 
+}
 
 //////////////////////////////////////
 ////////    GET FORM BY ID  /////////
 ////////////////////////////////////
-function newMenuItems(formdata,idItem,raw,parentid){
+function newMenuItems(formdata,idItem,raw,parentid,injectParentid,headings){
+  console.log(formdata,idItem,raw,parentid,injectParentid,headings)
+  var headings = JSON.stringify(headings)
   jQuery.ajax({
-    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid,
+    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
@@ -271,10 +313,6 @@ function newMenuItems(formdata,idItem,raw,parentid){
     }
   });
 }
- </script>
+</script>
 
-{{> footer}}
-{{> analytics}}
-
-</body>
-</html>
+ 

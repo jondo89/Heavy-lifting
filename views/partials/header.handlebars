@@ -21,14 +21,8 @@
             {{/if}}
             <i class="caret"></i>
           </a>
-          <ul class="dropdown-menu" style="width: 100%">
-            <li><a href="/account">Your Profile</a></li>
-            <li><a href="/account">Your Account</a></li>
-            <li><a href="/account">Help</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="/admin">Admin Panel</a> </li>
+          <ul class="dropdown-menu" style="width: 100%" id="usermenu"> 
             <li class="divider"></li>       
-            <li><a href="/settings">Settings</a></li>
             <li><a href="/signout">Sign out</a></li>
           </ul>
         </li>
@@ -42,6 +36,8 @@
   </div>
   <!-- /.container-fluid -->
 </nav>
+
+
 
 <script type="text/javascript">
 /////////////////////////////////////// 
@@ -57,39 +53,91 @@ function LoadNavigationMenu(){
     var html=''
     for (var i = 0; i < navemenu.length; i++) {
       if (navemenu[i].elementID) {
-        html +='<li id="'+navemenu[i].elementID+'"><a href="#" >'+navemenu[i].entry.description+'</a></li>'
+        html +='<li id="'+navemenu[i].entry.description+'_navmenu"><a href="/'+navemenu[i].entry.description+'" >'+navemenu[i].entry.description+'</a></li>'
       } else {
-        html +='<li><a href="#" id="'+navemenu[i]._id+'">'+navemenu[i].entry.description+'</a></li>'
+        html +='<li><a href="/'+navemenu[i].entry.description+'" >'+navemenu[i].entry.description+'</a></li>'
       }
     }
     $('#deploy').prepend(html)
+
+
+/*
     for (var i = 0; i < navemenu.length; i++) {
       if (navemenu[i].elementID) {
-       $('#'+navemenu[i].elementID).bind('click', NavbarClick);
-
+       $('#'+navemenu[i].elementID+'_navmenu').bind('click', NavbarClick);
      } else {
-       $('#'+navemenu[i]._id).bind('click', NavbarClick);
+       $('#'+navemenu[i]._id+'_navmenu').bind('click', NavbarClick);
      }
    }
+*/
+
 
  }
 })
 }
+
+/////////////////////////////////
+//////  LOAD USER MENU    //////
+////////////////////////////////
+function loadusermenu(){
+  jQuery.ajax({
+   'async': true,
+   'global': false,
+   'url': '/loadusermenu',
+   'success': function (dataSchemaObject) {
+    var navemenu = JSON.parse(dataSchemaObject) 
+    var html = ''    
+    for (var i = 0; i < navemenu.user.length; i++) {
+      html +='<li><a href="/'+navemenu.user[i].entry.value+'" id="'+navemenu.user[i].entry.description+'">'+navemenu.user[i].entry.description+'</a></li>'
+    }
+    html+='<li role="separator" class="divider"></li>'
+    for (var i = 0; i < navemenu.admin.length; i++) {
+      html +='<li><a href="/'+navemenu.admin[i].entry.value+'" id="'+navemenu.admin[i].entry.description+'">'+navemenu.admin[i].entry.description+'</a></li>'
+    }
+    $('#usermenu').prepend(html)
+ }
+})
+}
+
+/////////////////////////////////
+//////  LOAD USER MENU    //////
+////////////////////////////////
+function loadcompmenu(){
+  jQuery.ajax({
+   'async': true,
+   'global': false,
+   'url': '/loadcompmenu',
+   'success': function (dataSchemaObject) {
+    var navemenu = JSON.parse(dataSchemaObject)
+    var html=''
+    for (var i = 0; i < navemenu.length; i++) {
+      html +='<li><a href="#" id="'+navemenu[i].entry.description+'">'+navemenu[i].entry.description+'</a></li>'
+    }
+    $('#component').html(html)
+ }
+})
+}
+
 
 ///////////////////////////// 
 //////  INITIALISE    //////
 /////////////////////////// 
 $( document ).ready(function() {
   LoadNavigationMenu()
+  loadusermenu()
+  loadcompmenu()
 });
 
+/*
 //////////////////////////////////////////////
 ////////    BUTTON CLICK NAVBAR     /////////
 ////////////////////////////////////////////
 function NavbarClick(){
   var temp = $(this).attr('id')
+    temp = temp.replace('_navmenu', '');
   if (temp!='noload') {
     pageLoad(temp)
+    move()
   }
 }
 
@@ -99,10 +147,9 @@ function NavbarClick(){
 function pageLoad(ids){
   //Ensure that the first load error is covered , also any other errors.
   if(ids){
-    console.log(ids)
     jstreeGet(ids)
   }
-}
+}*/
 
  
 </script>
