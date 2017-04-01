@@ -1,6 +1,7 @@
 {
   "entry": {
-    "value": "glyphicon glyphicon-road"
+    "detail": "Tempalte for navigation view on the settings page of the user orginizations.",
+    "value": "orginizationview"
   },
   "objectType": "database",
   "detail": "Use for the creation database items.",

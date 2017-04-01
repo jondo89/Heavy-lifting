@@ -1,0 +1,27 @@
+{
+  "entry": {
+    "parent": "58c0e357d0a4c300d4aa4ed1",
+    "description": "Database",
+    "icon": "glyphicon glyphicon-globe",
+    "tabs": [
+      "table",
+      "filter"
+    ],
+    "buttons": [
+      "modify"
+    ],
+    "headings": [
+      "description",
+      "parent",
+      "icon",
+      "headings"
+    ]
+  },
+  "objectType": "database",
+  "detail": "Use for the creation database items.",
+  "name": "Database Items",
+  "__v": 0,
+  "active": "false",
+  "revision": "updated",
+  "elementID": "58d2010b118e812d18654119"
+}

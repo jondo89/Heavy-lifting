@@ -1,0 +1,13 @@
+{
+  "entry": {
+    "value": "incomplete",
+    "description": "pageLoad(databaseid) fires error on form submit hitlist"
+  },
+  "objectType": "database",
+  "detail": "Use for the creation database items.",
+  "name": "Database Items",
+  "__v": 0,
+  "active": "true",
+  "revision": "created",
+  "elementID": ""
+}

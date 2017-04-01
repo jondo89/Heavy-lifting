@@ -1,0 +1,18 @@
+{
+  "entry": {
+    "headings": [
+      "description",
+      "detail",
+      "value"
+    ],
+    "parent": "#",
+    "description": "Primary Testing of Database."
+  },
+  "objectType": "database",
+  "detail": "Use for the creation database items.",
+  "name": "Database Items",
+  "__v": 0,
+  "active": "false",
+  "revision": "created",
+  "elementID": ""
+}

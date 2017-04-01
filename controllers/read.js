@@ -605,7 +605,23 @@ exports.getformfield = function(req, res) {
       });
       break;
 
-            case (req.param('data') == 'tabs'):
+
+      case (req.param('data') == 'type'):
+      heavyliftingModel.find({
+        'parentid' : '58df43d40cef901b8c1bb474',
+        'active' : 'true'
+      }).exec(function (err, data) {
+        if (err) { return next(err); }
+        var temp = []
+        for (var i = 0; i < data.length; i++) {
+          temp.push(data[i].entry.value)
+        }
+        res.send(JSON.stringify(temp));
+      });
+      break;
+
+
+      case (req.param('data') == 'tabs'):
       heavyliftingModel.find({
         'parentid' : init[56]._id,
         'active' : 'true'
@@ -806,3 +822,64 @@ var adminmenu = '58d9faaf97285841701acbdf'
 }
  
  
+////////////////////////////////////////////////////
+////       GET FORM AND DATA | ONLY FORM       //// 
+//////////////////////////////////////////////////
+exports.getdatacomp = function(req, res) {
+//Which id form to use.
+var formdata = req.param('formdata')
+if (!formdata) {
+  formdata =''
+}
+//Which id data to use.
+var idItem = req.param('idItem')
+if (!idItem) {
+  idItem =formdata
+}
+//Edit Self / Edit Raw or create new.
+var raw = req.param('raw')
+if (!raw) {
+  raw ='false'
+}
+/////////////////////////////
+////      DEBUG         //// 
+///////////////////////////
+ 
+console.log('-----------getdatacomp------------')
+console.log('formdata : ',JSON.stringify(formdata))
+console.log('idItem : ',JSON.stringify(idItem))
+console.log('raw :',JSON.stringify(raw))
+console.log('-----------getdatacomp------------')
+ 
+/////////////////////////////
+////      DEBUG         //// 
+///////////////////////////
+
+
+//find all of the parentid equal .
+    heavyliftingModel.find({
+      'parentid' : idItem,
+      'active' : 'true'
+    }).exec(function (err, form) {
+    if (err) { return next(err); } 
+
+//turn into something that alpaca understands.
+
+
+console.log('-----------ORIGINAL DATA------------')
+console.log('form : ',JSON.stringify(form))
+console.log('-----------ORIGINAL DATA------------')
+
+
+ 
+
+
+      res.send({
+        formdata : form  
+      });
+
+  })
+
+
+
+}

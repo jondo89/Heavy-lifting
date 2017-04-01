@@ -1,0 +1,32 @@
+{
+  "entry": {
+    "layout": [
+      "add",
+      "addcomp",
+      "delete",
+      "filter",
+      "graph",
+      "maxmin",
+      "parentraw",
+      "raw",
+      "revision",
+      "up",
+      "user"
+    ],
+    "headings": [
+      "description",
+      "detail",
+      "value"
+    ],
+    "icon": "glyphicon glyphicon-th-list",
+    "parent": "58be40a25a13d81c94ea334c",
+    "description": "Tabs"
+  },
+  "objectType": "database",
+  "detail": "Use for the display of tabs on a page.",
+  "name": "Tabs",
+  "__v": 0,
+  "active": "false",
+  "revision": "updated",
+  "elementID": "58c231eb2a7f21370c339a2c"
+}

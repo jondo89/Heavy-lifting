@@ -1,0 +1,13 @@
+{
+  "entry": {
+    "value": "profile",
+    "description": "Your Profile"
+  },
+  "objectType": "database",
+  "detail": "Use for the creation database items.",
+  "name": "Database Items",
+  "__v": 0,
+  "active": "true",
+  "revision": "updated",
+  "elementID": "58d9fa5797285841701acbdd"
+}

@@ -2,11 +2,7 @@
 <div id="formDelivery"></div>
 
 <script type="text/javascript">
- 
-
-
- 
-      var formdata = {{{formdata}}}
+  var formdata = {{{formdata}}}
   var idItem = {{{idItem}}}
   var raw = {{{raw}}}
   var parentid = {{{parentid}}}
@@ -14,14 +10,11 @@
   var parentItem = {{{parentItem}}}
   
 
-{{#if headings}}
-var headingsTemp = {{{headings}}}
-{{else}}
+  {{#if headings}}
+  var headingsTemp = {{{headings}}}
+  {{else}}
   var headingsTemp = ''
-{{/if}}
-
-
-
+  {{/if}}
 
 ////////////////////////////////////
 ////        DEBUG AREA         //// 
@@ -35,15 +28,12 @@ console.log( 'parentid :',parentid )
 console.log( 'formid1 :',formid1 )
 console.log( 'parentItem :',parentItem )
 console.log( 'headingsTemp :',headingsTemp )
-
 {{#if entry}}
 var entry = {{{entry}}}
 console.log( 'entry :',entry )
 {{else}}
-  var entry
+var entry
 {{/if}}
-
-
 console.log( '-------------------------' )
 console.log( 'form loading' )
 
@@ -67,8 +57,92 @@ $(document).ready(function(){
   //create a unique id for the form deployment.
   jQuery('#formDelivery').attr("id",formid1);
   //check if the data id was sent as well as the form id
-  getdata(formdata,idItem,raw)
+  //switch between component elements and raw elements.
+  if (raw = 'component') {
+    getdatacomp(formdata,idItem,raw)
+  } else {
+    getdata(formdata,idItem,raw)
+  }
 });
+
+/////////////////////////////////////////////////////////
+////////    GET FORM  AND DATA WITH COMPONENTS /////////
+///////////////////////////////////////////////////////
+function getdatacomp(formdata,idItem,raw){
+
+  jQuery.ajax({
+    'url': '/getdatacomp?formdata='+formdata+'&idItem='+idItem+'&raw='+raw,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+
+ 
+    formatAlpaca(dataSchemaObject)
+ 
+     
+   }
+ });
+}
+
+function formatAlpaca(objectOld) {
+
+
+var tempSchema ={
+            "title" : "This is not the nav menu",
+            "type" : "object",
+            "properties" : {
+             }
+        }
+var tempoptions ={
+            "form" : {
+                "buttons" : {
+                    "submit" : {
+                        "title" : "Submit",
+                        "id" : "submit",
+                        "click" : ""
+                    }
+                }
+            },
+            "helper" : "This is a sample test.",
+            "fields" : {
+             },
+            "focus" : ""
+        }
+ 
+for (var i = 0; i < objectOld.formdata.length; i++) {
+  console.log(objectOld.formdata[i].entry.description)
+
+tempSchema.properties[objectOld.formdata[i]['_id']] = {
+"type":"string",
+"title":objectOld.formdata[i].entry.description
+}
+
+tempoptions.fields[objectOld.formdata[i]['_id']] = {
+    'title' : 'i.toString'
+ 
+}
+
+}
+ 
+ console.log(tempSchema.properties)
+
+var data =  {
+  formdata : {
+    entry :{
+      schema : tempSchema,
+      options : tempoptions
+    }
+  }
+}
+
+ 
+initiateForm(data)
+ 
+   
+
+
+}
+
 
 /////////////////////////////////////////
 ////////    GET FORM  AND DATA /////////
@@ -79,6 +153,7 @@ function getdata(formdata,idItem,raw){
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
+
      initiateForm(dataSchemaObject)
    }
  });
@@ -88,13 +163,14 @@ function getdata(formdata,idItem,raw){
 ////        CREATE THE FORM        //// 
 ////////////////////////////////////////
 function initiateForm(data){
+ 
  var form = {
   schema : data.formdata.entry['schema'],
   options : data.formdata.entry['options']
 }
 
-
-
+console.log(form)
+if (raw!='component') {
 if (raw!='raw') {
   //Used for the limiting of visible fields on the form. Specically the 'headings' field.
   //--------------------------------------------------------------------------------
@@ -102,17 +178,15 @@ if (raw!='raw') {
   //General Heading error trap.  
   //When the heading is only 1 item , the printing of the headings loops throguh each character . THis checks if it is an array .
   if (!headingsTemp) {
-  if (items.entry.headings) {
-    var tableHeadings = JSON.parse(JSON.stringify(items.entry.headings))
-    if (!(Array.isArray(tableHeadings))) {
-      tableHeadings = [tableHeadings]
-    }  
-  } else {
-    var tableHeadings = ['name','detail','userID','id','parentid','childType','description']
+    if (items.entry.headings) {
+      var tableHeadings = JSON.parse(JSON.stringify(items.entry.headings))
+      if (!(Array.isArray(tableHeadings))) {
+        tableHeadings = [tableHeadings]
+      }  
+    } else {
+      var tableHeadings = ['name','detail','userID','id','parentid','childType','description']
+    }
   }
-
-  }
-
 
 //Check if there is an overwrite on the headings.
 if(headingsTemp){
@@ -135,11 +209,8 @@ if(headingsTemp){
     }
     //--------------------------------------------------------------------------------
   }
-
+}
  
-
-
-
   $('#'+formid1).html("<div id='form_"+formdata+idItem+formid1+"'></div>")
   $("#form_"+formdata+idItem+formid1).html("")
   //Test alpaca form for true , i.e if it exists , then destroy it.
@@ -149,6 +220,8 @@ if(headingsTemp){
   } else { 
     formInit(form.schema,form.options,data)
   }
+
+   
 } 
 
 //////////////////////////////////////
@@ -162,7 +235,6 @@ function formInit(schema,options,data){
       var value = this.getValue();
       formPost(value,data)
     }
-
 
 //Special case varible use to ensure timing issue the index variable passing into the form dropdown.
 var arr = options.fields
@@ -181,8 +253,6 @@ $.each(arr, function(index, value) {
   }
 }
 });
-
-
 
 switch(true){
   //the use button will require the form to remove any element ids as this will be a new entry.
@@ -228,6 +298,20 @@ switch(true){
     }    
   });
   break;
+
+  case(raw=='component'):
+  $("#form_"+formdata+idItem+formid1).alpaca({
+    "schema": schema,
+    "options": options,
+    "postRender": function(control) {
+      //only set the data if the form is for use.
+      if (idItem !='') {
+        $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(data.idItem.entry)
+      }
+    }    
+  });
+  break;
+
   default :
   var html = ''
   html += '<div class="alert alert-danger" role="alert"> '
@@ -261,8 +345,6 @@ function formPost(dataset,data){
 var name = $('#nameArea').val()
 var detail = $('#DetailArea').val()
 
- 
-
 //routing for the various use cases on the switch
 switch(true){
   case(raw=='use'):
@@ -294,7 +376,6 @@ switch(true){
   primer.active = "true"
   break;
 
-
   case(raw=='edit'):
   var primer = data.idItem
   primer.entry = dataset
@@ -302,9 +383,15 @@ switch(true){
   primer.elementID = data.idItem.elementID
   primer.active = "true"
   break;
+
   case(raw=='raw'):
   var primer = dataset
   break;
+
+  case(raw=='component'):
+  var primer = dataset
+  break;
+
 
   default :
   var html = ''
@@ -316,7 +403,6 @@ switch(true){
   html += '</div>'
   $("#form_"+formdata+idItem+formid1).html(html)
   break;
-
 }
 
 //Jquery send to server
@@ -328,13 +414,13 @@ jQuery.ajax({
   'data': JSON.stringify(primer),
   'success': function (dataSchemaObject) {
     $('#myModal').modal('hide')
-    pageLoad(databaseid)
-    //window.location = dataSchemaObject.redirect
+    //pageLoad(databaseid)
+    window.location.reload()
   },
   'error' :function (dataSchemaObject) {
     $('#myModal').modal('hide')
-    pageLoad(databaseid)
-    //window.location = dataSchemaObject.redirect
+    //pageLoad(databaseid)
+    window.location.reload()
   },
 });   
 

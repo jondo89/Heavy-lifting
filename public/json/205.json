@@ -1,0 +1,12 @@
+{
+  "entry": {
+    "description": "Organizations"
+  },
+  "objectType": "form",
+  "detail": "Manage you organizations.",
+  "name": "Organizations",
+  "__v": 0,
+  "active": "false",
+  "revision": "updated",
+  "elementID": "58db4228b4d9a10df00fc1eb"
+}

@@ -1,0 +1,21 @@
+{
+  "entry": {
+    "headings": [
+      "description",
+      "detail",
+      "headings",
+      "icon",
+      "value"
+    ],
+    "icon": "glyphicon glyphicon-globe",
+    "description": "Forms",
+    "parent": "58d2115cd9c22811c4df3a08"
+  },
+  "objectType": "database",
+  "detail": "Use for the design and modifcation of site forms.",
+  "name": "Forms",
+  "__v": 0,
+  "active": "false",
+  "revision": "updated",
+  "elementID": "58df3fdc48e76c2c1894d704"
+}

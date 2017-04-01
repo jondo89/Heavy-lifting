@@ -2,13 +2,19 @@
   "entry": {
     "description": "Admin",
     "parent": "#",
-    "headings": "description"
+    "headings": [
+      "description",
+      "icon",
+      "layout",
+      "headings",
+      "parent"
+    ]
   },
   "objectType": "database",
   "detail": "Use for the creation database items.",
   "name": "Admin Panel",
   "__v": 0,
-  "active": "true",
+  "active": "false",
   "revision": "created",
   "elementID": ""
 }

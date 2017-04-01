@@ -1,0 +1,13 @@
+{
+  "entry": {
+    "value": "Incomplete",
+    "description": "userID needs to have indirect call function for user name (and avatar pic)"
+  },
+  "objectType": "database",
+  "detail": "Use for the creation database items.",
+  "name": "Database Items",
+  "__v": 0,
+  "active": "true",
+  "revision": "created",
+  "elementID": ""
+}

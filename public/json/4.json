@@ -2,14 +2,26 @@
   "entry": {
     "schema": {
       "properties": {
+        "buttons": {
+          "title": "Buttons"
+        },
+        "tabs": {
+          "title": "Tabs"
+        },
+        "type": {
+          "title": "Data Type"
+        },
+        "layout": {
+          "title": "Layout"
+        },
         "headings": {
           "title": "Headings"
         },
-        "template": {
-          "title": "Template"
-        },
         "icon": {
           "title": "Icon"
+        },
+        "template": {
+          "title": "Template"
         },
         "parent": {
           "title": "Parent"
@@ -36,6 +48,18 @@
     "options": {
       "focus": "",
       "fields": {
+        "buttons": {
+          "multiple": true,
+          "type": "select"
+        },
+        "tabs": {
+          "multiple": true,
+          "type": "select"
+        },
+        "layout": {
+          "multiple": true,
+          "type": "select"
+        },
         "headings": {
           "multiple": true,
           "type": "select"
@@ -44,6 +68,9 @@
           "type": "select"
         },
         "unit": {
+          "type": "select"
+        },
+        "type": {
           "type": "select"
         },
         "template": {
@@ -68,7 +95,6 @@
         },
         "detail": {
           "validate": true,
-          "helper": "All entry data is stored here.",
           "cols": 40,
           "rows": 4,
           "type": "text"

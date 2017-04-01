@@ -1,0 +1,20 @@
+{
+  "entry": {
+    "headings": [
+      "description",
+      "detail",
+      "value",
+      "unit",
+      "standard"
+    ],
+    "parent": "#",
+    "description": "Belt Class"
+  },
+  "objectType": "database",
+  "detail": "Use for the creation database items.",
+  "name": "Belt Class",
+  "__v": 0,
+  "active": "false",
+  "revision": "updated",
+  "elementID": "58d2111ed9c22811c4df3a07"
+}

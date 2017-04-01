@@ -1,0 +1,13 @@
+{
+  "entry": {
+    "value": "Incomplete",
+    "description": "Add modify button to the toolbar"
+  },
+  "objectType": "database",
+  "detail": "Use for the creation database items.",
+  "name": "Database Items",
+  "__v": 0,
+  "active": "true",
+  "revision": "created",
+  "elementID": ""
+}

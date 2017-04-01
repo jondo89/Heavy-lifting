@@ -1,0 +1,15 @@
+{
+  "entry": {
+    "description": "Units",
+    "parent": "58be4bd83f5a1b2704e9bb7a",
+    "icon": "glyphicon glyphicon-globe",
+    "headings": "value"
+  },
+  "objectType": "form",
+  "detail": "Use for the creation of Navigation jstree structures.",
+  "name": "Navigation Menu",
+  "__v": 0,
+  "active": "true",
+  "revision": "updated",
+  "elementID": "58aa74210b9d3241280ecf21"
+}

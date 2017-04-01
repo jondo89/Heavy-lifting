@@ -1,0 +1,14 @@
+{
+  "entry": {
+    "description": "Store",
+    "parent": "58d2115cd9c22811c4df3a08",
+    "icon": "glyphicon glyphicon-globe"
+  },
+  "objectType": "form",
+  "detail": "Use for the creation Navigation items.",
+  "name": "Navigation Items",
+  "__v": 0,
+  "active": "false",
+  "revision": "updated",
+  "elementID": "58d222d18d9bfd28846eb792"
+}

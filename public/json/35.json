@@ -1,11 +1,12 @@
 {
   "entry": {
-    "value": "maxmin",
-    "description": "Include the maximize and minimize template controls in template."
+    "description": "Settings",
+    "parent": "#",
+    "headings": "description"
   },
   "objectType": "database",
-  "detail": "Use for the creation database items.",
-  "name": "Database Items",
+  "detail": "Use for the creation settings items.",
+  "name": "Settings",
   "__v": 0,
   "active": "true",
   "revision": "created",

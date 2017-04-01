@@ -1,0 +1,16 @@
+{
+  "entry": {
+    "headings": [
+      ""
+    ],
+    "template": "group",
+    "description": "Organizations"
+  },
+  "objectType": "database",
+  "detail": "used for the creation of new organizations.",
+  "name": "Orgnazation form design",
+  "__v": 0,
+  "active": "false",
+  "revision": "updated",
+  "elementID": "58df40ff48e76c2c1894d709"
+}

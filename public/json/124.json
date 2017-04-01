@@ -1,0 +1,13 @@
+{
+  "entry": {
+    "detail": "Belt Cleaners",
+    "description": "test"
+  },
+  "objectType": "database",
+  "detail": "Use for the creation database items.",
+  "name": "Database Items",
+  "__v": 0,
+  "active": "true",
+  "revision": "updated",
+  "elementID": "58d36a8c62270e04c419cfe7"
+}

@@ -1,0 +1,14 @@
+{
+  "entry": {
+    "detail": "Test",
+    "value": "1",
+    "description": "3"
+  },
+  "objectType": "database",
+  "detail": "Use for the creation database items.",
+  "name": "Database Items",
+  "__v": 0,
+  "active": "true",
+  "revision": "updated",
+  "elementID": "58c4d2436712932eac60cd1a"
+}

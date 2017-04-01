@@ -1,0 +1,13 @@
+{
+  "entry": {
+    "value": "complete",
+    "description": "modify button on datatables is not drawing the correct form for use."
+  },
+  "objectType": "database",
+  "detail": "Use for the creation database items.",
+  "name": "Database Items",
+  "__v": 0,
+  "active": "true",
+  "revision": "updated",
+  "elementID": "58cf5b030f55a116e4ecaf10"
+}

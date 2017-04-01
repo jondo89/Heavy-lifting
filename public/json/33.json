@@ -1,7 +1,7 @@
 {
   "entry": {
-    "value": "graph",
-    "description": "include the graph option on the template."
+    "value": "maxmin",
+    "description": "Include the maximize and minimize template controls in template."
   },
   "objectType": "database",
   "detail": "Use for the creation database items.",

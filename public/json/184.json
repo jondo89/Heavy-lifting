@@ -1,0 +1,13 @@
+{
+  "entry": {
+    "template": "group",
+    "description": "General"
+  },
+  "objectType": "form",
+  "detail": "Use for the creation Navigation items.",
+  "name": "Navigation Items",
+  "__v": 0,
+  "active": "false",
+  "revision": "created",
+  "elementID": ""
+}

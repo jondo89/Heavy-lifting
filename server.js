@@ -105,7 +105,9 @@ app.get('/', HomeController.index);
 app.get('/store', pagesController.store);
 app.get('/components', pagesController.components);
 app.get('/database', pagesController.database);
-app.get('/neworg', pagesController.neworg);
+app.get('/organization/new', pagesController.neworg);
+app.get('/help', pagesController.help);
+app.get('/forms', pagesController.forms);
 
 ////////////////////////////////////////////
 ////       INITIALIZE DATABASE         //// 
@@ -156,6 +158,8 @@ app.get('/getCollectionData', readController.getCollectionData);
 app.get('/getform', readController.getform);
 //get data by array of ids.
 app.get('/getdata', readController.getdata);
+//get data by array of ids.
+app.get('/getdatacomp', readController.getdatacomp);
  //get data by parentid
 app.get('/parentid', readController.parentid);
  //get data 

@@ -1,0 +1,13 @@
+{
+  "entry": {
+    "value": "Incomplete",
+    "description": "The menu items have to much on the client side ,could be improved by enforcing the addition of id into element for everthing."
+  },
+  "objectType": "database",
+  "detail": "Use for the creation database items.",
+  "name": "Database Items",
+  "__v": 0,
+  "active": "true",
+  "revision": "created",
+  "elementID": ""
+}

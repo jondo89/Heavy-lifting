@@ -1,0 +1,33 @@
+{
+  "entry": {
+    "layout": [
+      "add",
+      "addcomp",
+      "delete",
+      "filter",
+      "graph",
+      "maxmin",
+      "parentraw",
+      "raw",
+      "revision",
+      "up",
+      "user"
+    ],
+    "headings": [
+      "description",
+      "detail",
+      "value"
+    ],
+    "field": "58aa74160b9d3241280ecf19",
+    "icon": "glyphicon glyphicon-th",
+    "parent": "58c0e357d0a4c300d4aa4ed1",
+    "description": "Administration"
+  },
+  "objectType": "form",
+  "detail": "Use for the creation Navigation items.",
+  "name": "Navigation Items",
+  "__v": 0,
+  "active": "true",
+  "revision": "created",
+  "elementID": ""
+}

@@ -1,7 +1,7 @@
 {
   "entry": {
-    "value": "filter",
-    "description": "include the table filter element on the template."
+    "value": "user",
+    "description": "Include toggle all users or single user in template."
   },
   "objectType": "database",
   "detail": "Use for the creation database items.",

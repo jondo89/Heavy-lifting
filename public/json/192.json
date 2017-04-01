@@ -1,0 +1,22 @@
+{
+  "entry": {
+    "parent": "58d9e9b4c22b040488546f11",
+    "description": "User Menu",
+    "icon": "glyphicon glyphicon-globe",
+    "headings": [
+      "description",
+      "value"
+    ],
+    "buttons": [
+      "modify",
+      "rawitem"
+    ]
+  },
+  "objectType": "form",
+  "detail": "Use for the creation Navigation items.",
+  "name": "Navigation Items",
+  "__v": 0,
+  "active": "false",
+  "revision": "updated",
+  "elementID": "58d9ea35c22b040488546f13"
+}

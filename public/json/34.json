@@ -1,7 +1,6 @@
 {
   "entry": {
-    "value": "user",
-    "description": "Include toggle all users or single user in template."
+    "value": "glyphicon glyphicon-road"
   },
   "objectType": "database",
   "detail": "Use for the creation database items.",
