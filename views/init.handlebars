@@ -13,7 +13,7 @@
    
 <div class="btn-group" role="group" aria-label="..." id="group"></div>
  
-
+<div id="area"></div>
 
 <script type="text/javascript">
   var database
@@ -136,8 +136,9 @@ function backup(){
     'success': function (dataSchemaObject) {
       var data = []
       dataSchemaObject = JSON.parse(dataSchemaObject)
+      var html = ""
       for (var i = 0; i < dataSchemaObject.length; i++) {
-        var html = ""
+        
         var j = i+1
         var obj = dataSchemaObject[i];
         
@@ -156,51 +157,30 @@ if (dataSchemaObject[i]['elementID'].length == 0 | !dataSchemaObject[i]['element
         //Prettyfy and encode the json.
  
 
-        data.push([j+'.json', 'text/json;charset=utf-8,'+
-                  encodeURIComponent(JSON.stringify(obj, null, 2))])
+ 
 
 
-      console.log('encode :',j)
+ 
+var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj));
+
+ html += '<a class="btn btn-default" href="data:'  + data + '" download="'+j+'.json" id="'+j+'_dl">download JSON</a>' 
 
       }
-        html = '<a href="#" class="btn btn-default"  id="download-csv">Download all</a>'
-
-
-        $('#group').append(html)
-
-        $('#download-csv').on('click', function(){
-            downloadAll(data);
-        });
-
+$('#group').append('<a class="btn btn-default" onclick="dlall('+dataSchemaObject.length+')">Download All</a>')
+$('#group').append(html)
   }
 }); 
 }
 
-var count = 0
-
-function downloadAll(files){
-    if(files.length == 0) return;
-    file = files.pop();
-    var theAnchor = $('<a />')
-        .attr('href', file[1])
-        .attr('download',file[0])
-        // Firefox does not fires click if the link is outside
-        // the DOM
-        .appendTo('body');
-    
-    theAnchor[0].click(); 
-    theAnchor.remove();
-var delayMillis = 5000; //1 second
-
-setTimeout(function() {
-  //your code to be executed after 1 second
-}, delayMillis);
-
-count = count + 1
-console.log(count)
-    downloadAll(files);
-}
-
+    function dlall(lengths){
+      for (var i = 0; i < lengths; i++) {
+      temp = i+1
+        console.log($('#'+temp+'_dl').html)
+        if ($('#'+temp+'_dl').get(0)) {
+          $('#'+temp+'_dl').get(0).click();
+        }
+      }
+    } 
 
 
 
