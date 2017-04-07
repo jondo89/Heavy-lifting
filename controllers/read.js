@@ -744,10 +744,15 @@ heavyliftingModel.
   }).
   exec(function (err, docs1) {
     if (err) { return next(err); }    
-    console.log('//////////////////////////////////')
-    console.log('//////// DEBUG  GROUPS  /////////')
-    console.log('////////////////////////////////')
- 
+/////////////////////////////
+////      DEBUG         //// 
+///////////////////////////
+console.log('-----------groups------------')
+console.log('docs1 : ',JSON.stringify(docs1))
+console.log('-----------groups------------')
+/////////////////////////////
+////      DEBUG         //// 
+///////////////////////////   
     res.send(JSON.stringify(docs1));
   });
 }
@@ -766,9 +771,15 @@ exports.navmenuload = function(req, res) {
       'active' : 'true'
     }).exec(function (err, navmenu) {
     if (err) { return next(err); }      
-    console.log('//////////////////////////////////')
-    console.log('//////// DEBUG NAVMENU //////////')
-    console.log('////////////////////////////////')      
+/////////////////////////////
+////      DEBUG         //// 
+///////////////////////////
+console.log('-----------navmenuload------------')
+console.log('navmenu : ',JSON.stringify(navmenu))
+console.log('-----------navmenuload------------')
+/////////////////////////////
+////      DEBUG         //// 
+///////////////////////////   
  
         res.send(JSON.stringify(navmenu));
   });
@@ -785,9 +796,15 @@ var ids = '58d9f9d597285841701acbdb'
       'active' : 'true'
     }).exec(function (err, navmenu) {
     if (err) { return next(err); }      
-    console.log('/////////////////////////////////////////')
-    console.log('//////// COMPONENT MENU DEBUG //////////')
-    console.log('///////////////////////////////////////')      
+/////////////////////////////
+////      DEBUG         //// 
+///////////////////////////
+console.log('-----------loadcompmenu------------')
+console.log('navmenu : ',JSON.stringify(navmenu))
+console.log('-----------loadcompmenu------------')
+/////////////////////////////
+////      DEBUG         //// 
+///////////////////////////
  
     res.send(JSON.stringify(navmenu));
   });
@@ -809,13 +826,22 @@ var adminmenu = '58d9faaf97285841701acbdf'
       'active' : 'true'
     }).exec(function (err, admin) {
     if (err) { return next(err); }      
-    console.log('//////////////////////////////////')
-    console.log('//////// DEBUG NAVMENU //////////')
-    console.log('////////////////////////////////')      
+      
     var temp = {
       user :user,
       admin :admin
     }
+
+/////////////////////////////
+////      DEBUG         //// 
+///////////////////////////
+console.log('-----------loadusermenu------------')
+console.log('temp : ',JSON.stringify(temp))
+console.log('-----------loadusermenu------------')
+/////////////////////////////
+////      DEBUG         //// 
+///////////////////////////
+
     res.send(JSON.stringify(temp));
   });
   });
@@ -866,9 +892,9 @@ console.log('-----------getdatacomp------------')
 //turn into something that alpaca understands.
 
 
-console.log('-----------ORIGINAL DATA------------')
+console.log('-----------getdatacomp------------')
 console.log('form : ',JSON.stringify(form))
-console.log('-----------ORIGINAL DATA------------')
+console.log('-----------getdatacomp------------')
 
 
  

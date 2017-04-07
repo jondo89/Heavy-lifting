@@ -109,6 +109,12 @@ app.get('/organization/new', pagesController.neworg);
 app.get('/help', pagesController.help);
 app.get('/forms', pagesController.forms);
 
+/////////////////////////////////
+////       TEMPALTES        //// 
+///////////////////////////////
+app.get('/privacy', pagesController.privacy);
+app.get('/terms', pagesController.terms);
+
 ////////////////////////////////////////////
 ////       INITIALIZE DATABASE         //// 
 //////////////////////////////////////////

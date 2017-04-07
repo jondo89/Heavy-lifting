@@ -140,20 +140,76 @@ function backup(){
         var html = ""
         var j = i+1
         var obj = dataSchemaObject[i];
-        //Remove values that are specific to the database.
+        
+ 
+//by overwriting the elmenent ID on blanks , then all items in the databse can be transposable onto new databases.        
+if (dataSchemaObject[i]['elementID'].length == 0 | !dataSchemaObject[i]['elementID']) {
+  dataSchemaObject[i]['elementID']=dataSchemaObject[i]['_id']
+}
+
+//Remove values that are specific to the database.
         delete dataSchemaObject[i]['_id']
         delete dataSchemaObject[i]['parentid']
         delete dataSchemaObject[i]['childType']
         delete dataSchemaObject[i]['userID']
         delete dataSchemaObject[i]['created']
         //Prettyfy and encode the json.
-        data.push("text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj, null, 2)))
-        html +='<a type="button" class="btn btn-default" id="'+j+'_downloads" href="data:' + data[i] + '" download="'+j+'.json">'+j+" : "+dataSchemaObject[i].name+'</a>'
-        $('#group').append(html)
+ 
+
+        data.push([j+'.json', 'text/json;charset=utf-8,'+
+                  encodeURIComponent(JSON.stringify(obj, null, 2))])
+
+
+      console.log('encode :',j)
+
       }
+        html = '<a href="#" class="btn btn-default"  id="download-csv">Download all</a>'
+
+
+        $('#group').append(html)
+
+        $('#download-csv').on('click', function(){
+            downloadAll(data);
+        });
+
   }
 }); 
 }
+
+var count = 0
+
+function downloadAll(files){
+    if(files.length == 0) return;
+    file = files.pop();
+    var theAnchor = $('<a />')
+        .attr('href', file[1])
+        .attr('download',file[0])
+        // Firefox does not fires click if the link is outside
+        // the DOM
+        .appendTo('body');
+    
+    theAnchor[0].click(); 
+    theAnchor.remove();
+var delayMillis = 5000; //1 second
+
+setTimeout(function() {
+  //your code to be executed after 1 second
+}, delayMillis);
+
+count = count + 1
+console.log(count)
+    downloadAll(files);
+}
+
+
+
+
+
+
+
+
+
+
 
 /////////////////////////////////////// 
 //////  DELETE ENTIRE DATABASE  ///////
@@ -179,339 +235,7 @@ function deleteEntrys(){
   })
   window.location = '/'
 }
-
-//////////////////////////// 
-//////  GET JSON #1 ///////
-////////////////////////// 
-function getjson1(){
-  var temp = 1
-  $.getJSON('../json/'+temp+'.json', function (dataset) {
-    jQuery.ajax({
-      'url': '/create',
-      'type': 'POST', 
-      'dataType': 'json',
-      'contentType': 'application/json', 
-      'data': JSON.stringify(dataset),
-      'success': function (dataSchemaObject) {
-        getjson2()
-      },
-      'error' :function (dataSchemaObject) {
-        window.location = '/'
-      },
-    });  
-  });
-}
-
-//////////////////////////// 
-//////  GET JSON #2 ///////
-////////////////////////// 
-function getjson2(){
-  var temp = 2
-  $.getJSON('../json/'+temp+'.json', function (dataset) {
-    jQuery.ajax({
-      'url': '/create',
-      'type': 'POST', 
-      'dataType': 'json',
-      'contentType': 'application/json', 
-      'data': JSON.stringify(dataset),
-      'success': function (dataSchemaObject) {
-        window.location = '/'
-      },
-      'error' :function (dataSchemaObject) {
-        window.location = '/'
-      },
-    });  
-  });
-}
-
-//////////////////////////// 
-//////  GET JSON #3 ///////
-////////////////////////// 
-function getjson3(){
-  var temp = 3
-  $.getJSON('../json/'+temp+'.json', function (dataset) {
-    dataset.parentid = database[1]._id,
-    jQuery.ajax({
-      'url': '/create',
-      'type': 'POST', 
-      'dataType': 'json',
-      'contentType': 'application/json', 
-      'data': JSON.stringify(dataset),
-      'success': function (dataSchemaObject) {
-        window.location = '/'
-      },
-      'error' :function (dataSchemaObject) {
-        window.location = '/'
-      },
-    });  
-  });
-}
-
-////////////////////////////
-//////  GET JSON #4 ///////
-////////////////////////// 
-function getjson4(){
-  var temp = 4
-  $.getJSON('../json/'+temp+'.json', function (dataset) {
-    dataset.parentid = database[1]._id,
-    dataset.childType = database[2]._id,
-    jQuery.ajax({
-      'url': '/create',
-      'type': 'POST', 
-      'dataType': 'json',
-      'contentType': 'application/json', 
-      'data': JSON.stringify(dataset),
-      'success': function (dataSchemaObject) {
-        window.location = '/'
-      },
-      'error' :function (dataSchemaObject) {
-        window.location = '/'
-      },
-    });  
-  });
-}
-
-////////////////////////////
-//////  GET JSON #5 ///////
-////////////////////////// 
-function getjson5(){
-  var temp = 5
-  $.getJSON('../json/'+temp+'.json', function (dataset) {
-    dataset.parentid = database[3]._id,
-    dataset.childType = database[2]._id,
-    jQuery.ajax({
-      'url': '/create',
-      'type': 'POST', 
-      'dataType': 'json',
-      'contentType': 'application/json', 
-      'data': JSON.stringify(dataset),
-      'success': function (dataSchemaObject) {
-        window.location = '/'
-      },
-      'error' :function (dataSchemaObject) {
-        window.location = '/'
-      },
-    });  
-  });
-}
-
-////////////////////////////
-//////  GET JSON #6 ///////
-////////////////////////// 
-function getjson6(){
-  var temp = 6
-  $.getJSON('../json/'+temp+'.json', function (dataset) {
-    dataset.parentid = database[4]._id,
-    dataset.childType = database[2]._id,
-    jQuery.ajax({
-      'url': '/create',
-      'type': 'POST', 
-      'dataType': 'json',
-      'contentType': 'application/json', 
-      'data': JSON.stringify(dataset),
-      'success': function (dataSchemaObject) {
-        window.location = '/'
-      },
-      'error' :function (dataSchemaObject) {
-        window.location = '/'
-      },
-    });  
-  });
-}
-
-////////////////////////////
-//////  GET JSON #7 ///////
-////////////////////////// 
-function getjson7(){
-  var temp = 7
-  $.getJSON('../json/'+temp+'.json', function (dataset) {
-    dataset.parentid = database[4]._id,
-    dataset.childType = database[2]._id,
-    jQuery.ajax({
-      'url': '/create',
-      'type': 'POST', 
-      'dataType': 'json',
-      'contentType': 'application/json', 
-      'data': JSON.stringify(dataset),
-      'success': function (dataSchemaObject) {
-        window.location = '/'
-      },
-      'error' :function (dataSchemaObject) {
-        window.location = '/'
-      },
-    });  
-  });
-}
-
-////////////////////////////
-//////  GET JSON #8 ///////
-////////////////////////// 
-function getjson8(){
-  var temp = 8
-  $.getJSON('../json/'+temp+'.json', function (dataset) {
-    dataset.parentid = database[6]._id,
-    dataset.childType = database[2]._id,
-    jQuery.ajax({
-      'url': '/create',
-      'type': 'POST', 
-      'dataType': 'json',
-      'contentType': 'application/json', 
-      'data': JSON.stringify(dataset),
-      'success': function (dataSchemaObject) {
-        window.location = '/'
-      },
-      'error' :function (dataSchemaObject) {
-        window.location = '/'
-      },
-    });  
-  });
-}
-
-////////////////////////////
-//////  GET JSON #9 ///////
-////////////////////////// 
-function getjson9(){
-  var temp = 9
-  $.getJSON('../json/'+temp+'.json', function (dataset) {
-    dataset.parentid = database[4]._id,
-    dataset.childType = database[2]._id,
-    jQuery.ajax({
-      'url': '/create',
-      'type': 'POST', 
-      'dataType': 'json',
-      'contentType': 'application/json', 
-      'data': JSON.stringify(dataset),
-      'success': function (dataSchemaObject) {
-        window.location = '/'
-      },
-      'error' :function (dataSchemaObject) {
-        window.location = '/'
-      },
-    });  
-  });
-}
-
-////////////////////////////
-//////  GET JSON #10 ///////
-////////////////////////// 
-function getjson10(){
-  var temp = 10
-  $.getJSON('../json/'+temp+'.json', function (dataset) {
-    dataset.parentid = database[4]._id,
-    dataset.childType = database[2]._id,
-    jQuery.ajax({
-      'url': '/create',
-      'type': 'POST', 
-      'dataType': 'json',
-      'contentType': 'application/json', 
-      'data': JSON.stringify(dataset),
-      'success': function (dataSchemaObject) {
-        window.location = '/'
-      },
-      'error' :function (dataSchemaObject) {
-        window.location = '/'
-      },
-    });  
-  });
-}
-
-////////////////////////////
-//////  GET JSON #11 ///////
-////////////////////////// 
-function getjson11(){
-  var temp = 11
-  $.getJSON('../json/'+temp+'.json', function (dataset) {
-    dataset.parentid = database[8]._id,
-    dataset.childType = database[2]._id,
-    jQuery.ajax({
-      'url': '/create',
-      'type': 'POST', 
-      'dataType': 'json',
-      'contentType': 'application/json', 
-      'data': JSON.stringify(dataset),
-      'success': function (dataSchemaObject) {
-        window.location = '/'
-      },
-      'error' :function (dataSchemaObject) {
-        window.location = '/'
-      },
-    });  
-  });
-}
-
-////////////////////////////
-//////  GET JSON #12 ///////
-////////////////////////// 
-function getjson12(){
-  var temp = 12
-  $.getJSON('../json/'+temp+'.json', function (dataset) {
-    dataset.parentid = database[9]._id,
-    dataset.childType = database[2]._id,
-    jQuery.ajax({
-      'url': '/create',
-      'type': 'POST', 
-      'dataType': 'json',
-      'contentType': 'application/json', 
-      'data': JSON.stringify(dataset),
-      'success': function (dataSchemaObject) {
-        window.location = '/'
-      },
-      'error' :function (dataSchemaObject) {
-        window.location = '/'
-      },
-    });  
-  });
-}
-
-
-////////////////////////////
-//////  GET JSON #13 ///////
-////////////////////////// 
-function getjson13(){
-  var temp = 13
-  $.getJSON('../json/'+temp+'.json', function (dataset) {
-    dataset.parentid = database[4]._id,
-    dataset.childType = database[2]._id,
-    jQuery.ajax({
-      'url': '/create',
-      'type': 'POST', 
-      'dataType': 'json',
-      'contentType': 'application/json', 
-      'data': JSON.stringify(dataset),
-      'success': function (dataSchemaObject) {
-        window.location = '/'
-      },
-      'error' :function (dataSchemaObject) {
-        window.location = '/'
-      },
-    });  
-  });
-}
-
-
-////////////////////////////
-//////  GET JSON #14 ///////
-////////////////////////// 
-function getjson14(){
-  var temp = 14
-  $.getJSON('../json/'+temp+'.json', function (dataset) {
-    dataset.parentid = database[12]._id,
-    dataset.childType = database[2]._id,
-    jQuery.ajax({
-      'url': '/create',
-      'type': 'POST', 
-      'dataType': 'json',
-      'contentType': 'application/json', 
-      'data': JSON.stringify(dataset),
-      'success': function (dataSchemaObject) {
-        window.location = '/'
-      },
-      'error' :function (dataSchemaObject) {
-        window.location = '/'
-      },
-    });  
-  });
-}
+ 
 
 </script>
 

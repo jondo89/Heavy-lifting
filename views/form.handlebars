@@ -58,7 +58,7 @@ $(document).ready(function(){
   jQuery('#formDelivery').attr("id",formid1);
   //check if the data id was sent as well as the form id
   //switch between component elements and raw elements.
-  if (raw = 'component') {
+  if (raw == 'component') {
     getdatacomp(formdata,idItem,raw)
   } else {
     getdata(formdata,idItem,raw)
@@ -69,26 +69,19 @@ $(document).ready(function(){
 ////////    GET FORM  AND DATA WITH COMPONENTS /////////
 ///////////////////////////////////////////////////////
 function getdatacomp(formdata,idItem,raw){
-
   jQuery.ajax({
     'url': '/getdatacomp?formdata='+formdata+'&idItem='+idItem+'&raw='+raw,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
-
- 
     formatAlpaca(dataSchemaObject)
- 
-     
    }
  });
 }
 
 function formatAlpaca(objectOld) {
-
-
 var tempSchema ={
-            "title" : "This is not the nav menu",
+            "title" : "Create an organization account",
             "type" : "object",
             "properties" : {
              }
@@ -103,44 +96,86 @@ var tempoptions ={
                     }
                 }
             },
-            "helper" : "This is a sample test.",
+ 
             "fields" : {
              },
             "focus" : ""
         }
+
  
 for (var i = 0; i < objectOld.formdata.length; i++) {
-  console.log(objectOld.formdata[i].entry.description)
-
-tempSchema.properties[objectOld.formdata[i]['_id']] = {
-"type":"string",
-"title":objectOld.formdata[i].entry.description
-}
-
-tempoptions.fields[objectOld.formdata[i]['_id']] = {
-    'title' : 'i.toString'
  
+if (objectOld.formdata[i].entry.dependencies) {
+  tempDepend = [objectOld.formdata[i].entry.dependencies]
+} else {
+  tempDepend = ''
 }
+//swithcing for the type of input on alpaca.
+
+switch (true){
+  case(objectOld.formdata[i].entry.type =='string'):
+  tempSchema.properties[objectOld.formdata[i]['_id']] = {
+    'type' : objectOld.formdata[i].entry.type,
+    "title":objectOld.formdata[i].entry.description,
+    "dependencies": tempDepend
+  }
+  tempoptions.fields[objectOld.formdata[i]['_id']] = {
+    "helper":objectOld.formdata[i].entry.detail
+  }   
+  break;
+
+  case(objectOld.formdata[i].entry.type =='checkbox'):
+  tempSchema.properties[objectOld.formdata[i]['_id']] = {
+    "title":objectOld.formdata[i].entry.description,
+    "dependencies": tempDepend
+  }
+  tempoptions.fields[objectOld.formdata[i]['_id']] = {
+    'type' : objectOld.formdata[i].entry.type,
+    "rightLabel":[objectOld.formdata[i].entry.detail]
+  }   
+  break;
+
+  case(objectOld.formdata[i].entry.type =='text'):
+  tempSchema.properties[objectOld.formdata[i]['_id']] = {
+    "title":'',
+    "dependencies": tempDepend
+  }
+  tempoptions.fields[objectOld.formdata[i]['_id']] = {
+    "helper":objectOld.formdata[i].entry.description,
+    'view' : 'bootstrap-display',
+  }  
+ 
+  break;
+
+  default:
+  tempSchema.properties[objectOld.formdata[i]['_id']] = {
+    "title":objectOld.formdata[i].entry.description,
+    "dependencies": tempDepend
+  }
+  tempoptions.fields[objectOld.formdata[i]['_id']] = {
+    "helper":objectOld.formdata[i].entry.detail
+  }
+  break;
+}
+
+
+
 
 }
  
- console.log(tempSchema.properties)
+ 
 
 var data =  {
   formdata : {
     entry :{
       schema : tempSchema,
-      options : tempoptions
+      options : tempoptions,
+ 
     }
   }
-}
-
- 
+} 
 initiateForm(data)
  
-   
-
-
 }
 
 
@@ -153,7 +188,6 @@ function getdata(formdata,idItem,raw){
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
-
      initiateForm(dataSchemaObject)
    }
  });
@@ -163,15 +197,16 @@ function getdata(formdata,idItem,raw){
 ////        CREATE THE FORM        //// 
 ////////////////////////////////////////
 function initiateForm(data){
- 
  var form = {
   schema : data.formdata.entry['schema'],
   options : data.formdata.entry['options']
+ 
 }
 
-console.log(form)
 if (raw!='component') {
+
 if (raw!='raw') {
+
   //Used for the limiting of visible fields on the form. Specically the 'headings' field.
   //--------------------------------------------------------------------------------
   var tableHeadings =[]
@@ -208,6 +243,7 @@ if(headingsTemp){
       }
     }
     //--------------------------------------------------------------------------------
+
   }
 }
  
@@ -216,6 +252,7 @@ if(headingsTemp){
   //Test alpaca form for true , i.e if it exists , then destroy it.
   control = $("#form_"+formdata+idItem+formid1).alpaca("destroy");
   if (control) {
+
     formInit(form.schema,form.options,data)
   } else { 
     formInit(form.schema,form.options,data)
@@ -275,12 +312,14 @@ switch(true){
   });
   break;
   case(raw=='raw'):
+  console.log('enterrere')
   $("#form_"+formdata+idItem+formid1).alpaca({
     "schema": schema,
     "options": options,
     "postRender": function(control) {
       //only set the data if the form is for use.
       if (idItem !='') {
+        
         $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(data.idItem)
       }
     }    
@@ -389,7 +428,26 @@ switch(true){
   break;
 
   case(raw=='component'):
-  var primer = dataset
+  var primer = {
+  }
+  console.log(dataset)
+  primer.entry = dataset
+  //spice the entry parameter into the form.
+  for(var key in entry){
+    if(entry.hasOwnProperty(key)){
+      primer.entry[key]=entry[key];
+    }
+  }
+  if (name || detail) {
+    primer.name = name
+    primer.detail = detail
+  }
+  if (parentid) {
+    primer.parentid=parentid
+  }
+  primer.elementID = ''
+  primer.revision = 'created'
+  primer.active = "true"
   break;
 
 

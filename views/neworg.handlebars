@@ -6,18 +6,18 @@
 
 <table class="table table-bordered">
   <tr>
-    <td style="padding: 20px;padding-bottom: 35px" class="well">
+    <td style="padding: 20px;padding-bottom: 35px;width: 33%" class="success">
            <h3><i class="fa fa-check" aria-hidden="true"></i> <strong class="step" style="font-size:24px">Completed</strong></h3>
     Create personal account  
 
     </td>
-    <td style="padding: 20px;padding-bottom: 35px">
-              <h3><i class="fa fa-users" aria-hidden="true"></i> <strong class="step" style="font-size:24px">Step 2:</strong></h3>
+    <td style="padding: 20px;padding-bottom: 35px;width: 33%">
+              <h3><i class="fa fa-users" aria-hidden="true"></i> <strong class="step" style="font-size:24px">Step 2</strong></h3>
     Create organization
 
     </td>
-    <td style="padding: 20px;padding-bottom: 35px">
-             <h3><strong class="step" style="font-size:24px">Step 3:</strong></h3>
+    <td style="padding: 20px;padding-bottom: 35px;width: 33%">
+             <h3><strong class="step" style="font-size:24px">Step 3</strong></h3>
     Invite members 
     </td>
   </tr>
@@ -27,25 +27,28 @@
   <div class="col-md-7">
     
 
-<h3>Create an organization account</h3>
+ 
 
 
 
 
-<hr>
-  By clicking on "Create organization" below, you are agreeing to the Terms of Service and the Privacy Policy.
 
-</hr>
+<div id="viewform"></div>
 
 
 
   </div>
   <div class="col-md-5">
-    Organization accounts allow your team to plan, build, review, and ship software — all while tracking bugs and discussing ideas.
+    Organization accounts allow your team to plan, build, review, and ship your design — all while tracking bugs and discussing ideas.
     
   </div>
 </div>
 
+
+ 
+
+
+ 
 
 
 
@@ -63,71 +66,36 @@
 <div id='formDelivery'></div>
 
 <script type="text/javascript">
-  var tablelistdata = {{{databaseitems}}};
-  var items = {{{menuitem}}}
-  var formids = create_uid()
-  var templateload = {{{templateload}}}
-  
-  var raw = {{{raw}}}
  
-/////////////////////////////////////
-////     HEADINGS AND STUFF     //// 
-///////////////////////////////////
-$('#name').html(items.name)
-$('#detail').html(items.detail)
-
-
-/////////////////////////////
-////     DEBUG AREA     //// 
-///////////////////////////
-console.log( 'databasetablelist loading' )
-console.log( '-------------------------' )
-console.log( 'tablelistdata : ',tablelistdata )
-console.log( 'items : ',items )
-console.log( 'formids : ',formids )
-console.log( 'templateload : ',templateload )
-console.log( '-------------------------' )
-console.log( 'databasetablelist loading' )
-
-//////////////////////////////////////////
-////        CREATE UNIQUE ID         //// 
-////////////////////////////////////////
-function create_uid() {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-    .toString(16)
-    .substring(1);
-  }
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-  s4() + '-' + s4() + s4() + s4();
-}
-
-///////////////////////////////////////////////
-////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
-/////////////////////////////////////////////
-$('#changeButton').attr('id', items.childType);
-jQuery('#formDelivery').attr("id",formids);
-jQuery('#toggle-one').attr("id",formids+'_toggle');
-
-//////////////////////////////////////////
-////        INIT TOGGLE BUTTON       //// 
-////////////////////////////////////////
-$('#'+formids+'_toggle').bootstrapToggle();
-
-/////////////////////////////////////////////////////////////////////////////
-////////  EVENT LISTNER ON THE TOOGGLE FOR REMOVING THE COMPONETNS   ///////
-///////////////////////////////////////////////////////////////////////////
-$('#'+formids+'_toggle').change(function() {
-  //This function is defined in the component navigation template.
-  getCollectionData(objectType,$(this).prop('checked'))
-})
+ 
+ 
 
 ///////////////////////////// 
 //////  INITIALISE    //////
 /////////////////////////// 
 $('document').ready(function(){
  
-})
+  loadformModal('58df42390cef901b8c1bb46d','','component','58df42390cef901b8c1bb46d')
+})  
+
+ 
+ 
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+////////////////////////////////////                                                                                                              
+function loadformModal(formdata,idItem,raw,parentid){
+  jQuery.ajax({
+    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      $('#viewform').html(dataSchemaObject)
+    }
+  });
+}
+
+ 
+ 
  
 
 

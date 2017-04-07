@@ -1,0 +1,51 @@
+ 
+
+<div id="panel"></div>
+
+<script type="text/javascript">
+  
+  var databaseid = {{{items}}};
+  var Formids = {{{Formids}}};
+ 
+
+/////////////////////////////
+////     DEBUG AREA     //// 
+///////////////////////////
+console.log( 'admin loading' )
+console.log( '-------------------------' )
+console.log( 'databaseid : ',databaseid )
+console.log( 'Formids : ',Formids )
+ 
+console.log( '-------------------------' )
+console.log( 'admin loading' )
+
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+$( document ).ready(function() {
+  templateloading(databaseid)
+
+});
+
+
+
+
+///////////////////////////////////////////////////////
+////////  EVENT LISTNER FUNCTION AREA DATABASE ///////
+/////////////////////////////////////////////////////
+function templateloading(ids){
+//Ensure that the first load error is covered , also any other errors.
+if(ids){
+  jQuery.ajax({
+   'async': true,
+   'global': false,
+   'url': '/templateload?ids='+ids,
+   'success': function (dataSchemaObject) {
+     jQuery('#panel').html("")
+     jQuery('#panel').html(dataSchemaObject)
+   }
+ });
+}
+}
+
+</script>

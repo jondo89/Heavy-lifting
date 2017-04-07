@@ -1,18 +1,10 @@
     <div role="tabpanel" class="tab-pane" id="form">
-    
-
-
-  
-
-
-<div id="viewform"></div>
-
+      <div id="viewform"></div>
     </div>
 
 
-<script type="text/javascript">
-  
- 
+    <script type="text/javascript">
+
 ///////////////////////////// 
 //////  INITIALISE    //////
 /////////////////////////// 
@@ -37,16 +29,13 @@ $('document').ready(function(){
   }
   var headings = ["description","detail","icon","headings"]
   var entry =''
-  console.log('enter')
-  loadformModal(parentIdTemp,'','component',items.parentid,headings,entry)
+  loadformModal1(parentIdTemp,'','component',items.parentid,headings,entry)
 })  
 
- 
- 
 //////////////////////////////////////
 ////////    GET FORM BY ID  /////////
 ////////////////////////////////////                                                                                                              
-function loadformModal(formdata,idItem,raw,parentid){
+function loadformModal1(formdata,idItem,raw,parentid){
   jQuery.ajax({
     'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid,
     'async': true,
@@ -56,6 +45,5 @@ function loadformModal(formdata,idItem,raw,parentid){
     }
   });
 }
-
 
 </script>
