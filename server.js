@@ -108,6 +108,8 @@ app.get('/database', pagesController.database);
 app.get('/organization/new', pagesController.neworg);
 app.get('/help', pagesController.help);
 app.get('/forms', pagesController.forms);
+app.get('/site', pagesController.site);
+
 
 /////////////////////////////////
 ////       TEMPALTES        //// 
@@ -155,6 +157,14 @@ app.get('/templateload', readController.templateload);
 app.post('/create',  createController.create);
 
 
+///////////////////////////////////////////
+////       DELETE CONTROLLERS         //// 
+/////////////////////////////////////////
+//get data by array of ids.
+app.get('/deleteentryperm', deleteController.deleteentryperm);
+//get data by array of ids permanently.
+app.get('/deleteentry', deleteController.deleteentry);
+
 /////////////////////////////////////////
 ////       READ CONTROLLERS         //// 
 ///////////////////////////////////////
@@ -189,11 +199,7 @@ app.get('/loadcompmenu', readController.loadcompmenu);
 //click to open with navmenu
 app.get('/pageload', readController.pageload);
 */
-///////////////////////////////////////////
-////       DELETE CONTROLLERS         //// 
-/////////////////////////////////////////
-//get data by array of ids.
-app.get('/deleteentry', deleteController.deleteentry);
+
 
 
 

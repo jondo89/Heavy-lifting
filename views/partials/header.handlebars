@@ -111,7 +111,7 @@ function loadcompmenu(){
     var navemenu = JSON.parse(dataSchemaObject)
     var html=''
     for (var i = 0; i < navemenu.length; i++) {
-      html +='<li><a href="#" id="'+navemenu[i].entry.description+'">'+navemenu[i].entry.description+'</a></li>'
+      html +='<li><a href="/'+navemenu[i].entry.value+'" id="'+navemenu[i].entry.description+'">'+navemenu[i].entry.description+'</a></li>'
     }
     $('#component').html(html)
  }

@@ -36,7 +36,6 @@ function Initializing(){
     'success': function (dataSchemaObject) {
      database = jQuery.parseJSON( dataSchemaObject );
      var records = database.length
-    
      switch(true){
       case ( records >13):
       existingRecords(records);
@@ -138,11 +137,8 @@ function backup(){
       dataSchemaObject = JSON.parse(dataSchemaObject)
       var html = ""
       for (var i = 0; i < dataSchemaObject.length; i++) {
-        
         var j = i+1
         var obj = dataSchemaObject[i];
-        
- 
 //by overwriting the elmenent ID on blanks , then all items in the databse can be transposable onto new databases.        
 if (dataSchemaObject[i]['elementID'].length == 0 | !dataSchemaObject[i]['elementID']) {
   dataSchemaObject[i]['elementID']=dataSchemaObject[i]['_id']
@@ -155,41 +151,22 @@ if (dataSchemaObject[i]['elementID'].length == 0 | !dataSchemaObject[i]['element
         delete dataSchemaObject[i]['userID']
         delete dataSchemaObject[i]['created']
         //Prettyfy and encode the json.
- 
-
- 
-
-
- 
 var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj));
-
  html += '<a class="btn btn-default" href="data:'  + data + '" download="'+j+'.json" id="'+j+'_dl">download JSON</a>' 
-
       }
 $('#group').append('<a class="btn btn-default" onclick="dlall('+dataSchemaObject.length+')">Download All</a>')
 $('#group').append(html)
   }
 }); 
 }
-
     function dlall(lengths){
       for (var i = 0; i < lengths; i++) {
       temp = i+1
-        console.log($('#'+temp+'_dl').html)
         if ($('#'+temp+'_dl').get(0)) {
           $('#'+temp+'_dl').get(0).click();
         }
       }
     } 
-
-
-
-
-
-
-
-
-
 
 /////////////////////////////////////// 
 //////  DELETE ENTIRE DATABASE  ///////
@@ -206,7 +183,6 @@ function deleteEntry(id){
   html +='</div>'
   $('#formAreaModal').html(html)
 }
-
 function deleteEntrys(){
   jQuery.ajax({
     'url': '/deletedb',
@@ -215,8 +191,6 @@ function deleteEntrys(){
   })
   window.location = '/'
 }
- 
-
 </script>
 
 

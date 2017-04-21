@@ -14,6 +14,7 @@ var userSchema = new mongoose.Schema({
   email: { type: String, unique: true},
   password: String,
   passwordResetToken: String,
+  permission: String,
   passwordResetExpires: Date,
   gender: String,
   location: String,

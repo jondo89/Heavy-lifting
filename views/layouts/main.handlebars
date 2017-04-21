@@ -10,25 +10,33 @@
 <body>
  
   {{> javascript}}
-   {{> header}}
 
+  {{> header}}
 
+  <div class="container-full" style="height: 125px;background: #337ab7;padding-top: 1px">
+  <h1 style="color: white;padding-top: 15px;text-align: center">From this point forward almost everything is bespoke.</h1>
+</div>
 
 
   <div class="container" >
 
- {{{body}}}
-</div>
+   {{{body}}}
+ </div>
  
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="myModal">
+ <!-- Modal -->
+ <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="myModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-body">
        <div id="modal-body"></div>
-       <div id="formAreaModal"></div>
-     </div>
-     <div class="modal-footer">
+       <div id="formAreaModal">
+        <div style="text-align: center">
+          <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
+          <span  >Loading...</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
     </div>
   </div>

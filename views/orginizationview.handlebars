@@ -1,7 +1,11 @@
 <div class="panel panel-default">
   <div class="panel-body">  
-    <h2 id="name"></h2>
+
+ 
+     <h2 id="name"></h2>
     <p id="detail"></p>
+
+   
     <div  id="toolbar"class="btn-group" role="group" aria-label="..." style="position: absolute;top: 2px;right: 19px;color: grey">
     </div>
     <p></p>
@@ -11,12 +15,28 @@
       </ul>
       <!-- Tab panes -->
       <div class="tab-content" id="tab">
-      </div>
+      </div><a href="/organization/new" class="btn btn-default">New Organization</a>
     </div>
   </div>
 </div>
 
 <script type="text/javascript">
+
+var query = {{{query}}}
+var query1 = {{{query1}}}
+var query2 = {{{query2}}}
+var query3 = {{{query3}}}
+var query4 = {{{query4}}}
+
+
+console.log( '-------------------------' )
+console.log( 'query : ',query )
+console.log( 'query1 : ',query1 )
+console.log( 'query2 : ',query2 )
+console.log( 'query3 : ',query3 )
+console.log( 'query4 : ',query4 )
+console.log( '-------------------------' )
+
 var tablelistdata = {{{databaseitems}}};
 var items = {{{menuitem}}}
 var formids = create_uid()
@@ -32,14 +52,14 @@ $('#detail').html(items.detail)
 /////////////////////////////
 ////     DEBUG AREA     //// 
 ///////////////////////////
-console.log( 'databasetablelist loading' )
+console.log( 'organizationview loading' )
 console.log( '-------------------------' )
 console.log( 'tablelistdata : ',tablelistdata )
 console.log( 'items : ',items )
 console.log( 'formids : ',formids )
 console.log( 'templateload : ',templateload )
 console.log( '-------------------------' )
-console.log( 'databasetablelist loading' )
+console.log( 'organizationview loading' )
 
 /////////////////////////////
 ////     LAYOUT VIEW    //// 

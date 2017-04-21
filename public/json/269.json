@@ -1,0 +1,1 @@
+{"entry":{"description":"Organizations","template":"orginizationview","icon":"glyphicon glyphicon-globe","tabs":["table"],"buttons":["modify"],"headings":["description","parent","icon","headings"]},"objectType":"form","detail":"Manage you organizations.","name":"Organizations","__v":0,"active":"false","revision":"updated","elementID":"58db4228b4d9a10df00fc1eb"}

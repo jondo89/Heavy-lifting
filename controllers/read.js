@@ -25,7 +25,7 @@ exports.getCollectionData = function(req, res) {
   })
 }
 query.exec(function (err, docs1) {
-  if (err) { return next(err); }
+  if(err){console.log('Error Here'); return;}
   res.send(JSON.stringify(docs1))
 })
 };
@@ -83,12 +83,11 @@ var query1 = heavyliftingModel.find(
   })
 
 query1.exec(function (err, parentItem) {
-  if (err) { return next(err); }
-
+  if(err){console.log('Error Here'); return;}
 //This is used to pull the first 2 entries from the database. 
 //will return the ids for the form data on the primer and raw database entry.
 heavyliftingModel.find().limit(3).exec(function (err, forms) {
-  if (err) { return next(err); }
+  if(err){console.log('Error Here'); return;}
   //The primer and Raw are the first 2 items in the database.
   //This does mean the that the forms are not being edited.
   switch(true){
@@ -108,7 +107,6 @@ heavyliftingModel.find().limit(3).exec(function (err, forms) {
     formdata = forms[1]._id
     break;
   }
-
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
@@ -124,9 +122,6 @@ console.log('-----------getform------------')
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
-
-
-
 res.render('form', {
   title: 'Form',
   siteName : siteName,
@@ -139,194 +134,249 @@ res.render('form', {
   entry : entry, 
   layout: false,
 });
-
-
 });
-
 });
 }
 
-////////////////////////////////////////////////////
-////       GET FORM AND DATA | ONLY FORM       //// 
-//////////////////////////////////////////////////
-exports.getdata = function(req, res) {
-//Which id form to use.
-var formdata = req.param('formdata')
-if (!formdata) {
-  formdata =''
-}
-//Which id data to use.
-var idItem = req.param('idItem')
-if (!idItem) {
-  idItem =formdata
-}
-//Edit Self / Edit Raw or create new.
-var raw = req.param('raw')
-if (!raw) {
-  raw ='false'
-}
-/////////////////////////////
-////      DEBUG         //// 
-///////////////////////////
- 
-console.log('-----------getdata------------')
-console.log('formdata : ',JSON.stringify(formdata))
-console.log('idItem : ',JSON.stringify(idItem))
-console.log('raw :',JSON.stringify(raw))
-console.log('-----------getdata------------')
- 
-/////////////////////////////
-////      DEBUG         //// 
-///////////////////////////
-
-
-
-var temp =""
-var query1 = heavyliftingModel.find(
-{
-  $and : 
-  [
-  {$or: [
-    {"elementID": idItem },
-    {"_id":  idItem }
-    ]}, 
-    {
-      "active": "true" 
-    }
-    ]
-  })
-var query = heavyliftingModel.find(
-{
-  $and : 
-  [
-  {$or: [
-    {"elementID": formdata },
-    {"_id":  formdata }
-    ]}, 
-    {
-      "active": "true" 
-    }
-    ]
-  })
-query.exec(function (err, docs1) {
-  if (err) { return next(err); }
-  query1.exec(function (err, docs2) {
-
-
-
-
-
-    if (err) { return next(err); }
-    var temp = docs2[0] 
-      //if the entry id is blank then autopopulate the entry ID with the current ID.
-      if (docs2[0].elementID == ''  ||  docs2[0].revision == 'created') {
-        docs2[0].elementID = docs2[0]._id
-        docs2[0].revision = 'updated'
-      }
-      if (docs2.length == 0) {
-        temp=''
-      }
-
-
-/////////////////////////////
-////      DEBUG         //// 
-///////////////////////////
-/*
-console.log('-----------getdata stage 2------------')
-console.log('formdata : ',docs1[0])
-console.log('idItem : ',temp)
-console.log('docs1 :',docs1[0].entry)
-console.log('docs2 :',docs2[0].entry)
-console.log('-----------getdata stage 2------------')
-
-*/
-/////////////////////////////
-////      DEBUG         //// 
-///////////////////////////
-
-res.send({
-  formdata : docs1[0] , 
-  idItem : temp
-});
-
-})
-})
-}
 
 //////////////////////////////////////////////////////
 ////       DEPLOY THE REQUESTED TEMPLATE         //// 
 ////////////////////////////////////////////////////
 exports.templateload = function(req, res) {
+  console.log('This is starting')
 //Which id data to use.
 var ids = req.param('ids')
 if (!ids) {
   ids =''
 }
-  //Query to find the menu item selected.
-  var query = heavyliftingModel.find(
-  {
-    $and : 
-    [
-    {$or: [
-      {"elementID": ids },
-      {"_id":  ids }
-      ]}, 
-      {
-        "active": "true" 
-      }
-      ]
-    })
-
-  //Query to find all of the database items for that menu.
-  var query1 = heavyliftingModel.find(
-  {
-    $and : 
-    [
-    {
-      "parentid": ids 
-    }, 
+var template = req.param('template')
+if (!template) {
+  template =''
+}
+var childitem=''
+//////////////////////////////
+//  1.RETURN CURRENT ITEM  //
+////////////////////////////
+//Query to find the menu item selected.
+var query = heavyliftingModel.findOne(
+{
+  $and : 
+  [
+  {$or: [
+    {"elementID": ids },
+    {"_id":  ids }
+    ]}, 
     {
       "active": "true" 
     }
     ]
   })
-  query.exec(function (err, menuitem) {
-    if (err) { return next(err); } 
-      //undefined error handling on the template
-      if (!menuitem[0].entry.template){
-        menuitem[0].entry.template=''
-      }
-      switch (true){
-        case (menuitem[0].entry.template !== ''):
-        var template = menuitem[0].entry.template
-        if (menuitem[0].entry.template == 'viewall') {
-          query1 = heavyliftingModel.find(
-          {
-            "active": "true" 
-          })
-        }
-        break;
-        default:
-        var template = 'databasetablelist' 
-        break;
-      }
+console.log('Debug 0.')
+query.exec(function (err, query_return) {
+     if(err){console.log('Error Here'); return;}
+if (query_return.childType) {
+ childitem=query_return.childType 
+} 
+///////////////////////////
+// 2.RETURN CHILD ITEM  //
+/////////////////////////
+var query1 = heavyliftingModel.find(
+{
+  $and : 
+  [
+  {$or: [
+    {"elementID": childitem },
+    {"_id":  childitem }
+    ]}, 
+    {
+      "active": "true" 
+    }
+    ]
+  })
+////////////////////////////////////////////////////////////////////
+// 3.RETURN THE ASSOCIATED FORM ELMENTS OF THE ABOVE CHILD ITEM  //
+//////////////////////////////////////////////////////////////////
+var query2 = heavyliftingModel.find(
+{
+  $and : 
+  [
+  {
+    "parentid": childitem 
+  }, 
+  {
+    "active": "true" 
+  }
+  ]
+})
+///////////////////////////////////////
+//  4.ENTRIES CREATED BY THIS FORM  //
+/////////////////////////////////////
+var query3 = heavyliftingModel.find(
+{
+  $and : 
+  [
+  {
+    "parentid": ids 
+  }, 
+  {
+    "active": "true" 
+  }
+  ]
+})
+
+///////////////////////////////////////
+//  5.LEGACY ITEM FOR PRIMER FORMS  //
+/////////////////////////////////////
+var query4 = heavyliftingModel.find(
+{
+    'entry.parent' : childitem,
+    'active' : 'true'
+})
+
+///////////////////////////////
+//  6.THE TEMPLATE TO LOAD  //
+//////////////////////////////
+var query5 = heavyliftingModel.findOne(
+{
+  $and : 
+  [
+  {$or: [
+    {"elementID": template },
+    {"_id":  template }
+    ]}, 
+    {
+      "active": "true" 
+    }
+    ]
+  })
+console.log('Debug 1.')
+query1.exec(function (err, query1_return) {
+  if(err){
+    console.log('No Child item'); 
+  } 
+console.log('Debug 2.')
+query2.exec(function (err, query2_return) {
+  if(err){
+    console.log('No Child item'); 
+  } 
+  console.log('Debug 3.')
+  query3.exec(function (err, query3_return) {
+  if(err){console.log('Error Here'); return;} 
+console.log('Debug 4.')
+  query4.exec(function (err, query4_return) {
+  if(err){
+    console.log('No Child item'); 
+  } 
+console.log('Debug 5.')
+  query5.exec(function (err, query5_return) {
+  if(err){
+    console.log('No template id defined.'); 
+    var template= 'databasetablelist'
+  } 
+console.log('Debug 6.')
+if(query1_return){
+    for (var i = 0; i < query1_return.length; i++) {
         //the menu item elementid should arrive poulated to avoid confusion.
-        if(menuitem[0].elementID==''){
-          menuitem[0].elementID=menuitem[0]._id
-        }
+      if(query1_return[i].elementID==''){
+        query1_return[i].elementID=query1_return[i]._id
+      }
+  }
+} else {
+  console.log('query1_return failed')
+}
+if(query2_return){
+for (var i = 0; i < query2_return.length; i++) {
+      //the menu item elementid should arrive poulated to avoid confusion.
+    if(query2_return[i].elementID==''){
+      query2_return[i].elementID=query2_return[i]._id
+    }
+}
+}else {
+  console.log('query2_return failed')
+}
+if(query3_return){
+for (var i = 0; i < query3_return.length; i++) {
+      //the menu item elementid should arrive poulated to avoid confusion.
+    if(query3_return[i].elementID==''){
+      query3_return[i].elementID=query3_return[i]._id
+    }
+}
+}else {
+  console.log('query3_return failed')
+}
+if(query4_return){
+for (var i = 0; i < query4_return.length; i++) {
+      //the menu item elementid should arrive poulated to avoid confusion.
+    if(query4_return[i].elementID==''){
+      query4_return[i].elementID=query4_return[i]._id
+    }
+}
+}else {
+  console.log('query4_return failed')
+}
+console.log('//  Debug from here  //')
+console.log('query_return',query_return)
+console.log('query1_return',query1_return)
+console.log('query2_return',query2_return)
+console.log('query3_return',query3_return)
+console.log('query4_return',query4_return)
+console.log('query5_return',query5_return)
+console.log('ids',ids)
+console.log('childitem',childitem)
+console.log('//  Debug from here  //')
 
-        query1.exec(function (err, databaseitems) {
-          if (err) { return next(err); }
-          res.render(template, {
-            databaseitems : JSON.stringify(databaseitems),
-            menuitem : JSON.stringify(menuitem[0]),
-            raw : JSON.stringify(menuitem[0].entry.layout),
-            layout:false,
-            templateload : JSON.stringify(ids)
-          });
-
+/*
+    //undefined error handling on the template
+    if (!query1_return[0].entry.template){
+      query1_return[0].entry.template=''
+    }
+    switch (true){
+      case (query1_return[0].entry.template !== ''):
+      var template = query1_return[0].entry.template
+      if (query1_return[0].entry.template == 'viewall') {
+        query4 = heavyliftingModel.find(
+        {
+          "active": "true" 
         })
-      })
+      }
+      break;
+      default:
+      var template = 'databasetablelist' 
+      break;
+    }
+*/
+console.log(template , 'The loaded template')
+if (template != 'databasetablelist') {
+  console.log(template , 'The loaded template')
+  template = query5_return.entry.value
+}
+          res.render(template, {
+            query  :  JSON.stringify(query_return),
+            query1 :  JSON.stringify(query1_return),
+            query2 :  JSON.stringify(query2_return),
+            query3 :  JSON.stringify(query3_return),
+            query4 :  JSON.stringify(query4_return),
+            query5 :  JSON.stringify(query5_return),
+            templateload : JSON.stringify(ids),
+            layout:false,
+       //     databaseitems : JSON.stringify(databaseitems),
+          //  menuitem : JSON.stringify(menuitem[0]),
+         //   raw : JSON.stringify(menuitem[0].entry.layout),
+ 
+          });
+//Query end
+})
+//Query end
+})
+//Query end
+})
+//Query end
+})
+//Query end
+})
+//Query end
+})
+
 }
 
 ///////////////////////////////////////////////////
@@ -373,9 +423,9 @@ exports.jstree = function(req, res) {
   })
 
 query.exec(function (err, docs) {
-  if (err) { return next(err); } 
+  if(err){console.log('Error Here'); return;} 
   query1.exec(function (err, docs1) {
-    if (err) { return next(err); } 
+    if(err){console.log('Error Here'); return;} 
     var temp ={
       thisitem : docs,
       children : docs1
@@ -399,7 +449,7 @@ if (!ids) {
 
 if (ids == "") {
   heavyliftingModel.find().limit(2).exec(function (err, data) {
-    if (err) { return next(err); }
+    if(err){console.log('Error Here'); return;}
     ids = data[1]._id
     console.log(ids,'this is the first check area')
 //Query to find the menu item selected.
@@ -432,9 +482,9 @@ var query = heavyliftingModel.find(
 
   //Gratuitous hack here for the err check on the empty string search. What a mess.
   query.exec(function (err, menuitem) {
-   if (err) { return next(err); }  
+   if(err){console.log('Error Here'); return;}  
    query1.exec(function (err, databaseitems) {
-    if (err) { return next(err); } 
+    if(err){console.log('Error Here'); return;} 
     if (menuitem) {
             //undefined error handling on the template
             if (!menuitem[0].entry.template){
@@ -494,7 +544,7 @@ var query = heavyliftingModel.find(
   })
   //Gratuitous hack here for the err check on the empty string search. What a mess.
   query.exec(function (err, menuitem) {
-    if (err) { return next(err); } 
+    if(err){console.log('Error Here'); return;} 
     if (menuitem) {
             //undefined error handling on the template
             if (!menuitem[0].entry.template){
@@ -527,7 +577,7 @@ var query = heavyliftingModel.find(
         }
 
         query1.exec(function (err, databaseitems) {
-          if (err) { return next(err); } 
+          if(err){console.log('Error Here'); return;} 
           res.render(template, {
             databaseitems : JSON.stringify(databaseitems),
             menuitem : JSON.stringify(temp),
@@ -543,7 +593,7 @@ var query = heavyliftingModel.find(
 ///////////////////////////////////
 exports.getshortdata = function(req, res) {
   heavyliftingModel.find().limit(14).exec(function (err, data) {
-    if (err) { return next(err); }
+    if(err){console.log('Error Here'); return;}
     res.send(JSON.stringify(data));
   });
 }
@@ -563,7 +613,7 @@ exports.tree = function(req, res) {
 /////////////////////////////////////////////////
 exports.getDataTree = function(req, res) {
   heavyliftingModel.find().exec(function (err, data) {
-    if (err) { return next(err); }
+    if(err){console.log('Error Here'); return;}
     res.send(JSON.stringify(data));
   });
 }
@@ -572,14 +622,42 @@ exports.getDataTree = function(req, res) {
 ///////////   GET THE FORM FIELD ALPAC/////////////
 //////////////////////////////////////////////////
 exports.getformfield = function(req, res) {
-  console.log('////////////////////////////////')
-  console.log('   Debug Enter Here')
-  console.log('////////////////////////////////')
+console.log('///////////   getformfield   ////////////')
+console.log(req.param('data'))
+console.log('///////////   getformfield   ////////////')
+var ids = req.param('data')
+if (!ids) {
+  ids =''
+}
+var temp = "entry."+ids
+///////////////////////////////////////////////
+//  FIND ACTIVE ITEMS WITH ENTRY KEY OF ID  //
+/////////////////////////////////////////////
+//Query to find the menu item selected.
+var query = heavyliftingModel.find(
+{
+  $and : 
+  [
+    {
+       [temp] : { $exists : true } 
+    }, 
+    {
+      "active": "true" 
+    }
+    ]
+  })
+query.exec(function (err, query_return) {
+  if(err){
+        console.log('Error Here'); 
+        res.send(JSON.stringify(['Data Loading Error - Server Error']));
+  return;} 
+  console.log('Debug 4.',query_return)
+res.send(JSON.stringify(query_return));
+//a parent ID for the group to pull , then a filter by the ID field.
+})
+/*
   heavyliftingModel.find().limit(100).exec(function (err, init) {
-    if (err) { return next(err); }
-
-
-
+    if(err){console.log('Error Here'); return;}
     switch(true){
       case (req.param('data') == 'objectType'):
       res.send(JSON.stringify(['form','database']));
@@ -590,13 +668,12 @@ exports.getformfield = function(req, res) {
       case (req.param('data') == 'active'):
       res.send(JSON.stringify(['true','false']));
       break;
-
       case (req.param('data') == 'buttons'):
       heavyliftingModel.find({
         'parentid' : init[84]._id,
         'active' : 'true'
       }).exec(function (err, data) {
-        if (err) { return next(err); }
+        if(err){console.log('Error Here'); return;}
         var temp = []
         for (var i = 0; i < data.length; i++) {
           temp.push(data[i].entry.value)
@@ -604,14 +681,12 @@ exports.getformfield = function(req, res) {
         res.send(JSON.stringify(temp));
       });
       break;
-
-
       case (req.param('data') == 'type'):
       heavyliftingModel.find({
         'parentid' : '58df43d40cef901b8c1bb474',
         'active' : 'true'
       }).exec(function (err, data) {
-        if (err) { return next(err); }
+        if(err){console.log('Error Here'); return;}
         var temp = []
         for (var i = 0; i < data.length; i++) {
           temp.push(data[i].entry.value)
@@ -619,14 +694,12 @@ exports.getformfield = function(req, res) {
         res.send(JSON.stringify(temp));
       });
       break;
-
-
       case (req.param('data') == 'tabs'):
       heavyliftingModel.find({
         'parentid' : init[56]._id,
         'active' : 'true'
       }).exec(function (err, data) {
-        if (err) { return next(err); }
+        if(err){console.log('Error Here'); return;}
         var temp = []
         for (var i = 0; i < data.length; i++) {
           temp.push(data[i].entry.value)
@@ -634,13 +707,12 @@ exports.getformfield = function(req, res) {
         res.send(JSON.stringify(temp));
       });
       break;
-
       case (req.param('data') == 'layout'):
       heavyliftingModel.find({
         'parentid' : init[24]._id,
         'active' : 'true'
       }).exec(function (err, data) {
-        if (err) { return next(err); }
+        if(err){console.log('Error Here'); return;}
         var temp = []
         for (var i = 0; i < data.length; i++) {
           temp.push(data[i].entry.value)
@@ -654,7 +726,7 @@ exports.getformfield = function(req, res) {
         'parentid' : init[6]._id,
         'active' : 'true'
       }).exec(function (err, data) {
-        if (err) { return next(err); }
+        if(err){console.log('Error Here'); return;}
         var temp = []
         for (var i = 0; i < data.length; i++) {
           temp.push(data[i].entry.value)
@@ -662,13 +734,12 @@ exports.getformfield = function(req, res) {
         res.send(JSON.stringify(temp));
       });
       break;
-
       case (req.param('data') == 'headings'):
       heavyliftingModel.find({
         'parentid' : init[8]._id,
         'active' : 'true'
       }).exec(function (err, data) {
-        if (err) { return next(err); }
+        if(err){console.log('Error Here'); return;}
         var temp = []
         for (var i = 0; i < data.length; i++) {
           temp.push(data[i].entry.value)
@@ -681,7 +752,7 @@ exports.getformfield = function(req, res) {
         'parentid' : init[12]._id,
         'active' : 'true'
       }).exec(function (err, data) {
-        if (err) { return next(err); }
+        if(err){console.log('Error Here'); return;}
         var temp = []
         for (var i = 0; i < data.length; i++) {
           temp.push(data[i].entry.value)
@@ -694,7 +765,7 @@ exports.getformfield = function(req, res) {
         'parentid' : init[9]._id,
         'active' : 'true'
       }).exec(function (err, data) {
-        if (err) { return next(err); }
+        if(err){console.log('Error Here'); return;}
         var temp = []
         for (var i = 0; i < data.length; i++) {
           temp.push(data[i].entry.value)
@@ -709,14 +780,14 @@ exports.getformfield = function(req, res) {
       }).
       sort({ Order: -1 }).
       exec(function (err, docs) {
-        if (err) { return next(err); }
+        if(err){console.log('Error Here'); return;}
         heavyliftingModel.
         find({
           'menu item': docs[0]['Field'],
         }).
         sort({ Order: -1 }).
         exec(function (err, docs1) {
-          if (err) { return next(err); }
+          if(err){console.log('Error Here'); return;}
     //reformat to suit alpacha
     var temp =[]
     for (var i = 0; i < docs1.length; i++) {
@@ -730,9 +801,8 @@ exports.getformfield = function(req, res) {
       });
       break;
     }
-  })
+  })*/
 }
-
 //////////////////////////////////////////
 ///////////   READ  GROUPS  /////////////
 ////////////////////////////////////////
@@ -743,7 +813,7 @@ heavyliftingModel.
         'active' : 'true'
   }).
   exec(function (err, docs1) {
-    if (err) { return next(err); }    
+    if(err){console.log('Error Here'); return;}    
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
@@ -756,13 +826,12 @@ console.log('-----------groups------------')
     res.send(JSON.stringify(docs1));
   });
 }
-
 //////////////////////////////////////////
 ///////////   LOAD NAVMENU  /////////////
 ////////////////////////////////////////
 exports.navmenuload = function(req, res) {
   heavyliftingModel.find().limit(150).exec(function (err, init) {
-    if (err) { return next(err); }
+    if(err){console.log('Error Here'); return;}
     var temp = init[109]._id
     //objectid in mongo needs to be a string to query by.
     temp = temp.toString()
@@ -770,7 +839,7 @@ exports.navmenuload = function(req, res) {
       'entry.parent' : temp,
       'active' : 'true'
     }).exec(function (err, navmenu) {
-    if (err) { return next(err); }      
+    if(err){console.log('Error Here'); return;}      
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
@@ -780,7 +849,6 @@ console.log('-----------navmenuload------------')
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////   
- 
         res.send(JSON.stringify(navmenu));
   });
   })
@@ -795,7 +863,7 @@ var ids = '58d9f9d597285841701acbdb'
       'parentid' : ids,
       'active' : 'true'
     }).exec(function (err, navmenu) {
-    if (err) { return next(err); }      
+    if(err){console.log('Error Here'); return;}      
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
@@ -805,7 +873,6 @@ console.log('-----------loadcompmenu------------')
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
- 
     res.send(JSON.stringify(navmenu));
   });
 }
@@ -820,28 +887,26 @@ var adminmenu = '58d9faaf97285841701acbdf'
       'parentid' : usermenu,
       'active' : 'true'
     }).exec(function (err, user) {
-    if (err) { return next(err); }   
+    if(err){console.log('Error Here'); return;}   
     heavyliftingModel.find({
       'parentid' : adminmenu,
       'active' : 'true'
     }).exec(function (err, admin) {
-    if (err) { return next(err); }      
+    if(err){console.log('Error Here'); return;}      
       
     var temp = {
       user :user,
       admin :admin
     }
-
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
 console.log('-----------loadusermenu------------')
-console.log('temp : ',JSON.stringify(temp))
+//console.log('temp : ',JSON.stringify(temp))
 console.log('-----------loadusermenu------------')
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
-
     res.send(JSON.stringify(temp));
   });
   });
@@ -867,45 +932,154 @@ var raw = req.param('raw')
 if (!raw) {
   raw ='false'
 }
+
+//Find the data to be viewed on the form.
+var query1 = heavyliftingModel.find(
+{
+  $and : 
+  [
+  {$or: [
+    {"elementID": idItem },
+    {"_id":  idItem }
+    ]}, 
+    {
+      "active": "true" 
+    }
+    ]
+  })
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
- 
 console.log('-----------getdatacomp------------')
 console.log('formdata : ',JSON.stringify(formdata))
 console.log('idItem : ',JSON.stringify(idItem))
 console.log('raw :',JSON.stringify(raw))
 console.log('-----------getdatacomp------------')
- 
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
-
-
 //find all of the parentid equal .
     heavyliftingModel.find({
-      'parentid' : idItem,
+      'parentid' : formdata,
       'active' : 'true'
     }).exec(function (err, form) {
-    if (err) { return next(err); } 
-
+    if(err){console.log('Error Here'); return;} 
+  query1.exec(function (err, docs2) {
+    if(err){console.log('Error Here'); return;}
+    var temp = docs2[0] 
+      //if the entry id is blank then autopopulate the entry ID with the current ID.
+      if (docs2[0].elementID == ''  ||  docs2[0].revision == 'created') {
+        docs2[0].elementID = docs2[0]._id
+        docs2[0].revision = 'updated'
+      }
+      if (docs2.length == 0) {
+        temp=''
+      }
+for (var i = 0; i < form.length; i++) {
+      //the menu item elementid should arrive poulated to avoid confusion.
+    if(form[i].elementID==''){
+      form[i].elementID=form[i]._id
+    }
+}
 //turn into something that alpaca understands.
-
-
 console.log('-----------getdatacomp------------')
 console.log('form : ',JSON.stringify(form))
 console.log('-----------getdatacomp------------')
-
-
- 
-
-
       res.send({
-        formdata : form  
+        formdata : form , 
+        idItem : temp
       });
-
+ })
   })
+}
 
 
-
+////////////////////////////////////////////////////
+////       GET FORM AND DATA | ONLY FORM       //// 
+//////////////////////////////////////////////////
+exports.getdata = function(req, res) {
+//Which id form to use.
+var formdata = req.param('formdata')
+if (!formdata) {
+  formdata =''
+}
+//Which id data to use.
+var idItem = req.param('idItem')
+if (!idItem) {
+  idItem =formdata
+}
+//Edit Self / Edit Raw or create new.
+var raw = req.param('raw')
+if (!raw) {
+  raw ='false'
+}
+/////////////////////////////
+////      DEBUG         //// 
+///////////////////////////
+console.log('-----------getdata------------')
+console.log('formdata : ',JSON.stringify(formdata))
+console.log('idItem : ',JSON.stringify(idItem))
+console.log('raw :',JSON.stringify(raw))
+console.log('-----------getdata------------')
+/////////////////////////////
+////      DEBUG         //// 
+///////////////////////////
+var temp =""
+var query1 = heavyliftingModel.find(
+{
+  $and : 
+  [
+  {$or: [
+    {"elementID": idItem },
+    {"_id":  idItem }
+    ]}, 
+    {
+      "active": "true" 
+    }
+    ]
+  })
+var query = heavyliftingModel.find(
+{
+  $and : 
+  [
+  {$or: [
+    {"elementID": formdata },
+    {"_id":  formdata }
+    ]}, 
+    {
+      "active": "true" 
+    }
+    ]
+  })
+query.exec(function (err, docs1) {
+  if(err){console.log('Error Here'); return;}
+  query1.exec(function (err, docs2) {
+    if(err){console.log('Error Here'); return;}
+    var temp = docs2[0] 
+      //if the entry id is blank then autopopulate the entry ID with the current ID.
+      if (docs2[0].elementID == ''  ||  docs2[0].revision == 'created') {
+        docs2[0].elementID = docs2[0]._id
+        docs2[0].revision = 'updated'
+      }
+      if (docs2.length == 0) {
+        temp=''
+      }
+/////////////////////////////
+////      DEBUG         //// 
+///////////////////////////
+console.log('-----------getdata stage 2------------')
+console.log('formdata : ',docs1[0])
+console.log('idItem : ',temp)
+console.log('docs1 :',docs1[0].entry)
+console.log('docs2 :',docs2[0].entry)
+console.log('-----------getdata stage 2------------')
+/////////////////////////////
+////      DEBUG         //// 
+///////////////////////////
+res.send({
+  formdata : docs1[0] , 
+  idItem : temp
+});
+})
+})
 }

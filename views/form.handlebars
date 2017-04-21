@@ -58,7 +58,7 @@ $(document).ready(function(){
   jQuery('#formDelivery').attr("id",formid1);
   //check if the data id was sent as well as the form id
   //switch between component elements and raw elements.
-  if (raw == 'component') {
+  if (raw == 'component' || raw == 'componentedit') {
     getdatacomp(formdata,idItem,raw)
   } else {
     getdata(formdata,idItem,raw)
@@ -74,110 +74,10 @@ function getdatacomp(formdata,idItem,raw){
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
-    formatAlpaca(dataSchemaObject)
-   }
- });
-}
-
-function formatAlpaca(objectOld) {
-var tempSchema ={
-            "title" : "Create an organization account",
-            "type" : "object",
-            "properties" : {
-             }
-        }
-var tempoptions ={
-            "form" : {
-                "buttons" : {
-                    "submit" : {
-                        "title" : "Submit",
-                        "id" : "submit",
-                        "click" : ""
-                    }
-                }
-            },
- 
-            "fields" : {
-             },
-            "focus" : ""
-        }
-
- 
-for (var i = 0; i < objectOld.formdata.length; i++) {
- 
-if (objectOld.formdata[i].entry.dependencies) {
-  tempDepend = [objectOld.formdata[i].entry.dependencies]
-} else {
-  tempDepend = ''
-}
-//swithcing for the type of input on alpaca.
-
-switch (true){
-  case(objectOld.formdata[i].entry.type =='string'):
-  tempSchema.properties[objectOld.formdata[i]['_id']] = {
-    'type' : objectOld.formdata[i].entry.type,
-    "title":objectOld.formdata[i].entry.description,
-    "dependencies": tempDepend
-  }
-  tempoptions.fields[objectOld.formdata[i]['_id']] = {
-    "helper":objectOld.formdata[i].entry.detail
-  }   
-  break;
-
-  case(objectOld.formdata[i].entry.type =='checkbox'):
-  tempSchema.properties[objectOld.formdata[i]['_id']] = {
-    "title":objectOld.formdata[i].entry.description,
-    "dependencies": tempDepend
-  }
-  tempoptions.fields[objectOld.formdata[i]['_id']] = {
-    'type' : objectOld.formdata[i].entry.type,
-    "rightLabel":[objectOld.formdata[i].entry.detail]
-  }   
-  break;
-
-  case(objectOld.formdata[i].entry.type =='text'):
-  tempSchema.properties[objectOld.formdata[i]['_id']] = {
-    "title":'',
-    "dependencies": tempDepend
-  }
-  tempoptions.fields[objectOld.formdata[i]['_id']] = {
-    "helper":objectOld.formdata[i].entry.description,
-    'view' : 'bootstrap-display',
-  }  
- 
-  break;
-
-  default:
-  tempSchema.properties[objectOld.formdata[i]['_id']] = {
-    "title":objectOld.formdata[i].entry.description,
-    "dependencies": tempDepend
-  }
-  tempoptions.fields[objectOld.formdata[i]['_id']] = {
-    "helper":objectOld.formdata[i].entry.detail
-  }
-  break;
-}
-
-
-
-
-}
- 
- 
-
-var data =  {
-  formdata : {
-    entry :{
-      schema : tempSchema,
-      options : tempoptions,
- 
+      formatAlpaca(dataSchemaObject)
     }
-  }
-} 
-initiateForm(data)
- 
+  });
 }
-
 
 /////////////////////////////////////////
 ////////    GET FORM  AND DATA /////////
@@ -188,10 +88,111 @@ function getdata(formdata,idItem,raw){
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
-     initiateForm(dataSchemaObject)
-   }
- });
+      initiateForm(dataSchemaObject)
+    }
+  });
 }
+
+function formatAlpaca(objectOld) {
+  var tempSchema ={
+    "title" : parentItem.name,
+    "type" : "object",
+    "properties" : {
+    }
+  }
+  var tempoptions ={
+    "form" : {
+      "buttons" : {
+        "submit" : {
+          "title" : "Submit",
+          "id" : "submit",
+          "click" : ""
+        }
+      }
+    },
+    "fields" : {
+    },
+    "focus" : ""
+  }
+  for (var i = 0; i < objectOld.formdata.length; i++) {
+//Adding dependancies.
+if (objectOld.formdata[i].entry.dependencies) {
+  tempDepend = [objectOld.formdata[i].entry.dependencies]
+} else {
+  tempDepend = ''
+}
+//swithcing for the type of input on alpaca.
+switch (true){
+  case(objectOld.formdata[i].entry.type =='string'):
+  tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+    'type' : objectOld.formdata[i].entry.type,
+    "title":objectOld.formdata[i].entry.description,
+    "dependencies": tempDepend
+  }
+  tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+    "helper":objectOld.formdata[i].entry.detail
+  }   
+  break;
+  case(objectOld.formdata[i].entry.type =='checkbox'):
+  tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+    "title":objectOld.formdata[i].entry.description,
+    "dependencies": tempDepend
+  }
+  tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+    'type' : objectOld.formdata[i].entry.type,
+    "rightLabel":[objectOld.formdata[i].entry.detail]
+  }   
+  break;
+  case(objectOld.formdata[i].entry.type =='text'):
+  tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+    "title":'',
+    "dependencies": tempDepend
+  }
+  tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+    "helper":objectOld.formdata[i].entry.description,
+    'view' : 'bootstrap-display',
+  }  
+  break;
+  case(objectOld.formdata[i].entry.type =='field'):
+  tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+    "title":objectOld.formdata[i].entry.description,
+    "dependencies": tempDepend,
+    
+  }
+  tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+    "helper":objectOld.formdata[i].entry.detail,
+    'type' : "select",
+    'field':objectOld.formdata[i].entry.objectType
+  }
+  break;
+  default:
+  tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+    "title":objectOld.formdata[i].entry.description,
+    "dependencies": tempDepend
+  }
+  tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+    "helper":objectOld.formdata[i].entry.detail
+  }
+  break;
+}
+}
+
+ //Compile the json for the form.
+ var data =  {
+  formdata : {
+    entry : {
+      schema :  tempSchema,
+      options :  tempoptions
+    }
+  },  idItem : objectOld.idItem
+} 
+
+
+data.idItem.entry
+initiateForm(data)
+}
+
+
 
 ////////////////////////////////////////
 ////        CREATE THE FORM        //// 
@@ -200,15 +201,13 @@ function initiateForm(data){
  var form = {
   schema : data.formdata.entry['schema'],
   options : data.formdata.entry['options']
- 
 }
-
-if (raw!='component') {
-
-if (raw!='raw') {
-
+ //----------------------------------------------------------------------------------------------
+ if (raw!='component' && raw!='componentedit') {
+   
+  if (raw!='raw') {
   //Used for the limiting of visible fields on the form. Specically the 'headings' field.
-  //--------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------------------------
   var tableHeadings =[]
   //General Heading error trap.  
   //When the heading is only 1 item , the printing of the headings loops throguh each character . THis checks if it is an array .
@@ -222,7 +221,6 @@ if (raw!='raw') {
       var tableHeadings = ['name','detail','userID','id','parentid','childType','description']
     }
   }
-
 //Check if there is an overwrite on the headings.
 if(headingsTemp){
  var tableHeadings = headingsTemp
@@ -243,22 +241,17 @@ if(headingsTemp){
       }
     }
     //--------------------------------------------------------------------------------
-
   }
 }
- 
-  $('#'+formid1).html("<div id='form_"+formdata+idItem+formid1+"'></div>")
-  $("#form_"+formdata+idItem+formid1).html("")
+$('#'+formid1).html("<div id='form_"+formdata+idItem+formid1+"'></div>")
+$("#form_"+formdata+idItem+formid1).html("")
   //Test alpaca form for true , i.e if it exists , then destroy it.
   control = $("#form_"+formdata+idItem+formid1).alpaca("destroy");
   if (control) {
-
     formInit(form.schema,form.options,data)
   } else { 
     formInit(form.schema,form.options,data)
   }
-
-   
 } 
 
 //////////////////////////////////////
@@ -272,7 +265,6 @@ function formInit(schema,options,data){
       var value = this.getValue();
       formPost(value,data)
     }
-
 //Special case varible use to ensure timing issue the index variable passing into the form dropdown.
 var arr = options.fields
 $.each(arr, function(index, value) { 
@@ -281,16 +273,21 @@ $.each(arr, function(index, value) {
     jQuery.ajax({
       'async': true,
       'global': false,
-      'url': '/getformfield?data='+index,
+      'url': '/getformfield?data='+arr[index]['field'] ,
       'success': function (dataSchemaObject) {
-        var inputs = JSON.parse(dataSchemaObject);
-        callback(inputs);
+        if (dataSchemaObject) {
+          var dataSchemaObject = JSON.parse(dataSchemaObject);
+          var temp =[]
+          for (var i = 0; i < dataSchemaObject.length; i++) {
+            temp.push(dataSchemaObject[i].entry[arr[index]['field']])
+          }
+          callback(temp);
+        }  
       }
     }); 
   }
 }
 });
-
 switch(true){
   //the use button will require the form to remove any element ids as this will be a new entry.
   case(raw=='use'):
@@ -312,14 +309,12 @@ switch(true){
   });
   break;
   case(raw=='raw'):
-  console.log('enterrere')
   $("#form_"+formdata+idItem+formid1).alpaca({
     "schema": schema,
     "options": options,
     "postRender": function(control) {
       //only set the data if the form is for use.
       if (idItem !='') {
-        
         $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(data.idItem)
       }
     }    
@@ -337,7 +332,6 @@ switch(true){
     }    
   });
   break;
-
   case(raw=='component'):
   $("#form_"+formdata+idItem+formid1).alpaca({
     "schema": schema,
@@ -351,6 +345,20 @@ switch(true){
   });
   break;
 
+  case(raw=='componentedit'):
+  $("#form_"+formdata+idItem+formid1).alpaca({
+    "schema": schema,
+    "options": options,
+    "postRender": function(control) {
+      //only set the data if the form is for use.
+      if (idItem !='') {
+        $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(data.idItem.entry)
+      }
+    }    
+  });
+  break;
+
+
   default :
   var html = ''
   html += '<div class="alert alert-danger" role="alert"> '
@@ -361,7 +369,6 @@ switch(true){
   html += '</div>'
   $("#form_"+formdata+idItem+formid1).html(html)
   break;
-
 }
 } else {
   var html = ''
@@ -379,11 +386,9 @@ switch(true){
 ////        SUBMIT BUTTON CLICK          //// 
 ////////////////////////////////////////////
 function formPost(dataset,data){
-
 //work around for naming of the from .
 var name = $('#nameArea').val()
 var detail = $('#DetailArea').val()
-
 //routing for the various use cases on the switch
 switch(true){
   case(raw=='use'):
@@ -406,7 +411,6 @@ switch(true){
   primer.revision = 'created'
   primer.active = "true"
   break;
-
   case(raw=='self'):
   var primer = data.idItem
   primer.entry = dataset
@@ -414,7 +418,6 @@ switch(true){
   primer.elementID = data.idItem.elementID
   primer.active = "true"
   break;
-
   case(raw=='edit'):
   var primer = data.idItem
   primer.entry = dataset
@@ -422,15 +425,13 @@ switch(true){
   primer.elementID = data.idItem.elementID
   primer.active = "true"
   break;
-
   case(raw=='raw'):
   var primer = dataset
+  primer.active = "true"
   break;
-
   case(raw=='component'):
   var primer = {
   }
-  console.log(dataset)
   primer.entry = dataset
   //spice the entry parameter into the form.
   for(var key in entry){
@@ -449,6 +450,28 @@ switch(true){
   primer.revision = 'created'
   primer.active = "true"
   break;
+  case(raw=='componentedit'):
+  var primer = {
+  }
+  primer.entry = dataset
+  //spice the entry parameter into the form.
+  for(var key in entry){
+    if(entry.hasOwnProperty(key)){
+      primer.entry[key]=entry[key];
+    }
+  }
+  if (name || detail) {
+    primer.name = name
+    primer.detail = detail
+  }
+  if (parentid) {
+    primer.parentid=parentid
+  }
+  primer.elementID = ''
+  primer.revision = 'updated'
+  primer.active = "true"
+  break;
+
 
 
   default :
@@ -472,16 +495,23 @@ jQuery.ajax({
   'data': JSON.stringify(primer),
   'success': function (dataSchemaObject) {
     $('#myModal').modal('hide')
+          //pageLoad(databaseid)
+          if (parentItem.route) {
+           window.location = parentItem.route
+         } else {
+           window.location.reload()
+         }
+       },
+       'error' :function (dataSchemaObject) {
+        $('#myModal').modal('hide')
     //pageLoad(databaseid)
-    window.location.reload()
-  },
-  'error' :function (dataSchemaObject) {
-    $('#myModal').modal('hide')
-    //pageLoad(databaseid)
-    window.location.reload()
+    if (parentItem.route) {
+      window.location = parentItem.route
+    } else {
+      window.location.reload()
+    }
   },
 });   
-
 }
 
 </script>

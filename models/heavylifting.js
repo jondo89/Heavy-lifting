@@ -11,6 +11,8 @@ var heavylifting = mongoose.Schema({
 'objectType' :String,
 //child type will be a form id , used for determining what component is created by the form.
 'childType' :String,
+//Used for the routing of new posts
+'route' :String,
 'entry' :Schema.Types.Mixed,
 'parentid' :String,
 'name' :String,
