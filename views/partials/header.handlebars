@@ -37,8 +37,6 @@
   <!-- /.container-fluid -->
 </nav>
 
-
-
 <script type="text/javascript">
 /////////////////////////////////////// 
 //////  LOAD NAVIGATION MENU    //////
@@ -59,8 +57,6 @@ function LoadNavigationMenu(){
       }
     }
     $('#deploy').prepend(html)
-
-
 /*
     for (var i = 0; i < navemenu.length; i++) {
       if (navemenu[i].elementID) {
@@ -69,9 +65,7 @@ function LoadNavigationMenu(){
        $('#'+navemenu[i]._id+'_navmenu').bind('click', NavbarClick);
      }
    }
-*/
-
-
+   */
  }
 })
 }
@@ -86,6 +80,7 @@ function loadusermenu(){
    'url': '/loadusermenu',
    'success': function (dataSchemaObject) {
     var navemenu = JSON.parse(dataSchemaObject) 
+    console.log(navemenu)
     var html = ''    
     for (var i = 0; i < navemenu.user.length; i++) {
       html +='<li><a href="/'+navemenu.user[i].entry.value+'" id="'+navemenu.user[i].entry.description+'">'+navemenu.user[i].entry.description+'</a></li>'
@@ -94,8 +89,12 @@ function loadusermenu(){
     for (var i = 0; i < navemenu.admin.length; i++) {
       html +='<li><a href="/'+navemenu.admin[i].entry.value+'" id="'+navemenu.admin[i].entry.description+'">'+navemenu.admin[i].entry.description+'</a></li>'
     }
+        html+='<li role="separator" class="divider"></li>'
+    for (var i = 0; i < navemenu.navmenu.length; i++) {
+      html +='<li><a href="/'+navemenu.navmenu[i].entry.value+'" id="'+navemenu.navmenu[i].entry.description+'">'+navemenu.navmenu[i].entry.description+'</a></li>'
+    }
     $('#usermenu').prepend(html)
- }
+  }
 })
 }
 
@@ -114,10 +113,9 @@ function loadcompmenu(){
       html +='<li><a href="/'+navemenu[i].entry.value+'" id="'+navemenu[i].entry.description+'">'+navemenu[i].entry.description+'</a></li>'
     }
     $('#component').html(html)
- }
+  }
 })
 }
-
 
 ///////////////////////////// 
 //////  INITIALISE    //////
@@ -151,5 +149,5 @@ function pageLoad(ids){
   }
 }*/
 
- 
+
 </script>

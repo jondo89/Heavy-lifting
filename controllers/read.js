@@ -94,7 +94,7 @@ heavyliftingModel.find().limit(3).exec(function (err, forms) {
     case(raw == 'edit'):
     formdata = forms[0]._id
     break;
-    case(raw == 'raw'):
+    case(raw == 'raw' || raw == 'copyraw'):
     formdata = forms[1]._id
     break;
     case(raw == 'self'):
@@ -176,7 +176,9 @@ query.exec(function (err, query_return) {
      if(err){console.log('Error Here'); return;}
 if (query_return.childType) {
  childitem=query_return.childType 
-} 
+} else {
+  childitem='58f8a43a6baa3a33ccff5299'
+}
 ///////////////////////////
 // 2.RETURN CHILD ITEM  //
 /////////////////////////
@@ -826,6 +828,7 @@ console.log('-----------groups------------')
     res.send(JSON.stringify(docs1));
   });
 }
+
 //////////////////////////////////////////
 ///////////   LOAD NAVMENU  /////////////
 ////////////////////////////////////////
@@ -839,18 +842,18 @@ exports.navmenuload = function(req, res) {
       'entry.parent' : temp,
       'active' : 'true'
     }).exec(function (err, navmenu) {
-    if(err){console.log('Error Here'); return;}      
-/////////////////////////////
-////      DEBUG         //// 
-///////////////////////////
-console.log('-----------navmenuload------------')
-console.log('navmenu : ',JSON.stringify(navmenu))
-console.log('-----------navmenuload------------')
-/////////////////////////////
-////      DEBUG         //// 
-///////////////////////////   
-        res.send(JSON.stringify(navmenu));
-  });
+          if(err){console.log('Error Here'); return;}      
+            /////////////////////////////
+            ////      DEBUG         //// 
+            ///////////////////////////
+            console.log('-----------navmenuload------------')
+            console.log('navmenu : ',JSON.stringify(navmenu))
+            console.log('-----------navmenuload------------')
+            /////////////////////////////
+            ////      DEBUG         //// 
+            ///////////////////////////   
+            res.send(JSON.stringify(navmenu));
+        });
   })
 }
  
@@ -883,6 +886,7 @@ console.log('-----------loadcompmenu------------')
 exports.loadusermenu = function(req, res) {
 var usermenu = '58d9ea35c22b040488546f13'
 var adminmenu = '58d9faaf97285841701acbdf'
+var navmenu = '58fc699d7a525938d01fbd66'
     heavyliftingModel.find({
       'parentid' : usermenu,
       'active' : 'true'
@@ -894,9 +898,19 @@ var adminmenu = '58d9faaf97285841701acbdf'
     }).exec(function (err, admin) {
     if(err){console.log('Error Here'); return;}      
       
+
+    heavyliftingModel.find({
+      'entry.parent' : navmenu,
+      'active' : 'true'
+    }).exec(function (err, navmenu) {
+          if(err){console.log('Error Here'); return;} 
+
+
+
     var temp = {
       user :user,
-      admin :admin
+      admin :admin,
+      navmenu:navmenu
     }
 /////////////////////////////
 ////      DEBUG         //// 
@@ -910,8 +924,8 @@ console.log('-----------loadusermenu------------')
     res.send(JSON.stringify(temp));
   });
   });
+    });
 }
- 
  
 ////////////////////////////////////////////////////
 ////       GET FORM AND DATA | ONLY FORM       //// 
@@ -968,7 +982,7 @@ console.log('-----------getdatacomp------------')
     if(err){console.log('Error Here'); return;}
     var temp = docs2[0] 
       //if the entry id is blank then autopopulate the entry ID with the current ID.
-      if (docs2[0].elementID == ''  ||  docs2[0].revision == 'created') {
+      if (docs2[0].elementID == '' ) {
         docs2[0].elementID = docs2[0]._id
         docs2[0].revision = 'updated'
       }
@@ -1057,13 +1071,17 @@ query.exec(function (err, docs1) {
     if(err){console.log('Error Here'); return;}
     var temp = docs2[0] 
       //if the entry id is blank then autopopulate the entry ID with the current ID.
-      if (docs2[0].elementID == ''  ||  docs2[0].revision == 'created') {
+      if (docs2[0].elementID == ''   ) {
         docs2[0].elementID = docs2[0]._id
         docs2[0].revision = 'updated'
       }
       if (docs2.length == 0) {
         temp=''
       }
+
+ 
+
+
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////

@@ -300,8 +300,7 @@ function deployFormComponent(formToUse){
   //This is hard wired , and likely to cause issues.
   var headings = ["description","detail","icon","headings"]
   var entry =''
- 
-  loadformModal(formToUse,'','component',items.elementID,headings,entry)
+   loadformModal(formToUse,'','component',items.elementID,headings,entry)
 }
 
 //////////////////////////////////////////////
@@ -347,7 +346,16 @@ function modifybutton(parentid){
 ////////    BUTTON CLICK OPEN RAW FORM  /////////
 ////////////////////////////////////////////////
 function deployparentrawForm(parentid){
+     parentid = parentid.replace('_parentraw', '');
   loadformModal(parentid,parentid,'raw',parentid)
+}
+
+//////////////////////////////////////////////////
+////////    BUTTON CLICK OPEN RAW FORM  /////////
+////////////////////////////////////////////////
+function copyParentRaw(parentid){
+  parentid = parentid.replace('_copy', '');
+  loadformModal(parentid,parentid,'copyraw',parentid)
 }
 
 //////////////////////////////////////

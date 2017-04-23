@@ -7,9 +7,12 @@ var ObjectId = require('mongodb').ObjectID;
 exports.create = function(req, res) {
 	var dataset = req.body	
 
-console.log('/////////////DEBUG CREATE FOR ACTIVE =TRUE //////////////')
+	console.log('/////////////DEBUG CREATE FOR ACTIVE =TRUE //////////////')
 	console.log('Init req.body',dataset)
 	console.log('/////////////DEBUG CREATE FOR ACTIVE =TRUE //////////////')
+
+console.log(dataset.elementID)
+
 
 	if (dataset.revision != 'created') {
 		console.log('ID Injection Step 1.')
@@ -34,10 +37,18 @@ delete dataset._id
 	}
 }
 
-	console.log('/////////////DEBUG CREATE FOR ACTIVE =TRUE //////////////')
-	console.log('Init req.body',dataset)
-	console.log('/////////////DEBUG CREATE FOR ACTIVE =TRUE //////////////')
 
+
+console.log(dataset.elementID)
+
+
+
+console.log('/////////////DEBUG CREATE FOR ACTIVE =TRUE //////////////')
+console.log('Init req.body',dataset)
+console.log('/////////////DEBUG CREATE FOR ACTIVE =TRUE //////////////')
+
+
+ 
 if (req.user) {
 	userid = req.user.id
 	dataset.userID = userid
@@ -120,5 +131,8 @@ console.log('step 5')
 	userid=''
 	res.send({redirect: '/signin'});
 }
+
+ 
+
 };
 

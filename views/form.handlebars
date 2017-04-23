@@ -88,6 +88,10 @@ function getdata(formdata,idItem,raw){
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
+      
+  console.log('//////////////////////dataSchemaObject///////////////////////////')
+  console.log( dataSchemaObject )
+  console.log('//////////////////////dataSchemaObject///////////////////////////')
       initiateForm(dataSchemaObject)
     }
   });
@@ -202,10 +206,13 @@ function initiateForm(data){
   schema : data.formdata.entry['schema'],
   options : data.formdata.entry['options']
 }
+
+console.log('//////////////////////DATA///////////////////////////')
+console.log(data)
+console.log('//////////////////////DATA///////////////////////////')
  //----------------------------------------------------------------------------------------------
  if (raw!='component' && raw!='componentedit') {
-   
-  if (raw!='raw') {
+  if (raw!='raw' && raw!='copyraw') {
   //Used for the limiting of visible fields on the form. Specically the 'headings' field.
   //----------------------------------------------------------------------------------------------
   var tableHeadings =[]
@@ -308,7 +315,7 @@ switch(true){
     }    
   });
   break;
-  case(raw=='raw'):
+  case(raw=='raw' || raw=='copyraw'):
   $("#form_"+formdata+idItem+formid1).alpaca({
     "schema": schema,
     "options": options,
@@ -429,6 +436,13 @@ switch(true){
   var primer = dataset
   primer.active = "true"
   break;
+  case(raw=='copyraw'):
+  var primer = dataset
+  primer.elementID = ''
+  primer.revision = 'created'
+  primer.active = "true"
+  break;
+
   case(raw=='component'):
   var primer = {
   }
@@ -486,6 +500,10 @@ switch(true){
   break;
 }
 
+console.log('//////////////////POST DATA/////////////////////////')
+console.log(primer)
+console.log('//////////////////POST DATA/////////////////////////')
+
 //Jquery send to server
 jQuery.ajax({
   'url': '/create',
@@ -512,6 +530,8 @@ jQuery.ajax({
     }
   },
 });   
+
+
 }
 
 </script>

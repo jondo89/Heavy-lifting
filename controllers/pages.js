@@ -274,11 +274,8 @@ console.log('//  Debug from here  //')
 /////  DATABASE    ///// 
 ///////////////////////
 exports.database = function(req, res) {
-//Perform Routing for Varios user type on the home page.
-if (req.user) {
- userid = req.user.id
- switch (true){
-  default:
+
+
   heavyliftingModel.find().limit(5).exec(function (err, init) {
     if (err) { return next(err); }
     var ids = '58d2010b118e812d18654119'
@@ -289,11 +286,7 @@ if (req.user) {
       Formids : JSON.stringify(Formids)
     });
   });
-  break;
-}
-} else {
- res.redirect('/signin');
-}
+
 }; 
 
 /////////////////////////////////
@@ -378,15 +371,9 @@ if (req.user) {
 ////////////////////
 /////  SITE    ///// 
 ///////////////////
-exports.site = function(req, res) {
+exports.assemblies = function(req, res) {
 
-if (req.user) {
- userid = req.user.id
-
-var ids = '58f99bc45ac4072db4cb0ed3'
-
-
-
+var ids = '58f99a2b11db6c2118a9fa2a'
 var query = heavyliftingModel.find(
 {
   $and : 
@@ -400,28 +387,16 @@ var query = heavyliftingModel.find(
     }
     ]
   })
-
 query.exec(function (err, query_return) {
   if(err){
         console.log('Error Here'); 
         res.send(JSON.stringify(['Data Loading Error - Server Error']));
   return;} 
-
- 
-    res.render('site', {
+    res.render('assemblies', {
       siteName : siteName,
       items : JSON.stringify(ids),
       Formids : JSON.stringify(ids)
     });
-
 })
-  
 
- 
- 
- 
- 
-} else {
- res.redirect('/signin');
-}
 }; 

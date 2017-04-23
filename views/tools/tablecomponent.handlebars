@@ -108,6 +108,8 @@ if (tableData !== null) {
 ////////    READ  /////////
 ///////////////////////////
 function dataTableLoad (data,id,headings){
+
+
   html = ''
   if (items.entry.buttons) {
     html += '<thead><tr><th  style="width:1px"></th>'
@@ -124,7 +126,9 @@ html += '<tbody>'
 
 //pull in the element id of query 2 for the correct mofiy form
 var componentFom = query1[0].elementID
-
+console.log('////////////////////////////')
+console.log(data)
+console.log('////////////////////////////')
 for (var i = 0; i < data.length; i++) {
   if (items.entry.buttons) {
     html += '<tr><td class="details-control" style="text-align:center;vertical-align:middle; " id="'+data[i]['_id']+'" data-parentid="'+data[i]['parentid']+'" data-childType="'+componentFom+'"><i class="fa fa-plus-square-o" aria-hidden="true" ></i></td>'
@@ -376,9 +380,15 @@ function modifyItemComp(id){
     var parentIdTemp = items._id
   }
   var headings = ["description","parent"]
+
+
+if (true) {}
+
   var entry = {
     elementID : id
   } 
+
+
   //The id of the emement needs to be injected into the form , as it does not have that data.
   loadformModal(childType,id,'componentedit',parentIdTemp,headings, entry)
 }
@@ -388,7 +398,16 @@ function modifyItemComp(id){
 ////////    BUTTON CLICK OPEN RAW FORM  /////////
 ////////////////////////////////////////////////
 function deployparentrawForm(parentid){
+  parentid = parentid.replace('_parentraw', '');
   loadformModal(parentid,parentid,'raw',parentid)
+}
+
+//////////////////////////////////////////////////
+////////    BUTTON CLICK OPEN RAW FORM  /////////
+////////////////////////////////////////////////
+function copyParentRaw(parentid){
+  parentid = parentid.replace('_copy', '');
+  loadformModal(parentid,parentid,'copyraw',parentid)
 }
 
 //////////////////////////////////////

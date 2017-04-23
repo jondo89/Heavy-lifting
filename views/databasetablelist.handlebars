@@ -16,6 +16,8 @@
   </div>
 </div>
 
+<pre id='formIdHere'></pre>
+
 <script type="text/javascript">
 
  
@@ -59,6 +61,17 @@ console.log( 'tablelistdata : ',tablelistdata )
 console.log( 'formids : ',formids )
 console.log( '-------------------------' )
 console.log( 'databasetablelist loading' )
+
+
+if(items.elementID) {
+
+$("#formIdHere").html(items.elementID)
+}else{
+
+$("#formIdHere").html(items._id)
+}
+
+
 
 /////////////////////////////
 ////     LAYOUT VIEW    //// 

@@ -108,7 +108,7 @@ app.get('/database', pagesController.database);
 app.get('/organization/new', pagesController.neworg);
 app.get('/help', pagesController.help);
 app.get('/forms', pagesController.forms);
-app.get('/site', pagesController.site);
+app.get('/assemblies', pagesController.assemblies);
 
 
 /////////////////////////////////
