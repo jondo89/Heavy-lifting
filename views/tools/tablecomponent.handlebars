@@ -22,6 +22,7 @@ console.log( 'tableComponent loading' )
 
 var tableID = create_uid()
 var modifiedTableListData
+var modifiedListData
 
 ////////////////////////////////////
 ////        INITIALIZE         //// 
@@ -38,7 +39,33 @@ $('document').ready(function(){
 ////        REQUIRED FORMATING OF DATA        //// 
 /////////////////////////////////////////////////
 function dataFormatComp(){
+
+var tempVar = []
+var tempVar1 = []
+var tempVar2 = []
+for (var i = 0; i < tablelistdata.length; i++) {
+tempVar1 = []
+  for(key in tablelistdata[i].entry){
+    for (var j = 0; j < query2.length; j++) {
+      if (query2[j].elementID == key) {
+        tempVar = {
+          'description' : query2[j]['entry']['description'],
+          'value' : tablelistdata[i].entry[query2[j].elementID],
+          'units' : query2[j]['entry']['units'],
+          'detail' : query2[j]['entry']['detail'],
+          'id' : query2[j]['elementID']['elementID']
+        }
+      }
+    }
+    tempVar1.push(tempVar) 
+  }
+tempVar2[tablelistdata[i].elementID] = tempVar1
+}
+
+
+
   var temp = []
+  var temp
   //This is where the id is injected into the menu item . Crude hacky work around , not sure how to improve.
   for (var i = 0; i < tablelistdata.length; i++) {
     for(key in tablelistdata[i].entry){
@@ -63,7 +90,11 @@ function dataFormatComp(){
    tablelistdata[i].entry.parentid = tablelistdata[i]['parentid']
    temp.push(tablelistdata[i].entry)
  }
- modifiedTableListData = temp
+
+
+
+  modifiedListData = tempVar2
+  modifiedTableListData = temp
 }
 
 ///////////////////////////////
@@ -108,8 +139,6 @@ if (tableData !== null) {
 ////////    READ  /////////
 ///////////////////////////
 function dataTableLoad (data,id,headings){
-
-
   html = ''
   if (items.entry.buttons) {
     html += '<thead><tr><th  style="width:1px"></th>'
@@ -126,9 +155,7 @@ html += '<tbody>'
 
 //pull in the element id of query 2 for the correct mofiy form
 var componentFom = query1[0].elementID
-console.log('////////////////////////////')
-console.log(data)
-console.log('////////////////////////////')
+ 
 for (var i = 0; i < data.length; i++) {
   if (items.entry.buttons) {
     html += '<tr><td class="details-control" style="text-align:center;vertical-align:middle; " id="'+data[i]['_id']+'" data-parentid="'+data[i]['parentid']+'" data-childType="'+componentFom+'"><i class="fa fa-plus-square-o" aria-hidden="true" ></i></td>'
@@ -146,6 +173,67 @@ html += '<tbody>'
 $('#'+id).html(html)
 } 
 
+
+/////////////////////////////////////////////////////////////////////
+////////    USED FOR THE COMPILATION OF THE DETAILS TABLE  /////////
+/////////////////////////////////////////////////////////////////////
+function detailTableLoad (data,id){
+ console.log(data)
+  var  html = ''
+  html+='<div> <!-- Nav tabs --> <ul class="nav nav-tabs" role="tablist">'
+  html+= '<li role="presentation" class="active"><a href="#home_'+id+'" aria-controls="home" role="tab" data-toggle="tab">Detail</a></li>'
+  html+=  '<li role="presentation"><a href="#profile_'+id+'" aria-controls="profile_'+id+'" role="tab" data-toggle="tab">History</a></li>'
+  html+= '</ul> <!-- Tab panes --> <div class="tab-content">'
+  html+=  '<div role="tabpanel" class="tab-pane active" id="home_'+id+'">'
+  html+='<h4>Item Detail</h4><p>The table below shows the full item detail.</p>'  
+
+//pull in the element id of query 2 for the correct mofiy form
+var componentFom = query1[0].elementID
+html += '<table class="table table-bordered table-condensed">  '
+html += '<thead><tr>'
+html += '<thead><tr><th>Description</th><th>Value</th><th>Units</th><th>Detail</th></tr></thead>'
+html += '<tbody>'
+ 
+
+for (key in data) {
+  console.log(key,id)
+for (var i = 0; i < data[key].length; i++) {
+
+
+if (key == id) {
+    html += '<tr>'
+    html += '<td>'
+    html += data[key][i]['description']
+    html += '</td>'
+    html += '<td>'
+    html += data[key][i]['value']
+    html += '</td>'      
+    html += '<td>'
+    html += data[key][i]['units']
+    html += '</td>'
+    html += '<td>'
+    html += data[key][i]['detail']
+    html += '</td>'
+    html += '</tr>'
+
+}
+  
+}
+}
+
+
+
+
+ 
+html += '</tbody>'
+html += '</table>'
+html+= '</div> <div role="tabpanel" class="tab-pane" id="profile_'+id+'">'
+html+= '<h4>Revision History</h4><p>The table below shows the component history of this item.</p>'
+//This is dummy data for the presentaion.
+ 
+html+= '</div> </div> </div>'
+return html
+} 
 
 //////////////////////////////////////////////
 //////  CHECK IF AN OBJECT IS AN ARRAY //////
@@ -202,11 +290,12 @@ var table = jQuery('#'+id).DataTable({
 function formatDefault ( d ) {
   // `d` is the original data object for the row
   var html=''
-  html='<h4>Options</h4>'
+    html += detailTableLoad  (modifiedListData,d)
+  html+='<h4>Options</h4><p>The following options are availble for this item.</p>'
   for (var j = 0; j < items.entry.buttons.length; j++) {
     switch(true){
       case (items.entry.buttons[j] == 'delete'):
-      html += '<button type="button" class="btn btn-default" data-_id="'+d+'" id="'+d+'_del" data-toggle="modal" data-target="#myModal" onclick="deleteEntry(this.id)"  data-toggle="tooltip" data-placement="top" title="Delete this item">Remove</button>'
+      html += '<button type="button" class="btn btn-danger" data-_id="'+d+'" id="'+d+'_del" data-toggle="modal" data-target="#myModal" onclick="deleteEntry(this.id)"  data-toggle="tooltip" data-placement="top" title="Delete this item">Remove</button>'
       break;
       case (items.entry.buttons[j] == 'modify'):
       html += '<button type="button" class="btn btn-default" id="'+d+'_read" onclick="modifyItemComp(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Modify</button>'
@@ -218,7 +307,7 @@ function formatDefault ( d ) {
       html += '<button type="button" class="btn btn-default"  id="'+d+'_comp" onclick="createComp(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Create child item.">Create component</button>'
       break;  
       case (items.entry.buttons[j] == 'permdelete'):
-      html += '<button type="button" class="btn btn-default" id="'+d+'_perm" onclick="permdelete(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Delete</button>'
+      html += '<button type="button" class="btn btn-danger" id="'+d+'_perm" onclick="permdelete(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Delete</button>'
       break;  
       case (items.entry.buttons[j] == 'Modifynorevraw'):
       html += '<button type="button" class="btn btn-default" id="'+d+'_1" onclick="useForm(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Modifynorevraw</button>'

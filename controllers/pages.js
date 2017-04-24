@@ -372,7 +372,6 @@ if (req.user) {
 /////  SITE    ///// 
 ///////////////////
 exports.assemblies = function(req, res) {
-
 var ids = '58f99a2b11db6c2118a9fa2a'
 var query = heavyliftingModel.find(
 {
@@ -398,5 +397,35 @@ query.exec(function (err, query_return) {
       Formids : JSON.stringify(ids)
     });
 })
+}; 
 
+////////////////////
+/////  SITE    ///// 
+///////////////////
+exports.configuration = function(req, res) {
+var ids = '58fc6a9b7a525938d01fbd68'
+var query = heavyliftingModel.find(
+{
+  $and : 
+  [
+  {$or: [
+    {"elementID": ids },
+    {"_id":  ids }
+    ]}, 
+    {
+      "active": "true" 
+    }
+    ]
+  })
+query.exec(function (err, query_return) {
+  if(err){
+        console.log('Error Here'); 
+        res.send(JSON.stringify(['Data Loading Error - Server Error']));
+  return;} 
+    res.render('configuration', {
+      siteName : siteName,
+      items : JSON.stringify(ids),
+      Formids : JSON.stringify(ids)
+    });
+})
 }; 

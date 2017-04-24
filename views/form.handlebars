@@ -88,10 +88,14 @@ function getdata(formdata,idItem,raw){
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
-      
+
+/*
+
   console.log('//////////////////////dataSchemaObject///////////////////////////')
   console.log( dataSchemaObject )
   console.log('//////////////////////dataSchemaObject///////////////////////////')
+*/
+
       initiateForm(dataSchemaObject)
     }
   });
@@ -207,9 +211,13 @@ function initiateForm(data){
   options : data.formdata.entry['options']
 }
 
+/*
 console.log('//////////////////////DATA///////////////////////////')
 console.log(data)
 console.log('//////////////////////DATA///////////////////////////')
+*/
+
+
  //----------------------------------------------------------------------------------------------
  if (raw!='component' && raw!='componentedit') {
   if (raw!='raw' && raw!='copyraw') {
@@ -276,19 +284,46 @@ function formInit(schema,options,data){
 var arr = options.fields
 $.each(arr, function(index, value) { 
   if (arr[index]['type'] == 'select' ) {
+
+ var temp = ''
+
+
+//Drop down call for the active 
+switch (true) {
+  case (index =="active"):
+  temp = "58fd8d190c8b981ccc7c2402"
+  break;
+    case (index =="units"):
+  temp = "58fdeb040c8b981ccc7c2444"
+  break;
+  default:
+  temp = arr[index]['field']
+  break;
+}
+
+console.log(index,temp)
+ 
    arr[index]["dataSource"] = function(callback) {
     jQuery.ajax({
       'async': true,
       'global': false,
-      'url': '/getformfield?data='+arr[index]['field'] ,
+      'url': '/getformfield?data='+temp ,
       'success': function (dataSchemaObject) {
         if (dataSchemaObject) {
           var dataSchemaObject = JSON.parse(dataSchemaObject);
-          var temp =[]
+
+
+ 
+console.log('/////////////////////////////////////DEBUG THE SELECT DROP DOWN????????????????????????????????????')
+console.log(dataSchemaObject)
+console.log('/////////////////////////////////////DEBUG THE SELECT DROP DOWN????????????????????????????????????')
+
+
+          var tempVar =[]
           for (var i = 0; i < dataSchemaObject.length; i++) {
-            temp.push(dataSchemaObject[i].entry[arr[index]['field']])
+            tempVar.push(dataSchemaObject[i].entry[temp])
           }
-          callback(temp);
+          callback(tempVar);
         }  
       }
     }); 
@@ -485,8 +520,6 @@ switch(true){
   primer.revision = 'updated'
   primer.active = "true"
   break;
-
-
 
   default :
   var html = ''

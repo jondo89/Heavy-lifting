@@ -109,7 +109,7 @@ app.get('/organization/new', pagesController.neworg);
 app.get('/help', pagesController.help);
 app.get('/forms', pagesController.forms);
 app.get('/assemblies', pagesController.assemblies);
-
+app.get('/configuration', pagesController.configuration);
 
 /////////////////////////////////
 ////       TEMPALTES        //// 
