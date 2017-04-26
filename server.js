@@ -110,6 +110,7 @@ app.get('/help', pagesController.help);
 app.get('/forms', pagesController.forms);
 app.get('/assemblies', pagesController.assemblies);
 app.get('/configuration', pagesController.configuration);
+app.get('/reports', pagesController.reports);
 
 /////////////////////////////////
 ////       TEMPALTES        //// 
@@ -194,6 +195,10 @@ app.get('/navmenuload', readController.navmenuload);
 app.get('/loadusermenu', readController.loadusermenu);
 //get the loadcompmenu
 app.get('/loadcompmenu', readController.loadcompmenu);
+
+//get the single element id
+app.get('/singleidcall', readController.singleidcall);
+
 
 /* Redundant
 //click to open with navmenu

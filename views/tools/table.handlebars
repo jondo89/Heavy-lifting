@@ -6,6 +6,18 @@
 
       var modifiedTableListData
 
+tablelistdata.sort(function(a, b) {
+  if (a.entry.order && b.entry.order) {
+return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+}
+});
+query3.sort(function(a, b) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+});
+query2.sort(function(a, b) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+});
+
 ///////////////////////////// 
 //////  INITIALISE    //////
 /////////////////////////// 
@@ -14,6 +26,9 @@ $('document').ready(function(){
  dataFormat()
  datableload(modifiedTableListData)
 })
+
+ 
+
 
 ///////////////////////////////////////////////////
 ////        REQUIRED FORMATING OF DATA        //// 
@@ -361,7 +376,7 @@ function copyParentRaw(parentid){
 //////////////////////////////////////
 ////////    GET FORM BY ID  /////////
 ////////////////////////////////////                                                                                                              
-function loadformModal(formdata,idItem,raw,parentid,injectParentid,headings){
+function loadformModal(formdata,idItem,raw,parentid,headings){
   var headings = JSON.stringify(headings)
   jQuery.ajax({
     'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
@@ -385,13 +400,14 @@ function useForm(id){
 //////  MODIFY     //////
 ////////////////////////
 function modifyItem(id){
+  var headings = ["description","detail", "value", "units", "type", "dependencies", "objectType","order"] 
   id = id.replace('_read', '');
   childType = $('#'+id+'').data('childtype')
   //Used for the check self when modifiing.
   if (!childType) {
-    loadformModal(id,id,'self',id)
+    loadformModal(id,id,'self',id,headings)
   } else {
-    loadformModal(childType,id,'self',id)
+    loadformModal(childType,id,'self',id,headings)
   }
 }
 

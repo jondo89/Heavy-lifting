@@ -47,6 +47,21 @@ var templateload = {{{templateload}}}
 $('#name').html(items.name)
 $('#detail').html(items.detail)
 
+tablelistdata.sort(function(a, b) {
+      if (a.entry.order && b.entry.order) {
+return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+}
+});
+query3.sort(function(a, b) {
+  if (a.entry.order && b.entry.order) {
+return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+}
+});
+ query2.sort(function(a, b) {
+    if (a.entry.order && b.entry.order) {
+return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+}
+});
 
 /////////////////////////////
 ////     DEBUG AREA     //// 
@@ -65,14 +80,10 @@ console.log( 'databasetablelist loading' )
 
 
 if(items.elementID) {
-
 $("#formIdHere").html(items.elementID)
 }else{
-
 $("#formIdHere").html(items._id)
 }
-
-
 
 /////////////////////////////
 ////     LAYOUT VIEW    //// 
@@ -106,9 +117,11 @@ function tabview() {
 ///////////////////////////
 function tablist(){
   var html = ''
- 
   if (items.entry.tabs) {
    for (var i = 0; i < items.entry.tabs.length; i++) {
+
+
+
 //used for 0 length items
 if (i==0) {
   if (items.entry.tabs=='tablecomponent') {
@@ -154,8 +167,6 @@ if(template){
 }
 }
 
-
-
 //////////////////////////////////////////
 ////        CREATE UNIQUE ID         //// 
 ////////////////////////////////////////
@@ -180,10 +191,8 @@ function uniqueIdforcformButton(){
 //////  INITIALISE    //////
 /////////////////////////// 
 $('document').ready(function(){
- 
   layoutView() 
   tabview()
   tablist()
-  
 })
 </script>

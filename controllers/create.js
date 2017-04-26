@@ -9,13 +9,23 @@ exports.create = function(req, res) {
 
 	console.log('/////////////DEBUG CREATE FOR ACTIVE =TRUE //////////////')
 	console.log('Init req.body',dataset)
+	console.log(dataset.elementID)
 	console.log('/////////////DEBUG CREATE FOR ACTIVE =TRUE //////////////')
 
-	console.log(dataset.elementID)
+//Imidiate login redirect.
+if (req.user) {
+
+} else {
+
+		console.log('/////////////NOT LOGGED IN //////////////')
+ 
+  console.log('/////////////NOT LOGGED IN //////////////')
+  res.send({redirect: '/signin'});
+}
 
 
-	if (dataset.revision != 'created') {
-		console.log('ID Injection Step 1.')
+if (dataset.revision != 'created') {
+	console.log('ID Injection Step 1.')
 //this is the area where the items are assigned the Elment ID.
 //In the event of the revision being created , the element ID will need to be blank.
 //Handling of the element ID for normal and component input.
@@ -92,16 +102,16 @@ if (userid == '586b5bbe935a6d19040c5447' | userid == '5878b000d1f7c0220c1d2903')
 	})
 		} else {
 
-console.log('new items are here')
-		var create = new heavyliftingModel(dataset);  
-		create.save(function (err, doc) {  
-			console.log('step 6 - Save point for the dataset doc:',doc)
-			if (err) {
-				res.send(err);
-			} else{
-				res.send({redirect: '/admin'});
-			}
-		});
+			console.log('new items are here')
+			var create = new heavyliftingModel(dataset);  
+			create.save(function (err, doc) {  
+				console.log('step 6 - Save point for the dataset doc:',doc)
+				if (err) {
+					res.send(err);
+				} else{
+					res.send({redirect: '/admin'});
+				}
+			});
 		}
 
 	}

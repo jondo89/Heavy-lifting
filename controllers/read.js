@@ -59,7 +59,7 @@ if (!raw) {
 }
 //used for the database items which require a location from which the data was created.
 var parentid = req.param('parentid')
-if (!parentid) {
+if (!parentid || parentid=='') {
   parentid ='false'
 }
 //used for the database items which require a location from which the data was created.
@@ -225,7 +225,6 @@ var query3 = heavyliftingModel.find(
   }
   ]
 })
-
 ///////////////////////////////////////
 //  5.LEGACY ITEM FOR PRIMER FORMS  //
 /////////////////////////////////////
@@ -234,7 +233,6 @@ var query4 = heavyliftingModel.find(
     'entry.parent' : childitem,
     'active' : 'true'
 })
-
 ///////////////////////////////
 //  6.THE TEMPLATE TO LOAD  //
 //////////////////////////////
@@ -326,31 +324,10 @@ console.log('query5_return',query5_return)
 console.log('ids',ids)
 console.log('childitem',childitem)
 console.log('//  Debug from here  //')
-
-/*
-    //undefined error handling on the template
-    if (!query1_return[0].entry.template){
-      query1_return[0].entry.template=''
-    }
-    switch (true){
-      case (query1_return[0].entry.template !== ''):
-      var template = query1_return[0].entry.template
-      if (query1_return[0].entry.template == 'viewall') {
-        query4 = heavyliftingModel.find(
-        {
-          "active": "true" 
-        })
-      }
-      break;
-      default:
-      var template = 'databasetablelist' 
-      break;
-    }
-*/
-console.log(template , 'The loaded template')
-if (template != 'databasetablelist') {
-  console.log(template , 'The loaded template')
-  template = query5_return.entry.value
+if (query_return.entry.template) {
+  template = query_return.entry.template
+} else {
+  template = 'databasetablelist' 
 }
           res.render(template, {
             query  :  JSON.stringify(query_return),
@@ -378,7 +355,6 @@ if (template != 'databasetablelist') {
 })
 //Query end
 })
-
 }
 
 ///////////////////////////////////////////////////
@@ -657,153 +633,7 @@ query.exec(function (err, query_return) {
 res.send(JSON.stringify(query_return));
 //a parent ID for the group to pull , then a filter by the ID field.
 })
-/*
-  heavyliftingModel.find().limit(100).exec(function (err, init) {
-    if(err){console.log('Error Here'); return;}
-    switch(true){
-      case (req.param('data') == 'objectType'):
-      res.send(JSON.stringify(['form','database']));
-      break;
-      case (req.param('data') == 'revision'):
-      res.send(JSON.stringify(['created','updated','deleted']));
-      break;
-      case (req.param('data') == 'active'):
-      res.send(JSON.stringify(['true','false']));
-      break;
-      case (req.param('data') == 'buttons'):
-      heavyliftingModel.find({
-        'parentid' : init[84]._id,
-        'active' : 'true'
-      }).exec(function (err, data) {
-        if(err){console.log('Error Here'); return;}
-        var temp = []
-        for (var i = 0; i < data.length; i++) {
-          temp.push(data[i].entry.value)
-        }
-        res.send(JSON.stringify(temp));
-      });
-      break;
-      case (req.param('data') == 'type'):
-      heavyliftingModel.find({
-        'parentid' : '58df43d40cef901b8c1bb474',
-        'active' : 'true'
-      }).exec(function (err, data) {
-        if(err){console.log('Error Here'); return;}
-        var temp = []
-        for (var i = 0; i < data.length; i++) {
-          temp.push(data[i].entry.value)
-        }
-        res.send(JSON.stringify(temp));
-      });
-      break;
-      case (req.param('data') == 'tabs'):
-      heavyliftingModel.find({
-        'parentid' : init[56]._id,
-        'active' : 'true'
-      }).exec(function (err, data) {
-        if(err){console.log('Error Here'); return;}
-        var temp = []
-        for (var i = 0; i < data.length; i++) {
-          temp.push(data[i].entry.value)
-        }
-        res.send(JSON.stringify(temp));
-      });
-      break;
-      case (req.param('data') == 'layout'):
-      heavyliftingModel.find({
-        'parentid' : init[24]._id,
-        'active' : 'true'
-      }).exec(function (err, data) {
-        if(err){console.log('Error Here'); return;}
-        var temp = []
-        for (var i = 0; i < data.length; i++) {
-          temp.push(data[i].entry.value)
-        }
-        res.send(JSON.stringify(temp));
-      });
-      break;
-
-      case (req.param('data') == 'template'):
-      heavyliftingModel.find({
-        'parentid' : init[6]._id,
-        'active' : 'true'
-      }).exec(function (err, data) {
-        if(err){console.log('Error Here'); return;}
-        var temp = []
-        for (var i = 0; i < data.length; i++) {
-          temp.push(data[i].entry.value)
-        }
-        res.send(JSON.stringify(temp));
-      });
-      break;
-      case (req.param('data') == 'headings'):
-      heavyliftingModel.find({
-        'parentid' : init[8]._id,
-        'active' : 'true'
-      }).exec(function (err, data) {
-        if(err){console.log('Error Here'); return;}
-        var temp = []
-        for (var i = 0; i < data.length; i++) {
-          temp.push(data[i].entry.value)
-        }
-        res.send(JSON.stringify(temp));
-      });
-      break;
-      case (req.param('data') == 'unit'):
-      heavyliftingModel.find({
-        'parentid' : init[12]._id,
-        'active' : 'true'
-      }).exec(function (err, data) {
-        if(err){console.log('Error Here'); return;}
-        var temp = []
-        for (var i = 0; i < data.length; i++) {
-          temp.push(data[i].entry.value)
-        }
-        res.send(JSON.stringify(temp));
-      });
-      break;
-      case (req.param('data') == 'icon'):
-      heavyliftingModel.find({
-        'parentid' : init[9]._id,
-        'active' : 'true'
-      }).exec(function (err, data) {
-        if(err){console.log('Error Here'); return;}
-        var temp = []
-        for (var i = 0; i < data.length; i++) {
-          temp.push(data[i].entry.value)
-        }
-        res.send(JSON.stringify(temp));
-      });
-      break;
-      default :
-      heavyliftingModel.
-      find({
-        '_id': req.param('data'),
-      }).
-      sort({ Order: -1 }).
-      exec(function (err, docs) {
-        if(err){console.log('Error Here'); return;}
-        heavyliftingModel.
-        find({
-          'menu item': docs[0]['Field'],
-        }).
-        sort({ Order: -1 }).
-        exec(function (err, docs1) {
-          if(err){console.log('Error Here'); return;}
-    //reformat to suit alpacha
-    var temp =[]
-    for (var i = 0; i < docs1.length; i++) {
-      temp .push( {
-        "value": docs1[i]['Value'],
-        "text": docs1[i]['Value']
-      })
-    }
-    res.send(JSON.stringify(temp));
-  });
-      });
-      break;
-    }
-  })*/
+ 
 }
 //////////////////////////////////////////
 ///////////   READ  GROUPS  /////////////
@@ -1078,10 +908,6 @@ query.exec(function (err, docs1) {
       if (docs2.length == 0) {
         temp=''
       }
-
- 
-
-
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
@@ -1100,4 +926,150 @@ res.send({
 });
 })
 })
+}
+
+
+
+//////////////////////////////////////////////////////
+////       DEPLOY THE REQUESTED TEMPLATE         //// 
+////////////////////////////////////////////////////
+exports.singleidcall = function(req, res) {
+console.log('////////////////////////////////////////////')
+console.log('This is singleidcall : ',req.param('ids'))
+console.log('////////////////////////////////////////////')
+//Which id data to use.
+var ids = req.param('ids')
+if (!ids) {
+  ids =''
+}
+  
+
+//////////////////////////////
+//  1.RETURN CURRENT ITEM  //
+////////////////////////////
+//Query to find the menu item selected.
+var query = heavyliftingModel.findOne(
+{
+  $and : 
+  [
+  {$or: [
+    {"elementID": ids },
+    {"_id":  ids }
+    ]}, 
+    {
+      "active": "true" 
+    }
+    ]
+  })
+ 
+
+
+query.exec(function (err, query_return) { 
+if(err){
+  console.log('query_return failed'); 
+} 
+
+var query1id = query_return.parentid
+///////////////////////////
+// 2.RETURN CHILD ITEM  //
+/////////////////////////
+var query1 = heavyliftingModel.findOne(
+{
+  $and : 
+  [
+  {$or: [
+    {"elementID": query1id },
+    {"_id":  query1id }
+    ]}, 
+    {
+      "active": "true" 
+    }
+    ]
+  })
+
+query1.exec(function (err, query1_return) { 
+if(err){
+  console.log('query1_return failed'); 
+} 
+
+var query2id = query1_return.childType
+//////////////////////
+// 3.GET THE FORM  //
+////////////////////
+var query2 = heavyliftingModel.find(
+{
+  $and : 
+  [
+  {
+    "parentid": query2id 
+  }, 
+  {
+    "active": "true" 
+  }
+  ]
+})
+
+query2.exec(function (err, query2_return) { 
+if(err){
+  console.log('query2_return failed'); 
+} 
+
+
+
+if(query_return){
+for (var i = 0; i < query_return.length; i++) {
+      //the menu item elementid should arrive poulated to avoid confusion.
+    if(query_return[i].elementID==''){
+      query_return[i].elementID=query_return[i]._id
+    }
+}
+}else {
+  console.log('query_return failed')
+}
+if(query1_return){
+for (var i = 0; i < query1_return.length; i++) {
+      //the menu item elementid should arrive poulated to avoid confusion.
+    if(query1_return[i].elementID==''){
+      query1_return[i].elementID=query1_return[i]._id
+    }
+}
+}else {
+  console.log('query1_return failed')
+}
+if(query2_return){
+for (var i = 0; i < query2_return.length; i++) {
+      //the menu item elementid should arrive poulated to avoid confusion.
+    if(query2_return[i].elementID==''){
+      query2_return[i].elementID=query2_return[i]._id
+    }
+}
+}else {
+  console.log('query2_return failed')
+}
+console.log('//  Debug from here  //')
+console.log('query_return',query_return)
+console.log('query1_return',query1_return)
+console.log('query2_return',query2_return)
+ 
+ 
+ 
+
+var json = {
+            query  :   query_return,
+            query1 :   query1_return,
+            query2 :   query2_return,
+}
+
+          res.send( json  );
+ 
+
+//query end
+});
+
+//query end
+});
+//query end
+});
+
+ 
 }

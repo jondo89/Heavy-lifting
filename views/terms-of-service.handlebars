@@ -1,1 +1,154 @@
-Terms of Service
+<h1>Testing of a single call on a id.</h1>
+<p>Completly stand alone edit element with no overlapping ids.</p>
+<div id="deployHere">
+</div>
+<div id='singleComponent'></div>
+
+<script type="text/javascript">
+	console.log('////////////////////////////////////////////')
+	console.log('SINGLE ELEMENT ID CALL TESTING ')
+	console.log('///////////////////////////////////////////')
+
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+$('document').ready(function(){
+	var id = '58fddb650c8b981ccc7c2440'
+	var location = ''
+	singleidcall(id)
+})
+
+//////////////////////////////////// 
+//////  PRIMARY AJAX CALL    //////
+//////////////////////////////////
+function singleidcall(elementid) {
+	console.log('///////////////////////////')
+	console.log('id to aquire: ',elementid)
+	console.log('///////////////////////////')
+	//AJAX REQUEST TO SERVER
+	jQuery.ajax({
+		'async': true,
+		'global': false,
+		'url': '/singleidcall?ids='+elementid,
+		'success': function (dataSchemaObject) {
+			console.log('///////////////////////////')
+			console.log('THE DELEVERED INFORMATION : ',dataSchemaObject)
+			console.log('///////////////////////////')
+			//reformat the data.
+			dataFormatCompforassy(dataSchemaObject,elementid)
+		}
+	});
+}
+
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
+/////////////////////////////////////////////
+function uniqueIdforcomponentformButton(theAreaToChange){
+	jQuery('#singleComponent').attr("id",theAreaToChange);
+}
+
+//////////////////////////////////////////
+////        CREATE UNIQUE ID         //// 
+////////////////////////////////////////
+function create_uid() {
+	function s4() {
+		return Math.floor((1 + Math.random()) * 0x10000)
+		.toString(16)
+		.substring(1);
+	}
+	return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+	s4() + '-' + s4() + s4() + s4();
+}
+
+///////////////////////////////////////////////////
+////        REQUIRED FORMATING OF DATA        //// 
+/////////////////////////////////////////////////
+function dataFormatCompforassy(dataset,elementid){
+  var tempVar = []
+  var tempVar1 = []
+  var tempVar2 = []
+    tempVar1 = []
+    for(key in dataset.query.entry){
+      for (var j = 0; j < dataset.query2.length; j++) {
+        if (dataset.query2[j].elementID == key) {
+          tempVar = {
+            'description' : dataset.query2[j]['entry']['description'],
+            'value' : dataset.query.entry[dataset.query2[j].elementID],
+            'units' : dataset.query2[j]['entry']['units'],
+            'detail' : dataset.query2[j]['entry']['detail'],
+            'id' : dataset.query2[j]['elementID'] 
+          }
+        }
+      }
+      tempVar1.push(tempVar) 
+    }
+    tempVar2[dataset.query.elementID] = tempVar1
+	datableloadforAssy(tempVar2,dataset,elementid)
+}
+
+///////////////////////////////
+//////  LOAD THE TABLE  //////
+/////////////////////////////
+function datableloadforAssy(dataset,originalData,elementid) {
+	var tableHeadings = ['description','value','units','detail','id' ]
+	//Unique if for the forms.
+	var formids = create_uid()
+	//create a new unique element ID for this component.	
+	uniqueIdforcomponentformButton(formids)
+	var tempVarIDs = formids+'tableloadID'
+	//inject the ID html table into the page.
+	$('#'+formids).html('<table id="'+tempVarIDs+'" class="table table-bordered table-compressed table-hover" cellspacing="0" width="100%"></table>')
+	html = detailTableLoadforAssembly  (dataset,originalData,elementid)
+	$('#'+formids).html(html)
+};
+
+/////////////////////////////////////////////////////////////////////
+////////    USED FOR THE COMPILATION OF THE DETAILS TABLE  /////////
+/////////////////////////////////////////////////////////////////////
+function detailTableLoadforAssembly (data,originalData,id){
+	console.log('///////////////////////////')
+	console.log(data,originalData,id)
+	console.log('///////////////////////////')
+	var  html = ''
+	html+='<h4>Item Detail</h4><p>The table below shows the full item detail.</p>'  
+	html += '<table class="table table-bordered table-condensed">  '
+	html += '<thead><tr>'
+	html += '<thead><tr><th>Description</th><th>Value</th><th>Units</th><th>Detail</th></tr></thead>'
+	html += '<tbody>'
+	for (key in data) {
+		for (var i = 0; i < data[key].length; i++) {
+			if (key == id) {
+				html += '<tr>'
+				html += '<td>'
+				html += data[key][i]['description']
+				html += '</td>'
+				html += '<td>'
+				if (data[key][i]['description']=='Url') {
+					html += '<a href="'+data[key][i]['value']+'" target="_blank">Link</a>'
+				} else  {
+					html += data[key][i]['value']
+				}
+				html += '</td>'      
+				html += '<td>'
+				html += data[key][i]['units']
+				html += '</td>'
+				html += '<td>'
+				html += data[key][i]['detail']
+				html += '</td>'
+				html += '</tr>'
+			}
+		}
+	}
+	html += '</tbody>'
+	html += '</table>'
+	return html
+} 
+
+//////////////////////////////////////////
+//////  CAPATILIZE FIRST LETTER    //////
+////////////////////////////////////////
+function capitalize(str) {
+	return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+</script>

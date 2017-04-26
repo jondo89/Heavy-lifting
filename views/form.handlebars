@@ -37,6 +37,9 @@ var entry
 console.log( '-------------------------' )
 console.log( 'form loading' )
 
+
+
+
 //////////////////////////////////////////
 ////        CREATE UNIQUE ID         //// 
 ////////////////////////////////////////
@@ -74,6 +77,13 @@ function getdatacomp(formdata,idItem,raw){
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
+
+
+ 
+dataSchemaObject['formdata'].sort(function(a, b) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+});
+
       formatAlpaca(dataSchemaObject)
     }
   });
@@ -89,12 +99,7 @@ function getdata(formdata,idItem,raw){
     'global': false,
     'success': function (dataSchemaObject) {
 
-/*
-
-  console.log('//////////////////////dataSchemaObject///////////////////////////')
-  console.log( dataSchemaObject )
-  console.log('//////////////////////dataSchemaObject///////////////////////////')
-*/
+ 
 
       initiateForm(dataSchemaObject)
     }
@@ -211,12 +216,7 @@ function initiateForm(data){
   options : data.formdata.entry['options']
 }
 
-/*
-console.log('//////////////////////DATA///////////////////////////')
-console.log(data)
-console.log('//////////////////////DATA///////////////////////////')
-*/
-
+ 
 
  //----------------------------------------------------------------------------------------------
  if (raw!='component' && raw!='componentedit') {
@@ -300,8 +300,7 @@ switch (true) {
   temp = arr[index]['field']
   break;
 }
-
-console.log(index,temp)
+ 
  
    arr[index]["dataSource"] = function(callback) {
     jQuery.ajax({
@@ -311,14 +310,6 @@ console.log(index,temp)
       'success': function (dataSchemaObject) {
         if (dataSchemaObject) {
           var dataSchemaObject = JSON.parse(dataSchemaObject);
-
-
- 
-console.log('/////////////////////////////////////DEBUG THE SELECT DROP DOWN????????????????????????????????????')
-console.log(dataSchemaObject)
-console.log('/////////////////////////////////////DEBUG THE SELECT DROP DOWN????????????????????????????????????')
-
-
           var tempVar =[]
           for (var i = 0; i < dataSchemaObject.length; i++) {
             tempVar.push(dataSchemaObject[i].entry[temp])
@@ -533,9 +524,7 @@ switch(true){
   break;
 }
 
-console.log('//////////////////POST DATA/////////////////////////')
-console.log(primer)
-console.log('//////////////////POST DATA/////////////////////////')
+ 
 
 //Jquery send to server
 jQuery.ajax({
@@ -546,6 +535,7 @@ jQuery.ajax({
   'data': JSON.stringify(primer),
   'success': function (dataSchemaObject) {
     $('#myModal').modal('hide')
+ 
           //pageLoad(databaseid)
           if (parentItem.route) {
            window.location = parentItem.route
@@ -553,13 +543,15 @@ jQuery.ajax({
            window.location.reload()
          }
        },
-       'error' :function (dataSchemaObject) {
+    'error' :function (dataSchemaObject) {
         $('#myModal').modal('hide')
-    //pageLoad(databaseid)
+      //pageLoad(databaseid)
     if (parentItem.route) {
-      window.location = parentItem.route
+       window.location = parentItem.route
     } else {
-      window.location.reload()
+ 
+      var temp = '/signin'
+       window.temp
     }
   },
 });   

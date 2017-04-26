@@ -399,9 +399,9 @@ query.exec(function (err, query_return) {
 })
 }; 
 
-////////////////////
-/////  SITE    ///// 
-///////////////////
+//////////////////////////////
+/////  CONFIGURATION    ///// 
+//////////////////////////////
 exports.configuration = function(req, res) {
 var ids = '58fc6a9b7a525938d01fbd68'
 var query = heavyliftingModel.find(
@@ -423,6 +423,38 @@ query.exec(function (err, query_return) {
         res.send(JSON.stringify(['Data Loading Error - Server Error']));
   return;} 
     res.render('configuration', {
+      siteName : siteName,
+      items : JSON.stringify(ids),
+      Formids : JSON.stringify(ids)
+    });
+})
+}; 
+
+
+////////////////////////
+/////  REPORTS    ///// 
+//////////////////////
+exports.reports = function(req, res) {
+var ids = '58ff286473c642469cf8f38c'
+var query = heavyliftingModel.find(
+{
+  $and : 
+  [
+  {$or: [
+    {"elementID": ids },
+    {"_id":  ids }
+    ]}, 
+    {
+      "active": "true" 
+    }
+    ]
+  })
+query.exec(function (err, query_return) {
+  if(err){
+        console.log('Error Here'); 
+        res.send(JSON.stringify(['Data Loading Error - Server Error']));
+  return;} 
+    res.render('reports', {
       siteName : siteName,
       items : JSON.stringify(ids),
       Formids : JSON.stringify(ids)

@@ -1,29 +1,44 @@
-<h1 id="name"></h1>
 
-<p id="detail"></p>
-<div id="toolbar"></div>
+
+
  
+    <h1 id="name"></h1>
+<p id="detail"></p>
+
 <p></p>
  
-
-
-
 <div style="padding-bottom: 15px">
-
   <div id="detail"></div>
 </div>
 <div class="row">
   <div id= "groups"></div>
 </div>
 
- 
- 
+<div id="toolbar" style="text-align: right"></div>
+
+<p></p>
+ <pre style="color: grey" id='formIdHere'></pre>
 
 <script type="text/javascript">
  
-  var items = {{{menuitem}}}
-  var formids = create_uid()
-  var templateload = {{{templateload}}}
+
+//The menu item from JSTREE
+var items = {{{query}}}
+//The applicable form for use ( query.childtype)
+var query1 = {{{query1}}}
+//The form in queston
+var query2 = {{{query2}}}
+//the form elements.
+var query3 = {{{query3}}}
+//the form datasets.
+var query4= {{{query4}}}
+//The query.parentid items.
+var tablelistdata = {{{query3}}};
+
+//Unique if for the forms.
+var formids = create_uid()
+
+var templateload = {{{templateload}}}
 
 
 /////////////////////////////////////
@@ -32,17 +47,49 @@
 $('#name').html(items.name)
 $('#detail').html(items.detail)
 
+tablelistdata.sort(function(a, b) {
+  if (a.entry.order && b.entry.order) {
+return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+}
+    
+});
+query3.sort(function(a, b) {
+    if (a.entry.order && b.entry.order) {
+return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+}
+});
+ query2.sort(function(a, b) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+});
 
 /////////////////////////////
 ////     DEBUG AREA     //// 
 ///////////////////////////
-console.log( 'Group loading' )
+console.log( 'databasetablelist loading' )
 console.log( '-------------------------' )
 console.log( 'items : ',items )
+console.log( 'query1 : ',query1 )
+console.log( 'query2 : ',query2 )
+console.log( 'query3 : ',query3 )
+console.log( 'query4 : ',query4 )
+console.log( 'tablelistdata : ',tablelistdata )
 console.log( 'formids : ',formids )
-console.log( 'templateload : ',templateload )
 console.log( '-------------------------' )
-console.log( 'Group loading' )
+console.log( 'databasetablelist loading' )
+
+
+if(items.elementID) {
+
+$("#formIdHere").html(items.elementID)
+}else{
+
+$("#formIdHere").html(items._id)
+}
+
+
+ 
+
+ 
 
 //////////////////////////////////////////
 ////        CREATE UNIQUE ID         //// 
@@ -206,6 +253,140 @@ if(template){
  });
 }
 }
+
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK OPEN FORM  /////////
+////////////////////////////////////////////
+function deployFormComponent(formToUse){
+  //This is hard wired , and likely to cause issues.
+  var headings = ["description","detail","icon","headings"]
+  var entry =''
+   loadformModal(formToUse,'','component',items.elementID,headings,entry)
+}
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK OPEN FORM  /////////
+////////////////////////////////////////////
+function deployFormUse(formToUse){
+  //This is hard wired , and likely to cause issues.
+  var headings = ["description","detail","icon","headings"]
+  var entry =''
+  loadformModal(formToUse,'','use',templateload,headings,entry)
+}
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK MODIFY     /////////
+////////////////////////////////////////////
+function modifybutton(parentid){
+  //Inputs into the form deployment.
+    //formdata,idItem,raw,parentid,headings,entry
+  //Which form to use.
+    //formdata:
+  //idItem:
+    //Which item to edit.
+  //Use the raw function for defining how to edit the data :
+    //raw:['use' , 'self' , 'edit']
+  //parentid:
+    //Inject a parent id.
+  //Inject a default entry.
+    //entry is used to manually add additional information to the form.
+  //Find and inject the group menu id number.
+  if (items.elementID) {
+    var parentIdTemp = items.elementID
+  } else {
+    var parentIdTemp = items._id
+  }
+  var headings = ["description","detail","icon","headings"]
+  var entry = {
+    parent : parentIdTemp,
+  }
+  loadformModal(parentid,parentIdTemp,'self',items.parentid,headings,entry)
+}
+
+//////////////////////////////////////////////////
+////////    BUTTON CLICK OPEN RAW FORM  /////////
+////////////////////////////////////////////////
+function deployparentrawForm(parentid){
+     parentid = parentid.replace('_parentraw', '');
+  loadformModal(parentid,parentid,'raw',parentid)
+}
+
+//////////////////////////////////////////////////
+////////    BUTTON CLICK OPEN RAW FORM  /////////
+////////////////////////////////////////////////
+function copyParentRaw(parentid){
+  parentid = parentid.replace('_copy', '');
+  loadformModal(parentid,parentid,'copyraw',parentid)
+}
+
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+////////////////////////////////////                                                                                                              
+function loadformModal(formdata,idItem,raw,parentid,headings){
+  var headings = JSON.stringify(headings)
+  jQuery.ajax({
+    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      $('#formAreaModal').html(dataSchemaObject)
+    }
+  });
+}
+
+//////////////////////////
+//////  USE        //////
+////////////////////////
+function useForm(id){
+  id = id.replace('_use', '');
+  loadformModal(id,'','use',id)
+}
+
+//////////////////////////
+//////  MODIFY     //////
+////////////////////////
+function modifyItem(id){
+  var headings = ["description","detail", "value", "units", "type", "dependencies", "objectType","order"] 
+  id = id.replace('_read', '');
+  childType = $('#'+id+'').data('childtype')
+  //Used for the check self when modifiing.
+  if (!childType) {
+    loadformModal(id,id,'self',id,headings)
+  } else {
+    loadformModal(childType,id,'self',id,headings)
+  }
+}
+
+//////////////////////////
+//////  MODIFY     //////
+////////////////////////
+function tableraw(id){
+  id = id.replace('raw', '');
+  childType = $('#'+id+'').data('childtype')
+  //Used for the check self when modifiing.
+  if (!childType) {
+    loadformModal(id,id,'raw',id)
+  } else {
+    loadformModal(childType,id,'raw',id)
+  }
+}
+
+////////////////////////////////////
+//////  CREATE COMPONENT     //////
+//////////////////////////////////
+function createComp(id){
+  id = id.replace('_comp', '');
+  childType = $('#'+id+'').data('childtype')
+  //there is some kind of wierd lowcase requiremtns.
+  parentid = $('#'+id+'').data('parentid')
+  if (!childType) {
+    loadformModal(childType,'','use',id)
+  } else {
+    loadformModal(parentid,'','use',id)
+  }
+}
+
 
  
 
