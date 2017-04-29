@@ -176,7 +176,17 @@ for (var i = 0; i < data.length; i++) {
     html += '<td style=" vertical-align:middle">'
 
       if ( headings[j]=='Url') {
-        html += '<a href="'+data[i][headings[j]]+'" target="_blank">Link</a>'
+
+ 
+if (data[i][headings[j]] != undefined) {
+  html += '<a href="'+data[i][headings[j]]+'" target="_blank">Link</a>'
+} else {
+  html += "Blank"
+}
+
+
+
+       
       } else  {
         html += data[i][headings[j]]
       }
@@ -219,7 +229,17 @@ for (key in data) {
       html += '<td>'
 
       if (data[key][i]['description']=='Url') {
-        html += '<a href="'+data[key][i]['value']+'" target="_blank">Link</a>'
+
+if (data[key][i]['value'] != undefined) {
+  html += '<a href="'+data[key][i]['value']+'" target="_blank">Link</a>'
+} else {
+  html += "Blank"
+}
+
+        
+
+
+
       } else  {
         html += data[key][i]['value']
       }
@@ -303,6 +323,9 @@ function formatDefault ( d ) {
       break;
       case (items.entry.buttons[j] == 'rawitem'):
       html += '<button type="button" class="btn btn-default" id="'+d+'_raw" onclick="EditWithraw(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Raw</button>'  
+      break;  
+      case (items.entry.buttons[j] == 'copyitem'):
+      html += '<button type="button" class="btn btn-success" id="'+d+'_copyitem" onclick="copthisitem(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Copy</button>' 
       break;  
       case (items.entry.buttons[j] == 'comp'):
       html += '<button type="button" class="btn btn-default"  id="'+d+'_comp" onclick="createComp(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Create child item.">Create component</button>'
@@ -475,6 +498,50 @@ function modifyItemComp(id){
     } 
   //The id of the emement needs to be injected into the form , as it does not have that data.
   loadformModal(childType,id,'componentedit',parentIdTemp,headings, entry)
+}
+}
+
+//////////////////////////
+//////  COPY       //////
+////////////////////////
+function copthisitem(id){
+  id = id.replace('_copyitem', '');
+  childType = $('#'+id+'').data('childtype')
+  //Used for the check self when modifiing.
+  if (!childType) {
+    loadformModal(id,id,'self',id)
+  } else {
+  //INSTRUCTIONS
+  ////////////////////////////////////////////////////////////////////
+  //Strucuture of the query
+  //formdata,idItem,raw,parentid,headings,entry
+  //formdata:
+  //Which form to use.
+  //idItem:
+  //Which item to edit.
+  //Use the raw function for defining how to edit the data :
+  //raw:['use' , 'self' , 'edit' , 'component']
+  //parentid:
+  //Inject a parent id.
+  //Headings
+  //used for limiting the information shown on each form
+  //Inject a default entry.
+  //entry is used to manually add additional information to the form.
+  //Find and inject the group menu id number.
+  //INSTRUCTIONS
+  ////////////////////////////////////////////////////////////////////  
+  if (items.elementID) {
+    var parentIdTemp = items.elementID
+  } else {
+    var parentIdTemp = items._id
+  }
+  var headings = ["description","parent"]
+  if (true) {}
+    var entry = {
+      elementID : id
+    } 
+  //The id of the emement needs to be injected into the form , as it does not have that data.
+  loadformModal(childType,id,'componentcopy',parentIdTemp,headings, entry)
 }
 }
 

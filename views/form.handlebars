@@ -1,5 +1,16 @@
 
-<div id="formDelivery"></div>
+<div class="row">
+  <div class="col-md-12" id="colLeft">
+    <div id="formDelivery"></div>
+  </div>  
+  <div class="col-md-0" id="colRight">
+    <div id="formDeliveryEXDetail">
+        <div id="mapLoad"></div>
+    </div>
+  </div>  
+</div>
+
+
 
 <script type="text/javascript">
   var formdata = {{{formdata}}}
@@ -9,6 +20,12 @@
   var formid1 = create_uid()
   var parentItem = {{{parentItem}}}
   
+
+var lat 
+var long
+var alt
+var myMarker
+var googleMapsObject
 
   {{#if headings}}
   var headingsTemp = {{{headings}}}
@@ -61,7 +78,7 @@ $(document).ready(function(){
   jQuery('#formDelivery').attr("id",formid1);
   //check if the data id was sent as well as the form id
   //switch between component elements and raw elements.
-  if (raw == 'component' || raw == 'componentedit') {
+  if (raw == 'component' || raw == 'componentedit' || raw =='componentcopy') {
     getdatacomp(formdata,idItem,raw)
   } else {
     getdata(formdata,idItem,raw)
@@ -77,13 +94,9 @@ function getdatacomp(formdata,idItem,raw){
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
-
-
- 
-dataSchemaObject['formdata'].sort(function(a, b) {
-    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
-});
-
+      dataSchemaObject['formdata'].sort(function(a, b) {
+          return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+      });
       formatAlpaca(dataSchemaObject)
     }
   });
@@ -98,9 +111,6 @@ function getdata(formdata,idItem,raw){
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
-
- 
-
       initiateForm(dataSchemaObject)
     }
   });
@@ -170,7 +180,6 @@ switch (true){
   tempSchema.properties[objectOld.formdata[i]['elementID']] = {
     "title":objectOld.formdata[i].entry.description,
     "dependencies": tempDepend,
-    
   }
   tempoptions.fields[objectOld.formdata[i]['elementID']] = {
     "helper":objectOld.formdata[i].entry.detail,
@@ -178,6 +187,49 @@ switch (true){
     'field':objectOld.formdata[i].entry.objectType
   }
   break;
+
+
+
+  case(objectOld.formdata[i].entry.type =='Latitude' || objectOld.formdata[i].entry.type =='Longitude' || objectOld.formdata[i].entry.type =='Altitude'):
+
+ 
+$('#colRight').addClass('col-md-6').removeClass('col-md-12');
+$('#colLeft').addClass('col-md-6').removeClass('col-md-0');
+
+  var location = 'mapLoad'
+  if (objectOld.formdata[i].entry.type =='Latitude') {
+   lat = objectOld.formdata[i].elementID
+   tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+    "title":objectOld.formdata[i].entry.description,
+    "dependencies": tempDepend
+  }
+  tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+    "helper":objectOld.formdata[i].entry.detail
+  }
+}
+if (objectOld.formdata[i].entry.type =='Longitude') {
+ long = objectOld.formdata[i].elementID
+ tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+  "title":objectOld.formdata[i].entry.description,
+  "dependencies": tempDepend
+}
+tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+  "helper":objectOld.formdata[i].entry.detail
+} 
+}  
+if (objectOld.formdata[i].entry.type =='Altitude') {
+ alt = objectOld.formdata[i].elementID
+ tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+  "title":objectOld.formdata[i].entry.description,
+  "dependencies": tempDepend
+}
+tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+  "helper":objectOld.formdata[i].entry.detail
+} 
+}  
+loadMap(location,lat,long)
+break;
+
   default:
   tempSchema.properties[objectOld.formdata[i]['elementID']] = {
     "title":objectOld.formdata[i].entry.description,
@@ -219,7 +271,7 @@ function initiateForm(data){
  
 
  //----------------------------------------------------------------------------------------------
- if (raw!='component' && raw!='componentedit') {
+ if (raw!='component' && raw!='componentedit' && raw!='componentcopy') {
   if (raw!='raw' && raw!='copyraw') {
   //Used for the limiting of visible fields on the form. Specically the 'headings' field.
   //----------------------------------------------------------------------------------------------
@@ -284,24 +336,19 @@ function formInit(schema,options,data){
 var arr = options.fields
 $.each(arr, function(index, value) { 
   if (arr[index]['type'] == 'select' ) {
-
  var temp = ''
-
-
 //Drop down call for the active 
 switch (true) {
   case (index =="active"):
-  temp = "58fd8d190c8b981ccc7c2402"
+    temp = "58fd8d190c8b981ccc7c2402"
   break;
     case (index =="units"):
-  temp = "58fdeb040c8b981ccc7c2444"
+    temp = "58fdeb040c8b981ccc7c2444"
   break;
   default:
-  temp = arr[index]['field']
+    temp = arr[index]['field']
   break;
 }
- 
- 
    arr[index]["dataSource"] = function(callback) {
     jQuery.ajax({
       'async': true,
@@ -373,12 +420,15 @@ switch(true){
       //only set the data if the form is for use.
       if (idItem !='') {
         $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(data.idItem.entry)
+         lat = 0
+         long = 0
+          mapset(data.idItem.entry)
+
       }
     }    
   });
   break;
-
-  case(raw=='componentedit'):
+  case(raw=='componentedit' || raw=='componentcopy'):
   $("#form_"+formdata+idItem+formid1).alpaca({
     "schema": schema,
     "options": options,
@@ -386,12 +436,13 @@ switch(true){
       //only set the data if the form is for use.
       if (idItem !='') {
         $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(data.idItem.entry)
+        if (lat && long) {
+          mapset(data.idItem.entry)
+        }
       }
     }    
   });
   break;
-
-
   default :
   var html = ''
   html += '<div class="alert alert-danger" role="alert"> '
@@ -468,7 +519,6 @@ switch(true){
   primer.revision = 'created'
   primer.active = "true"
   break;
-
   case(raw=='component'):
   var primer = {
   }
@@ -512,6 +562,30 @@ switch(true){
   primer.active = "true"
   break;
 
+
+  case(raw=='componentcopy'):
+  var primer = {
+  }
+  primer.entry = dataset
+  //spice the entry parameter into the form.
+  for(var key in entry){
+    if(entry.hasOwnProperty(key)){
+      primer.entry[key]=entry[key];
+    }
+  }
+  if (name || detail) {
+    primer.name = name
+    primer.detail = detail
+  }
+  if (parentid) {
+    primer.parentid=parentid
+  }
+  primer.elementID = ''
+  primer.revision = 'created'
+  primer.active = "true"
+  break;
+
+
   default :
   var html = ''
   html += '<div class="alert alert-danger" role="alert"> '
@@ -523,9 +597,6 @@ switch(true){
   $("#form_"+formdata+idItem+formid1).html(html)
   break;
 }
-
- 
-
 //Jquery send to server
 jQuery.ajax({
   'url': '/create',
@@ -549,14 +620,92 @@ jQuery.ajax({
     if (parentItem.route) {
        window.location = parentItem.route
     } else {
- 
       var temp = '/signin'
        window.temp
     }
   },
 });   
-
-
 }
+
+
+
+//////////////////////////////////////////////
+//////////   GOOGLE MAPS CONTROL    /////////
+////////////////////////////////////////////
+function loadMap(location,lat,long){
+  if($('#'+location).html() == ""){
+    $('#'+location).html('loading')  
+    $('#'+location).html('<div id="map_form" style="height:250px;width:100%"></div> <div class="alert alert-info" role="alert" id="current">Click and drag the marker to select the location of the conveyor.</div>')
+      googleMapsObject = new google.maps.Map(document.getElementById('map_form'), {
+      zoom: 3,
+      center: new google.maps.LatLng(0, 0),
+      mapTypeId: google.maps.MapTypeId.HYBRID
+    });
+      myMarker = new google.maps.Marker({
+      position: new google.maps.LatLng(0, 0),
+      draggable: true
+    });
+      googleMapsObject.setZoom(0)
+      myMarker.setMap(googleMapsObject);
+  }
+  google.maps.event.trigger(googleMapsObject, 'resize');
+}
+
+/////////////////////////////////////////////////////////
+//////////   GOOGLE MAPS LISTNERS AND VALUE    /////////
+///////////////////////////////////////////////////////
+function mapset(input) {
+  var latitude = $('[name="'+lat+'"]').val()
+  var longitude = $('[name="'+long+'"]').val()
+  var altitude = $('[name="'+alt+'"]').val()
+  var elevator = new google.maps.ElevationService; 
+switch (true){
+  case (latitude == 0 || longitude == 0) :
+  googleMapsObject.setZoom(4)
+  break;
+  case (!latitude || !longitude ) :
+  googleMapsObject.setZoom(4)
+  break;
+  default:
+  myMarker.setMap(null);
+  myMarker = new google.maps.Marker({
+    position: new google.maps.LatLng(latitude, longitude),
+    draggable: true
+  });
+  myMarker.setMap(googleMapsObject);
+  googleMapsObject.setCenter(myMarker.position);
+  googleMapsObject.setZoom(13)
+  break;
+}
+  google.maps.event.trigger(googleMapsObject, 'resize');
+  google.maps.event.addListener(myMarker, 'dragend', function (evt) {
+    document.getElementById('current').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
+    $('[name="'+lat+'"]').val(evt.latLng.lat().toFixed(4))
+    $('[name="'+long+'"]').val(evt.latLng.lng().toFixed(4))
+      //trigger form change
+      $('[name="'+lat+'"]').alpaca('blur')
+      $('[name="'+long+'"]').alpaca('blur')
+      displayLocationElevation(evt.latLng, elevator);
+    });
+}
+
+function displayLocationElevation(location, elevator) {
+        // Initiate the location request
+        elevator.getElevationForLocations({
+          'locations': [location]
+        }, function(results, status) {
+          if (status === 'OK') {
+            // Retrieve the first result
+            if (results[0]) {
+              $('[name="'+alt+'"]').val(results[0].elevation.toFixed(2) )
+          } else {
+            console.log('No results found');
+          }
+      } else {
+        console.log('Elevation service failed due to: ' + status);
+      }
+  });
+    }
+
 
 </script>
