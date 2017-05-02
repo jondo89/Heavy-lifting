@@ -1,2 +1,1688 @@
-Privacy
+<!--                                                                                  -->
+<!--             Revision History                                                     -->
+<!--             1.20160829 - trying to get idler masses sorted out                   -->
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="btn-group" role="group" aria-label="...">
+          <a download="Idlers.scr" id="downloadlink" class="btn btn-default" style="" data-toggle="tooltip" data-placement="top" title="Drag and drop the SCR file into AutCAD to draw this idler, ensure Onsnap is disabled"><i class="fa fa-file-code-o" aria-hidden="true"></i>
+          </a>
+          <a id="downloadCSV" class="btn btn-default" style="" data-toggle="tooltip" data-placement="top" title="Download CSV"><i class="fa fa-file-excel-o" aria-hidden="true"></i>
+          </a>
+        </div>
+        <hr>
+        <textarea class="form-control" id="CadExportArea" name="CadExportArea" style="height: 100%"></textarea>
+        <!-- Standard button -->
+      </div>
+      <div class="col-md-6">
+        <div style="text-align:center;cursor:all-scroll;" id="canvasWidth">
+          <canvas id="canvas" style="" ></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+<div class="panel panel-default">
+  <div class="panel-body">
+   <div id="formLoad"></div>
+  </div>
+</div>
+
+
+
+
+
+        <h4>Form data as a table.</h4>
+       <div id="dvData">
+        <table  class="table table-bordered"  >
+          <thead>
+            <tr>
+              <td>
+                Item
+              </td>
+              <td>
+                Value
+              </td>
+            </tr>
+          </thead>
+          <tbody id="tableForPrint">
+          </tbody>
+        </table>
+      </div>
+
+
+<script type="text/javascript">
+  var data=[]
+  var FormJSON 
+
+//////////////////////////
+//////  MODIFY     //////
+////////////////////////
+function modifyItemComp(){
+  id = idlerId
+  childType = FormJSON.query1.childType
+  //INSTRUCTIONS
+  ////////////////////////////////////////////////////////////////////
+  //Strucuture of the query
+  //formdata,idItem,raw,parentid,headings,entry
+  //formdata:
+  //Which form to use.
+  //idItem:
+  //Which item to edit.
+  //Use the raw function for defining how to edit the data :
+  //raw:['use' , 'self' , 'edit' , 'component']
+  //parentid:
+  //Inject a parent id.
+  //Headings
+  //used for limiting the information shown on each form
+  //Inject a default entry.
+  //entry is used to manually add additional information to the form.
+  //Find and inject the group menu id number.
+  //INSTRUCTIONS
+  ////////////////////////////////////////////////////////////////////  
+    var parentIdTemp = FormJSON.query1.parentid
+  var headings =  [
+      "Idler Type",
+      "Idler Roll Diameter (mm)",
+      "Belt Cover Type",
+      "Belt Class"
+   ]
+   if (true) {}
+    var entry = {
+      elementID : id
+    } 
+  //The id of the emement needs to be injected into the form , as it does not have that data.
+  loadformModal(childType,id,'componentedit',parentIdTemp,headings, entry)
+}
+
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+////////////////////////////////////                                                                                                              
+function loadformModal(formdata,idItem,raw,parentid,headings,entry){
+  var headings = JSON.stringify(headings)
+  var entry = JSON.stringify(entry)
+  jQuery.ajax({
+    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings+'&entry='+entry,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      $('#formLoad').html(dataSchemaObject)
+    }
+  });
+}
+
+
+
+//////////////////////////////////// 
+//////  PRIMARY AJAX CALL    //////
+//////////////////////////////////
+function singleidcall(elementid) {
+  console.log('///////////////////////////')
+  console.log('id to aquire: ',elementid)
+  console.log('///////////////////////////')
+  //AJAX REQUEST TO SERVER
+  jQuery.ajax({
+    'async': true,
+    'global': false,
+    'url': '/singleidcall?ids='+elementid,
+    'success': function (dataSchemaObject) {
+      console.log('///////////////////////////')
+      console.log('THE DELEVERED INFORMATION : ',dataSchemaObject)
+      console.log('///////////////////////////')
+      FormJSON  = dataSchemaObject
+      //auotcad button event listner
+      load();
+      //start javascript
+      activeIdlerDesigner();
+      modifyItemComp()
+    }
+  });
+}
+
+$(document).ready(function() { 
  
+  singleidcall(idlerId)
+})
+
+/////////////////////////////////////////////
+////////  EXPORT TO SCR FILE AUTOCAD ///////
+///////////////////////////////////////////
+function load() {
+  var textFile = null,
+  makeTextFile = function (text) {
+    var data = new Blob([text], {type: 'text/plain'});
+    // If we are replacing a previously generated file we need to
+    // manually revoke the object URL to avoid memory leaks.
+    if (textFile !== null) {
+      window.URL.revokeObjectURL(textFile);
+    }
+    textFile = window.URL.createObjectURL(data);
+    return textFile;
+  };
+  var create = document.getElementById('downloadlink')
+  var textbox = document.getElementById('CadExportArea')
+  create.addEventListener('click', function () {
+    var link = document.getElementById('downloadlink');
+    link.href = makeTextFile(textbox.value);
+  }, false);
+}
+
+function activeIdlerDesigner(){
+  activateCanvasIdler()
+}
+
+function drawIdler(locations)
+{
+
+//console.log("///////////////////////////////////////////////////////")
+//console.log("start Debughere !!!!!!!!!!!!!")
+//console.log(FormJSON.query.entry,"There is some kind of NaN error on the variables being taken up in the FormJSON.query.entry Variable.")
+//console.log("///////////////////////////////////////////////////////")
+//Create a matrix of all of the components of the idler
+//each location will be a  nested array
+//each item will consit of 4 points , where the center of the idler will be at the 0,0,0 i.e the idler will be drawn equally in all directions.
+function idlerCreate(){
+
+
+ 
+ 
+ FormJSON.query.entry["590468d77ce01f21cc0c079e"] = parseFloat(FormJSON.query.entry["590468d77ce01f21cc0c079e"]) 
+ 
+FormJSON.query.entry["590468e87ce01f21cc0c079f"] = parseFloat(FormJSON.query.entry["590468e87ce01f21cc0c079f"]) 
+FormJSON.query.entry["590469a27ce01f21cc0c07a7"] = parseFloat(FormJSON.query.entry["590469a27ce01f21cc0c07a7"]) 
+FormJSON.query.entry["59046a5b7ce01f21cc0c07aa"] = parseFloat(FormJSON.query.entry["59046a5b7ce01f21cc0c07aa"]) 
+ 
+FormJSON.query.entry["58fc8e737272c0425864d8c4"] = parseFloat(FormJSON.query.entry["58fc8e737272c0425864d8c4"]) 
+FormJSON.query.entry["590461817ce01f21cc0c076f"] = parseFloat(FormJSON.query.entry["590461817ce01f21cc0c076f"]) 
+FormJSON.query.entry["590462167ce01f21cc0c0773"] = parseFloat(FormJSON.query.entry["590462167ce01f21cc0c0773"]) 
+FormJSON.query.entry["590462167ce01f21cc0c0773"] = parseFloat(FormJSON.query.entry["590462167ce01f21cc0c0773"]) 
+
+
+
+//x;y
+var idler = {
+  "1": drawrRectangle(FormJSON.query.entry["59045f7a7ce01f21cc0c0763"],FormJSON.query.entry["590460167ce01f21cc0c0767"]),  
+  "2": drawrRectangle(FormJSON.query.entry["59045f7a7ce01f21cc0c0763"],FormJSON.query.entry["590460167ce01f21cc0c0767"]),
+  "3": drawrRectangle(FormJSON.query.entry["58fc8e737272c0425864d8c4"],(FormJSON.query.entry["590461817ce01f21cc0c076f"])+(FormJSON.query.entry["590462167ce01f21cc0c0773"])+(FormJSON.query.entry["590462167ce01f21cc0c0773"])),   
+  "4": drawrRectangle(FormJSON.query.entry["58fc8e737272c0425864d8c4"],FormJSON.query.entry["590462167ce01f21cc0c0773"]),     
+  "5": drawrRectangle(FormJSON.query.entry["58fc8e737272c0425864d8c4"],FormJSON.query.entry["590462167ce01f21cc0c0773"]),    
+
+      //bearing
+
+      "bearing11": drawrRectangle((FormJSON.query.entry['590468d77ce01f21cc0c079e']-FormJSON.query.entry['58fc8e737272c0425864d8c4'])/2,FormJSON.query.entry['590468e87ce01f21cc0c079f']),  
+      "bearing12": drawrRectangle((FormJSON.query.entry['590468d77ce01f21cc0c079e']-FormJSON.query.entry['58fc8e737272c0425864d8c4'])/2,FormJSON.query.entry['590468e87ce01f21cc0c079f']),  
+
+      "bearing21": drawrRectangle((FormJSON.query.entry['590468d77ce01f21cc0c079e']-FormJSON.query.entry['58fc8e737272c0425864d8c4'])/2,FormJSON.query.entry['590468e87ce01f21cc0c079f']),  
+      "bearing22": drawrRectangle((FormJSON.query.entry['590468d77ce01f21cc0c079e']-FormJSON.query.entry['58fc8e737272c0425864d8c4'])/2,FormJSON.query.entry['590468e87ce01f21cc0c079f']),  
+
+
+      //seal
+
+      "seal11": drawrRectangle((FormJSON.query.entry['590468d77ce01f21cc0c079e']-FormJSON.query.entry['58fc8e737272c0425864d8c4'])/2,FormJSON.query.entry['590468e87ce01f21cc0c079f']),  
+      "seal12": drawrRectangle((FormJSON.query.entry['590468d77ce01f21cc0c079e']-FormJSON.query.entry['58fc8e737272c0425864d8c4'])/2,FormJSON.query.entry['590468e87ce01f21cc0c079f']),  
+
+      "seal21": drawrRectangle((FormJSON.query.entry['590468d77ce01f21cc0c079e']-FormJSON.query.entry['58fc8e737272c0425864d8c4'])/2,FormJSON.query.entry['590468e87ce01f21cc0c079f']),  
+      "seal22": drawrRectangle((FormJSON.query.entry['590468d77ce01f21cc0c079e']-FormJSON.query.entry['58fc8e737272c0425864d8c4'])/2,FormJSON.query.entry['590468e87ce01f21cc0c079f']),  
+
+
+      //bearing housing
+
+
+      "TL1":drawrRectangle(FormJSON.query.entry['58fc8e3e7272c0425864d8bf']/2 - FormJSON.query.entry['59045f7a7ce01f21cc0c0763'] - FormJSON.query.entry['590468d77ce01f21cc0c079e']/2 , FormJSON.query.entry['59045f7a7ce01f21cc0c0763']),  
+      "TL2":drawrRectangle(FormJSON.query.entry['59045f7a7ce01f21cc0c0763'],FormJSON.query.entry['590469a27ce01f21cc0c07a7'] +  FormJSON.query.entry['590468e87ce01f21cc0c079f']),  
+      "TL3":drawrRectangle(FormJSON.query.entry['590468d77ce01f21cc0c079e']/2 - FormJSON.query.entry['58fc8e737272c0425864d8c4']/2,FormJSON.query.entry['59045f7a7ce01f21cc0c0763']),  
+
+      "BL1":drawrRectangle(FormJSON.query.entry['58fc8e3e7272c0425864d8bf']/2 - FormJSON.query.entry['59045f7a7ce01f21cc0c0763'] - FormJSON.query.entry['590468d77ce01f21cc0c079e']/2 , FormJSON.query.entry['59045f7a7ce01f21cc0c0763']),   
+      "BL2":drawrRectangle(FormJSON.query.entry['59045f7a7ce01f21cc0c0763'],FormJSON.query.entry['590469a27ce01f21cc0c07a7'] +  FormJSON.query.entry['590468e87ce01f21cc0c079f']),   
+      "BL3":drawrRectangle(FormJSON.query.entry['590468d77ce01f21cc0c079e']/2 - FormJSON.query.entry['58fc8e737272c0425864d8c4']/2,FormJSON.query.entry['59045f7a7ce01f21cc0c0763']), 
+
+      "TR1":drawrRectangle(FormJSON.query.entry['58fc8e3e7272c0425864d8bf']/2 - FormJSON.query.entry['59045f7a7ce01f21cc0c0763'] - FormJSON.query.entry['590468d77ce01f21cc0c079e']/2 , FormJSON.query.entry['59045f7a7ce01f21cc0c0763']),  
+      "TR2":drawrRectangle(FormJSON.query.entry['59045f7a7ce01f21cc0c0763'],FormJSON.query.entry['590469a27ce01f21cc0c07a7'] +  FormJSON.query.entry['590468e87ce01f21cc0c079f']),  
+      "TR3":drawrRectangle(FormJSON.query.entry['590468d77ce01f21cc0c079e']/2 - FormJSON.query.entry['58fc8e737272c0425864d8c4']/2,FormJSON.query.entry['59045f7a7ce01f21cc0c0763']),  
+
+      "BR1":drawrRectangle(FormJSON.query.entry['58fc8e3e7272c0425864d8bf']/2 - FormJSON.query.entry['59045f7a7ce01f21cc0c0763'] - FormJSON.query.entry['590468d77ce01f21cc0c079e']/2 , FormJSON.query.entry['59045f7a7ce01f21cc0c0763']),   
+      "BR2":drawrRectangle(FormJSON.query.entry['59045f7a7ce01f21cc0c0763'],FormJSON.query.entry['590469a27ce01f21cc0c07a7'] +  FormJSON.query.entry['590468e87ce01f21cc0c079f']),   
+      "BR3":drawrRectangle(FormJSON.query.entry['590468d77ce01f21cc0c079e']/2 - FormJSON.query.entry['58fc8e737272c0425864d8c4']/2,FormJSON.query.entry['59045f7a7ce01f21cc0c0763']), 
+
+    };
+
+//////////////////////////////////
+//////////  OFFSET AREA  /////////
+//////////////////////////////////
+
+//THe rectangle sizes are set above , here the rectanges are offset from the 0,0 to suit the idler size.
+
+
+////////////////////////////
+//////     ROLL   /////////
+///////////////////////////
+
+for (var i = 0; i < idler["1"].length; i++) {
+  idler["1"][i].y = idler["1"][i].y - FormJSON.query.entry["58fc8e3e7272c0425864d8bf"]/2 + FormJSON.query.entry["59045f7a7ce01f21cc0c0763"]/2
+};
+for (var i = 0; i < idler["2"].length; i++) {
+  idler["2"][i].y = idler["2"][i].y + FormJSON.query.entry["58fc8e3e7272c0425864d8bf"]/2 - FormJSON.query.entry["59045f7a7ce01f21cc0c0763"]/2
+};
+
+//Flat offset
+for (var i = 0; i < idler["4"].length; i++) {
+  idler["4"][i].x = idler["4"][i].x - FormJSON.query.entry["590461817ce01f21cc0c076f"]/2 - FormJSON.query.entry["590462167ce01f21cc0c0773"]/2
+};
+for (var i = 0; i < idler["5"].length; i++) {
+  idler["5"][i].x = idler["5"][i].x + FormJSON.query.entry["590461817ce01f21cc0c076f"]/2 + FormJSON.query.entry["590462167ce01f21cc0c0773"]/2
+};
+
+///////////////////////////
+//////  BEARINGS  /////////
+///////////////////////////
+
+//Offset of rectangles here
+//build bearing
+for (var i = 0; i < idler["bearing11"].length; i++) {
+  idler["bearing11"][i].y = idler["bearing11"][i].y + FormJSON.query.entry['590468d77ce01f21cc0c079e']/2-((FormJSON.query.entry['590468d77ce01f21cc0c079e']-FormJSON.query.entry['58fc8e737272c0425864d8c4'])/2)/2
+};
+for (var i = 0; i < idler["bearing12"].length; i++) {
+  idler["bearing12"][i].y = idler["bearing12"][i].y - FormJSON.query.entry['590468d77ce01f21cc0c079e']/2+((FormJSON.query.entry['590468d77ce01f21cc0c079e']-FormJSON.query.entry['58fc8e737272c0425864d8c4'])/2)/2
+};
+
+
+//Offset of rectangles here
+//build bearing
+for (var i = 0; i < idler["bearing21"].length; i++) {
+  idler["bearing21"][i].y = idler["bearing21"][i].y + FormJSON.query.entry['590468d77ce01f21cc0c079e']/2-((FormJSON.query.entry['590468d77ce01f21cc0c079e']-FormJSON.query.entry['58fc8e737272c0425864d8c4'])/2)/2
+};
+for (var i = 0; i < idler["bearing22"].length; i++) {
+  idler["bearing22"][i].y = idler["bearing22"][i].y - FormJSON.query.entry['590468d77ce01f21cc0c079e']/2+((FormJSON.query.entry['590468d77ce01f21cc0c079e']-FormJSON.query.entry['58fc8e737272c0425864d8c4'])/2)/2
+};
+
+
+
+//left and right
+for (var i = 0; i < idler["bearing11"].length; i++) {
+  idler["bearing11"][i].x = idler["bearing11"][i].x-FormJSON.query.entry['590461817ce01f21cc0c076f']/2+1+FormJSON.query.entry['590468e87ce01f21cc0c079f']/2+FormJSON.query.entry['59046a5b7ce01f21cc0c07aa']+FormJSON.query.entry['590469a27ce01f21cc0c07a7']
+};
+for (var i = 0; i < idler["bearing12"].length; i++) {
+  idler["bearing12"][i].x = idler["bearing12"][i].x -FormJSON.query.entry['590461817ce01f21cc0c076f']/2+1+FormJSON.query.entry['590468e87ce01f21cc0c079f']/2+FormJSON.query.entry['59046a5b7ce01f21cc0c07aa']+FormJSON.query.entry['590469a27ce01f21cc0c07a7']
+};
+
+
+
+//left and right
+for (var i = 0; i < idler["bearing21"].length; i++) {
+  idler["bearing21"][i].x = idler["bearing21"][i].x+FormJSON.query.entry['590461817ce01f21cc0c076f']/2-1-FormJSON.query.entry['590468e87ce01f21cc0c079f']/2-FormJSON.query.entry['59046a5b7ce01f21cc0c07aa']-FormJSON.query.entry['590469a27ce01f21cc0c07a7']
+};
+for (var i = 0; i < idler["bearing22"].length; i++) {
+  idler["bearing22"][i].x = idler["bearing22"][i].x +FormJSON.query.entry['590461817ce01f21cc0c076f']/2-1-FormJSON.query.entry['590468e87ce01f21cc0c079f']/2-FormJSON.query.entry['59046a5b7ce01f21cc0c07aa']-FormJSON.query.entry['590469a27ce01f21cc0c07a7']
+};
+
+
+////////////////////////
+//////  SEAL  /////////
+//////////////////////
+
+
+//Offset of rectangles here
+//build seal
+for (var i = 0; i < idler["seal11"].length; i++) {
+  idler["seal11"][i].y = idler["seal11"][i].y + FormJSON.query.entry['590468d77ce01f21cc0c079e']/2-((FormJSON.query.entry['590468d77ce01f21cc0c079e']-FormJSON.query.entry['58fc8e737272c0425864d8c4'])/2)/2
+};
+for (var i = 0; i < idler["seal12"].length; i++) {
+  idler["seal12"][i].y = idler["seal12"][i].y - FormJSON.query.entry['590468d77ce01f21cc0c079e']/2+((FormJSON.query.entry['590468d77ce01f21cc0c079e']-FormJSON.query.entry['58fc8e737272c0425864d8c4'])/2)/2
+};
+
+
+//Offset of rectangles here
+//build seal
+for (var i = 0; i < idler["seal21"].length; i++) {
+  idler["seal21"][i].y = idler["seal21"][i].y + FormJSON.query.entry['590468d77ce01f21cc0c079e']/2-((FormJSON.query.entry['590468d77ce01f21cc0c079e']-FormJSON.query.entry['58fc8e737272c0425864d8c4'])/2)/2
+};
+for (var i = 0; i < idler["seal22"].length; i++) {
+  idler["seal22"][i].y = idler["seal22"][i].y - FormJSON.query.entry['590468d77ce01f21cc0c079e']/2+((FormJSON.query.entry['590468d77ce01f21cc0c079e']-FormJSON.query.entry['58fc8e737272c0425864d8c4'])/2)/2
+};
+
+
+
+//Offset of rectangles here
+//left and right
+
+for (var i = 0; i < idler["seal11"].length; i++) {
+  idler["seal11"][i].x = idler["seal11"][i].x+FormJSON.query.entry['590461817ce01f21cc0c076f']/2-1-FormJSON.query.entry['59046a5b7ce01f21cc0c07aa']-FormJSON.query.entry['59046a5b7ce01f21cc0c07aa']
+};
+for (var i = 0; i < idler["seal12"].length; i++) {
+  idler["seal12"][i].x = idler["seal12"][i].x +FormJSON.query.entry['590461817ce01f21cc0c076f']/2-1-FormJSON.query.entry['59046a5b7ce01f21cc0c07aa']-FormJSON.query.entry['59046a5b7ce01f21cc0c07aa']
+};
+
+
+
+for (var i = 0; i < idler["seal21"].length; i++) {
+  idler["seal21"][i].x = idler["seal21"][i].x-FormJSON.query.entry['590461817ce01f21cc0c076f']/2+1+FormJSON.query.entry['59046a5b7ce01f21cc0c07aa']+FormJSON.query.entry['59046a5b7ce01f21cc0c07aa']
+};
+for (var i = 0; i < idler["seal22"].length; i++) {
+  idler["seal22"][i].x = idler["seal22"][i].x -FormJSON.query.entry['590461817ce01f21cc0c076f']/2+1+FormJSON.query.entry['59046a5b7ce01f21cc0c07aa']+FormJSON.query.entry['59046a5b7ce01f21cc0c07aa']
+};
+
+
+
+///////////////////////////////////
+//////  BEARING HOUSING  /////////
+/////////////////////////////////
+
+//left and right
+for (var i = 0; i < idler["TL1"].length; i++) {
+  idler["TL1"][i].x = idler["TL1"][i].x+FormJSON.query.entry['590461817ce01f21cc0c076f']/2 - 1 - FormJSON.query.entry['59046a5b7ce01f21cc0c07aa'] - FormJSON.query.entry['59045f7a7ce01f21cc0c0763']/2
+};
+for (var i = 0; i < idler["TL2"].length; i++) {
+  idler["TL2"][i].x = idler["TL2"][i].x+FormJSON.query.entry['590461817ce01f21cc0c076f']/2 - 1 - FormJSON.query.entry['59046a5b7ce01f21cc0c07aa'] - FormJSON.query.entry['59045f7a7ce01f21cc0c0763']/2 - FormJSON.query.entry['590469a27ce01f21cc0c07a7']/2 -  FormJSON.query.entry['590468e87ce01f21cc0c079f']/2 - FormJSON.query.entry['59045f7a7ce01f21cc0c0763']/2
+};
+for (var i = 0; i < idler["TL3"].length; i++) {
+  idler["TL3"][i].x = idler["TL3"][i].x+FormJSON.query.entry['590461817ce01f21cc0c076f']/2 - 1 - FormJSON.query.entry['59046a5b7ce01f21cc0c07aa'] - FormJSON.query.entry['59045f7a7ce01f21cc0c0763']/2 - FormJSON.query.entry['590469a27ce01f21cc0c07a7'] - FormJSON.query.entry['590468e87ce01f21cc0c079f']
+};
+
+for (var i = 0; i < idler["BL1"].length; i++) {
+  idler["BL1"][i].x = idler["BL1"][i].x+FormJSON.query.entry['590461817ce01f21cc0c076f']/2 - 1 - FormJSON.query.entry['59046a5b7ce01f21cc0c07aa'] - FormJSON.query.entry['59045f7a7ce01f21cc0c0763']/2
+};
+for (var i = 0; i < idler["BL2"].length; i++) {
+  idler["BL2"][i].x = idler["BL2"][i].x+FormJSON.query.entry['590461817ce01f21cc0c076f']/2 - 1 - FormJSON.query.entry['59046a5b7ce01f21cc0c07aa'] - FormJSON.query.entry['59045f7a7ce01f21cc0c0763']/2 - FormJSON.query.entry['590469a27ce01f21cc0c07a7']/2 -  FormJSON.query.entry['590468e87ce01f21cc0c079f']/2 - FormJSON.query.entry['59045f7a7ce01f21cc0c0763']/2
+};
+for (var i = 0; i < idler["BL3"].length; i++) {
+  idler["BL3"][i].x = idler["BL3"][i].x+FormJSON.query.entry['590461817ce01f21cc0c076f']/2 - 1 - FormJSON.query.entry['59046a5b7ce01f21cc0c07aa'] - FormJSON.query.entry['59045f7a7ce01f21cc0c0763']/2 - FormJSON.query.entry['590469a27ce01f21cc0c07a7'] - FormJSON.query.entry['590468e87ce01f21cc0c079f']
+};
+///////////////////////////////////////////////////////////////////////////////
+for (var i = 0; i < idler["TR1"].length; i++) {
+  idler["TR1"][i].x = idler["TR1"][i].x - FormJSON.query.entry['590461817ce01f21cc0c076f']/2 + 1 + FormJSON.query.entry['59046a5b7ce01f21cc0c07aa'] + FormJSON.query.entry['59045f7a7ce01f21cc0c0763']/2
+};
+for (var i = 0; i < idler["TR2"].length; i++) {
+  idler["TR2"][i].x = idler["TR2"][i].x - FormJSON.query.entry['590461817ce01f21cc0c076f']/2 + 1 + FormJSON.query.entry['59046a5b7ce01f21cc0c07aa'] + FormJSON.query.entry['59045f7a7ce01f21cc0c0763']/2 + FormJSON.query.entry['590469a27ce01f21cc0c07a7']/2 +  FormJSON.query.entry['590468e87ce01f21cc0c079f']/2 + FormJSON.query.entry['59045f7a7ce01f21cc0c0763']/2
+};
+for (var i = 0; i < idler["TR3"].length; i++) {
+  idler["TR3"][i].x = idler["TR3"][i].x - FormJSON.query.entry['590461817ce01f21cc0c076f']/2 + 1 + FormJSON.query.entry['59046a5b7ce01f21cc0c07aa'] + FormJSON.query.entry['59045f7a7ce01f21cc0c0763']/2 + FormJSON.query.entry['590469a27ce01f21cc0c07a7'] + FormJSON.query.entry['590468e87ce01f21cc0c079f']
+};
+
+for (var i = 0; i < idler["BR1"].length; i++) {
+  idler["BR1"][i].x = idler["BR1"][i].x - FormJSON.query.entry['590461817ce01f21cc0c076f']/2 + 1 + FormJSON.query.entry['59046a5b7ce01f21cc0c07aa'] + FormJSON.query.entry['59045f7a7ce01f21cc0c0763']/2
+};
+for (var i = 0; i < idler["BR2"].length; i++) {
+  idler["BR2"][i].x = idler["BR2"][i].x - FormJSON.query.entry['590461817ce01f21cc0c076f']/2 + 1 + FormJSON.query.entry['59046a5b7ce01f21cc0c07aa'] + FormJSON.query.entry['59045f7a7ce01f21cc0c0763']/2 + FormJSON.query.entry['590469a27ce01f21cc0c07a7']/2 +  FormJSON.query.entry['590468e87ce01f21cc0c079f']/2 + FormJSON.query.entry['59045f7a7ce01f21cc0c0763']/2
+};
+for (var i = 0; i < idler["BR3"].length; i++) {
+  idler["BR3"][i].x = idler["BR3"][i].x - FormJSON.query.entry['590461817ce01f21cc0c076f']/2 + 1 + FormJSON.query.entry['59046a5b7ce01f21cc0c07aa'] + FormJSON.query.entry['59045f7a7ce01f21cc0c0763']/2 + FormJSON.query.entry['590469a27ce01f21cc0c07a7'] + FormJSON.query.entry['590468e87ce01f21cc0c079f']
+};
+
+
+
+//Up and Down
+for (var i = 0; i < idler["TL1"].length; i++) {
+  idler["TL1"][i].y = idler["TL1"][i].y -(FormJSON.query.entry['58fc8e3e7272c0425864d8bf']/2 - FormJSON.query.entry['59045f7a7ce01f21cc0c0763'] - FormJSON.query.entry['590468d77ce01f21cc0c079e']/2 )/2 - FormJSON.query.entry['590468d77ce01f21cc0c079e']/2
+}; 
+for (var i = 0; i < idler["TL2"].length; i++) {
+  idler["TL2"][i].y = idler["TL2"][i].y - (FormJSON.query.entry['59045f7a7ce01f21cc0c0763'])/2 - FormJSON.query.entry['590468d77ce01f21cc0c079e']/2
+};
+for (var i = 0; i < idler["TL3"].length; i++) {
+  idler["TL3"][i].y = idler["TL3"][i].y - (FormJSON.query.entry['590468d77ce01f21cc0c079e']/2 - FormJSON.query.entry['58fc8e737272c0425864d8c4']/2)/2 - FormJSON.query.entry['58fc8e737272c0425864d8c4']/2
+};
+
+for (var i = 0; i < idler["BL1"].length; i++) {
+  idler["BL1"][i].y = idler["BL1"][i].y +(FormJSON.query.entry['58fc8e3e7272c0425864d8bf']/2 - FormJSON.query.entry['59045f7a7ce01f21cc0c0763'] - FormJSON.query.entry['590468d77ce01f21cc0c079e']/2 )/2 + FormJSON.query.entry['590468d77ce01f21cc0c079e']/2
+}; 
+for (var i = 0; i < idler["BL2"].length; i++) {
+  idler["BL2"][i].y = idler["BL2"][i].y + (FormJSON.query.entry['59045f7a7ce01f21cc0c0763'])/2 + FormJSON.query.entry['590468d77ce01f21cc0c079e']/2
+};
+for (var i = 0; i < idler["BL3"].length; i++) {
+  idler["BL3"][i].y = idler["BL3"][i].y + (FormJSON.query.entry['590468d77ce01f21cc0c079e']/2 - FormJSON.query.entry['58fc8e737272c0425864d8c4']/2)/2 + FormJSON.query.entry['58fc8e737272c0425864d8c4']/2
+};
+
+for (var i = 0; i < idler["TR1"].length; i++) {
+  idler["TR1"][i].y = idler["TR1"][i].y -(FormJSON.query.entry['58fc8e3e7272c0425864d8bf']/2 - FormJSON.query.entry['59045f7a7ce01f21cc0c0763'] - FormJSON.query.entry['590468d77ce01f21cc0c079e']/2 )/2 - FormJSON.query.entry['590468d77ce01f21cc0c079e']/2
+}; 
+for (var i = 0; i < idler["TR2"].length; i++) {
+  idler["TR2"][i].y = idler["TR2"][i].y - (FormJSON.query.entry['59045f7a7ce01f21cc0c0763'])/2 - FormJSON.query.entry['590468d77ce01f21cc0c079e']/2
+};
+for (var i = 0; i < idler["TR3"].length; i++) {
+  idler["TR3"][i].y = idler["TR3"][i].y - (FormJSON.query.entry['590468d77ce01f21cc0c079e']/2 - FormJSON.query.entry['58fc8e737272c0425864d8c4']/2)/2 - FormJSON.query.entry['58fc8e737272c0425864d8c4']/2
+};
+
+for (var i = 0; i < idler["BR1"].length; i++) {
+  idler["BR1"][i].y = idler["BR1"][i].y +(FormJSON.query.entry['58fc8e3e7272c0425864d8bf']/2 - FormJSON.query.entry['59045f7a7ce01f21cc0c0763'] - FormJSON.query.entry['590468d77ce01f21cc0c079e']/2 )/2 + FormJSON.query.entry['590468d77ce01f21cc0c079e']/2
+}; 
+for (var i = 0; i < idler["BR2"].length; i++) {
+  idler["BR2"][i].y = idler["BR2"][i].y + (FormJSON.query.entry['59045f7a7ce01f21cc0c0763'])/2 + FormJSON.query.entry['590468d77ce01f21cc0c079e']/2
+};
+for (var i = 0; i < idler["BR3"].length; i++) {
+  idler["BR3"][i].y = idler["BR3"][i].y + (FormJSON.query.entry['590468d77ce01f21cc0c079e']/2 - FormJSON.query.entry['58fc8e737272c0425864d8c4']/2)/2 + FormJSON.query.entry['58fc8e737272c0425864d8c4']/2
+};
+
+return idler
+}
+
+//clear the text area for the autoCAD extract prior to use
+$("#CadExportArea").html('');
+
+//fixed variables , modify if required.
+//scale
+var sx = 1;
+var sy = 1;
+//Translation
+var	tx = 0
+var ty = 0
+//rotation
+var theta = 0
+var idler = idlerCreate(data,'this');
+idler = transformMatrix(idler,sx,sy,theta,tx,ty)	
+
+autoCAD(idler) 	       
+drawidlerCanvas(locations,idler,'grey')        
+
+};
+
+//////////////////////////////////////////////////////////////
+//////////// FOR DATA COPY TO OTHER FORMAT //////////////////
+/////////////////////////////////////////////////////////////
+function tablePrintData(){
+  var html = ''
+  for (var i = 0; i < idlerVariables.length; i++) {
+    for(var key in FormJSON.query.entry){
+     // FormJSON.query.entry[key]=parseFloat(FormJSON.query.entry[key])
+     if (key == idlerVariables[i]['formId']) {
+      values = FormJSON.query.entry[key]
+    }
+
+  };
+
+  html += '<tr>'
+  html += '<td>'
+  html += idlerVariables[i]['Names']
+  html += '</td>'
+  html += '<td>'
+  html += values
+  html += '</td>'
+  html += '</tr>'
+}
+
+$('#tableForPrint').html(html)
+}
+
+
+//this is the transformation matrix.used to move , rotate and scale any point arrays.
+function transformMatrix(transformArray,sx,sy,theta,tx,ty)
+{
+ for (var key in transformArray) {
+   //change 0 to 1 in the loop below to skip the datum point.
+   for (var i = 0; i < transformArray[key].length; i++) {
+                //scaling
+                transformArray[key][i].x = transformArray[key][i].x*sx
+                transformArray[key][i].y = transformArray[key][i].y*sy
+                //rotation
+                tempx = (Math.cos(theta)*transformArray[key][i].x)-(Math.sin(theta)*transformArray[key][i].y)
+                tempy = (Math.sin(theta)*transformArray[key][i].x)+(Math.cos(theta)*transformArray[key][i].y)
+                transformArray[key][i].x = tempx
+                transformArray[key][i].y = tempy
+                //translate
+                transformArray[key][i].x = transformArray[key][i].x+tx
+                transformArray[key][i].y = transformArray[key][i].y+ty
+              };
+            }
+            return transformArray
+          };
+
+
+///////////////////////////////////////////////////////
+/////this is to populate the src file for autocad/////
+/////////////////////////////////////////////////////
+function autoCAD (transformArray) {
+    //console.log(transformArray)
+		//start by clearing the belting paragraph text box.
+		for (var key in transformArray) {
+			var Roll = "pline "		
+		 //change 0 to 1 in the loop below to skip the datum point.
+		 for (var i = 1; i < transformArray[key].length; i++) {
+		 	Roll=Roll.concat((transformArray[key][i].x) +","+ (transformArray[key][i].y) + " ")
+     };
+     Roll=Roll.concat("c ")
+     $("#CadExportArea").append(Roll);
+   }
+   $("#CadExportArea").append(Roll);
+ };
+
+
+//this is a default draw rectangle function.
+function drawrRectangle (height,width) {
+	x=0;
+	y=0;
+	var rectan=([]);//starting coordinate
+	//5 points in total
+	rectan.push(
+	{
+		"x":x, 
+		"y":y,
+		"drawn" :"yes"
+	});
+	//5 points in total
+	rectan.push(
+	{
+		"x":-width/2,
+		"y":height/2,
+		"drawn" :"yes"
+	});
+	rectan.push(
+	{
+		"x":width/2,
+		"y":height/2,
+		"drawn" :"yes"
+	});
+	rectan.push(
+	{
+		"x":width/2,
+		"y":-height/2,
+		"drawn" :"yes"
+	});
+	rectan.push(
+	{
+		"x":-width/2,
+		"y":-height/2,
+		"drawn" :"yes"
+	});
+	return	rectan
+};
+
+
+//this draws the idlder on the canvas at the required location.
+function drawidlerCanvas(locations,transformArray,colour)
+{
+  var canvas = document.getElementById(locations);
+  var ctx = canvas.getContext('2d');
+  ctx.beginPath();
+  for (var key in transformArray) {
+    ctx.moveTo(transformArray[key][1].x,transformArray[key][1].y)
+    for (var i = 1; i < transformArray[key].length; i++) {
+      transformArray[key][i]
+      ctx.lineTo(transformArray[key][i].x,transformArray[key][i].y);
+    };
+
+    ctx.lineTo(transformArray[key][1].x,transformArray[key][1].y)
+    ctx.lineWidth = 1;
+    //ctx.fillStyle = "none";
+    //ctx.fill();     
+    ctx.stroke();
+  }
+
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.lineTo(0,500);
+  ctx.moveTo(0,0);
+  ctx.lineTo(-1000,0);
+  ctx.moveTo(0,0);
+  ctx.lineTo(0,-500);
+  ctx.moveTo(0,0);
+  ctx.lineTo(1000,0);
+  ctx.lineWidth = .5;
+  ctx.fillStyle = colour;
+  ctx.stroke();
+};
+
+
+//////////////////////////////////////////////////////
+////////////  CANVAS ZOOM AND PAN AREA  /////////////
+////////////////////////////////////////////////////
+function activateCanvasIdler(){
+  var canvas = document.getElementById('canvas');
+  canvas.width= $('#canvasWidth').width()-50
+  canvas.height = $('#canvasWidth').width()-150
+  var gkhead = new Image;
+  var ball   = new Image;
+  var ctx = canvas.getContext('2d');
+  trackTransforms(ctx);
+  ctx.translate(canvas.width/2,canvas.height/2);
+
+  function redraw(){
+
+      // Clear the entire canvas
+      var p1 = ctx.transformedPoint(0,0);
+      var p2 = ctx.transformedPoint(canvas.width,canvas.height);
+      ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
+      ctx.save();
+      ctx.translate(0,0);
+      ctx.beginPath();
+      ctx.stroke();
+      ctx.scale(.4,.4)
+      ctx.beginPath();
+      //i think this is where is is safe to draw
+      drawIdler("canvas")
+      //commented out at Zambian airport.
+      //idlerProperties(data)
+      ctx.restore();
+    }
+    redraw();
+    var lastX=canvas.width/2, lastY=canvas.height/2;
+    var dragStart,dragged;
+    canvas.addEventListener('mousedown',function(evt){
+      document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
+      lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
+      lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
+      dragStart = ctx.transformedPoint(lastX,lastY);
+      dragged = false;
+    },false);
+    canvas.addEventListener('mousemove',function(evt){
+      lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
+      lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
+      dragged = true;
+      if (dragStart){
+        var pt = ctx.transformedPoint(lastX,lastY);
+        ctx.translate(pt.x-dragStart.x,pt.y-dragStart.y);
+        redraw();
+      }
+    },false);
+    try {
+      document.getElementById('InputForm').addEventListener('click',function(evt){
+        lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
+        lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
+        dragged = true;
+        
+        drawIdler("canvas")
+        redraw();
+        tablePrintData()
+    //console.log(data)
+    return false;
+  },false);
+    }
+    catch(err) {
+      console.log("form not open")
+    }
+    canvas.addEventListener('mouseup',function(evt){
+      dragStart = null;
+      if (!dragged) zoom(evt.shiftKey ? -1 : 1 );
+    },false);
+    var scaleFactor = 1.1;
+    var zoom = function(clicks){
+      var pt = ctx.transformedPoint(lastX,lastY);
+      ctx.translate(pt.x,pt.y);
+      var factor = Math.pow(scaleFactor,clicks);
+      ctx.scale(factor,factor);
+      ctx.translate(-pt.x,-pt.y);
+      redraw();
+    }
+    var handleScroll = function(evt){
+      var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
+      if (delta) zoom(delta);
+      return evt.preventDefault() && false;
+    };
+    canvas.addEventListener('DOMMouseScroll',handleScroll,false);
+    canvas.addEventListener('mousewheel',handleScroll,false);
+    gkhead.src = '';
+    ball.src   = '';
+  // Adds ctx.getTransform() - returns an SVGMatrix
+  // Adds ctx.transformedPoint(x,y) - returns an SVGPoint
+
+/////////////////////////////////
+///////  THIS IS GOOD  /////////
+///////////////////////////////
+function trackTransforms(ctx){var svg = document.createElementNS("http://www.w3.org/2000/svg",'svg'); var xform = svg.createSVGMatrix(); ctx.getTransform = function(){ return xform; }; var savedTransforms = []; var save = ctx.save; ctx.save = function(){savedTransforms.push(xform.translate(0,0)); return save.call(ctx); }; var restore = ctx.restore; ctx.restore = function(){xform = savedTransforms.pop(); return restore.call(ctx); }; var scale = ctx.scale; ctx.scale = function(sx,sy){xform = xform.scaleNonUniform(sx,sy); return scale.call(ctx,sx,sy); }; var rotate = ctx.rotate; ctx.rotate = function(radians){xform = xform.rotate(radians*180/Math.PI); return rotate.call(ctx,radians); }; var translate = ctx.translate; ctx.translate = function(dx,dy){xform = xform.translate(dx,dy); return translate.call(ctx,dx,dy); }; var transform = ctx.transform; ctx.transform = function(a,b,c,d,e,f){var m2 = svg.createSVGMatrix(); m2.a=a; m2.b=b; m2.c=c; m2.d=d; m2.e=e; m2.f=f; xform = xform.multiply(m2); return transform.call(ctx,a,b,c,d,e,f); }; var setTransform = ctx.setTransform; ctx.setTransform = function(a,b,c,d,e,f){xform.a = a; xform.b = b; xform.c = c; xform.d = d; xform.e = e; xform.f = f; return setTransform.call(ctx,a,b,c,d,e,f); }; var pt  = svg.createSVGPoint(); ctx.transformedPoint = function(x,y){pt.x=x; pt.y=y; return pt.matrixTransform(xform.inverse()); } } }
+
+//////////////////////////////////////////////////////////////
+///////  USEFUL FUNCTION TO CHECK FOR MULTIPLE IDS  /////////
+////////////////////////////////////////////////////////////
+$(document).change(function(){
+      // Warning Duplicate IDs
+      $('[id]').each(function(){
+        var ids = $('[id="'+this.id+'"]');
+        if(ids.length>1 && ids[0]==this)
+          console.warn('Multiple IDs #'+this.id);
+          //good for finding specifc ID clash
+          //$("#"+this.id).css("color","red")
+          if (this.id=="21759_Field") {
+            //
+            //$("#"+this.id).prepend("SSSSSSSSSSSSSSSS")
+            //$("#"+this.id).append("SSSSSSSSSSSSSS")
+            //console.log('trigger')
+          }
+        });
+    }
+    )
+
+
+///////////////////////////////////
+///////  HARDCODED AREA  /////////
+/////////////////////////////////
+var idlerVariables = [
+{
+  'Names' : 'Gauge length',
+  'dataAtt' : 'data-228',
+  'formId' : '590461817ce01f21cc0c076f',
+},{
+  'Names' : 'Roll Width',
+  'dataAtt' : 'data-227',
+  'formId' : '590460167ce01f21cc0c0767',
+},{
+  'Names' : 'Shaft Series',
+  'dataAtt' : 'data-474',
+  'formId' : '58fc8e737272c0425864d8c4',
+},{
+  'Names' : 'Roll Diameter',
+  'dataAtt' : 'data-188',
+  'formId' : '58fc8e3e7272c0425864d8bf',
+},{
+  'Names' : 'Wall Thickness',
+  'dataAtt' : 'data-189',
+  'formId' : '59045f7a7ce01f21cc0c0763',
+},{
+  'Names' : 'Flat Length',
+  'dataAtt' : 'data-464',
+  'formId' : '590462167ce01f21cc0c0773',
+},{
+  'Names' : 'Designation',
+  'dataAtt' : 'data-470',
+  'formId' : 7354,
+},{
+  'Names' : 'B (mm)',
+  'dataAtt' : 'data-472',
+  'formId' : '590468e87ce01f21cc0c079f',
+},{
+  'Names' : 'D (mm)',
+  'dataAtt' : 'data-473',
+  'formId' : '590468d77ce01f21cc0c079e',
+},{
+  'Names' : 'Limiting speed r/min',
+  'dataAtt' : 'data-476',
+  'formId' : 7349,
+},{
+  'Names' : 'Reference speed r/min',
+  'dataAtt' : 'data-477',
+  'formId' : 7357,
+},{
+  'Names' : 'Pu (kN)',
+  'dataAtt' : 'data-478',
+  'formId' : 7358,
+},{
+  'Names' : 'C0 (kN)',
+  'dataAtt' : 'data-479',
+  'formId' : 7359,
+},{
+  'Names' : 'C (kN)',
+  'dataAtt' : 'data-480',
+  'formId' : 7355,
+},{
+  'Names' : 'Seal thickness',
+  'dataAtt' : 'data-472',
+  'formId' : '590469a27ce01f21cc0c07a7',
+},{
+  'Names' : 'Seal clearance',
+  'dataAtt' : 'data-472',
+  'formId' : '59046a5b7ce01f21cc0c07aa',
+}
+,{
+  'Names' : 'Idler Type',
+  'dataAtt' : 'data-226',
+  'formId' : 6470,
+},{
+  'Names' : 'Idler shell material.',
+  'dataAtt' : 'data-465',
+  'formId' : 8198,
+}
+];
+
+///////////////////////////////////
+///////  ON ITEM CLICK   /////////
+/////////////////////////////////
+function updateJSONidler(ids){
+  //variable string modifier.
+  ids = ids.replace("_ids","")
+
+  $('#myModal').modal('hide')
+
+
+  for (var i = idlerVariables.length - 1; i >= 0; i--) {
+    if ($("#"+ids).attr(idlerVariables[i]['dataAtt']) == null){
+    // your code here.
+  } else {
+    //used to update JSON data 
+    for (var j = 0; j < json.length; j++) {
+      if (idlerVariables[i]['formId']==json[j]['id']) {
+        json[j]['Value'] = $("#"+ids).attr(idlerVariables[i]['dataAtt'])
+        
+        //Special conditions
+      }
+    }
+    //console.log($("#"+ids).attr(idlerVariables[i]['dataAtt']))
+
+    clickChange($("#"+ids).attr(idlerVariables[i]['dataAtt']),idlerVariables[i]['formId'])
+
+
+
+
+  }
+}
+
+
+
+
+
+  //used to change all linked ids
+  function clickChange(values,field){
+    //console.log("activation");
+    $("#"+field).val(parseFloat(values));
+
+
+    switch (true){
+      case (field=='59046a5b7ce01f21cc0c07aa'):
+      //Seal clearance =  half bearing width
+      $("#"+field).val(parseFloat(values)/2);
+      break ;
+
+      case (field==6470):
+    //text
+    $("#"+field).val(values);
+    break ;
+
+
+    case (field==8198):
+ //text
+ $("#"+field).val(values);
+ break ;
+
+ default:
+ $("#"+field).val(parseFloat(values));
+ break
+}
+
+}
+}
+
+
+function exportTableToCSV($table, filename) {
+
+  var $rows = $table.find('tr:has(td)'),
+
+            // Temporary delimiter characters unlikely to be typed by keyboard
+            // This is to avoid accidentally splitting the actual contents
+            tmpColDelim = String.fromCharCode(11), // vertical tab character
+            tmpRowDelim = String.fromCharCode(0), // null character
+
+            // actual delimiter characters for CSV format
+            colDelim = '","',
+            rowDelim = '"\r\n"',
+
+            // Grab text from table into CSV formatted string
+            csv = '"' + $rows.map(function (i, row) {
+              var $row = $(row),
+              $cols = $row.find('td');
+
+              return $cols.map(function (j, col) {
+                var $col = $(col),
+                text = $col.text();
+
+                    return text.replace(/"/g, '""'); // escape double quotes
+
+                  }).get().join(tmpColDelim);
+
+            }).get().join(tmpRowDelim)
+            .split(tmpRowDelim).join(rowDelim)
+            .split(tmpColDelim).join(colDelim) + '"',
+
+            // Data URI
+            csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(csv);
+
+            $(this)
+            .attr({
+              'download': filename,
+              'href': csvData,
+              'target': '_blank'
+            });
+          }
+
+    // This must be a hyperlink
+    $("#downloadCSV").on('click', function (event) {
+
+
+
+      $('a[href="#profile"]').tab('show');
+
+        // CSV
+        exportTableToCSV.apply(this, [$('#dvData>table'), 'export.csv']);
+        
+        // IF CSV, don't do event.preventDefault() or return false
+        // We actually need this to be a typical hyperlink
+      });
+
+
+
+/////////////////////////////////////////////////////////
+////////////        DRAW IDLER DIAMETER         /////////
+/////////////////////////////////////////////////////////
+
+function drawIdlerDiameter(ids) {
+  var canvas = document.getElementById(ids+'_injectCanvas');
+  canvas.width = 200;
+  canvas.height = 130;
+  var centerX = canvas.width / 2;
+  var centerY = canvas.height / 2;
+  var context = canvas.getContext('2d');
+  //diameter
+  var id188 = $("#"+ids).attr("data-189");
+  //radius
+  var id189 = $("#"+ids).attr("data-188");
+  var radius = id188/2/2;
+  //Standards
+  var id192 = $("#"+ids).attr("data-192");  
+  //Text
+  context.font = "11px Arial";
+  context.fillText(id192,0,125);
+  context.beginPath();
+  context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+  context.lineWidth = id189/2
+  context.strokeStyle = 'black';
+  context.stroke();
+  //To text copy autocad extract
+  autoCadidlerDiameter (ids,id188,id189)
+}
+
+
+///////////////////////////////////////////////////////////
+////////////        DRAW IDLER SERIES         ////////////
+/////////////////////////////////////////////////////////
+
+function drawIdlerSeries(ids) {
+  var canvas = document.getElementById(ids+'_injectCanvas');
+  canvas.width = 200;
+  canvas.height = 130;
+  var centerX = canvas.width / 2;
+  var centerY = canvas.height / 2;
+  var context = canvas.getContext('2d');
+  var scaleFactor = 10;
+  //diameter
+  var id202 = $("#"+ids).attr("data-202");
+  //radius not real
+  var idnotSet = (id202-50);
+  //draw area
+  scaleFactor = canvas.height/(id202*1.5)
+  var radius = (id202/2)*scaleFactor;
+  //Standards
+  var id203 = $("#"+ids).attr("data-203");  
+  //Text
+  context.font = "11px Arial";
+  context.fillText(id203,0,125);
+  context.beginPath();
+  context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+  context.lineWidth = 5
+  context.strokeStyle = 'black';
+  context.stroke();
+  //To text copy autocad extract
+  autoCadidlerSeries (ids,id202,idnotSet)
+}
+
+
+
+///////////////////////////////////////////////////////////
+////////////        DRAW BEARING              ////////////
+/////////////////////////////////////////////////////////
+function drawBearing(ids) {
+  console.log("Drawing of the bearings")
+  var canvas = document.getElementById(ids+'_injectCanvas');
+  canvas.width = 200;
+  canvas.height = 130;
+  var centerX = canvas.width / 2;
+  var centerY = canvas.height / 2;
+  var context = canvas.getContext('2d');
+  var scaleFactor = 10;
+
+    //D
+    var id473 = $("#"+ids).attr("data-473");
+    //d
+    var id474 = $("#"+ids).attr("data-474");
+    //b
+    var id472 = $("#"+ids).attr("data-472");
+    //Designation
+    var id470 = $("#"+ids).attr("data-470");
+
+    //Height;width
+    var bearing = {
+      "1": drawrRectangle((id473-id474)/2,id472),  
+      "2": drawrRectangle((id473-id474)/2,id472),  
+      "3": drawrRectangle(id473,id472),  
+    };
+
+    //Offset of rectangles here
+    for (var i = 0; i < bearing["1"].length; i++) {
+      bearing["1"][i].y = bearing["1"][i].y + id473/2-((id473-id474)/2)/2
+    };
+    for (var i = 0; i < bearing["2"].length; i++) {
+      bearing["2"][i].y = bearing["2"][i].y - id473/2+((id473-id474)/2)/2
+    };
+
+    //fixed variables , modify if required.
+    //scale
+    var sx = 1;
+    var sy = 1;
+    //Translation
+    var tx = canvas.width/2
+    var ty = canvas.height/2
+    //rotation
+    var theta = 0
+    //move to center of canvas
+    bearing = transformMatrix(bearing,sx,sy,theta,tx,ty)  
+
+    var ctx = canvas.getContext('2d');
+
+    //Text
+    context.font = "11px Arial";
+    context.fillText(id470,0,125);
+
+    ctx.beginPath();
+    for (var key in bearing) {
+      ctx.moveTo(bearing[key][1].x,bearing[key][1].y)
+      for (var i = 1; i < bearing[key].length; i++) {
+        bearing[key][i]
+        ctx.lineTo(bearing[key][i].x,bearing[key][i].y);
+      };
+      ctx.lineTo(bearing[key][1].x,bearing[key][1].y)
+      ctx.lineWidth = 1;
+    //ctx.fillStyle = 'grey';
+    //ctx.fill();     
+    ctx.stroke();
+  }  
+
+    //To text copy autocad extract
+    autoCADBearing (ids,bearing)   
+  }
+
+
+////////////////////////////////////////////////////////////////////
+////////////     CREATE A RECTANGLE FOR USE WITH CANVAS ///////////
+///////////////////////////////////////////////////////////////////
+function drawrRectangle (height,width) {
+  x=0;
+  y=0;
+  var rectan=([]);//starting coordinate
+  //5 points in total
+  rectan.push(
+  {
+    "x":x, 
+    "y":y,
+    "drawn" :"yes"
+  });
+  //5 points in total
+  rectan.push(
+  {
+    "x":-width/2,
+    "y":height/2,
+    "drawn" :"yes"
+  });
+  rectan.push(
+  {
+    "x":width/2,
+    "y":height/2,
+    "drawn" :"yes"
+  });
+  rectan.push(
+  {
+    "x":width/2,
+    "y":-height/2,
+    "drawn" :"yes"
+  });
+  rectan.push(
+  {
+    "x":-width/2,
+    "y":-height/2,
+    "drawn" :"yes"
+  });
+  return  rectan
+};
+
+
+////////////////////////////////////////////////////////////////////
+////////////        MATRIX TRANSFORM FUNCTION            ///////////
+///////////////////////////////////////////////////////////////////
+function transformMatrix(transformArray,sx,sy,theta,tx,ty)
+{
+ for (var key in transformArray) {
+   //change 0 to 1 in the loop below to skip the datum point.
+   for (var i = 0; i < transformArray[key].length; i++) {
+                //scaling
+                transformArray[key][i].x = transformArray[key][i].x*sx
+                transformArray[key][i].y = transformArray[key][i].y*sy
+                //rotation
+                tempx = (Math.cos(theta)*transformArray[key][i].x)-(Math.sin(theta)*transformArray[key][i].y)
+                tempy = (Math.sin(theta)*transformArray[key][i].x)+(Math.cos(theta)*transformArray[key][i].y)
+                transformArray[key][i].x = tempx
+                transformArray[key][i].y = tempy
+                //translate
+                transformArray[key][i].x = transformArray[key][i].x+tx
+                transformArray[key][i].y = transformArray[key][i].y+ty
+              };
+            }
+            return transformArray
+          };
+
+////////////////////////////////////////////////////////////////////
+////////////        FORMIDABLE VIEW EXTRA DETAIL         ///////////
+///////////////////////////////////////////////////////////////////
+function format ( d ) {
+    // `d` is the original data object for the row
+    var html=''
+    html += '<div id="'+d+'_content" >'
+    html += '<div class="row">'
+    html += '<div class="col-md-4">'
+    html += '<div class="btn-group" role="group" aria-label="..." style="padding-bottom:15px">'
+    html += '<button type="button" class="btn btn-default" id="'+d+'" onclick="rowClick(this.id)"  data-toggle="modal" data-target="#myModal"><i class="fa fa-pencil" aria-hidden="true"></i></button>'
+    html += '<button type="button" class="btn btn-default" id="'+d+'_downloadlink" onclick="exportCAD('+d+')"><i class="fa fa-file-code-o" aria-hidden="true"></i></button>'
+    html += '<button type="button" class="btn btn-default" id="'+d+'_downloadlink" onclick="" disabled><i class="fa fa-floppy-o" aria-hidden="true"></i></button>'
+    html += '<button type="button" class="btn btn-default" id="'+d+'_ids" onclick="updateJSONidler(this.id)"><i class="fa fa-cog" aria-hidden="true"></i></button>'    
+    html += '</div>'
+    html += '<textarea class="form-control" name="textarea" id="'+d+'_Autocad"></textarea>' 
+    html += '</div>'
+    html += '<div class="col-md-8">'
+    html += '<!-- Canvas Activation-->'
+    html += '<div style="text-align:center">'
+    html += '<canvas id="'+d+'_injectCanvas"></canvas>'
+    html += '<div id="'+d+'_inject"></div>'
+    html += '</div>'
+    html += '<div id="dataArea"></div>'
+    html += '</div>'
+    html += '</div>'
+    html += '</div>'
+    return html;
+  }
+
+
+////////////////////////////////////////////////////////////////////
+////////////        FORMIDABLE VIEW EXTRA DETAIL         ///////////
+///////////////////////////////////////////////////////////////////
+function formatDefault ( d ) {
+
+  //console.log('entering formatDefault')
+  // `d` is the original data object for the row
+  var html=''
+  html='<h4>Options</h4>'
+  html += '<div id="'+d+'_content" style="padding-top:0px;text-align:left">'
+  html += '<div class="btn-group" role="group" aria-label="..." style="padding-bottom:15px">'
+  html += '<button type="button" class="btn btn-default" id="'+d+'" onclick="rowClick(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item."><i class="fa fa-pencil" aria-hidden="true"></i> Modify</button>'
+  html += '<button type="button" class="btn btn-default" id="'+d+'_downloadlink" onclick=""  data-toggle="tooltip" data-placement="top" title="Delete this item"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button>'
+  html += '<button type="button" class="btn btn-default" id="'+d+'_ids" onclick="updateJSONidler(this.id)"  data-toggle="tooltip" data-placement="top" title="Use this as Default."><i class="fa fa-play-circle" aria-hidden="true" ></i> Use this value</button>'
+  html += '</div>'
+  html += '</div>'
+  return html;
+}
+
+
+////////////////////////////////////////////////////////////////////
+////////////        COMPLEX VIEW TOOLS     .             ///////////
+///////////////////////////////////////////////////////////////////
+function columnFilter(id){
+
+
+
+////////////////////////////////////////////////////////////////////
+////////////        Show Hide Column filter.             ///////////
+///////////////////////////////////////////////////////////////////
+var html='<h3 style="padding-top:15px">Advanced Search</h3>'
+html +='<table  class="table table-bordered" style="width:100%"> <thead> <tr> <th>Target</th> <th>Search text</th>   <th>Show/hide Column</th> </tr> </thead><tbody> <tr id="filter_global"> <td>Global search</td> <td align="center"><input type="text" class="global_filter" id="global_filter"></td>  <td align="center"> </td>  </tr>'
+$( "table thead tr th" ).each(function( index ) {
+  var title = $(this).text();
+//remove the blank table header for plus sign
+if (title !=="") {
+  html +='<tr id="filter_col'+index+1+'" data-column="'+index+'">'
+  html +='<td>'+title+'</td>'
+  html +='<td align="center"><input type="text" class="column_filter" id="col'+index+'_filter"></td>'
+
+  html +='<td align="center"><input type="checkbox" class="column-visible" data-column='+index+' id="col'+index+'_show" checked="checked"></td>'
+  html +='</tr>'
+}
+});
+html +='</tbody></table>'
+$('#columnFilter').html(html)
+
+
+//////////////////////////////////////////////////////////
+////////////        PLOT OPTIONS.             ///////////
+//////////////////////////////////////////////////////////
+var html='<h3 style="padding-top:15px">Plot Options</h3>'
+html +='<table  class="table table-bordered"> <thead> <tr> <th>Target</th> <th>Grouping</th> <th>X - axis</th><th>Y - axis</th> </tr> </thead><tbody> '
+$( "table thead tr th" ).each(function( index ) {
+  var title = $(this).text();
+//remove the blank table header for plus sign
+if (title !=="") {
+
+  switch (true){
+
+    case (title =="Belt Type") :
+    html +='<tr id="filter_col'+index+1+'" data-column="'+index+'">'
+    html +='<td>'+title+'</td>'
+    html +='<td align="center"><input type="radio" class="column_group" data-title1="'+title+'" data-column1='+index+' id="col'+index+'_group" checked="checked"></td>'
+    html +='<td align="center"><input type="radio" class="column_xaxis" data-title2="'+title+'" data-column2='+index+' id="col'+index+'_xaxis"></td>'
+    html +='<td align="center"><input type="radio" class="column_yaxis" data-title3="'+title+'" data-column3='+index+' id="col'+index+'_yaxis"></td>'
+    html +='</tr>'
+    break;
+
+    case (title =="Belt Class (kN/m)") :
+    html +='<tr id="filter_col'+index+1+'" data-column="'+index+'">'
+    html +='<td>'+title+'</td>'
+    html +='<td align="center"><input type="radio" class="column_group" data-title1="'+title+'" data-column1='+index+' id="col'+index+'_group"></td>'
+    html +='<td align="center"><input type="radio" class="column_xaxis" data-title2="'+title+'" data-column2='+index+' id="col'+index+'_xaxis"  checked="checked"></td>'
+    html +='<td align="center"><input type="radio" class="column_yaxis" data-title3="'+title+'" data-column3='+index+' id="col'+index+'_yaxis"></td>'
+    html +='</tr>'
+    break;
+
+    case (title =="Carcass weight (kg/m²)") :
+    html +='<tr id="filter_col'+index+1+'" data-column="'+index+'">'
+    html +='<td>'+title+'</td>'
+    html +='<td align="center"><input type="radio" class="column_group" data-title1="'+title+'" data-column1='+index+'  id="col'+index+'_group"></td>'
+    html +='<td align="center"><input type="radio" class="column_xaxis" data-title2="'+title+'" data-column2='+index+' id="col'+index+'_xaxis"></td>'
+    html +='<td align="center"><input type="radio" class="column_yaxis" data-title3="'+title+'" data-title='+title+' data-column3='+index+' id="col'+index+'_yaxis" checked="checked"></td>'
+    html +='</tr>'
+    break;
+
+    case (title =="") :
+    break;
+
+    default :
+
+    html +='<tr id="filter_col'+index+1+'" data-column="'+index+'">'
+    html +='<td>'+title+'</td>'
+    html +='<td align="center"><input type="radio" class="column_group" data-title1="'+title+'" data-column1='+index+' id="col'+index+'_group"></td>'
+    html +='<td align="center"><input type="radio" class="column_xaxis" data-title2="'+title+'" data-column2='+index+' id="col'+index+'_xaxis"></td>'
+    html +='<td align="center"><input type="radio" class="column_yaxis" data-title3="'+title+'" data-column3='+index+' id="col'+index+'_yaxis"></td>'
+    html +='</tr>'
+    break;
+  }
+
+}
+
+
+
+
+});
+html +='</tbody></table>'
+$('#highChartsPlot').html(html)
+
+
+function filterGlobal () {
+  $('#'+id).DataTable().search(
+    $('#global_filter').val(),
+    $('#global_regex').prop('checked'),
+    $('#global_smart').prop('checked')
+    ).draw();
+}
+
+function filterColumn ( i ) {
+  $('#'+id).DataTable().column( i ).search(
+    $('#col'+i+'_filter').val(),
+    $('#col'+i+'_regex').prop('checked'),
+    $('#col'+i+'_smart').prop('checked')
+    ).draw();
+}
+
+
+if (id == 21859) {
+  var table = $('#'+id).DataTable({
+    "destroy":true,
+    "pagingType": "numbers",
+    "columnDefs": [
+    { "width": "50%", "targets": 0 }
+    ]
+  });
+  
+} else {
+  var table = $('#'+id).DataTable({
+    "destroy":true,
+    "pagingType": "numbers",
+  });
+}
+
+
+
+
+
+$('input.global_filter').on( 'keyup click', function () {
+  filterGlobal();
+} );
+
+$('input.column_filter').on( 'keyup click', function () {
+  filterColumn( $(this).parents('tr').attr('data-column') );
+} );
+
+ //this needs to be here because of the define table as datables variable. Possibly could be imporved.
+
+    // Add event listener for opening and closing details
+    jQuery('#'+id+' tbody').on('click', 'td.details-control', function () {
+      var tr = jQuery(this).closest('tr');
+      var row = table.row( tr );
+      if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+          }
+          else {
+            // Open this row
+           //is is async , and the canvas is not rendered 
+           row.child(formatDefault(this.id))
+           row.child.show();
+           tr.addClass('shown');
+         }
+       } );
+
+//toggle visibility of columns
+$('input.column-visible').on( 'keyup click', function (e) {
+         // Get the column API object
+         var column = table.column( $(this).attr('data-column') );
+        // Toggle the visibility
+        column.visible( ! column.visible() );
+      });
+
+
+var grouping =  7;
+var xAxisColumn =  4;
+var yAxisColumn =  5;
+var xaxisLabel = 'Belt Class (kN)'
+var yaxisLabel = 'Carcass Mass (Kg/m²)'
+
+     //Plot initiaors
+     drawGraph(table.data(),xAxisColumn,yAxisColumn,grouping,xaxisLabel,yaxisLabel)
+
+//toggle grouping of graph
+$('input.column_group').on( 'keyup click', function (e) {
+         // Get the column API object
+         var column = $(this).attr('data-column1');
+        // Toggle the visibility
+        //console.log('group = ',column)
+        grouping = column;
+        drawGraph(table.data(),xAxisColumn,yAxisColumn,grouping,xaxisLabel,yaxisLabel)
+        //Radio Button Controls
+        $('input.column_group').prop('checked', false);
+        $(this).prop('checked', true);
+      });
+//toggle xaxis
+$('input.column_xaxis').on( 'keyup click', function (e) {
+         // Get the column API object
+         var column = $(this).attr('data-column2');
+        //get title text
+        var title = $(this).attr('data-title2');
+        // Toggle the visibility
+        //console.log('xaxis = ',column)
+        xAxisColumn=column;
+        //console.log(title)
+        xaxisLabel = title
+        drawGraph(table.data(),xAxisColumn,yAxisColumn,grouping,xaxisLabel,yaxisLabel)
+        //Radio Button Controls
+        $('input.column_xaxis').prop('checked', false);
+        $(this).prop('checked', true);
+      });
+//toggle yaxis
+$('input.column_yaxis').on( 'keyup click', function (e) {
+         // Get the column API object
+         var column = $(this).attr('data-column3');
+         //get title text
+         var title = $(this).attr('data-title3');
+        // Toggle the visibility
+        //console.log('yaxis = ',column)
+        yAxisColumn = column;
+        //console.log(title)
+        yaxisLabel = title
+        drawGraph(table.data(),xAxisColumn,yAxisColumn,grouping,xaxisLabel,yaxisLabel)
+        //Radio Button Controls
+        $('input.column_yaxis').prop('checked', false);
+        $(this).prop('checked', true);
+      });
+
+}
+
+/////////////////////////////////////////////
+////////  COMPILE AUTOCAD SCR TEXT   ///////
+///////////////////////////////////////////
+function autoCadidlerDiameter (d,id188,id189){
+  $("#"+d+'_Autocad').html("");
+  var Roll = "Circle 0,0 Diameter " 
+  Roll+=id189-id188-id188
+  Roll += " Circle 0,0 Diameter " 
+  Roll+=id189
+  Roll += " "
+    //end
+    $("#"+d+'_Autocad').append(Roll);
+  }
+
+
+///////////////////////////////////////////////////////
+////////  COMPILE AUTOCAD SCR TEXT - BEARING   ///////
+/////////////////////////////////////////////////////
+function autoCADBearing (d,transformArray){
+  $("#"+d+'_Autocad').html("");
+
+    //start by clearing the belting paragraph text box.
+    for (var key in transformArray) {
+      var Roll = "pline "   
+     //change 0 to 1 in the loop below to skip the datum point.
+     for (var i = 1; i < transformArray[key].length; i++) {
+      Roll=Roll.concat((transformArray[key][i].x) +","+ (transformArray[key][i].y) + " ")
+    };
+    Roll=Roll.concat("c ")
+    $("#"+d+'_Autocad').append(Roll);
+  }
+  $("#"+d+'_Autocad').append(Roll);
+
+}
+
+/////////////////////////////////////////////
+////////  COMPILE AUTOCAD SCR TEXT   ///////
+///////////////////////////////////////////
+function autoCadidlerSeries (d,id202,idnotSet){
+  $("#"+d+'_Autocad').html("");
+  var Roll = "Circle 0,0 Diameter " 
+  Roll+= id202
+  Roll += " "
+    //end
+    $("#"+d+'_Autocad').append(Roll);
+  }
+
+
+
+/////////////////////////////////////////////
+////////  EXPORT TO SCR FILE AUTOCAD ///////
+///////////////////////////////////////////
+function exportCAD(d) {
+  var saveData = (function () {
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    return function (data, fileName) {
+      var text = document.getElementById(d+'_Autocad').innerHTML,
+      blob = new Blob([text], {type: 'text/plain'});
+      url = window.URL.createObjectURL(blob);
+      a.href = url;
+      a.download = fileName;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    };
+  }());
+  var data = { x: 42, s: "hello, world", d: new Date() },
+  fileName = "Drag-into-autoCAD.scr";
+  saveData(data, fileName);
+}
+
+
+/////////////////////////////////////////////////////////
+////////////        DRAW IDLER SERIES         ///////////
+/////////////////////////////////////////////////////////
+
+function drawSeries(ids) {
+  var canvas = document.getElementById(ids+'_injectCanvas');
+  canvas.width = 200;
+  canvas.height = 130;
+  var centerX = canvas.width / 2;
+  var centerY = canvas.height / 2;
+  var context = canvas.getContext('2d');
+  var scaleFactor = 10;
+  //diameter
+  var id202 = $("#"+ids).attr("data-202");
+  //radius not real
+  var idnotSet = (id202-50);
+  //draw area
+  scaleFactor = canvas.height/(id202*1.5)
+  var radius = (id202/2)*scaleFactor;
+  //Standards
+  var id203 = $("#"+ids).attr("data-203");  
+  //Text
+  context.font = "11px Arial";
+  context.fillText(id203,0,125);
+  context.beginPath();
+  context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+  context.lineWidth = 5
+  context.strokeStyle = 'black';
+  context.stroke();
+  //To text copy autocad extract
+  autoCadidlerDiameter (ids,id202,idnotSet)
+}
+
+
+
+
+///////////////////////////////////////////////////////////////
+////////////        GRAPH DRAW FOR BELTING         ///////////
+/////////////////////////////////////////////////////////////
+function drawGraph(data,xAxisColumn,yAxisColumn,grouping,xaxisLabel,yaxisLabel){
+  console.log(data,xAxisColumn,yAxisColumn,grouping,xaxisLabel,yaxisLabel,'bitched')
+
+
+
+
+  var xAxis = [];
+  var yAxis = [];
+  var series = [];
+  var groups = [];
+
+//unique elemets function
+for (var i = 0; i < data.length; i++) {
+  for (key in data[i]){
+    if (key == grouping) {
+      groups.push(data[i][key])
+    }
+  }
+}
+
+//Unique removal functions
+function unique(list) {
+  var result = [];
+  $.each(list, function(i, e) {
+    if ($.inArray(e, result) == -1) result.push(e);
+  });
+  return result;
+}
+
+var colours = [
+'rgba(67,224,177,0.5)',
+'rgba(3,85,159,0.5)',
+'rgba(88,206,228,0.5)',
+'rgba(234,38,42,0.5)'
+]
+
+groups = unique(groups)
+
+for (var i = 0; i < groups.length; i++) {
+  var numberSeries=[]
+  for (var j = 0; j < data.length; j++) {
+    for (key in data[j])
+      if (data[j][key] == groups[i]) {
+        //console.log(data[j][key] )
+        for (key2 in data[j]){
+          if (key2 == xAxisColumn) {
+            xAxis = (parseFloat(data[j][key2]))
+          }
+          if (key2 == yAxisColumn) {
+            yAxis = (parseFloat(data[j][key2]))
+          }
+          numberSeries.push([xAxis,yAxis])
+        }
+      }
+    }
+    series.push({
+      name: groups[i],
+      color: colours[i],
+      data: numberSeries,
+      marker: {
+        radius: 4,
+        symbol: 'circle'
+      },
+    })
+  }
+
+//plot the high chart
+plotHightChart(series,xaxisLabel,yaxisLabel)
+}
+
+
+
+///////////////////////////////////////////////////////////////
+////////////        GRAPH DRAW FOR BELTING         ///////////
+/////////////////////////////////////////////////////////////
+function plotHightChart(data,xaxisLabel,yaxisLabel) {
+  $('#highCharts').highcharts({
+    chart: {
+      type: 'scatter',
+      zoomType: 'xy'
+    },
+    title: {
+      text: 'Belting Products.'
+    },
+    credits: false,        
+    xAxis: {
+      title: {
+        enabled: true,
+        text: xaxisLabel
+      },
+      startOnTick: true,
+      endOnTick: true,
+      showLastLabel: true
+    },
+    yAxis: {
+      title: {
+        text: yaxisLabel
+      }
+    },
+    legend: {
+      layout: 'vertical',
+      align: 'left',
+      verticalAlign: 'top',
+      x: 100,
+      y: 70,
+      floating: true,
+      backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
+      borderWidth: 1
+    },
+    plotOptions: {
+      scatter: {
+        marker: {
+          radius: 5,
+          states: {
+            hover: {
+              enabled: true,
+              lineColor: 'rgb(100,100,100)'
+            }
+          }
+        },
+        states: {
+          hover: {
+            marker: {
+              enabled: false
+            }
+          }
+        },
+        tooltip: {
+          headerFormat: '<b>{series.name}</b><br>',
+          pointFormat: '{point.x} Units, {point.y} Units'
+        }
+      }
+    },
+    series: data 
+  });
+}
+
+
+
+
+
+</script>    

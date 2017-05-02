@@ -143,7 +143,10 @@ res.render('form', {
 ////       DEPLOY THE REQUESTED TEMPLATE         //// 
 ////////////////////////////////////////////////////
 exports.templateload = function(req, res) {
-  console.log('This is starting')
+  console.log('//////////////////////////////////////////////////////////////////////////////')
+  console.log('//////////////////////////////////////////////////////////////////////////////')
+  console.log('//////////////////////////////////////////////////////////////////////////////')
+  console.log('This is starting',req.param('ids'))
 //Which id data to use.
 var ids = req.param('ids')
 if (!ids) {
@@ -1070,6 +1073,100 @@ var json = {
 });
 //query end
 });
+}
+
+
+//////////////////////////////////////////////////////
+////       DEPLOY THE REQUESTED TEMPLATE         //// 
+////////////////////////////////////////////////////
+exports.findme = function(req, res) {
+console.log('//////////////////////////////////////////////////////////////////////////////')
+console.log('/////////////////////////////      findme     ////////////////////////////////')
+console.log('//////////////////////////////////////////////////////////////////////////////')
+console.log('This is starting',req.param('ids'))
+//Which id data to use.
+var ids = req.param('ids')
+if (!ids) {
+  ids =''
+}
+ 
+////////////////////////////////////////
+//  1.RETURN CHILD TYPE OF SELECTED  //
+//////////////////////////////////////
+//Query to find the menu item selected.
+var query = heavyliftingModel.findOne(
+{
+  $and : 
+  [
+  {$or: [
+    {"elementID": ids },
+    {"_id":  ids }
+    ]}, 
+    {
+      "active": "true" 
+    }
+    ]
+  })
+console.log('Debug 0.')
+query.exec(function (err, query_return) {
+ if(err){console.log('Error Here'); return;}
+ if(query_return){
+  for (var i = 0; i < query_return.length; i++) {
+        //the menu item elementid should arrive poulated to avoid confusion.
+        if(query_return[i].elementID==''){
+          query_return[i].elementID=query_return[i]._id
+        }
+      }
+    } else {
+      console.log('query_return failed')
+    } 
+
+//////////////////////
+// 3.GET THE FORM  //
+////////////////////
+var query1 = heavyliftingModel.find(
+{
+  $and : 
+  [
+  {
+    "parentid": query_return.childType 
+  }, 
+  {
+    "active": "true" 
+  }
+  ]
+})
+
 
  
+
+
+
+query1.exec(function (err, query_return1) {
+ if(err){console.log('Error Here'); return;}
+ if(query_return1){
+  for (var i = 0; i < query_return1.length; i++) {
+        //the menu item elementid should arrive poulated to avoid confusion.
+        if(query_return1[i].elementID==''){
+          query_return1[i].elementID=query_return1[i]._id
+        }
+      }
+    } else {
+      console.log('query_return1 failed')
+    } 
+
+
+    console.log('//  Debug from here findme //')
+    console.log('query_return',query_return)
+    console.log('query_return1',query_return1)
+    console.log('//  Debug from here findme //')
+    res.send( {
+      query  :  query_return,
+      query1  :  query_return1
+    });
+
+//Query end
+})    
+//Query end
+}) 
 }

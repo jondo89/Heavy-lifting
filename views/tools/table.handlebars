@@ -181,6 +181,9 @@ function formatDefault ( d ) {
       break;
     }
   }   
+
+html+='<p></p><pre>id : '+d+'</pre>'
+
   html += '<div id="'+d+'_loadingArea" ></div>'
   return html;
 }
@@ -377,6 +380,7 @@ function copyParentRaw(parentid){
 ////////    GET FORM BY ID  /////////
 ////////////////////////////////////                                                                                                              
 function loadformModal(formdata,idItem,raw,parentid,headings){
+  console.log('Entering here' , parentid)
   var headings = JSON.stringify(headings)
   jQuery.ajax({
     'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,

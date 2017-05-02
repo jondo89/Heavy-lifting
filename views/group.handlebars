@@ -117,7 +117,6 @@ function create_uid() {
       'global': false,
       'url': '/groups?data='+items.elementID,
       'success': function (dataSchemaObject) {
-   
         input = JSON.parse(dataSchemaObject);
         groupShow(input)
         layoutView() 
@@ -145,7 +144,7 @@ function printImageCatagory (data) {
     html+='" alt="...">'
   } else {
     html+=  '<div class="col-sm-4 col-md-4" >'
-    html+='<div class="thumbnail" style="min-height:260px">'
+    html+='<div class="thumbnail" style="min-height:200px">'
   }
   html+='<div class="caption">'
   html+='<h3>'
@@ -156,7 +155,7 @@ function printImageCatagory (data) {
   html+='</strong></p>'
   html+='<p style="text-align:right">'
   html+='<div style="text-align:right;position:absolute;bottom:25px">'
-  html+='<button type="button" class="btn btn-primary" id="' + data.elementID + '" onclick="viewCatagory(this.id);">View</button></p>'
+  html+='<button type="button" class="btn btn-success" id="' + data.elementID + '" onclick="viewCatagory(this.id);">View</button></p>'
   html+='</div>'
   html+='</div>'
   html+='</div>'

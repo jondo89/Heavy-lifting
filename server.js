@@ -198,7 +198,8 @@ app.get('/loadcompmenu', readController.loadcompmenu);
 
 //get the single element id
 app.get('/singleidcall', readController.singleidcall);
-
+//get the single element id
+app.get('/findme', readController.findme);
 
 /* Redundant
 //click to open with navmenu
