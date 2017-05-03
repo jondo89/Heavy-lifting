@@ -1,6 +1,30 @@
  <p></p>
  <div class="row">
   <div class="col-md-4" id="navMenuPanel">
+<button onclick="clickbutton()">Button</button>
+  <div class="panel panel-default">
+    <div class="panel-heading">Assembly Detail </div>
+    <div class="panel-body">
+      <p></p>
+      <div id="jstreeArea"></div>
+      <p></p>
+      <div style="text-align: center">
+            <div class="btn-group" role="group" aria-label="...">
+              <a class="btn btn-default" id="inject" role="button" data-toggle="collapse" href="#naming" aria-expanded="false" aria-controls="naming">Save</a>
+            </div>
+
+              <div class="btn-group" role="group" aria-label="...">
+          <!--<button type="button" class="btn btn-default" onclick="demo_default();"><i class="fa fa-cogs" aria-hidden="true"></i></button>
+          <button type="button" class="btn btn-default" onclick="demo_create();"><i class="fa fa-cog" aria-hidden="true"></i></button>-->
+          <button type="button" class="btn btn-default" onclick="demo_rename();"><i class="glyphicon glyphicon-pencil"></i></button>
+ 
+          <button type="button" class="btn btn-default" onclick="demo_delete();"><i class="glyphicon glyphicon-remove"></i></button>
+        </div>
+<pre id="storage"></pre>
+</div>
+    </div>
+  </div>
+  
     <div class="panel panel-default">
       <div class="panel-heading">
         <div class="row">
@@ -34,28 +58,7 @@
       </div>
     </div>
   </div>
-  <div class="panel panel-default">
-    <div class="panel-heading">Assemblies you contribute to <span class="badge">0</span></div>
-    <div class="panel-body">
-      <p></p>
-      <div id="jstreeArea"></div>
-      <p></p>
-      <div style="text-align: center">
-            <div class="btn-group" role="group" aria-label="...">
-              <a class="btn btn-default" id="inject" role="button" data-toggle="collapse" href="#naming" aria-expanded="false" aria-controls="naming">Save</a>
-            </div>
 
-              <div class="btn-group" role="group" aria-label="...">
-          <!--<button type="button" class="btn btn-default" onclick="demo_default();"><i class="fa fa-cogs" aria-hidden="true"></i></button>
-          <button type="button" class="btn btn-default" onclick="demo_create();"><i class="fa fa-cog" aria-hidden="true"></i></button>-->
-          <button type="button" class="btn btn-default" onclick="demo_rename();"><i class="glyphicon glyphicon-pencil"></i></button>
- 
-          <button type="button" class="btn btn-default" onclick="demo_delete();"><i class="glyphicon glyphicon-remove"></i></button>
-        </div>
-
-</div>
-    </div>
-  </div>
 </div>  
 <div class="col-md-8" id="browserArea">
   <div id="panel">  
@@ -77,7 +80,10 @@
   var navmenuHeadings = ['detail','description','icon','buttons','tabs','parent','template']
   var databaseMenu = []
   var temp =[]
-  var query2
+ 
+var assemblies
+var assembly
+
 /////////////////////////////
 ////     DEBUG AREA     //// 
 ///////////////////////////
@@ -132,10 +138,8 @@ function getAssemblyAll(ids){
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
-      console.log('////////////////////////')
-      console.log(dataSchemaObject)
-      console.log('////////////////////////')
-      query2 = dataSchemaObject.query
+ 
+      assemblies = dataSchemaObject.query
       printtable(dataSchemaObject.query)
     }
   });
@@ -240,21 +244,23 @@ function EditWithraw(id){
 //////////////////////////////
 function viewAssy(ids){
   ids = ids.replace('_view', ''); 
+  
   var html = ''
   html+='id : '
   html+=ids
-  
-  console.log(query2)
-  for (var i = 0; i < query2.length; i++) {
-    if (query2[i].elementID == ids) {
-    if (query2[i].entry['5909b326545fa738c45954d7']) {
-     html += '<div id="'+query2[i].elementID+'_jstree">default exists</div>'
-       templateloading(query2[i].entry['5909b326545fa738c45954d7'])
+ 
+  for (var i = 0; i < assemblies.length; i++) {
+    if (assemblies[i].elementID == ids) {
+
+      assembly = assemblies[i]
+    if (assemblies[i].entry['5909b326545fa738c45954d7']) {
+     html += '<div id="'+assemblies[i].elementID+'_jstree">default exists</div>'
+       templateloading(assemblies[i].entry['5909b326545fa738c45954d7'])
     } else {
       html+= 'add default assembly'
     }
     html+='<pre>'
-    html+=JSON.stringify(query2[i], null, 2)
+    html+=JSON.stringify(assemblies[i], null, 2)
     html+='</pre>'
     }
   }
@@ -284,6 +290,7 @@ return databaseMenu
 /////////////////////////// 
 $( document ).ready(function() {
   getAssemblyAll(databaseid)
+ 
 });
 
 
@@ -300,6 +307,7 @@ function sortResults(json , prop, asc) {
   });
   return json;
 }
+ 
 
 
 ///////////////////////////////////////////////////////

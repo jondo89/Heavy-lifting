@@ -1,3 +1,4 @@
+
 <div role="tabpanel" class="tab-pane active" id="table">
  <p></p>
  
@@ -8,6 +9,10 @@
  
 
 <script type="text/javascript">
+
+function clickbutton(){
+  injectAssemblyelements()
+}
 
 //The menu item from JSTREE
 var query = {{{query}}}
@@ -22,7 +27,7 @@ var query4= {{{query4}}}
 //The query.parentid items.
 var tablelistdata = {{{query3}}};
 
- 
+ var $root
 
  
 //////////////////////////////////////////
@@ -74,9 +79,79 @@ query2.sort(function(a, b) {
 //////////////////////////////////
 $('document').ready(function(){
   dataFormatComp()
+  
   var temp = dataJStreeConvert (modifiedListData)
   loadNavMenu('jstreeArea', temp)
 })
+
+
+////////////////////////////////////////////////////////
+////        INSERT THE ATTACHED ASSMEBLIES         //// 
+//////////////////////////////////////////////////////
+function injectAssemblyelements(){
+for (var i = 0; i < assembly.entry['5909f990c93ba53e2cb8aac7'].length; i++) {
+var ids = assembly.entry['5909f990c93ba53e2cb8aac7'][i]
+//Ensure that the first load error is covered , also any other errors.
+if(ids){
+  jQuery.ajax({
+    'async': true,
+    'global': false,
+    'url': '/singleidcall?ids='+ids,
+    'success': function (dataSchemaObject) {
+      //console.log('///////////////////////////')
+      //console.log(dataSchemaObject)
+      //console.log('///////////////////////////')
+      //reformat the data.
+      dataFormatCompforassy(dataSchemaObject,ids)
+    }
+  });
+}
+}
+}
+
+
+///////////////////////////////////////////////////
+////        REQUIRED FORMATING OF DATA        //// 
+/////////////////////////////////////////////////
+function dataFormatCompforassy(dataset,elementid){
+  var tempVar = []
+  var tempVar1 = []
+  var tempVar2 = []
+    tempVar1 = []
+    for(key in dataset.query.entry){
+      for (var j = 0; j < dataset.query2.length; j++) {
+        if (dataset.query2[j].elementID == key) {
+          tempVar = {
+            'description' : dataset.query2[j]['entry']['description'],
+            'value' : dataset.query.entry[dataset.query2[j].elementID],
+            'units' : dataset.query2[j]['entry']['units'],
+            'detail' : dataset.query2[j]['entry']['detail'],
+            'id' : dataset.query2[j]['elementID'] 
+          }
+        }
+      }
+      tempVar1.push(tempVar) 
+    }
+    tempVar2[dataset.query.elementID] = tempVar1
+      console.log('///////////////////////////')
+      console.log(tempVar2)
+      console.log('///////////////////////////')
+
+
+for (var i = 0; i < modifiedListData.length; i++) {
+  console.log(modifiedListData[i])
+}
+for (key in tempVar2){
+  
+
+var ref = jQuery('#jstreeArea').jstree(true)
+ref.create_node("#5909e22bc93ba53e2cb8aab6", { "a_attr": {'data-field': key},"type":"file" ,"text":tempVar2[key][0]['value']});
+ 
+ }
+
+
+}
+
 
  //////////////////////////////////////////
 ////        CREATE UNIQUE ID         //// 
@@ -195,21 +270,30 @@ console.log('////////////////////////// DEBUG //////////////////////////')
 if (jQuery('#'+location).jstree("destroy")) {
   jQuery('#'+location).jstree("destroy");
 }
-var $root =jQuery('#'+location).jstree({ 
-  'core' : {
-    'data' : dataNav,        
+
+ jQuery('#'+location).jstree({
+  "core" : {
+    "animation" : 0,
+    "check_callback" : true,
     'themes': {
       'name': 'proton',
       'responsive': true,
       'stripes' : false,
     },
-  } ,
-  "checkbox" : {
-    "keep_selected_style" : false
+    'data' : dataNav ,
   },
-  "multiple": false,
-  "plugins" : [ "wholerow" , "search" , "state"]
+  "types" : {
+    "#" : { "max_children" : 50, "max_depth" : 50, "valid_children" : ["root"] },
+    "root" : { "icon" : "./assets/images/tree_icon.png", "valid_children" : ["default"] },
+    "default" : { "valid_children" : ["default","file"] },
+    "file" : { "icon" : "glyphicon glyphicon-file", "valid_children" : [] }
+  },
+  "plugins" : [   "dnd", "search", "state", "types", "wholerow"  ]
 });
+
+
+
+
 
 /////////////////////////////////
 ////////  SEARCH NAV MENU ///////
@@ -240,7 +324,7 @@ r.push(dataTree.instance.get_node(dataTree.selected[i]).template);
 if (field) {
   templateCompLoad(field)
 }else{
-  templateCompLoad(ids)
+ templateCompLoad(ids)
 }
 })
 //////////////////////////////////////////////
@@ -251,6 +335,9 @@ $('#newMenuItem').click(function(){
 //console.log(temp[0].id)
 newMenuItems(Formids,'','use',databaseid,'',navmenuHeadings)
 })
+
+ 
+
 }
 
 
@@ -258,6 +345,7 @@ newMenuItems(Formids,'','use',databaseid,'',navmenuHeadings)
 ////////  EVENT LISTNER FUNCTION AREA DATABASE ///////
 /////////////////////////////////////////////////////
 function templateCompLoad(ids){
+  console.log('thisisisiisisisi')
 //Ensure that the first load error is covered , also any other errors.
 if(ids){
   jQuery.ajax({
