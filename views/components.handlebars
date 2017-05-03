@@ -1,8 +1,3 @@
- 
-
-
-    <h1 id="descriptions"></h1>
-    <p id="details"></p>
     <div class="row">
       <div class="col-md-4" id="navMenuPanel">
         <div class="panel panel-default">
@@ -65,13 +60,10 @@ function jstreeGet(ids){
     'global': false,
     'success': function (dataSchemaObject) {
       var dataSchemaObject = JSON.parse(dataSchemaObject)
- 
-      
       //Add the headings to the page.
       $('#descriptions').html(dataSchemaObject.thisitem[0].name)
       $('#details').html(dataSchemaObject.thisitem[0].detail)
       $('#panel').html('')
-
       var dataSchemaObject1 = fitstFormat(dataSchemaObject.children)
       //manipulate data to work with the jstree
       var jsTreeData = dataJStreeConvert (dataSchemaObject1)

@@ -1,39 +1,83 @@
-<h1 id="descriptions"></h1>
-<p id="details"></p>
-<div class="row">
+ <p></p>
+ <div class="row">
   <div class="col-md-4" id="navMenuPanel">
     <div class="panel panel-default">
-      <div class="panel-body">
-        <div id="myProgress">
-          <div id="myBar"> </div>
-        </div>
-        <h5><strong>Navigation</strong> <small>Use the navigation tree to interact with the database.</small></h5>
-        <div class="panel">
-          <div style="padding-bottom:15px;padding-bottom:15px">
-            <input id="search_field" name="searchinput" type="search" placeholder="Search Navigation" class="form-control input-md">      
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-md-6">
+            Your Assemblies <span class="badge" id="counting">0</span>
           </div>
-          <div id="jstree"></div> 
-        </div>
-        <div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
-          <button type="button" class="btn btn-default" id="newMenuItem" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></button> 
+          <div class="col-md-6 text-right">
+           <button type="button" class="btn btn-xs btn-default" onclick="deployFormUse('58ff3c5721acae2b40b09b2a')"><i class="fa fa-plus"></i>  New Assembly</button>
+         </div>
+       </div>
+     </div>
+     <div class="panel-body">
+      <p></p>
+      <div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active"><a href="#All" aria-controls="All" role="tab" data-toggle="tab">All</a></li>
+          <li role="presentation"><a href="#Public" aria-controls="Public" role="tab" data-toggle="tab">Public</a></li>
+          <li role="presentation"><a href="#Private" aria-controls="Private" role="tab" data-toggle="tab">Private</a></li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane active" id="All">
+            <p></p>
+            <input class="form-control" type="text" id="filterbox" placeholder="Find an Assembly...">
+            <div id="tablearea"></div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="Public">...</div>
+          <div role="tabpanel" class="tab-pane" id="Private">...</div>
         </div>
       </div>
     </div>
-  </div>  
-  <div class="col-md-8" id="browserArea">
-    <div id="panel">  
-      <div class="alert alert-info" role="alert"> <strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">Assemblies you contribute to <span class="badge">0</span></div>
+    <div class="panel-body">
+      <p></p>
+      <div id="jstreeArea"></div>
+      <p></p>
+      <div style="text-align: center">
+            <div class="btn-group" role="group" aria-label="...">
+              <a class="btn btn-default" id="inject" role="button" data-toggle="collapse" href="#naming" aria-expanded="false" aria-controls="naming">Save</a>
+            </div>
+
+              <div class="btn-group" role="group" aria-label="...">
+          <!--<button type="button" class="btn btn-default" onclick="demo_default();"><i class="fa fa-cogs" aria-hidden="true"></i></button>
+          <button type="button" class="btn btn-default" onclick="demo_create();"><i class="fa fa-cog" aria-hidden="true"></i></button>-->
+          <button type="button" class="btn btn-default" onclick="demo_rename();"><i class="glyphicon glyphicon-pencil"></i></button>
+ 
+          <button type="button" class="btn btn-default" onclick="demo_delete();"><i class="glyphicon glyphicon-remove"></i></button>
+        </div>
+
+</div>
     </div>
   </div>
+</div>  
+<div class="col-md-8" id="browserArea">
+  <div id="panel">  
+    <div class="alert alert-info" role="alert"> <strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>
+  </div> 
+</div>
 </div>
 
+<div id="panel1"></div>
+
+
 <script type="text/javascript">
+
+  $('#descriptions').html('Assemblies')
+  $('#details').html('Your collection of site assemblies')
+
   var databaseid = {{{items}}};
   var Formids = {{{Formids}}};
   var navmenuHeadings = ['detail','description','icon','buttons','tabs','parent','template']
   var databaseMenu = []
   var temp =[]
-
+  var query2
 /////////////////////////////
 ////     DEBUG AREA     //// 
 ///////////////////////////
@@ -47,33 +91,177 @@ console.log( 'temp : ',temp )
 console.log( '-------------------------' )
 console.log( 'admin loading' )
 
-/////////////////////////////////// 
-//////  GET JSTREE BY ID    //////
-///////////////////////////////// 
-function jstreeGet(ids){
+ 
+
+
+
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK OPEN FORM  /////////
+////////////////////////////////////////////
+function deployFormUse(formToUse){
+  //This is hard wired , and likely to cause issues.
+  var headings = ["description","detail","icon","headings"]
+  var entry =''
+  var templateload = '58f99a2b11db6c2118a9fa2a'
+  loadformModal(formToUse,'','component',templateload,headings,entry)
+}
+
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+////////////////////////////////////                                                                                                              
+function loadformModal(formdata,idItem,raw,parentid,headings){
+  console.log('Entering here' , parentid)
+  var headings = JSON.stringify(headings)
   jQuery.ajax({
-    'url': '/jstree?ids='+ids,
+    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
-          var dataSchemaObject = JSON.parse(dataSchemaObject)
-          console.log(dataSchemaObject)
-          //Add the headings to the page.
-          $('#descriptions').html(dataSchemaObject.thisitem[0].name)
-          $('#details').html(dataSchemaObject.thisitem[0].detail)
-          $('#panel').html('')
-          var dataSchemaObject1 = fitstFormat(dataSchemaObject.children)
-          //manipulate data to work with the jstree
-          var jsTreeData = dataJStreeConvert (dataSchemaObject1)
-          var location = 'jstree'
-          $('#'+location).html('')
-          //load the jstree
-          //change the primary page id variable , used for the parent
-          databaseid = ids
-          loadNavMenu(location,jsTreeData)
-        }
-});
+      $('#browserArea').html(dataSchemaObject)
+    }
+  });
 }
+
+///////////////////////////////////// 
+//////  GET ASSEMBLY BY ID    //////
+/////////////////////////////////// 
+function getAssemblyAll(ids){
+  jQuery.ajax({
+    'url': '/getassemblyall?ids='+ids,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      console.log('////////////////////////')
+      console.log(dataSchemaObject)
+      console.log('////////////////////////')
+      query2 = dataSchemaObject.query
+      printtable(dataSchemaObject.query)
+    }
+  });
+}
+
+//////////////////////////////////////// 
+//////  PRINT ASSEMEBLY TABLE    //////
+////////////////////////////////////// 
+function printtable(items){
+  var html = ''
+  html+='<table id="assyarea" class="table table table-bordered">'
+  html+='<thead>'
+  html+='<tr>'
+  html+='<th></th>'
+  html+='<th>Name</th>'
+  html+='</tr>'
+  html+='</thead>'
+  html+='<tbody>'
+  for (var i = 0; i < items.length; i++) {
+    html+='<tr>'
+    html+='<td class="details-control" style="text-align:center;vertical-align:middle;width:2px; " id="'+items[i]['elementID']+'" data-parentid="'+items[i]['parentid']+'" data-childType="'+items[i]['childtype']+'"><i class="fa fa-plus-square-o" aria-hidden="true" ></i></td>'
+    html+='<td>'+items[i].entry['59003382586b5442146f37d1']+'</td>'
+    html+='</tr>'
+  }
+  html+='</tbody>'
+  html+=' </table>'
+
+  $('#counting').html(items.length)
+
+
+  $('#tablearea').html(html)
+  var table = jQuery('#assyarea').DataTable({
+    'destroy':true,
+    "pagingType": "numbers","bPaginate": false,
+    "bLengthChange": false,
+    "sDom":     'ltipr',
+    "bInfo": false,
+    "bAutoWidth": false
+  //  'order': [[ 2, 'asc' ]] ,
+})
+//For reloaction of the search box.
+$("#filterbox").keyup(function() {
+  table.search(this.value).draw();
+});    
+   //Add event listener for opening and closing details
+   jQuery('#tablearea tbody').on('click', 'td.details-control', function () {
+    var tr = jQuery(this).closest('tr');
+    var row = table.row( tr );
+    if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();//////////////////////////////////////
+            tr.removeClass('shown');
+          }
+          else {
+            // Open this row
+            //it is async , and the canvas is not rendered 
+            row.child(additionalDetails(this.id))
+            row.child.show();
+            tr.addClass('shown');
+            // Warning Duplicate IDs
+            $('[id]').each(function(){
+              var ids = $('[id="'+this.id+'"]');
+              if(ids.length>1 && ids[0]==this){
+               $( this ).css( "color", "red" )
+               $( this ).css( "background", "green" )
+               console.warn('Multiple IDs #'+this.id);
+             }
+           });
+          }
+        });
+ }
+
+
+////////////////////////////////////////////////////////////////////
+////////////        FORMIDsABLE VIEW EXTRA DETAIL         //////////
+///////////////////////////////////////////////////////////////////
+function additionalDetails ( d ) {
+// `d` is the original data object for the row
+var html=''
+html+='<a  href="#" id="'+d+'_view" onclick="viewAssy(this.id)" class="list-group-item"><i class="fa fa-sitemap" aria-hidden="true"></i>  View</a>'
+html+='<a   href="#"  id="'+d+'_raw" onclick="EditWithraw(this.id)" class="list-group-item"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>  Edit Raw</a>'
+html+='<a href="#" class="list-group-item list-group-item-danger"><i class="fa fa-trash" aria-hidden="true"></i> Delete</a>'
+return html;
+}
+
+//////////////////////////
+//////  MODIFY     //////
+////////////////////////
+function EditWithraw(id){
+  id = id.replace('_raw', '');
+  childType = $('#'+id+'').data('childtype')
+  //Used for the check self when modifiing.
+  if (!childType) {
+    loadformModal(id,id,'raw',id)
+  } else {
+    loadformModal(childType,id,'raw',id)
+  }
+}
+
+////////////////////////////////
+//////  VIEW ASSEMBLY    //////
+//////////////////////////////
+function viewAssy(ids){
+  ids = ids.replace('_view', ''); 
+  var html = ''
+  html+='id : '
+  html+=ids
+  
+  console.log(query2)
+  for (var i = 0; i < query2.length; i++) {
+    if (query2[i].elementID == ids) {
+    if (query2[i].entry['5909b326545fa738c45954d7']) {
+     html += '<div id="'+query2[i].elementID+'_jstree">default exists</div>'
+       templateloading(query2[i].entry['5909b326545fa738c45954d7'])
+    } else {
+      html+= 'add default assembly'
+    }
+    html+='<pre>'
+    html+=JSON.stringify(query2[i], null, 2)
+    html+='</pre>'
+    }
+  }
+  $('#browserArea').html( html)
+}
+
+
 
 function fitstFormat(databaseMenu){
   var temp =[]
@@ -95,61 +283,9 @@ return databaseMenu
 //////  INITIALISE    //////
 /////////////////////////// 
 $( document ).ready(function() {
-  jstreeGet(databaseid)
+  getAssemblyAll(databaseid)
 });
 
-/////////////////////////////////////////
-//////  DATACONVERT FOR JSTREE    //////
-/////////////////////////////////////// 
-function dataJStreeConvert (databaseMenu){
-  var newData = []
-  for (var i = 0; i < databaseMenu.length; i++) {
-    var temp = {}
-    for (key in databaseMenu[i]){
-      switch (true){
-        case (key == 'id'):
-        temp['id'] =  databaseMenu[i][key]
-        if (databaseMenu[i][key]=='5848fc75b622bb53eca6ffd7') {
-          state = {
-"opened" : true,  // is the node open
-}
-temp['state'] = state
-}
-break;
-case (key == 'parent'):
-temp['parent'] = databaseMenu[i][key]
-break;
-case (key == 'description'):
-temp['text'] = databaseMenu[i][key]
-break;
-case (key == 'icon'):
-temp['icon'] = databaseMenu[i][key]
-break;
-case (key == 'template'):
-aclass = { 
-  "data-template" : databaseMenu[i][key],
-}
-temp['a_attr'] =  aclass
-break;
-case (key == 'field'):
-aclass = { 
-  "data-field" : databaseMenu[i][key],
-}
-temp['a_attr'] =  aclass
-break;          
-}
-}
-newData.push(temp)
-}
-//error trap the menu.
-for (var i = 0; i < newData.length; i++) {
-  if (!newData[i].parent) {
-    newData[i].parent = '#'
-  }
-}
-sortResults(newData,'text', true);
-return newData
-}
 
 ////////////////////////////////////////////////
 ////////   CUSTOM JSON SORTING FUNCTION ///////
@@ -165,96 +301,21 @@ function sortResults(json , prop, asc) {
   return json;
 }
 
-////////////////////////////////////////////////
-////////    LOAD NAV TREE INTO MEMORY   ///////
-//////////////////////////////////////////////
-function loadNavMenu(location,dataNav){
-//console.log(dataNav)
-//Destory the tree if it exists
-if (jQuery('#'+location).jstree("destroy")) {
-  jQuery('#'+location).jstree("destroy");
-}
-var $root =jQuery('#'+location).jstree({ 
-  'core' : {
-    'data' : dataNav,        
-    'themes': {
-      'name': 'proton',
-      'responsive': true,
-      'stripes' : false,
-    },
-  } ,
-  "checkbox" : {
-    "keep_selected_style" : false
-  },
-  "multiple": false,
-  "plugins" : [ "wholerow" , "search" , "state"]
-});
-
-/////////////////////////////////
-////////  SEARCH NAV MENU ///////
-/////////////////////////////////
-var to = false;
-jQuery('#search_field').keyup(function () {
-  if(to) { clearTimeout(to); }
-  to = setTimeout(function () {
-    var v = jQuery('#search_field').val();
-    jQuery('#'+location).jstree(true).search(v);
-  }, 250);
-});
-
-//////////////////////////////////////////////////
-////////  EVENT LISTNER ON THE TREE VIEW  ///////
-////////////////////////////////////////////////
-jQuery('#'+location)
-// listen for event
-.on('changed.jstree', function (e, dataTree) {
-  var i, j, r = []
-  for(i = 0, j = dataTree.selected.length; i < j; i++) {
-    var ids=(dataTree.instance.get_node(dataTree.selected[0]).id);
-//keep useful code snippet , however no longer required.
-var template=(dataTree.instance.get_node(dataTree.selected[0]).a_attr['data-template']);
-var field=(dataTree.instance.get_node(dataTree.selected[0]).a_attr['data-field']);
-r.push(dataTree.instance.get_node(dataTree.selected[i]).template);
-}
-if (field) {
-  templateloading(field)
-}else{
-  templateloading(ids)
-}
-})
-
-//////////////////////////////////////////////
-////////    BUTTON CLICK OPEN FORM  /////////
-////////////////////////////////////////////
-$('#newMenuItem').click(function(){
-//var temp = jQuery('#'+location).jstree("get_selected",true)
-//console.log(temp[0].id)
-newMenuItems(Formids,'','use',databaseid,'',navmenuHeadings)
-})
-console.log('Admin Page')
-console.log('---------------------------')
-console.log(' databaseid :', databaseid )
-console.log(' Formids :', Formids )
-console.log(' navmenuHeadings :', navmenuHeadings )
-console.log(' databaseMenu :', databaseMenu )
-console.log(' temp :', temp )
-console.log('---------------------------')
-console.log('Admin Page')
-}
 
 ///////////////////////////////////////////////////////
 ////////  EVENT LISTNER FUNCTION AREA DATABASE ///////
 /////////////////////////////////////////////////////
 function templateloading(ids){
+  var template = 'defaultsassy'
 //Ensure that the first load error is covered , also any other errors.
 if(ids){
   jQuery.ajax({
     'async': true,
     'global': false,
-    'url': '/templateload?ids='+ids,
+    'url': '/defaultassy?ids='+ids,
     'success': function (dataSchemaObject) {
-      jQuery('#panel').html("")
-      jQuery('#panel').html(dataSchemaObject)
+      jQuery('#panel1').html("")
+      jQuery('#panel1').html(dataSchemaObject)
     }
   });
 }
@@ -289,7 +350,6 @@ function collapse() {
 ////////    GET FORM BY ID  /////////
 ////////////////////////////////////
 function newMenuItems(formdata,idItem,raw,parentid,injectParentid,headings){
-  console.log(formdata,idItem,raw,parentid,injectParentid,headings)
   var headings = JSON.stringify(headings)
   jQuery.ajax({
     'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
@@ -300,5 +360,7 @@ function newMenuItems(formdata,idItem,raw,parentid,injectParentid,headings){
     }
   });
 }
+
+
 </script>
 

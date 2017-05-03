@@ -1,60 +1,46 @@
      <div role="tabpanel" class="tab-pane active" id="summary">
        <p></p><!-- Trigger -->
-
-
 <div style="text-align: right">
-  
   <button class="btn btn-success" data-clipboard-target="#summaries">
    Copy to Clipboard
 </button>
 </div>
-
-
-
  <div id="summaries" >
-   
  </div>
-   
      </div> 
-
- 
-
-
 
 <script type="text/javascript">
  
-
  new Clipboard('.btn');
-
 
 /////////////////////////////
 //////  INITIALISE    //////
 /////////////////////////// 
 $('document').ready(function(){
-for (var i = 0; i < query3.length; i++) {
-var iditem = query3[i].entry['58ff3cb221acae2b40b09b2c']
-var divId = query3[i].elementID
-$('#summaries').append('<div id="'+divId+'_summary">Loading</div>')
-$('#'+divId+'_summary').html(iditem)
-singleidcall(iditem,divId)
-}
+  for (var i = 0; i < query3.length; i++) {
+    var iditem = query3[i].entry['58ff3cb221acae2b40b09b2c']
+    var divId = query3[i].elementID
+    $('#summaries').append('<div id="'+divId+'_summary">Loading</div>')
+    $('#'+divId+'_summary').html(iditem)
+    singleidcallSummary(iditem,divId)
+  }
 })
 
 //////////////////////////////////// 
 //////  PRIMARY AJAX CALL    //////
 //////////////////////////////////
-function singleidcall(elementid,divId) {
+function singleidcallSummary(elementid,divId) {
   console.log('///////////////////////////')
   console.log('id to aquire: ',elementid)
   console.log('///////////////////////////')
+  var searchVar = JSON.parse(JSON.stringify(elementid))
   //AJAX REQUEST TO SERVER
   jQuery.ajax({
     'async': true,
     'global': false,
-    'url': '/singleidcall?ids='+elementid,
+    'url': '/singleidcall?ids='+searchVar,
     'success': function (dataSchemaObject) {
- 
-      formatTheAssemblySummary(dataSchemaObject,elementid,divId)
+      formatTheAssemblySummary(dataSchemaObject,searchVar,divId)
     }
   });
 }
@@ -83,6 +69,7 @@ function create_uid() {
 ////        REQUIRED FORMATING OF DATA        //// 
 /////////////////////////////////////////////////
 function formatTheAssemblySummary(dataset,elementid,divId){
+if (dataset.query) {
   var tempVar = []
   var tempVar1 = []
   var tempVar2 = []
@@ -102,8 +89,8 @@ function formatTheAssemblySummary(dataset,elementid,divId){
       tempVar1.push(tempVar) 
     }
     tempVar2[dataset.query.elementID] = tempVar1
- 
   compileTheTableForSummary(tempVar2,dataset,elementid,divId)
+  }
 }
 
 ///////////////////////////////
@@ -112,7 +99,6 @@ function formatTheAssemblySummary(dataset,elementid,divId){
 function compileTheTableForSummary(dataset,originalData,elementid,divId) {
   var tableHeadings = ['description','value','units','detail','id' ]
   html = returnTheActualHtmlForSummary  (dataset,originalData,elementid)
- 
   $('#'+divId+'_summary').html(html)
 };
 
@@ -120,10 +106,11 @@ function compileTheTableForSummary(dataset,originalData,elementid,divId) {
 ////////    USED FOR THE COMPILATION OF THE DETAILS TABLE  /////////
 /////////////////////////////////////////////////////////////////////
 function returnTheActualHtmlForSummary (data,originalData,id){
-  var  html = ''
+
+if (data.length==0) {
+    var  html = ''
   html+='<h4>'+originalData.query1['name']+'</h4><p>'+originalData.query1['detail']+'</p>'  
   html += '<table class="table table-bordered table-condensed">  '
- 
   html += '<thead><tr><th>Description</th><th>Value</th><th>Units</th><th>Detail</th></tr></thead>'
   html += '<tbody>'
   for (key in data) {
@@ -153,6 +140,14 @@ function returnTheActualHtmlForSummary (data,originalData,id){
   html += '</tbody>'
   html += '</table>'
   return html
+} else {
+    html += 'Failed'
+  return html
+}
+
+
+
+
 } 
 
 //////////////////////////////////////////

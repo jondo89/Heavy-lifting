@@ -1,0 +1,259 @@
+<div role="tabpanel" class="tab-pane active" id="table">
+ <p></p>
+ <div id='formDelivery'>
+ </div>
+</div> 
+
+
+<script type="text/javascript">
+
+//The menu item from JSTREE
+var query = {{{query}}}
+//The applicable form for use ( query.childtype)
+var query1 = {{{query1}}}
+//The form in queston
+var query2 = {{{query2}}}
+//the form elements.
+var query3 = {{{query3}}}
+//the form datasets.
+var query4= {{{query4}}}
+//The query.parentid items.
+var tablelistdata = {{{query3}}};
+
+ 
+
+ 
+//////////////////////////////////////////
+//////  CAPATILIZE FIRST LETTER    //////
+////////////////////////////////////////
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+/////////////////////////////
+////     DEBUG AREA     //// 
+///////////////////////////
+console.log( 'tableComponent loading' )
+console.log( '-------------------------' )
+console.log( 'query : ',query )
+console.log( 'query1 : ',query1 )
+console.log( 'query2 : ',query2 )
+console.log( 'query3 : ',query3 )
+console.log( 'query4 : ',query4 )
+console.log( 'tablelistdata : ',tablelistdata )
+ 
+console.log( '-------------------------' )
+console.log( 'tableComponent loading' )
+
+ 
+var modifiedTableListData
+var modifiedListData
+
+ 
+
+tablelistdata.sort(function(a, b) {
+   if (a.entry.order && b.entry.order) {
+return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+}
+});
+query3.sort(function(a, b) {
+
+if (a.entry.order && b.entry.order) {
+return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+}
+
+  
+});
+query2.sort(function(a, b) {
+  return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+});
+
+////////////////////////////////////
+////        INITIALIZE         //// 
+//////////////////////////////////
+$('document').ready(function(){
+  dataFormatComp()
+  var temp = dataJStreeConvert (modifiedListData)
+  loadNavMenu('jstreeArea', temp)
+})
+
+ //////////////////////////////////////////
+////        CREATE UNIQUE ID         //// 
+////////////////////////////////////////
+function create_uid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+  s4() + '-' + s4() + s4() + s4();
+}
+
+///////////////////////////////////////////////////
+////        REQUIRED FORMATING OF DATA        //// 
+/////////////////////////////////////////////////
+function dataFormatComp(){
+  var tempVar = []
+  var tempVar1 = []
+  var tempVar2 = []
+  for (var i = 0; i < tablelistdata.length; i++) {
+    tempVar1 = []
+    for(key in tablelistdata[i].entry){
+      for (var j = 0; j < query2.length; j++) {
+        if (query2[j].elementID == key) {
+          tempVar = {
+            'description' : query2[j]['entry']['description'],
+            'value' : tablelistdata[i].entry[query2[j].elementID],
+            'units' : query2[j]['entry']['units'],
+            'detail' : query2[j]['entry']['detail'],
+            'id' : query2[j]['elementID'] 
+          }
+        }
+      }
+      tempVar1.push(tempVar) 
+    }
+    tempVar2[tablelistdata[i].elementID] = tempVar1
+  }
+  var temp = []
+  var temp
+  //This is where the id is injected into the menu item . Crude hacky work around , not sure how to improve.
+  for (var i = 0; i < tablelistdata.length; i++) {
+    for(key in tablelistdata[i].entry){
+      for (var j = 0; j < query2.length; j++) {
+        if (query2[j].elementID == key) {
+          tablelistdata[i].entry[query2[j]['entry']['description']] = tablelistdata[i].entry[query2[j].elementID]
+          delete tablelistdata[i].entry[query2[j].elementID]
+        }
+      }
+    }
+      //the add the id to the array going into the menu .
+      if (tablelistdata[i]['elementID'] == "") {
+        tablelistdata[i].entry._id = tablelistdata[i]['_id']
+      }else{
+        tablelistdata[i].entry._id = tablelistdata[i]['elementID']
+      }
+      tablelistdata[i].entry.name = tablelistdata[i]['name']
+      tablelistdata[i].entry.childType = tablelistdata[i]['childType']
+      tablelistdata[i].entry.name = tablelistdata[i]['name']
+   // tablelistdata[i].entry.detail1 = tablelistdata[i]['detail']
+   tablelistdata[i].entry.userID = tablelistdata[i]['userID']
+   tablelistdata[i].entry.parentid = tablelistdata[i]['parentid']
+   temp.push(tablelistdata[i].entry)
+ }
+ modifiedListData = tempVar2
+ modifiedTableListData = temp
+}
+
+ 
+
+//////////////////////////////////////////////
+//////  CHECK IF AN OBJECT IS AN ARRAY //////
+//////////////////////////////////////////////
+function isArray(obj){
+  return !!obj && obj.constructor === Array;
+}
+   
+ 
+     
+
+/////////////////////////////////////////
+//////  DATACONVERT FOR JSTREE    //////
+/////////////////////////////////////// 
+function dataJStreeConvert (databaseMenu){
+  var newData = []
+  
+for (key in databaseMenu){
+  console.log(databaseMenu[key])
+  var tempVar = {}
+  for (var i = 0; i < databaseMenu[key].length; i++) {
+    
+    tempVar[databaseMenu[key][i]['description']] = databaseMenu[key][i]['value']
+  }
+  newData.push(tempVar)
+}
+
+//error trap the menu.
+for (var i = 0; i < newData.length; i++) {
+  if (!newData[i].parent) {
+    newData[i].parent = '#'
+  }
+}
+sortResults(newData,'text', true);
+return newData
+}
+
+////////////////////////////////////////////////
+////////    LOAD NAV TREE INTO MEMORY   ///////
+//////////////////////////////////////////////
+function loadNavMenu(location,dataNav){
+
+console.log('////////////////////////// DEBUG //////////////////////////')
+console.log(dataNav)
+console.log('////////////////////////// DEBUG //////////////////////////')
+//console.log(dataNav)
+//Destory the tree if it exists
+if (jQuery('#'+location).jstree("destroy")) {
+  jQuery('#'+location).jstree("destroy");
+}
+
+var $root =jQuery('#'+location).jstree({ 
+  'core' : {
+    'data' : dataNav,        
+    'themes': {
+      'name': 'proton',
+      'responsive': true,
+      'stripes' : false,
+    },
+  } ,
+  "checkbox" : {
+    "keep_selected_style" : false
+  },
+  "multiple": false,
+  "plugins" : [ "wholerow" , "search" , "state"]
+});
+
+/////////////////////////////////
+////////  SEARCH NAV MENU ///////
+/////////////////////////////////
+var to = false;
+jQuery('#search_field').keyup(function () {
+  if(to) { clearTimeout(to); }
+  to = setTimeout(function () {
+    var v = jQuery('#search_field').val();
+    jQuery('#'+location).jstree(true).search(v);
+  }, 250);
+});
+
+//////////////////////////////////////////////////
+////////  EVENT LISTNER ON THE TREE VIEW  ///////
+////////////////////////////////////////////////
+jQuery('#'+location)
+// listen for event
+.on('changed.jstree', function (e, dataTree) {
+  var i, j, r = []
+  for(i = 0, j = dataTree.selected.length; i < j; i++) {
+    var ids=(dataTree.instance.get_node(dataTree.selected[0]).id);
+//keep useful code snippet , however no longer required.
+var template=(dataTree.instance.get_node(dataTree.selected[0]).a_attr['data-template']);
+var field=(dataTree.instance.get_node(dataTree.selected[0]).a_attr['data-field']);
+r.push(dataTree.instance.get_node(dataTree.selected[i]).template);
+}
+if (field) {
+  //templateloading(field)
+}else{
+  //templateloading(ids)
+}
+})
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK OPEN FORM  /////////
+////////////////////////////////////////////
+$('#newMenuItem').click(function(){
+//var temp = jQuery('#'+location).jstree("get_selected",true)
+//console.log(temp[0].id)
+newMenuItems(Formids,'','use',databaseid,'',navmenuHeadings)
+})
+ 
+}
+
+</script>

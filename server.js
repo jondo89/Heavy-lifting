@@ -195,21 +195,19 @@ app.get('/navmenuload', readController.navmenuload);
 app.get('/loadusermenu', readController.loadusermenu);
 //get the loadcompmenu
 app.get('/loadcompmenu', readController.loadcompmenu);
-
 //get the single element id
 app.get('/singleidcall', readController.singleidcall);
 //get the single element id
 app.get('/findme', readController.findme);
+//get the get assembly all element id
+app.get('/getassemblyall', readController.getassemblyall);
+//get the get assembly all element id
+app.get('/defaultassy', readController.defaultassy);
 
 /* Redundant
 //click to open with navmenu
 app.get('/pageload', readController.pageload);
 */
-
-
-
-
-
 
 app.get('/contact', contactController.contactGet);
 app.post('/contact', contactController.contactPost);
@@ -230,12 +228,6 @@ app.get('/auth/google', passport.authenticate('google', { scope: 'profile email'
 app.get('/auth/google/callback', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/login' }));
 app.get('/auth/github', passport.authenticate('github', { scope: [ 'user:email profile repo' ] }));
 app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/', failureRedirect: '/login' }));
-
-
-
- 
-
-
 
 /////////////////////////////
 ////       404          //// 
