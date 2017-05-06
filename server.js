@@ -203,6 +203,12 @@ app.get('/findme', readController.findme);
 app.get('/getassemblyall', readController.getassemblyall);
 //get the get assembly all element id
 app.get('/defaultassy', readController.defaultassy);
+// getformraw
+app.get('/getformraw', readController.getformraw);
+// getformraw
+app.get('/getcompform', readController.getcompform);
+
+
 
 /* Redundant
 //click to open with navmenu
@@ -233,7 +239,7 @@ app.get('/auth/github/callback', passport.authenticate('github', { successRedire
 ////       404          //// 
 ///////////////////////////
 app.get('*', function(req, res){
-  res.render('404');
+  res.render('404',{layout:false});
 });
 
 // Production error handler

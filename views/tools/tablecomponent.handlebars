@@ -1,4 +1,4 @@
-     <div role="tabpanel" class="tab-pane active" id="table">
+     <div role="tabpanel" class="tab-pane active" id="tableComponent">
        <p></p>
        <div id='formDelivery'>
        </div>
@@ -22,9 +22,11 @@ console.log( 'formids : ',formids )
 console.log( '-------------------------' )
 console.log( 'tableComponent loading' )
 
-var tableID = create_uid()
+ 
 var modifiedTableListData
 var modifiedListData
+
+ 
 
 tablelistdata.sort(function(a, b) {
    if (a.entry.order && b.entry.order) {
@@ -52,7 +54,7 @@ $('document').ready(function(){
   datableload(modifiedTableListData)
 })
 
-
+ 
 
 ///////////////////////////////////////////////////
 ////        REQUIRED FORMATING OF DATA        //// 
@@ -123,7 +125,7 @@ if (items.entry.headings) {
 } else {
   var tableHeadings = ['name','detail','userID','id','parentid','childType','description']
 }
-var tempVarIDs = formids+'tableloadID'
+var tempVarIDs = formids+'_tableloadID'
     //inject the ID html table into the page.
     $('#'+formids).html('<table id="'+tempVarIDs+'" class="table table-bordered table-compressed table-hover" cellspacing="0" width="100%"></table>')
     //error message text
@@ -174,25 +176,15 @@ for (var i = 0; i < data.length; i++) {
   }
   for (var j = 0; j < headings.length; j++) {
     html += '<td style=" vertical-align:middle">'
-
       if ( headings[j]=='Url') {
-
- 
 if (data[i][headings[j]] != undefined) {
   html += '<a href="'+data[i][headings[j]]+'" target="_blank">Link</a>'
 } else {
   html += "Blank"
 }
-
-
-
-       
       } else  {
         html += data[i][headings[j]]
       }
-
-
-    
     html += '</td>'
   }
   html += '</tr>'
@@ -216,7 +208,7 @@ function detailTableLoad (data,id){
 //pull in the element id of query 2 for the correct mofiy form
 var componentFom = query1[0].elementID
 html += '<table class="table table-bordered table-condensed">  '
-html += '<thead><tr>'
+
 html += '<thead><tr><th>Description</th><th>Value</th><th>Units</th><th>Detail</th></tr></thead>'
 html += '<tbody>'
 for (key in data) {
@@ -228,21 +220,34 @@ for (key in data) {
       html += '</td>'
       html += '<td>'
 
-      if (data[key][i]['description']=='Url') {
 
-if (data[key][i]['value'] != undefined) {
-  html += '<a href="'+data[key][i]['value']+'" target="_blank">Link</a>'
-} else {
-  html += "Blank"
+
+ 
+
+switch(true){
+  case(data[key][i]['description']=='Url'):
+    if (data[key][i]['value'] != undefined) {
+      html += '<a href="'+data[key][i]['value']+'" target="_blank">Link</a>'
+    } else {
+      html += "Blank"
+    }
+  break;
+  case(data[key][i]['description']=='Image'):
+ 
+    if (data[key][i]['value'] != undefined) {
+
+
+      html += '<img style="max-width:150px" src="'+data[key][i]['value']+'" alt="..." class="img-rounded">'
+    } else {
+      html += "Blank"
+    }
+  break;
+  default:
+    html += data[key][i]['value']
+  break;
 }
 
-        
 
-
-
-      } else  {
-        html += data[key][i]['value']
-      }
       html += '</td>'      
       html += '<td>'
       html += data[key][i]['units']
@@ -336,6 +341,7 @@ function formatDefault ( d ) {
       case (items.entry.buttons[j] == 'norevraw'):
       html += '<button type="button" class="btn btn-default" id="'+d+'_1" onclick="useForm(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">norevraw</button>'
       break;  
+  
     }
   }   
   html +='</div><div class="btn-group" role="group" aria-label="...">'
@@ -349,14 +355,22 @@ function formatDefault ( d ) {
       break;  
     }
   }  
+  html +='</div><div class="btn-group" role="group" aria-label="...">'
+  for (var j = 0; j < items.entry.buttons.length; j++) {
+    switch(true){
+      case (items.entry.buttons[j] == 'addcomp'):
+      html += '<button type="button" class="btn btn-primary" id="'+d+'_addcomp" onclick="demo_create(this.id)">Add Component</button>'
+      break; 
+    }
+  } 
   html +='  </div>'
   html +='<p></p><pre>'+d+'</pre>'
   html += '<div id="'+d+'_loadingArea" ></div>'
-
-
-  
   return html;
 }
+
+
+
 
 /////////////////////////
 //////  DELETE   ///////
@@ -496,6 +510,9 @@ function modifyItemComp(id){
     var entry = {
       elementID : id
     } 
+
+
+    console.log('Tracing here',childType,id,'componentedit',parentIdTemp,headings, entry)
   //The id of the emement needs to be injected into the form , as it does not have that data.
   loadformModal(childType,id,'componentedit',parentIdTemp,headings, entry)
 }

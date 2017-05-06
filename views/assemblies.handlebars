@@ -1,42 +1,37 @@
  <p></p>
  <div class="row">
   <div class="col-md-4" id="navMenuPanel">
-<button onclick="clickbutton()">Button</button>
-  <div class="panel panel-default">
-    <div class="panel-heading">Assembly Detail </div>
-    <div class="panel-body">
-      <p></p>
-      <div id="jstreeArea"></div>
-      <p></p>
-      <div style="text-align: center">
-            <div class="btn-group" role="group" aria-label="...">
-              <a class="btn btn-default" id="inject" role="button" data-toggle="collapse" href="#naming" aria-expanded="false" aria-controls="naming">Save</a>
-            </div>
-
-              <div class="btn-group" role="group" aria-label="...">
-          <!--<button type="button" class="btn btn-default" onclick="demo_default();"><i class="fa fa-cogs" aria-hidden="true"></i></button>
-          <button type="button" class="btn btn-default" onclick="demo_create();"><i class="fa fa-cog" aria-hidden="true"></i></button>-->
-          <button type="button" class="btn btn-default" onclick="demo_rename();"><i class="glyphicon glyphicon-pencil"></i></button>
+    <div class="panel panel-default" id="assembliespanel" style="display: none;">
  
-          <button type="button" class="btn btn-default" onclick="demo_delete();"><i class="glyphicon glyphicon-remove"></i></button>
-        </div>
-<pre id="storage"></pre>
-</div>
+      <div class="panel-body">
+
+
+<h5 id="assyname"> </h5>
+ <small>Use the navigation tree to interact with your assemblies.</small>
+
+        <p></p>
+        <div id="jstreeArea"></div>
+        <p></p>
+        <div  >
+    
+        </div><p></p>
+    
+ 
+     <div id="treebutton" style="text-align: center"></div><p></p>
+      <div class="alert alert-info" role="alert"> <strong>Heads up!</strong>    Use the save button to update node names. </div>
+      </div>
+
+
     </div>
-  </div>
-  
     <div class="panel panel-default">
-      <div class="panel-heading">
-        <div class="row">
-          <div class="col-md-6">
-            Your Assemblies <span class="badge" id="counting">0</span>
-          </div>
-          <div class="col-md-6 text-right">
-           <button type="button" class="btn btn-xs btn-default" onclick="deployFormUse('58ff3c5721acae2b40b09b2a')"><i class="fa fa-plus"></i>  New Assembly</button>
-         </div>
-       </div>
-     </div>
-     <div class="panel-body">
+    <div class="panel-body">
+          
+  
+
+<h5><strong>Your Assemblies <span class="badge" id="counting">0</span></strong></h5>
+ <small>Use the navigation tree to interact with your assemblies.</small>
+
+  
       <p></p>
       <div>
         <!-- Nav tabs -->
@@ -56,20 +51,17 @@
           <div role="tabpanel" class="tab-pane" id="Private">...</div>
         </div>
       </div>
+       <button type="button" class="btn btn-success" onclick="deployFormUse('58ff3c5721acae2b40b09b2a')"><i class="fa fa-plus"></i>  New Assembly</button>
     </div>
+
   </div>
 
 </div>  
 <div class="col-md-8" id="browserArea">
-  <div id="panel">  
-    <div class="alert alert-info" role="alert"> <strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>
-  </div> 
+  <div class="alert alert-info" role="alert"> <strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>
 </div>
 </div>
-
 <div id="panel1"></div>
-
-
 <script type="text/javascript">
 
   $('#descriptions').html('Assemblies')
@@ -80,9 +72,9 @@
   var navmenuHeadings = ['detail','description','icon','buttons','tabs','parent','template']
   var databaseMenu = []
   var temp =[]
- 
-var assemblies
-var assembly
+
+  var assemblies
+  var assembly
 
 /////////////////////////////
 ////     DEBUG AREA     //// 
@@ -97,7 +89,7 @@ console.log( 'temp : ',temp )
 console.log( '-------------------------' )
 console.log( 'admin loading' )
 
- 
+
 
 
 
@@ -110,14 +102,13 @@ function deployFormUse(formToUse){
   var headings = ["description","detail","icon","headings"]
   var entry =''
   var templateload = '58f99a2b11db6c2118a9fa2a'
-  loadformModal(formToUse,'','component',templateload,headings,entry)
+  loadAssyFormModal(formToUse,'','component',templateload,headings,entry)
 }
 
 //////////////////////////////////////
 ////////    GET FORM BY ID  /////////
 ////////////////////////////////////                                                                                                              
-function loadformModal(formdata,idItem,raw,parentid,headings){
-  console.log('Entering here' , parentid)
+function loadAssyFormModal(formdata,idItem,raw,parentid,headings){
   var headings = JSON.stringify(headings)
   jQuery.ajax({
     'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
@@ -138,7 +129,6 @@ function getAssemblyAll(ids){
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
- 
       assemblies = dataSchemaObject.query
       printtable(dataSchemaObject.query)
     }
@@ -173,7 +163,7 @@ function printtable(items){
   $('#tablearea').html(html)
   var table = jQuery('#assyarea').DataTable({
     'destroy':true,
-    "pagingType": "numbers","bPaginate": false,
+    "pagingType": "numbers", 
     "bLengthChange": false,
     "sDom":     'ltipr',
     "bInfo": false,
@@ -212,18 +202,20 @@ $("#filterbox").keyup(function() {
         });
  }
 
-
 ////////////////////////////////////////////////////////////////////
 ////////////        FORMIDsABLE VIEW EXTRA DETAIL         //////////
 ///////////////////////////////////////////////////////////////////
 function additionalDetails ( d ) {
 // `d` is the original data object for the row
 var html=''
-html+='<a  href="#" id="'+d+'_view" onclick="viewAssy(this.id)" class="list-group-item"><i class="fa fa-sitemap" aria-hidden="true"></i>  View</a>'
-html+='<a   href="#"  id="'+d+'_raw" onclick="EditWithraw(this.id)" class="list-group-item"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>  Edit Raw</a>'
+html+='<a href="#" id="'+d+'_view" onclick="viewAssy(this.id)" class="list-group-item"><i class="fa fa-sitemap" aria-hidden="true"></i>  View</a>'
+html+='<a href="#"  id="'+d+'_raw" onclick="EditWithraw(this.id)" class="list-group-item"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>  Edit Raw</a>'
 html+='<a href="#" class="list-group-item list-group-item-danger"><i class="fa fa-trash" aria-hidden="true"></i> Delete</a>'
 return html;
 }
+
+
+
 
 //////////////////////////
 //////  MODIFY     //////
@@ -233,9 +225,9 @@ function EditWithraw(id){
   childType = $('#'+id+'').data('childtype')
   //Used for the check self when modifiing.
   if (!childType) {
-    loadformModal(id,id,'raw',id)
+    loadAssyFormModal(id,id,'raw',id)
   } else {
-    loadformModal(childType,id,'raw',id)
+    loadAssyFormModal(childType,id,'raw',id)
   }
 }
 
@@ -248,27 +240,29 @@ function viewAssy(ids){
   var html = ''
   html+='id : '
   html+=ids
- 
+
   for (var i = 0; i < assemblies.length; i++) {
     if (assemblies[i].elementID == ids) {
 
       assembly = assemblies[i]
-    if (assemblies[i].entry['5909b326545fa738c45954d7']) {
-     html += '<div id="'+assemblies[i].elementID+'_jstree">default exists</div>'
+      if (assemblies[i].entry['5909b326545fa738c45954d7']) {
+       html += '<div id="'+assemblies[i].elementID+'_jstree">default exists</div>'
        templateloading(assemblies[i].entry['5909b326545fa738c45954d7'])
-    } else {
+     } else {
       html+= 'add default assembly'
     }
     html+='<pre>'
     html+=JSON.stringify(assemblies[i], null, 2)
     html+='</pre>'
-    }
   }
-  $('#browserArea').html( html)
+}
+$('#browserArea').html( html)
 }
 
 
-
+//////////////////////////////// 
+//////  DATAFORMATING    //////
+////////////////////////////// 
 function fitstFormat(databaseMenu){
   var temp =[]
 //This is where the id is injected into the menu item . Crude hacky work around , not sure how to improve.
@@ -290,7 +284,7 @@ return databaseMenu
 /////////////////////////// 
 $( document ).ready(function() {
   getAssemblyAll(databaseid)
- 
+
 });
 
 
@@ -307,7 +301,7 @@ function sortResults(json , prop, asc) {
   });
   return json;
 }
- 
+
 
 
 ///////////////////////////////////////////////////////

@@ -1485,12 +1485,8 @@ if (templates) {
             templateload : JSON.stringify(ids),
             layout:false,
 })
- 
-           
+       
 }
- 
-
-
 //Query end
 })
 //Query end
@@ -1547,7 +1543,7 @@ var query = heavyliftingModel.findOne(
   })
 console.log('Debug 0.')
 query.exec(function (err, query_return) {
-     if(err){console.log('Error Here'); return;}
+     if(err){console.log('Error Here defaultassy'); return;}
 if (query_return.childType) {
  childitem=query_return.childType 
 } else {
@@ -1635,7 +1631,7 @@ query2.exec(function (err, query2_return) {
   } 
   console.log('Debug 3.')
   query3.exec(function (err, query3_return) {
-  if(err){console.log('Error Here'); return;} 
+  if(err){console.log('Error Here defaultassy'); return;} 
 console.log('Debug 4.')
   query4.exec(function (err, query4_return) {
   if(err){
@@ -1723,6 +1719,177 @@ console.log('//  Debug from here  //')
 })
 //Query end
 })
+//Query end
+})
+//Query end
+})
+}
+
+///////////////////////////////////////////////////////
+////       DEPLOY THE HANDLEBARS RAW FORM         //// 
+/////////////////////////////////////////////////////
+exports.getformraw = function(req, res) {
+console.log('---------------------------------')
+console.log('-----------getformraw------------')
+console.log('---------------------------------')
+
+var item = req.param('item')
+if (!item) {
+  item =''
+}
+//This is the raw form
+var query = heavyliftingModel.findOne(
+{
+  $and : 
+  [
+  {$or: [
+    {"elementID": '58aa74130b9d3241280ecf16' },
+    {"_id":  '58aa74130b9d3241280ecf16' }
+    ]}, 
+    {
+      "active": "true" 
+    }
+    ]
+  })
+
+query.exec(function (err, query_return) {
+  if(err){console.log('Error Here'); return;} 
+  if(query_return){
+       //the menu item elementid should arrive poulated to avoid confusion.
+       if(query_return.elementID==''){
+        query_return.elementID=query_return._id
+      }
+    }else {
+      console.log('query_return failed')
+    }
+
+//This is the raw form
+var query1 = heavyliftingModel.findOne(
+{
+  $and : 
+  [
+  {$or: [
+    {"elementID": item },
+    {"_id":  item }
+    ]}, 
+    {
+      "active": "true" 
+    }
+    ]
+  })
+
+query1.exec(function (err, query1_return) {
+  if(err){console.log('Error Here'); return;} 
+  if(query1_return){
+       //the menu item elementid should arrive poulated to avoid confusion.
+       if(query1_return.elementID==''){
+        query1_return.elementID=query1_return._id
+      }
+    }else {
+      console.log('query1_return failed')
+    }
+/////////////////////////////
+////      DEBUG         //// 
+///////////////////////////
+console.log('-----------getform------------')
+console.log('query : ',query_return)
+console.log('query1 : ',query1_return)
+console.log('-----------getform------------')
+/////////////////////////////
+////      DEBUG         //// 
+///////////////////////////
+  res.render('forms/'+'raw', 
+    {
+      query  :  JSON.stringify(query_return),
+      query1 :  JSON.stringify(query1_return),
+      layout:false
+    })
+//Query end
+})
+//Query end
+})
+}
+
+
+/////////////////////////////////////////////////////////////////
+////       DEPLOY THE HANDLEBARS COMPONENT TEMPLATE         //// 
+///////////////////////////////////////////////////////////////
+exports.getcompform = function(req, res) {
+console.log('----------------------------------')
+console.log('-----------getcompform------------')
+console.log('----------------------------------')
+
+var item = req.param('item')
+if (!item) {
+  item =''
+}
+//This is the raw form
+var query = heavyliftingModel.findOne(
+{
+  $and : 
+  [
+  {$or: [
+    {"elementID": '58aa74130b9d3241280ecf16' },
+    {"_id":  '58aa74130b9d3241280ecf16' }
+    ]}, 
+    {
+      "active": "true" 
+    }
+    ]
+  })
+
+query.exec(function (err, query_return) {
+  if(err){console.log('Error Here'); return;} 
+  if(query_return){
+       //the menu item elementid should arrive poulated to avoid confusion.
+       if(query_return.elementID==''){
+        query_return.elementID=query_return._id
+      }
+    }else {
+      console.log('query_return failed')
+    }
+
+//This is the raw form
+var query1 = heavyliftingModel.findOne(
+{
+  $and : 
+  [
+  {$or: [
+    {"elementID": item },
+    {"_id":  item }
+    ]}, 
+    {
+      "active": "true" 
+    }
+    ]
+  })
+
+query1.exec(function (err, query1_return) {
+  if(err){console.log('Error Here'); return;} 
+  if(query1_return){
+       //the menu item elementid should arrive poulated to avoid confusion.
+       if(query1_return.elementID==''){
+        query1_return.elementID=query1_return._id
+      }
+    }else {
+      console.log('query1_return failed')
+    }
+/////////////////////////////
+////      DEBUG         //// 
+///////////////////////////
+console.log('-----------getform------------')
+console.log('query : ',query_return)
+console.log('query1 : ',query1_return)
+console.log('-----------getform------------')
+/////////////////////////////
+////      DEBUG         //// 
+///////////////////////////
+  res.render('forms/'+'raw', 
+    {
+      query  :  JSON.stringify(query_return),
+      query1 :  JSON.stringify(query1_return),
+      layout:false
+    })
 //Query end
 })
 //Query end

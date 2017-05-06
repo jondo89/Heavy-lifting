@@ -1,18 +1,25 @@
 
 <div class="row">
   <div class="col-md-12" id="colLeft">
+  <div id="mapLoad"></div>
     <div id="formDelivery"></div>
   </div>  
   <div class="col-md-0" id="colRight">
-    <div id="formDeliveryEXDetail">
-        <div id="mapLoad"></div>
-    </div>
+
+ 
+   
+ <div id="navig" data-spy="affix" data-offset-top="10">
+    <div id="pickerArea" style="overflow: auto;"></div>
+ </div>
+
+ 
   </div>  
 </div>
 
-
-
 <script type="text/javascript">
+
+$('#navig').affix({offset: {top: -50} });
+
   var formdata = {{{formdata}}}
   var idItem = {{{idItem}}}
   var raw = {{{raw}}}
@@ -20,12 +27,13 @@
   var formid1 = create_uid()
   var parentItem = {{{parentItem}}}
   
+  var htmlcompile  ={}
 
-var lat 
-var long
-var alt
-var myMarker
-var googleMapsObject
+  var lat 
+  var long
+  var alt
+  var myMarker
+  var googleMapsObject
 
   {{#if headings}}
   var headingsTemp = {{{headings}}}
@@ -53,8 +61,9 @@ var entry
 {{/if}}
 console.log( '-------------------------' )
 console.log( 'form loading' )
-
-
+////////////////////////////////////
+////        DEBUG AREA         //// 
+//////////////////////////////////
 
 
 //////////////////////////////////////////
@@ -95,7 +104,7 @@ function getdatacomp(formdata,idItem,raw){
     'global': false,
     'success': function (dataSchemaObject) {
       dataSchemaObject['formdata'].sort(function(a, b) {
-          return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+        return parseFloat(a.entry.order) - parseFloat(b.entry.order);
       });
       formatAlpaca(dataSchemaObject)
     }
@@ -116,6 +125,9 @@ function getdata(formdata,idItem,raw){
   });
 }
 
+/////////////////////////////////////////////
+////////    FROM VARIABLE CREATION /////////
+///////////////////////////////////////////
 function formatAlpaca(objectOld) {
   var tempSchema ={
     "title" : parentItem.name,
@@ -169,7 +181,7 @@ switch (true){
   case(objectOld.formdata[i].entry.type =='text'):
   tempSchema.properties[objectOld.formdata[i]['elementID']] = {
     "title":'',
-    "dependencies": tempDepend
+    "dependencies": tempDepend,
   }
   tempoptions.fields[objectOld.formdata[i]['elementID']] = {
     "helper":objectOld.formdata[i].entry.description,
@@ -187,15 +199,8 @@ switch (true){
     'field':objectOld.formdata[i].entry.objectType
   }
   break;
-
-
-
   case(objectOld.formdata[i].entry.type =='Latitude' || objectOld.formdata[i].entry.type =='Longitude' || objectOld.formdata[i].entry.type =='Altitude'):
-
  
-$('#colRight').addClass('col-md-6').removeClass('col-md-12');
-$('#colLeft').addClass('col-md-6').removeClass('col-md-0');
-
   var location = 'mapLoad'
   if (objectOld.formdata[i].entry.type =='Latitude') {
    lat = objectOld.formdata[i].elementID
@@ -204,17 +209,17 @@ $('#colLeft').addClass('col-md-6').removeClass('col-md-0');
     "dependencies": tempDepend
   }
   tempoptions.fields[objectOld.formdata[i]['elementID']] = {
-    "helper":objectOld.formdata[i].entry.detail
+    "helper":objectOld.formdata[i].entry.detail 
   }
 }
 if (objectOld.formdata[i].entry.type =='Longitude') {
  long = objectOld.formdata[i].elementID
  tempSchema.properties[objectOld.formdata[i]['elementID']] = {
   "title":objectOld.formdata[i].entry.description,
-  "dependencies": tempDepend
+  "dependencies": tempDepend 
 }
 tempoptions.fields[objectOld.formdata[i]['elementID']] = {
-  "helper":objectOld.formdata[i].entry.detail
+  "helper":objectOld.formdata[i].entry.detail 
 } 
 }  
 if (objectOld.formdata[i].entry.type =='Altitude') {
@@ -229,19 +234,17 @@ tempoptions.fields[objectOld.formdata[i]['elementID']] = {
 }  
 loadMap(location,lat,long)
 break;
-
-  default:
-  tempSchema.properties[objectOld.formdata[i]['elementID']] = {
-    "title":objectOld.formdata[i].entry.description,
-    "dependencies": tempDepend
-  }
-  tempoptions.fields[objectOld.formdata[i]['elementID']] = {
-    "helper":objectOld.formdata[i].entry.detail
-  }
-  break;
+default:
+tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+  "title":objectOld.formdata[i].entry.description,
+  "dependencies": tempDepend
+}
+tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+  "helper":objectOld.formdata[i].entry.detail
+}
+break;
 }
 }
-
  //Compile the json for the form.
  var data =  {
   formdata : {
@@ -251,13 +254,9 @@ break;
     }
   },  idItem : objectOld.idItem
 } 
-
-
 data.idItem.entry
 initiateForm(data)
 }
-
-
 
 ////////////////////////////////////////
 ////        CREATE THE FORM        //// 
@@ -267,9 +266,6 @@ function initiateForm(data){
   schema : data.formdata.entry['schema'],
   options : data.formdata.entry['options']
 }
-
- 
-
  //----------------------------------------------------------------------------------------------
  if (raw!='component' && raw!='componentedit' && raw!='componentcopy') {
   if (raw!='raw' && raw!='copyraw') {
@@ -336,36 +332,37 @@ function formInit(schema,options,data){
 var arr = options.fields
 $.each(arr, function(index, value) { 
   if (arr[index]['type'] == 'select' ) {
- var temp = ''
+   var temp = ''
 //Drop down call for the active 
 switch (true) {
   case (index =="active"):
-    temp = "58fd8d190c8b981ccc7c2402"
+  temp = "58fd8d190c8b981ccc7c2402"
   break;
-    case (index =="units"):
-    temp = "58fdeb040c8b981ccc7c2444"
+  case (index =="units"):
+  temp = "58fdeb040c8b981ccc7c2444"
   break;
   default:
-    temp = arr[index]['field']
+  temp = arr[index]['field']
   break;
 }
-   arr[index]["dataSource"] = function(callback) {
-    jQuery.ajax({
-      'async': true,
-      'global': false,
-      'url': '/getformfield?data='+temp ,
-      'success': function (dataSchemaObject) {
-        if (dataSchemaObject) {
-          var dataSchemaObject = JSON.parse(dataSchemaObject);
-          var tempVar =[]
-          for (var i = 0; i < dataSchemaObject.length; i++) {
-            tempVar.push(dataSchemaObject[i].entry[temp])
-          }
-          callback(tempVar);
-        }  
-      }
-    }); 
-  }
+arr[index]["dataSource"] = function(callback) {
+  jQuery.ajax({
+    'async': true,
+    'global': false,
+    'url': '/getformfield?data='+temp ,
+    'success': function (dataSchemaObject) {
+      if (dataSchemaObject) {
+        var dataSchemaObject = JSON.parse(dataSchemaObject);
+        htmlPicker(dataSchemaObject,temp)
+        var tempVar =[]
+        for (var i = 0; i < dataSchemaObject.length; i++) {
+          tempVar.push(dataSchemaObject[i].entry[temp])
+        }
+        callback(tempVar);
+      }  
+    }
+  }); 
+}
 }
 });
 switch(true){
@@ -418,11 +415,13 @@ switch(true){
     "options": options,
     "postRender": function(control) {
       //only set the data if the form is for use.
+      findandappendSelect()
       if (idItem !='') {
         $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(data.idItem.entry)
-         lat = 0
-         long = 0
-          mapset(data.idItem.entry)
+        
+        lat = 0
+        long = 0
+        mapset(data.idItem.entry)
 
       }
     }    
@@ -436,6 +435,7 @@ switch(true){
       //only set the data if the form is for use.
       if (idItem !='') {
         $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(data.idItem.entry)
+        findandappendSelect()
         if (lat && long) {
           mapset(data.idItem.entry)
         }
@@ -495,6 +495,7 @@ switch(true){
   primer.revision = 'created'
   primer.active = "true"
   break;
+
   case(raw=='self'):
   var primer = data.idItem
   primer.entry = dataset
@@ -502,6 +503,7 @@ switch(true){
   primer.elementID = data.idItem.elementID
   primer.active = "true"
   break;
+
   case(raw=='edit'):
   var primer = data.idItem
   primer.entry = dataset
@@ -509,16 +511,19 @@ switch(true){
   primer.elementID = data.idItem.elementID
   primer.active = "true"
   break;
+
   case(raw=='raw'):
   var primer = dataset
   primer.active = "true"
   break;
+
   case(raw=='copyraw'):
   var primer = dataset
   primer.elementID = ''
   primer.revision = 'created'
   primer.active = "true"
   break;
+
   case(raw=='component'):
   var primer = {
   }
@@ -562,7 +567,6 @@ switch(true){
   primer.active = "true"
   break;
 
-
   case(raw=='componentcopy'):
   var primer = {
   }
@@ -585,7 +589,6 @@ switch(true){
   primer.active = "true"
   break;
 
-
   default :
   var html = ''
   html += '<div class="alert alert-danger" role="alert"> '
@@ -606,7 +609,6 @@ jQuery.ajax({
   'data': JSON.stringify(primer),
   'success': function (dataSchemaObject) {
     $('#myModal').modal('hide')
- 
           //pageLoad(databaseid)
           if (parentItem.route) {
            window.location = parentItem.route
@@ -614,20 +616,18 @@ jQuery.ajax({
            window.location.reload()
          }
        },
-    'error' :function (dataSchemaObject) {
+       'error' :function (dataSchemaObject) {
         $('#myModal').modal('hide')
       //pageLoad(databaseid)
-    if (parentItem.route) {
+      if (parentItem.route) {
        window.location = parentItem.route
-    } else {
+     } else {
       var temp = '/signin'
-       window.temp
+      window.temp
     }
   },
 });   
 }
-
-
 
 //////////////////////////////////////////////
 //////////   GOOGLE MAPS CONTROL    /////////
@@ -636,17 +636,17 @@ function loadMap(location,lat,long){
   if($('#'+location).html() == ""){
     $('#'+location).html('loading')  
     $('#'+location).html('<div id="map_form" style="height:250px;width:100%"></div> <div class="alert alert-info" role="alert" id="current">Click and drag the marker to select the location of the conveyor.</div>')
-      googleMapsObject = new google.maps.Map(document.getElementById('map_form'), {
+    googleMapsObject = new google.maps.Map(document.getElementById('map_form'), {
       zoom: 3,
       center: new google.maps.LatLng(0, 0),
       mapTypeId: google.maps.MapTypeId.HYBRID
     });
-      myMarker = new google.maps.Marker({
+    myMarker = new google.maps.Marker({
       position: new google.maps.LatLng(0, 0),
       draggable: true
     });
-      googleMapsObject.setZoom(0)
-      myMarker.setMap(googleMapsObject);
+    googleMapsObject.setZoom(0)
+    myMarker.setMap(googleMapsObject);
   }
   google.maps.event.trigger(googleMapsObject, 'resize');
 }
@@ -659,24 +659,24 @@ function mapset(input) {
   var longitude = $('[name="'+long+'"]').val()
   var altitude = $('[name="'+alt+'"]').val()
   var elevator = new google.maps.ElevationService; 
-switch (true){
-  case (latitude == 0 || longitude == 0) :
-  googleMapsObject.setZoom(4)
-  break;
-  case (!latitude || !longitude ) :
-  googleMapsObject.setZoom(4)
-  break;
-  default:
-  myMarker.setMap(null);
-  myMarker = new google.maps.Marker({
-    position: new google.maps.LatLng(latitude, longitude),
-    draggable: true
-  });
-  myMarker.setMap(googleMapsObject);
-  googleMapsObject.setCenter(myMarker.position);
-  googleMapsObject.setZoom(13)
-  break;
-}
+  switch (true){
+    case (latitude == 0 || longitude == 0) :
+    googleMapsObject.setZoom(4)
+    break;
+    case (!latitude || !longitude ) :
+    googleMapsObject.setZoom(4)
+    break;
+    default:
+    myMarker.setMap(null);
+    myMarker = new google.maps.Marker({
+      position: new google.maps.LatLng(latitude, longitude),
+      draggable: true
+    });
+    myMarker.setMap(googleMapsObject);
+    googleMapsObject.setZoom(13)
+    googleMapsObject.setCenter(myMarker.position);
+    break;
+  }
   google.maps.event.trigger(googleMapsObject, 'resize');
   google.maps.event.addListener(myMarker, 'dragend', function (evt) {
     document.getElementById('current').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
@@ -689,6 +689,10 @@ switch (true){
     });
 }
 
+
+/////////////////////////////////////////////////////////
+//////////   GOOGLE MAPS ELEVATION PICKER      /////////
+///////////////////////////////////////////////////////
 function displayLocationElevation(location, elevator) {
         // Initiate the location request
         elevator.getElevationForLocations({
@@ -698,14 +702,161 @@ function displayLocationElevation(location, elevator) {
             // Retrieve the first result
             if (results[0]) {
               $('[name="'+alt+'"]').val(results[0].elevation.toFixed(2) )
+            } else {
+              console.log('No results found');
+            }
           } else {
-            console.log('No results found');
+            console.log('Elevation service failed due to: ' + status);
           }
-      } else {
-        console.log('Elevation service failed due to: ' + status);
+        });
       }
-  });
+
+/////////////////////////////////////////////////////////
+//////////   ADDING THE MORE INFO BUTTON       /////////
+///////////////////////////////////////////////////////
+function findandappendSelect(){
+if (query2) { 
+  for (var i = 0; i < query2.length; i++) {
+    if(query2[i].entry.objectType ){
+      //console.log('//////////////////////////////////')
+      //console.log(query2[i].elementID)
+      //console.log('//////////////////////////////////')
+      html=''
+      html+='<button type="button" id="'+query2[i].entry.objectType+'_findme" onclick="findme(this.id)" class="btn btn-success btn-xs">More Info</button>'
+      html+=$('[name="'+query2[i].elementID+'"]').before(html)
     }
+  }
+}  
+}
+
+////////////////////////////////////////////////////////////
+//////////   AJAX IN MORE INFORMATION TABLE       /////////
+//////////////////////////////////////////////////////////
+function findme(ids){
+  ids = ids.replace('_findme', '');
+  $('#colRight').addClass('col-md-6').removeClass('col-md-12');
+  $('#colLeft').addClass('col-md-6').removeClass('col-md-0');
+  var html = ''
+  html += htmlcompile[ids].html
+  $('#pickerArea').html(html)
+}
+
+////////////////////////////////////////////////////////////
+//////////   CREATES THE HTML INJECTION           /////////
+//////////////////////////////////////////////////////////
+function htmlPicker(htmldata,index){
+ if (htmldata && index) {
+  indexOverwrite =  JSON.parse(JSON.stringify(index))
+  if (htmldata) {
+    jQuery.ajax({
+      'async': true,
+      'global': false,
+      'url': '/findme?ids='+htmldata[0].parentid ,
+      'success': function (dataSchemaObject) {
+        if (dataSchemaObject) {
+          var temp =   dataFormatAddedDetail(htmldata,dataSchemaObject.query1) 
+//heading , id and inject into form listner
+var html = '<h1>'+dataSchemaObject.query.name+'</h1>'
+html += '<p>'+dataSchemaObject.query.detail+'</p>'
+html += '<div style="overflow:auto">'
+html += '<table class="table table-bordered table-condensed table-hover">  '
+html += '<thead>'
+html += '<tr>'
+for (var i = 0; i < dataSchemaObject.query.entry.headings.length; i++) {
+  html += '<th>'
+  html+=   dataSchemaObject.query.entry.headings[i]
+  html += '</th>'
+}
+html += '</tr>'
+html += '</thead>'
+html += '<tbody>'
+for (var j = 0; j < temp.length; j++) {
+  html += '<tr id="'+temp[j]._id+'_rowidmpre" onclick="rowClickComp(this.id)">'
+  for (var i = 0; i < dataSchemaObject.query.entry.headings.length; i++) {
+   html += '<td>'
+   if (dataSchemaObject.query.entry.headings[i]=='url' || dataSchemaObject.query.entry.headings[i]=='Url') {
+    if (temp[j][dataSchemaObject.query.entry.headings[i]] != undefined) {
+      html += '<a href="'+temp[j][dataSchemaObject.query.entry.headings[i]]+'" target="_blank">Link</a>'
+    } else {
+      html += "Blank"
+    }
+  } else  {
+    html += temp[j][dataSchemaObject.query.entry.headings[i]]
+  }
+  html += '</td>'
+}
+html += '</tr>'
+}
+html += '</tbody>'
+html += '</table>'
+html += '</div>  '
+html+='<div class="alert alert-info" role="alert"> <strong>Click on the Table!</strong> Selected items will populate the form. </div>'
+htmlcompile[indexOverwrite] = {
+  'html' : html,
+  'data' : temp,   'rawData' : htmldata
+}
+}  
+}
+}); 
+  } else {
+    var html = '<div class="alert alert-danger" role="alert"> <strong>Oh snap!</strong> An error occured loading database information. Please let us know about this. </div>'
+    htmlcompile[indexOverwrite] = {
+      'html' : html,
+      'rawData' : htmldata,
+      'data' : ''
+    }
+  }
+}
+}
+
+///////////////////////////////////////////////////
+////        REQUIRED FORMATING OF DATA        //// 
+/////////////////////////////////////////////////
+function dataFormatAddedDetail(tableData,formData){
+  var temp =[]
+  //This is where the id is injected into the menu item . Crude hacky work around , not sure how to improve.
+  for (var i = 0; i < tableData.length; i++) {
+    for(key in tableData[i].entry){
+      for (var j = 0; j < formData.length; j++) {
+        if (formData[j].elementID == key) {
+          tableData[i].entry[formData[j]['entry']['description']] = tableData[i].entry[formData[j].elementID]
+         // delete tableData[i].entry[formData[j].elementID]
+        }
+      }
+    }
+      //the add the id to the array going into the menu .
+      if (tableData[i]['elementID'].length == 0) {
+        tableData[i].entry._id = tableData[i]['_id']
+      }else{
+        tableData[i].entry._id = tableData[i]['elementID']
+      }
+      temp.push(tableData[i].entry)
+    }
+    return temp
+  }
+
+////////////////////////////////////////////////////////////////////
+////        GET THE DATA POPULATED INTO THE ALAPCA FORM        //// 
+//////////////////////////////////////////////////////////////////
+function rowClickComp(ids){
+  ids = ids.replace('_rowidmpre', '');
+  for(key in htmlcompile){
+    for (var i = 0; i < htmlcompile[key]['rawData'].length; i++) {
+    //console.log('loop throuh and replace alpaca data with this!',htmlcompile[key]['rawData'][i],ids)
+      if (htmlcompile[key]['rawData'][i].elementID == ids ) {
+        for (keys in htmlcompile[key]['rawData'][i].entry){
+          for (var j = 0; j < query2.length; j++) {
+            //console.log(keys,'Change this')
+            if(query2[j].entry.objectType == keys){
+              $('[name="'+query2[j].elementID+'"]').val(htmlcompile[key]['rawData'][i].entry[keys])
+              $('[name="'+query2[j].elementID+'"]').fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+            }
+          }
+        }
+      }
+    }
+  }
+}
 
 
 </script>

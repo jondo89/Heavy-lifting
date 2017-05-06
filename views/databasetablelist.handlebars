@@ -1,22 +1,17 @@
-<div class="panel panel-default">
-  <div class="panel-body">  
-    <h2 id="name"></h2>
-    <p id="detail"></p>
-
-    <div  id="toolbar"class="btn-group" role="group" aria-label="..." style="position: absolute;top: 2px;right: 19px;color: grey">
-    </div>
-    <p></p>
-    <div>
-      <!-- Nav tabs -->
-      <ul class="nav nav-tabs" role="tablist" id="tablist">
-      </ul>
-      <!-- Tab panes -->
-      <div class="tab-content" id="tab">
-      </div>
-    </div>
+<h2 id="name"></h2>
+<p id="detail"></p>
+<div  id="toolbar"class="btn-group" role="group" aria-label="..." style="position: absolute;top: 2px;right: 19px;color: grey">
+</div>
+<p></p>
+<div>
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist" id="tablist">
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content" id="tab">
   </div>
 </div>
-
+ 
 <pre style="color: grey" id='formIdHere'></pre>
 
 <script type="text/javascript">
@@ -75,6 +70,7 @@ console.log( 'query3 : ',query3 )
 console.log( 'query4 : ',query4 )
 console.log( 'tablelistdata : ',tablelistdata )
 console.log( 'formids : ',formids )
+console.log( 'templateload : ',templateload )
 console.log( '-------------------------' )
 console.log( 'databasetablelist loading' )
 
@@ -97,6 +93,9 @@ function layoutView() {
   templateLoad(['parentraw'],'toolbar')
   templateLoad(['add'],'toolbar')
 }
+
+
+
 }
 
 /////////////////////////////
@@ -110,6 +109,9 @@ function tabview() {
 }  else {
   templateLoad(['table'],'tab')
 }
+
+
+
 }
 
 /////////////////////////////
@@ -119,9 +121,6 @@ function tablist(){
   var html = ''
   if (items.entry.tabs) {
    for (var i = 0; i < items.entry.tabs.length; i++) {
-
-
-
 //used for 0 length items
 if (i==0) {
   if (items.entry.tabs=='tablecomponent') {

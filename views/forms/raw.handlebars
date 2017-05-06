@@ -1,0 +1,91 @@
+<div id="rawform"></div>
+
+<script type="text/javascript">
+
+	var rawformid = create_uid()
+	var rawquery = 	{{{query}}}
+	var rawquery1 = {{{query1}}}
+//////////////////////////////////////////
+////        CREATE UNIQUE ID         //// 
+////////////////////////////////////////
+function create_uid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+  s4() + '-' + s4() + s4() + s4();
+}
+
+////////////////////////////////////
+////        INITIALIZE         //// 
+//////////////////////////////////
+$(document).ready(function(){
+
+	var rawItemId = rawquery1.elementID
+	var rawformid = rawquery.elementID
+	//create a unique id for the form deployment.
+	jQuery('#rawform').attr("id",rawformid);
+	var form = {
+		schema : rawquery.entry['schema'],
+		options : rawquery.entry['options']
+	}
+form.options.fields['detail'] = {'type' : "hidden"}
+form.options.fields['active'] = {'type' : "hidden"}
+form.options.fields['userID'] = {'type' : "hidden"}
+form.options.fields['type'] = {'type' : "hidden"}
+form.options.fields['name'] = {'type' : "hidden"}
+form.options.fields['childType'] = {'type' : "hidden"}
+form.options.fields['parentid'] = {'type' : "hidden"}
+form.options.fields['route'] = {'type' : "hidden"}
+form.options.fields['elementID'] = {'type' : "hidden"}
+form.options.fields['objectType'] = {'type' : "hidden"}
+
+
+	$('#'+rawformid).html("<div id='form_"+rawformid+rawItemId+rawformid+"'></div>")
+	$("#form_"+rawformid+rawItemId+rawformid).html("")
+	  //Test alpaca form for true , i.e if it exists , then destroy it.
+	  control = $("#form_"+rawformid+rawItemId+rawformid).alpaca("destroy");
+ 
+     form.options.form.buttons.submit.click = function(e){
+      e.preventDefault()
+      var value = this.getValue();
+      rawformpost(value,rawquery1)
+    }
+
+  $("#form_"+rawformid+rawItemId+rawformid).alpaca({
+    "schema": form.schema,
+    "options": form.options,
+    "postRender": function(control) {
+      //only set the data if the form is for use.
+ 		 $("#form_"+rawformid+rawItemId+rawformid).alpaca('get').setValue(rawquery1)
+    }    
+  });
+
+
+});
+
+
+
+//////////////////////////////////////////////
+////        SUBMIT BUTTON CLICK          //// 
+////////////////////////////////////////////
+function rawformpost(dataset,data){
+var primer = dataset
+primer.active = "true"
+//Jquery send to server
+jQuery.ajax({
+  'url': '/create',
+  'type': 'POST', 
+  'dataType': 'json',
+  'contentType': 'application/json', 
+  'data': JSON.stringify(primer),
+  'success': function (dataSchemaObject) {
+  window.location.reload()
+}
+});   
+}
+
+
+</script>
