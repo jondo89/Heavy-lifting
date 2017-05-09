@@ -7,7 +7,7 @@ Use Heavy-lifting to build, design and create projects, support your business, a
 <p>It is possible the frame work would work as a CMS system.</p>
 
 
-<a class="github-button" href="https://heavy-lifting.herokuapp.com/">Mega Boilerplate</a>.
+<h1><a class="github-button" href="https://heavy-lifting.herokuapp.com/">Demo</a>.</h1>
 
 Based on <a href="https://github.com/sahat/megaboilerplate">Mega Boilerplate</a>.
 
