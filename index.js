@@ -79,9 +79,7 @@ app.engine('handlebars', hbs.engine);
 
 
 app.set('view engine', 'handlebars');
-app.listen(process.env.PORT || 5000, function(){
-  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
-});
+app.set('port', process.env.PORT || 5000);
 app.use(compression());
 app.use(logger('dev'));
 app.use(bodyParser.json());
