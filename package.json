@@ -30,7 +30,8 @@
     "passport": "^0.3.2",
     "passport-github": "^1.1.0",
     "passport-google-oauth": "^1.0.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "serve-favicon":"^2.4.2"
   },
   "repository": {
     "type": "git",
