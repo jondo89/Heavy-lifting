@@ -38,7 +38,7 @@ var app = express();
 var favicon = require('serve-favicon');
 app.use(favicon(__dirname + '/public/img//favicon/favicon-16x16.png')); 
 
-mongoose.connect(process.env.MONGODB);
+mongoose.connect(process.env.MONGODB_URI);
 mongoose.connection.on('error', function() {
   console.log('MongoDB Connection Error. Please make sure that MongoDB is running.');
   process.exit(1);
