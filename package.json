@@ -1,9 +1,16 @@
+ 
+
+
 {
   "name": "heavy-lifting",
-  "version": "1.0.0",
-  "description": "My app description",
+  "version": "0.2.6",
+  "description": "A sample Node.js app using Express 4",
+  "engines": {
+    "node": "6.10.2"
+  },
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "async": "^1.5.2",
@@ -25,8 +32,14 @@
     "passport-google-oauth": "^1.0.0",
     "passport-local": "^1.0.0"
   },
-  "devDependencies": {},
-  "engines": {
-    "node": "6.1.0"
-  }
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heroku/node-js-getting-started"
+  },
+  "keywords": [
+    "node",
+    "heroku",
+    "express"
+  ],
+  "license": "MIT"
 }
