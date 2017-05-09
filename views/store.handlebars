@@ -1,5 +1,3 @@
- 
-
 
     <h1 id="name"></h1>
     <p id="detail"></p>
@@ -30,13 +28,9 @@
     </div>
   </div>
  
- 
 
 <script type="text/javascript">
  
- 
-
-
 //The menu item from JSTREE
 var items = {{{query}}}
 //The applicable form for use ( query.childtype)
@@ -107,24 +101,7 @@ function dataFormatComp(){
         }
       }
     }
-
-
 tablelistdata[i].entry.id = tablelistdata[i].elementID
-    /*
-      //the add the id to the array going into the menu .
-      if (tablelistdata[i]['elementID'] == "") {
-        tablelistdata[i].entry.elementID = tablelistdata[i]['elementID']
-      }else{
-        tablelistdata[i].entry.elementID = tablelistdata[i]['elementID']
-      }
-      tablelistdata[i].entry.name = tablelistdata[i]['name']
-      tablelistdata[i].entry.childType = tablelistdata[i]['childType']
-      tablelistdata[i].entry.name = tablelistdata[i]['name']
-   // tablelistdata[i].entry.detail1 = tablelistdata[i]['detail']
-   tablelistdata[i].entry.userID = tablelistdata[i]['userID']
-   tablelistdata[i].entry.parentid = tablelistdata[i]['parentid']
-*/
- 
    temp.push(tablelistdata[i].entry)
  }
  modifiedTableListData = temp
@@ -139,20 +116,7 @@ $( document ).ready(function() {
       $('#'+location).html('')
       var temp = dataJStreeConvert (modifiedTableListData)
       loadNavMenu(location,temp)
-
 });
-
-
-
-
-
-
-
- 
- 
-
- 
-
 
 /////////////////////////////////////////
 //////  DATACONVERT FOR JSTREE    //////
@@ -288,10 +252,6 @@ $('#newMenuItem').click(function(){
   //console.log(temp[0].id)
   newMenuItems(Formids,'','use',items,'',navmenuHeadings)
   })
-
-
- 
-
 }
 
 ///////////////////////////////////////////////////////
