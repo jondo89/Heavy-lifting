@@ -1,3 +1,5 @@
+ 
+
 <nav id="mainNav" class="navbar navbar-inverse ">
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -10,6 +12,12 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right" id="deploy">
+
+      {{#unless user}}
+      <li>
+        <a href="/database">Database</a>
+      </li>
+{{/unless}}
         {{> navbar}}   
         {{#if user}}
         <li class="dropdown">
@@ -36,6 +44,9 @@
   </div>
   <!-- /.container-fluid -->
 </nav>
+
+ 
+{{#if user}}
 
 <script type="text/javascript">
 /////////////////////////////////////// 
@@ -151,3 +162,4 @@ function pageLoad(ids){
 
 
 </script>
+{{/if}}

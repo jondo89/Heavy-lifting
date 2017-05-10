@@ -1,8 +1,10 @@
      <div role="tabpanel" class="tab-pane active" id="tableComponent">
-       <p></p>
+       <p></p>  
        <div id='formDelivery'>
        </div>
      </div>
+
+
      <script type="text/javascript">
 
 
@@ -279,7 +281,10 @@ function loadDataTable(id){
 //the use of var here is critical , each instantiate needs to be unique.
 var table = jQuery('#'+id).DataTable({
   'destroy':true,
-  "pagingType": "numbers",
+  "pagingType": "numbers",        dom: 'Bfrtip',
+        buttons: [
+             { extend: 'csv', text: 'Export to CSV' ,className:'btn btn-default btn-sm' ,filename: 'Data export' ,title: 'Table export'}, { extend: 'pdf', text: 'Export PDF' ,className:'btn btn-default btn-sm' ,filename: 'Data export' ,title: 'Table export'}
+        ]
   //  'order': [[ 2, 'asc' ]] ,
 });
   //Add event listener for opening and closing details
@@ -320,6 +325,13 @@ function formatDefault ( d ) {
   var html=''
   html += detailTableLoad  (modifiedListData,d)
   html+='<h4>Options</h4><p>The following options are availble for this item.</p>'
+
+
+  html +='<div class="row">'
+ html +='<div class="col-md-7">'
+
+
+
   html +='<div class="btn-group" role="group" aria-label="...">'
   for (var j = 0; j < items.entry.buttons.length; j++) {
     switch(true){
@@ -341,10 +353,9 @@ function formatDefault ( d ) {
       case (items.entry.buttons[j] == 'norevraw'):
       html += '<button type="button" class="btn btn-default" id="'+d+'_1" onclick="useForm(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">norevraw</button>'
       break;  
-  
     }
   }   
-  html +='</div><div class="btn-group" role="group" aria-label="...">'
+  html +=' </div> <div class="btn-group" role="group" aria-label="...">'
   for (var j = 0; j < items.entry.buttons.length; j++) {
     switch(true){
       case (items.entry.buttons[j] == 'delete'):
@@ -355,17 +366,21 @@ function formatDefault ( d ) {
       break;  
     }
   }  
-  html +='</div><div class="btn-group" role="group" aria-label="...">'
+  html +='</div> <div class="col-md-1"></div><div class="btn-group" role="group" aria-label="...">'
   for (var j = 0; j < items.entry.buttons.length; j++) {
     switch(true){
       case (items.entry.buttons[j] == 'addcomp'):
-      html += '<button type="button" class="btn btn-primary" id="'+d+'_addcomp" onclick="demo_create(this.id)">Add Component</button>'
+      html += '<button type="button" class="btn btn-primary" id="'+d+'_addcomp" onclick="demo_create(this.id)">Add</button>'
       break; 
     }
   } 
   html +='  </div>'
-  html +='<p></p><pre>'+d+'</pre>'
+  html +='</div>'
+   html +='<div class="col-md-5">'
+  html +='<pre> id : '+d+'</pre>'
   html += '<div id="'+d+'_loadingArea" ></div>'
+      html +='</div>'
+     html +='</div>'
   return html;
 }
 

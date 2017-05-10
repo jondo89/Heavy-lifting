@@ -167,14 +167,8 @@ var query4 = heavyliftingModel.find(
     'active' : 'true'
 })
 
-
-
 query1.exec(function (err, query1_return) {
   if (err) { return next(err); } 
-
-
-
-
     //undefined error handling on the template
     if (!query1_return[0].entry.template){
       query1_return[0].entry.template=''
@@ -198,19 +192,13 @@ query1.exec(function (err, query1_return) {
       query1_return[0].elementID=query1_return[0]._id
     }
 
-
-
 query2.exec(function (err, query2_return) {
   if (err) { return next(err); } 
   query3.exec(function (err, query3_return) {
   if (err) { return next(err); } 
 
-
-
   query4.exec(function (err, query4_return) {
   if (err) { return next(err); } 
-
-
 
 for (var i = 0; i < query1_return.length; i++) {
       //the menu item elementid should arrive poulated to avoid confusion.
@@ -232,7 +220,6 @@ for (var i = 0; i < query3_return.length; i++) {
       query3_return[i].elementID=query3_return[i]._id
     }
 }
-
 
 console.log('//  Debug from here  //')
 console.log('query_return',query_return)

@@ -110,7 +110,10 @@ function loadDataTable(id){
 //the use of var here is critical , each instantiate needs to be unique.
 var table = jQuery('#'+id).DataTable({
   'destroy':true,
-  "pagingType": "numbers",
+  "pagingType": "numbers",dom: 'Bfrtip',
+        buttons: [
+             { extend: 'csv', text: 'Export to CSV' ,className:'btn btn-default btn-sm' ,filename: 'Data export' ,title: 'Table export'}, { extend: 'pdf', text: 'Export PDF' ,className:'btn btn-default btn-sm' ,filename: 'Data export' ,title: 'Table export'}
+        ]
   //  'order': [[ 2, 'asc' ]] ,
 });
 

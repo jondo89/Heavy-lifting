@@ -1,5 +1,5 @@
  
-       <h1 id="name"></h1>
+<h1 id="name"></h1>
 <p id="detail"></p>
 
 <p></p>
@@ -11,13 +11,19 @@
   <div id= "groups"></div>
 </div>
 
-<div id="toolbar" style="text-align: right"></div>
+{{#if user}}
 
+<div class="row">
+  <div class="col-md-7">
+    <div  id="toolbar" class="btn-group" role="group" aria-label="..." style="color: grey">
+</div>
 
- 
-
-<p></p>
- <pre style="color: grey" id='formIdHere'></pre>
+  </div>
+  <div class="col-md-5">
+    <pre style="color: grey" id='formIdHere'></pre>
+  </div>
+</div>
+{{/if}}
  
 
 
@@ -82,10 +88,10 @@ console.log( 'databasetablelist loading' )
 
 if(items.elementID) {
 
-$("#formIdHere").html(items.elementID)
+$("#formIdHere").html('id : '+items.elementID)
 }else{
 
-$("#formIdHere").html(items._id)
+$("#formIdHere").html('id : '+items._id)
 }
 
 

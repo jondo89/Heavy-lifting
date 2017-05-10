@@ -8,78 +8,64 @@
   {{> css}}
 </head>
 <body>
- 
+
   {{> javascript}}
 
   {{> header}}
+  <style type="text/css">
+    .dt-buttons {
+      padding-top: 15px;
+    }
+  </style>
 
-<div >
-
- <div class="container" style="padding-top:6px " >
-
-<div class="row">
-  <div class="col-md-6" >
-    <h1 id="descriptions"></h1>
-<p id="details"></p>
-
-  </div>
-  <div class="col-md-6  text-right">
-
-
-
- 
-
+  <div>
+   <div class="container" style="padding-top:6px " >
+    <div class="row">
+      <div class="col-md-6" >
+        <h1 id="descriptions"> </h1>
+        <p id="details"></p>
+      </div>
+      <div class="col-md-6  text-right">
         {{#if user}}
-  <p></p>
-    <!-- Single button -->
-<div class="btn-group">
-  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{#if user.picture}}
+        <p></p>
+        <!-- Single button -->
+        <div class="btn-group">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{#if user.picture}}
             <img src="{{user.picture}}"  style="max-height: 18px;max-width: 18px">
             {{else}}
             <img src="{{user.gravatar}}" class="navbar-avatar-pic"  style="max-height: 18px;max-width: 18px">
             {{user.name}}
             {{/if}} <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel">
-  
-    <li><a href="#"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>  {{user.name}}</a></li>
-    <li><a href="#">       Org 1</a></li>
-    <li><a href="#">       Org 2</a></li>
-    <li role="separator" class="divider"></li>
-    <li><a href="#"><i class="fa fa-users"></i>  Manage Organizations</a></li>
-    <li> <a href="#"><i class="fa fa-plus"></i>   Create Organizations</a></li>
-  </ul>
-</div>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel">
+            <li><a href="#"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>  {{user.name}}</a></li>
+            <li><a href="#">       Org 1</a></li>
+            <li><a href="#">       Org 2</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#"><i class="fa fa-users"></i>  Manage Organizations</a></li>
+            <li> <a href="#"><i class="fa fa-plus"></i>   Create Organizations</a></li>
+          </ul>
+        </div>
         {{else}}
-{{/if}}
-
-    
-  </div>
+        {{/if}}
+      </div>
+    </div>
+  </div> 
 </div>
-
-
-
-
-
-
-</div> 
+<div class="container" >
+ {{{body}}}
 </div>
-  <div class="container" >
-
-   {{{body}}}
- </div>
- 
- <!-- Modal -->
- <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="myModal">
+{{#if user}}
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="myModal">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body">
        <div id="modal-body"></div>
        <div id="formAreaModal">
         <div style="text-align: center">
-          <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
-          <span  >Loading...</span>
+          <pre><i class="fa fa-spinner fa-spin fa-fw"></i><span class=" ">Loading...</span></pre>
         </div>
       </div>
     </div>
@@ -89,7 +75,7 @@
   </div>
 </div>
 </div> 
-
+{{/if}}
 
 
 
@@ -102,4 +88,3 @@
 </body>
 </html>
 
- 

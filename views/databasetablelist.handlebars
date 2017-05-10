@@ -1,7 +1,6 @@
 <h2 id="name"></h2>
 <p id="detail"></p>
-<div  id="toolbar"class="btn-group" role="group" aria-label="..." style="position: absolute;top: 2px;right: 19px;color: grey">
-</div>
+
 <p></p>
 <div>
   <!-- Nav tabs -->
@@ -12,7 +11,20 @@
   </div>
 </div>
  
-<pre style="color: grey" id='formIdHere'></pre>
+{{#if user}}
+
+<div class="row">
+  <div class="col-md-7">
+    <div  id="toolbar" class="btn-group" role="group" aria-label="..." style="color: grey">
+</div>
+
+  </div>
+  <div class="col-md-5">
+    <pre style="color: grey" id='formIdHere'></pre>
+  </div>
+</div>
+{{/if}}
+
 
 <script type="text/javascript">
 
@@ -76,9 +88,9 @@ console.log( 'databasetablelist loading' )
 
 
 if(items.elementID) {
-$("#formIdHere").html(items.elementID)
+$("#formIdHere").html('id : '+items.elementID)
 }else{
-$("#formIdHere").html(items._id)
+$("#formIdHere").html('id : '+items._id)
 }
 
 /////////////////////////////
