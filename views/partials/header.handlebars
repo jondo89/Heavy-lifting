@@ -7,7 +7,9 @@
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
         <span class="sr-only">Toggle navigation</span><i class="fa fa-bars"></i>
       </button>
-      <a href="../" class="navbar-brand">Heavy-lifting</a>
+           <a class="navbar-brand" href="/" style="padding: 8px 0px 5px 11px">
+        <img alt="Brand" src="/img/logo.png" style="height: 35px;padding: 5px"> 
+      </a><a class="navbar-brand" href="" style="">Heavy-lifting</a>
     </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -19,6 +21,9 @@
         <li>
           <a href="/store">Store</a>
         </li>
+        <li>
+          <a href="/components">Components</a>
+        </li>        
         {{/unless}}
         {{> navbar}}   
         {{#if user}}
@@ -32,6 +37,8 @@
             <i class="caret"></i>
           </a>
           <ul class="dropdown-menu" style="width: 100%" id="usermenu"> 
+          <li class="divider"></li>  
+          <li><a >{{Name}}  </a></li>
             <li class="divider"></li>       
             <li><a href="/signout">Sign out</a></li>
           </ul>

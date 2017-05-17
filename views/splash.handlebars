@@ -8,31 +8,164 @@
   {{> css}}
 </head>
 <body>
- 
+
   {{> javascript}}
-   {{> header}}
+  {{> header}}
 
 
 
 
   <div class="container" >
-  <h1>Welcome to Heavy-lifting</h1>
-  <p>Selected a database component below to get started.</p>
 <div class="row">
-  <div id= "groups"></div>
+  <div class="col-md-10">
+        <h1>Welcome to Heavy-lifting</h1>
+    <p>Use the interface below to get started on your new equipment component or assembly.</p>
+  </div>
+  <div class="col-md-2" style="padding-top: 25px;text-align: right;">
+    
+    <!-- Single button -->
+<div class="btn-group">
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Jonodav <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-right">
+    <li><a href="#" >Jonodav   <i class="fa fa-check" aria-hidden="true"></i></a></li>
+    <li><a href="#">Isithelo Mining</a></li>
+    <li><a href="#">Shiftbulk</a></li>
+    <li role="separator" class="divider"></li>
+    <li><a href="#"><i class="fa fa-users" aria-hidden="true"></i> Manage Organizations</a></li>
+    <li><a href="#"><i class="fa fa-plus" aria-hidden="true"></i> Create Organizations</a></li>
+  </ul>
+</div>
+  </div>
+</div>
+
+
+    <div class="row">
+
+      <div class="col-md-8" >
+
+ 
+      <!--  <div id= "groups"></div>-->
+
+
+
+<div style="padding-top: 45px"></div>
+<h4>Project History</h4>
+<p>Your working modifications to the Heavy-lifting database.</p>
+ <div class="list-group">
+  <a href="#" class="list-group-item ">
+    <h4 class="list-group-item-heading">Generic Colliery <span class="label label-warning">Delete Assembly</span></h4>
+    <p class="list-group-item-text">
+      Date : 2017/05/17
+    </p>
+  </a>
+  <a href="#" class="list-group-item ">
+    <h4 class="list-group-item-heading">Generic Colliery <span class="label label-success">Create Component</span></h4>
+    <p class="list-group-item-text">
+      Date : 2017/05/13
+    </p>
+  </a>
+  <a href="#" class="list-group-item ">
+    <h4 class="list-group-item-heading">Generic Colliery <span class="label label-primary">Edit Component</span></h4>
+    <p class="list-group-item-text">
+      Date : 2017/05/14
+    </p>
+  </a>  
 </div>
  
-</div>
+      </div>
+      <div class="col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h5><strong>Assemblies you contribute to</strong>  <span class="badge">42</span></h5>
+            <div id="AdvancedSearch"></div>
+          </div>
+          <table class="table"> 
+            <thead> 
+              <tr> 
+                <th></th> 
+                <th>Description</th> 
+                <th style="width: 15px">Stars</th>
+              </tr> </thead> 
+              <tbody> 
+               <tr> 
+                 <th scope="row"><i class="fa fa-unlock" aria-hidden="true"></i></th>
+                 <td><a href="#">isithelo\<strong>Morupule colliery</strong></a></td> 
+                 <td><span class="label label-info">1</span></td>
+               </tr> <tr>
+               <th scope="row"><i class="fa fa-unlock" aria-hidden="true"></i></th>
+               <td><a href="#">isithelo\<strong>Kriel colliery</strong></a></td>
+               <td><span class="label label-info">5</span></td>
+             </tr>
+             <tr>
+              <th scope="row"><i class="fa fa-lock" aria-hidden="true"></i></th>
+              <td><a href="#">jonodav\<strong>Default Sets</strong></a></td> 
+              <td><span class="label label-info">0</span></td>
+            </tr> 
+          </tbody> 
+        </table>
+      </div>
+
+
+
+<div class="panel panel-default">
+    <div class="panel-body">
+          
+  <div class="row">
+    <div class="col-md-7">
+      
+      <h5><strong>Your Assemblies <span class="badge" id="counting">13</span></strong></h5>
+ 
+    </div>
+    <div class="col-md-5">
+       <button type="button" class="btn btn-success btn-xs" onclick="deployFormUse('58ff3c5721acae2b40b09b2a')"><i class="fa fa-plus"></i>  New Assembly</button>
+
+    </div>
+  </div>
+
+
+
+        
+      <p></p>
+      <div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active"><a href="#All" aria-controls="All" role="tab" data-toggle="tab">All</a></li>
+          <li role="presentation"><a href="#Public" aria-controls="Public" role="tab" data-toggle="tab">Public</a></li>
+          <li role="presentation"><a href="#Private" aria-controls="Private" role="tab" data-toggle="tab">Private</a></li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane active" id="All">
+            <p></p>
+            <input class="form-control" type="text" id="filterbox" placeholder="Find an Assembly...">
+            <div id="tablearea"><div id="assyarea_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer"><table id="assyarea" class="table table table-bordered dataTable no-footer" role="grid"><thead><tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="assyarea" rowspan="1" colspan="1" aria-sort="ascending" aria-label=": activate to sort column descending"></th><th class="sorting" tabindex="0" aria-controls="assyarea" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending">Name</th></tr></thead><tbody><tr role="row" class="odd"><td class="details-control sorting_1" style="text-align:center;vertical-align:middle;width:2px; " id="5909a976545fa738c45954d6" data-parentid="58f99a2b11db6c2118a9fa2a" data-childtype="undefined"><i class="fa fa-plus-square-o" aria-hidden="true"></i></td><td>18-102</td></tr><tr role="row" class="even"><td class="details-control sorting_1" style="text-align:center;vertical-align:middle;width:2px; " id="58ff3dee21acae2b40b09b2e" data-parentid="58f99a2b11db6c2118a9fa2a" data-childtype="undefined"><i class="fa fa-plus-square-o" aria-hidden="true"></i></td><td>18-103</td></tr><tr role="row" class="odd"><td class="details-control sorting_1" style="text-align:center;vertical-align:middle;width:2px; " id="58ff3e5521acae2b40b09b31" data-parentid="58f99a2b11db6c2118a9fa2a" data-childtype="undefined"><i class="fa fa-plus-square-o" aria-hidden="true"></i></td><td>18-101</td></tr><tr role="row" class="even"><td class="details-control sorting_1" style="text-align:center;vertical-align:middle;width:2px; " id="590d750475b75f0d84bd4136" data-parentid="58f99a2b11db6c2118a9fa2a" data-childtype="undefined"><i class="fa fa-plus-square-o" aria-hidden="true"></i></td><td>18-108</td></tr><tr role="row" class="odd"><td class="details-control sorting_1" style="text-align:center;vertical-align:middle;width:2px; " id="590d75fe75b75f0d84bd413b" data-parentid="58f99a2b11db6c2118a9fa2a" data-childtype="undefined"><i class="fa fa-plus-square-o" aria-hidden="true"></i></td><td>18-109</td></tr><tr role="row" class="even"><td class="details-control sorting_1" style="text-align:center;vertical-align:middle;width:2px; " id="590d762575b75f0d84bd413c" data-parentid="58f99a2b11db6c2118a9fa2a" data-childtype="undefined"><i class="fa fa-plus-square-o" aria-hidden="true"></i></td><td>18-110</td></tr><tr role="row" class="odd"><td class="details-control sorting_1" style="text-align:center;vertical-align:middle;width:2px; " id="590d763275b75f0d84bd413d" data-parentid="58f99a2b11db6c2118a9fa2a" data-childtype="undefined"><i class="fa fa-plus-square-o" aria-hidden="true"></i></td><td>18-111</td></tr><tr role="row" class="even"><td class="details-control sorting_1" style="text-align:center;vertical-align:middle;width:2px; " id="590d764175b75f0d84bd413e" data-parentid="58f99a2b11db6c2118a9fa2a" data-childtype="undefined"><i class="fa fa-plus-square-o" aria-hidden="true"></i></td><td>18-112</td></tr><tr role="row" class="odd"><td class="details-control sorting_1" style="text-align:center;vertical-align:middle;width:2px; " id="590d764c75b75f0d84bd413f" data-parentid="58f99a2b11db6c2118a9fa2a" data-childtype="undefined"><i class="fa fa-plus-square-o" aria-hidden="true"></i></td><td>18-113</td></tr><tr role="row" class="even"><td class="details-control sorting_1" style="text-align:center;vertical-align:middle;width:2px; " id="590d765875b75f0d84bd4140" data-parentid="58f99a2b11db6c2118a9fa2a" data-childtype="undefined"><i class="fa fa-plus-square-o" aria-hidden="true"></i></td><td>18-114</td></tr></tbody> </table><div class="dataTables_paginate paging_numbers" id="assyarea_paginate"><ul class="pagination"><li class="paginate_button active"><a href="#" aria-controls="assyarea" data-dt-idx="0" tabindex="0">1</a></li><li class="paginate_button "><a href="#" aria-controls="assyarea" data-dt-idx="1" tabindex="0">2</a></li></ul></div></div></div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="Public">...</div>
+          <div role="tabpanel" class="tab-pane" id="Private">...</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  </div>
   
+</div>
+
+</div>
+
 
 <script type="text/javascript">
- 
- 
+
+
 
 
   var items = {{{nav}}}
   var formids = create_uid()
- 
+
 
 /////////////////////////////////////
 ////     HEADINGS AND STUFF     //// 
@@ -48,7 +181,7 @@ console.log( 'Group loading' )
 console.log( '-------------------------' )
 console.log( 'items : ',items )
 console.log( 'formids : ',formids )
- 
+
 console.log( '-------------------------' )
 console.log( 'Group loading' )
 
@@ -65,31 +198,31 @@ function create_uid() {
   s4() + '-' + s4() + s4() + s4();
 }
 
-  $(document).ready(function() { 
+$(document).ready(function() { 
  groupShow(items)
-  })
+})
 
-  function groupShow(data) {
-    for (var i = 0; i < data.length; i++) {
-      $('#groups').append(printImageCatagory(data[i]))
-    }
+function groupShow(data) {
+  for (var i = 0; i < data.length; i++) {
+    $('#groups').append(printImageCatagory(data[i]))
   }
+}
 
 ///////////////////////////////// 
 //////  PRINT IMAGE       //////
 /////////////////////////////// 
 function printImageCatagory (data) {
- 
+
   html=""
   if ( data.entry.Image ) {
-    html+=  '<div class="col-sm-3 col-md-3" >'
-    html+='<div class="thumbnail" style="min-height:360px">'
+    html+=  '<div class="col-sm-4 col-md-12" >'
+    html+='<div class="thumbnail" style="min-height:150px">'
     html+='<img style="max-height:164px;min-height:90px" src="/img/catagories/'
     html+= data.entry.Image
     html+='" alt="...">'
   } else {
-    html+=  '<div class="col-sm-3 col-md-3" >'
-    html+='<div class="thumbnail" style="min-height:260px">'
+    html+=  '<div class="col-sm-4 col-md-12" >'
+    html+='<div class="thumbnail" style="min-height:150px">'
   }
   html+='<div class="caption">'
   html+='<h3>'
@@ -118,8 +251,8 @@ function viewCatagory(id){
 
 }
 
- 
- 
+
+
 
 
 </script>
