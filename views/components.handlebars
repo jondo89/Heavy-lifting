@@ -1,20 +1,28 @@
     <div class="row">
       <div class="col-md-4" id="navMenuPanel">
+
+        <div class="collapse" id="collapseExample">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <h5><strong>Advanced Search</strong> <small>use the text inputs to search the component table.</small></h5>
+              <div id="AdvancedSearch"></div>
+            </div>
+          </div>
+        </div>
+
         <div class="panel panel-default">
           <div class="panel-body">
-          <div id="myProgress">
-  <div id="myBar"> </div>
-</div>
-           <h5><strong>Navigation</strong> <small>Use the navigation tree to interact with the database.</small></h5>
-           <div class="panel">
+            <div id="myProgress">
+              <div id="myBar"> </div>
+            </div>
+            <h5><strong>Navigation</strong> <small>Use the navigation tree to interact with the database.</small></h5>
+            <div class="panel">
              <div style="padding-bottom:15px;padding-bottom:15px">
               <input id="search_field" name="searchinput" type="search" placeholder="Search Navigation" class="form-control input-md">      
             </div>
             <div id="jstree"></div> 
           </div>
-          <div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
-            <button type="button" class="btn btn-default" id="newMenuItem" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></button> 
-          </div>
+          <div id="menuItems"></div>
         </div>
       </div>
     </div>  
@@ -24,15 +32,15 @@
       </div>
     </div>
   </div>
- 
- 
 
-<script type="text/javascript">
-  var databaseid = {{{items}}};
-  var Formids = {{{Formids}}};
-  var navmenuHeadings = ['detail','description','icon','buttons','tabs','parent','template']
-  var databaseMenu = []
-  var temp =[]
+
+
+  <script type="text/javascript">
+    var databaseid = {{{items}}};
+    var Formids = {{{Formids}}};
+    var navmenuHeadings = ['detail','description','icon','buttons','tabs','parent','template']
+    var databaseMenu = []
+    var temp =[]
 
 /////////////////////////////
 ////     DEBUG AREA     //// 
@@ -92,7 +100,7 @@ function fitstFormat(databaseMenu){
     databaseMenu = temp
     return databaseMenu
   }
- 
+
 ///////////////////////////// 
 //////  INITIALISE    //////
 /////////////////////////// 
@@ -232,20 +240,33 @@ $('#newMenuItem').click(function(){
   //var temp = jQuery('#'+location).jstree("get_selected",true)
   //console.log(temp[0].id)
   newMenuItems(Formids,'','use',databaseid,'',navmenuHeadings)
-  })
+})
+console.log('Admin Page')
+console.log('---------------------------')
+console.log(' databaseid :', databaseid )
+console.log(' Formids :', Formids )
+console.log(' navmenuHeadings :', navmenuHeadings )
+console.log(' databaseMenu :', databaseMenu )
+console.log(' temp :', temp )
+console.log('---------------------------')
+console.log('Admin Page')
 
 
-  console.log('Admin Page')
-  console.log('---------------------------')
-  console.log(' databaseid :', databaseid )
-  console.log(' Formids :', Formids )
-  console.log(' navmenuHeadings :', navmenuHeadings )
-  console.log(' databaseMenu :', databaseMenu )
-  console.log(' temp :', temp )
-  console.log('---------------------------')
-  console.log('Admin Page')
+//Expand and Collapse all buttons.
+var html = '<div style="text-align:center"><button id="expandBtn" class="btn btn-default btn-xs">Expand</button><button id="collapseBtn" class="btn btn-default btn-xs">Collapse</button></div>'
+$('#menuItems').append(html)
+jQuery('#expandBtn').click(function () {
+ jQuery('#'+location).jstree('open_all');
+});
+jQuery('#collapseBtn').click(function () {
+ jQuery('#'+location).jstree('close_all');
+});
+//Expand and Collapse all buttons.
 
 }
+
+
+
 
 ///////////////////////////////////////////////////////
 ////////  EVENT LISTNER FUNCTION AREA DATABASE ///////
@@ -307,4 +328,3 @@ function newMenuItems(formdata,idItem,raw,parentid,injectParentid,headings){
 }
 </script>
 
- 

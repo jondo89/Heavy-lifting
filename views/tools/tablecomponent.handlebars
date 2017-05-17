@@ -1,8 +1,27 @@
      <div role="tabpanel" class="tab-pane active" id="tableComponent">
+     <div class="row">
+  <div class="col-md-3">
+    
+  </div>
+  <div class="col-md-7">
+
+  </div>
+</div>
        <p></p>  
        <div id='formDelivery'>
        </div>
      </div>
+
+
+
+
+
+ 
+
+
+ 
+ 
+ 
 
 
      <script type="text/javascript">
@@ -221,11 +240,6 @@ for (key in data) {
       html += data[key][i]['description']
       html += '</td>'
       html += '<td>'
-
-
-
- 
-
 switch(true){
   case(data[key][i]['description']=='Url'):
     if (data[key][i]['value'] != undefined) {
@@ -235,10 +249,7 @@ switch(true){
     }
   break;
   case(data[key][i]['description']=='Image'):
- 
     if (data[key][i]['value'] != undefined) {
-
-
       html += '<img style="max-width:150px" src="'+data[key][i]['value']+'" alt="..." class="img-rounded">'
     } else {
       html += "Blank"
@@ -248,8 +259,6 @@ switch(true){
     html += data[key][i]['value']
   break;
 }
-
-
       html += '</td>'      
       html += '<td>'
       html += data[key][i]['units']
@@ -315,6 +324,43 @@ var table = jQuery('#'+id).DataTable({
            });
           }
         });
+
+
+
+//Start of advanced filter option.
+  var html = ''
+  var counter = 0
+ 
+  html+='<table class="table table-condensed ">'
+ 
+  html+='    <tbody>'
+  $( '#'+id+' thead th' ).each(function(){
+    if ($( this ).text()=='') {
+      counter+=1
+    }  else {
+      html+='<tr id="filter_col'+counter+1+'" data-column="'+counter+'">'
+      html+= '<td>'+$( this ).text()+'</td>'
+      html+=    '<td align="center"><input placeholder="Search '+$( this ).text()+'" type="text" class="form-control" id="col'+counter+'_filter"></td>'
+      html+= ' </tr>'
+      counter+=1
+    }
+  })
+  html+='     </tbody>'
+  html+=' </table>'
+  $('#AdvancedSearch').html(html)
+
+  function filterColumn ( i ) {
+    table.column( i ).search(
+      $('#col'+i+'_filter').val()
+      ).draw();
+  }
+
+  $('input.form-control').on( 'keyup click', function () {
+    filterColumn( $(this).parents('tr').attr('data-column') );
+  } );
+
+$('.dt-buttons').prepend('<a class="btn btn-primary btn-sm" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-search" aria-hidden="true"></i> Advanced Search</a>')
+//end of advanced filter option.
 }
 
 ////////////////////////////////////////////////////////////////////

@@ -2,15 +2,22 @@
 
  
     <div class="row">
-      <div class="col-md-4" id="navMenuPanel">
+      <div class="col-md-4" id="navMenuPanel">       
+
+        <div class="collapse" id="collapseExample">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <h5><strong>Advanced Search</strong> <small>use the text inputs to search the component table.</small></h5>
+              <div id="AdvancedSearch"></div>
+            </div>
+          </div>
+        </div>
+
+
         <div class="panel panel-default">
           <div class="panel-body">
           <div id="myProgress">
           <div id="myBar">
-          
-
-
-
            </div>
           </div>
            <h5><strong>Navigation</strong> <small>Use the navigation tree to interact with the database.</small></h5>
@@ -20,9 +27,7 @@
             </div>
             <div id="jstree"><pre><i class="fa fa-spinner fa-spin fa-fw"></i><span class=" ">Loading...</span></pre></div> 
           </div>
-          <div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
-            <button type="button" class="btn btn-default" id="newMenuItem" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></button> 
-          </div>
+          <div id="menuItems"></div>
         </div>
       </div>
     </div>  
@@ -255,6 +260,17 @@ $('#newMenuItem').click(function(){
   console.log(' temp :', temp )
   console.log('---------------------------')
   console.log('Admin Page')
+
+//Expand and Collapse all buttons.
+var html = '<div style="text-align:center"><button id="expandBtn" class="btn btn-default btn-xs">Expand</button><button id="collapseBtn" class="btn btn-default btn-xs">Collapse</button></div>'
+$('#menuItems').append(html)
+jQuery('#expandBtn').click(function () {
+ jQuery('#'+location).jstree('open_all');
+});
+jQuery('#collapseBtn').click(function () {
+ jQuery('#'+location).jstree('close_all');
+});
+//Expand and Collapse all buttons.
 
 }
 

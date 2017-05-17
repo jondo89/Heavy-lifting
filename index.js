@@ -27,7 +27,9 @@ var readController = require('./controllers/read');
 var deleteController = require('./controllers/delete');
 var orginizationController = require('./controllers/orginization');
 var pagesController = require('./controllers/pages');
-
+var productController = require('./controllers/product');
+var assemblyController = require('./controllers/assembly');
+var componentController = require('./controllers/component');
 
 // Passport OAuth strategies
 require('./config/passport');
@@ -147,6 +149,8 @@ app.get('/delete',  adminController.delete);
 /////////////////////////////////////////////////
 app.get('/settings',  userInterfaceController.settings);
 app.get('/profile', userInterfaceController.profile);
+
+
 /////////////////////////////////////
 ////       ORGINIZATION         //// 
 ///////////////////////////////////
@@ -216,7 +220,21 @@ app.get('/getformraw', readController.getformraw);
 // getformraw
 app.get('/getcompform', readController.getcompform);
 
+/////////////////////////////////////
+////       PRODUCTS             //// 
+///////////////////////////////////
+// getformraw
+app.get('/productload', productController.productload);
 
+/////////////////////////////////////
+////       ASSEMBLY             //// 
+///////////////////////////////////
+app.get('/assembly/new',  assemblyController.newassy);
+
+/////////////////////////////////////
+////       ASSEMBLY             //// 
+///////////////////////////////////
+app.get('/component/new',  componentController.newcomp);
 
 /* Redundant
 //click to open with navmenu

@@ -12,12 +12,14 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right" id="deploy">
-
-      {{#unless user}}
-      <li>
-        <a href="/database">Database</a>
-      </li>
-{{/unless}}
+        {{#unless user}}
+        <li>
+          <a href="/database">Database</a>
+        </li>
+        <li>
+          <a href="/store">Store</a>
+        </li>
+        {{/unless}}
         {{> navbar}}   
         {{#if user}}
         <li class="dropdown">
@@ -45,7 +47,7 @@
   <!-- /.container-fluid -->
 </nav>
 
- 
+
 {{#if user}}
 
 <script type="text/javascript">
@@ -91,7 +93,7 @@ function loadusermenu(){
    'url': '/loadusermenu',
    'success': function (dataSchemaObject) {
     var navemenu = JSON.parse(dataSchemaObject) 
- 
+    
     var html = ''    
     for (var i = 0; i < navemenu.user.length; i++) {
       html +='<li><a href="/'+navemenu.user[i].entry.value+'" id="'+navemenu.user[i].entry.description+'">'+navemenu.user[i].entry.description+'</a></li>'
@@ -100,7 +102,7 @@ function loadusermenu(){
     for (var i = 0; i < navemenu.admin.length; i++) {
       html +='<li><a href="/'+navemenu.admin[i].entry.value+'" id="'+navemenu.admin[i].entry.description+'">'+navemenu.admin[i].entry.description+'</a></li>'
     }
-        html+='<li role="separator" class="divider"></li>'
+    html+='<li role="separator" class="divider"></li>'
     for (var i = 0; i < navemenu.navmenu.length; i++) {
       html +='<li><a href="/'+navemenu.navmenu[i].entry.value+'" id="'+navemenu.navmenu[i].entry.description+'">'+navemenu.navmenu[i].entry.description+'</a></li>'
     }

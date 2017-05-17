@@ -1,8 +1,15 @@
-
-    <h1 id="name"></h1>
-    <p id="detail"></p>
     <div class="row">
       <div class="col-md-4" id="navMenuPanel">
+
+        <div class="collapse" id="collapseExample">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <h5><strong>Advanced Search</strong> <small>use the text inputs to search the component table.</small></h5>
+              <div id="AdvancedSearch"></div>
+            </div>
+          </div>
+        </div>
+      
         <div class="panel panel-default">
           <div class="panel-body">
           <div id="myProgress">
@@ -15,9 +22,7 @@
             </div>
             <div id="jstree"></div> 
           </div>
-          <div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
-            <button type="button" class="btn btn-default" id="newMenuItem" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i></button> 
-          </div>
+          <div id="menuItems"></div>
         </div>
       </div>
     </div>  
@@ -28,101 +33,85 @@
     </div>
   </div>
  
+ 
 
 <script type="text/javascript">
- 
-//The menu item from JSTREE
-var items = {{{query}}}
-//The applicable form for use ( query.childtype)
-var query1 = {{{query1}}}
-//The form in queston
-var query2 = {{{query2}}}
-//the form elements.
-var query3 = {{{query3}}}
-//the form datasets.
-var query4= {{{query4}}}
-//The query.parentid items.
-var tablelistdata = {{{query3}}};
-
-//Unique if for the forms.
-var formids = create_uid()
- 
-var templateload = {{{templateload}}}
- 
-var modifiedTableListData
-/////////////////////////////////////
-////     HEADINGS AND STUFF     //// 
-///////////////////////////////////
-$('#name').html(items.name)
-$('#detail').html(items.detail)
-
+  var databaseid = {{{items}}};
+  var Formids = {{{Formids}}};
+  var navmenuHeadings = ['detail','description','icon','buttons','tabs','parent','template']
+  var databaseMenu = []
+  var temp =[]
 
 /////////////////////////////
 ////     DEBUG AREA     //// 
 ///////////////////////////
-console.log( 'databasetablelist loading' )
+console.log( 'Store loading' )
 console.log( '-------------------------' )
-console.log( 'items : ',items )
-console.log( 'query1 : ',query1 )
-console.log( 'query2 : ',query2 )
-console.log( 'query3 : ',query3 )
-console.log( 'query4 : ',query4 )
-console.log( 'tablelistdata : ',tablelistdata )
-console.log( 'formids : ',formids )
+console.log( 'databaseid : ',databaseid )
+console.log( 'Formids : ',Formids )
+console.log( 'navmenuHeadings : ',navmenuHeadings )
+console.log( 'databaseMenu : ',databaseMenu )
+console.log( 'temp : ',temp )
 console.log( '-------------------------' )
-console.log( 'databasetablelist loading' )
+console.log( 'Store loading' )
 
 
-//////////////////////////////////////////
-////        CREATE UNIQUE ID         //// 
-////////////////////////////////////////
-function create_uid() {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-    .toString(16)
-    .substring(1);
-  }
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-  s4() + '-' + s4() + s4() + s4();
-}
 
-///////////////////////////////////////////////////
-////        REQUIRED FORMATING OF DATA        //// 
-/////////////////////////////////////////////////
-function dataFormatComp(){
-  var temp = []
-  //This is where the id is injected into the menu item . Crude hacky work around , not sure how to improve.
-  for (var i = 0; i < tablelistdata.length; i++) {
-    for(key in tablelistdata[i].entry){
-      for (var j = 0; j < query2.length; j++) {
-        if (query2[j].elementID == key) {
-          tablelistdata[i].entry[query2[j]['entry']['description']] = tablelistdata[i].entry[query2[j].elementID]
-          delete tablelistdata[i].entry[query2[j].elementID]
-        }
-      }
+
+/////////////////////////////////// 
+//////  GET JSTREE BY ID    //////
+///////////////////////////////// 
+function jstreeGet(ids){
+  jQuery.ajax({
+    'url': '/jstree?ids='+ids,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      var dataSchemaObject = JSON.parse(dataSchemaObject)
+      //Add the headings to the page.
+      $('#descriptions').html(dataSchemaObject.thisitem[0].name)
+      $('#details').html(dataSchemaObject.thisitem[0].detail)
+      $('#panel').html('')
+      var dataSchemaObject1 = fitstFormat(dataSchemaObject.children)
+      //manipulate data to work with the jstree
+      var jsTreeData = dataJStreeConvert (dataSchemaObject1)
+      var location = 'jstree'
+      $('#'+location).html('')
+      //load the jstree
+      //change the primary page id variable , used for the parent
+      databaseid = ids
+      loadNavMenu(location,jsTreeData)
     }
-tablelistdata[i].entry.id = tablelistdata[i].elementID
-   temp.push(tablelistdata[i].entry)
- }
- modifiedTableListData = temp
+  });
 }
+
+function fitstFormat(databaseMenu){
+  var temp =[]
+    //This is where the id is injected into the menu item . Crude hacky work around , not sure how to improve.
+    for (var i = 0; i < databaseMenu.length; i++) {
+      //the add the id to the array going into the menu .
+      if (databaseMenu[i]['elementID'] == "") {
+        databaseMenu[i].entry.id = databaseMenu[i]['_id']
+      }else{
+        databaseMenu[i].entry.id = databaseMenu[i]['elementID']
+      }
+      temp.push(databaseMenu[i].entry)
+    }
+    databaseMenu = temp
+    return databaseMenu
+  }
  
 ///////////////////////////// 
 //////  INITIALISE    //////
 /////////////////////////// 
 $( document ).ready(function() {
-         dataFormatComp()
-      var location = 'jstree'
-      $('#'+location).html('')
-      var temp = dataJStreeConvert (modifiedTableListData)
-      loadNavMenu(location,temp)
+  jstreeGet(databaseid)
 });
 
 /////////////////////////////////////////
 //////  DATACONVERT FOR JSTREE    //////
 /////////////////////////////////////// 
 function dataJStreeConvert (databaseMenu){
-  console.log(databaseMenu)
   var newData = []
   for (var i = 0; i < databaseMenu.length; i++) {
     var temp = {}
@@ -238,9 +227,9 @@ jQuery('#'+location)
         r.push(dataTree.instance.get_node(dataTree.selected[i]).template);
       }
       if (field) {
-        templateloading(field,template)
+        templateloading(field)
       }else{
-        templateloading(ids,template)
+        templateloading(ids)
       }
     })
 
@@ -250,20 +239,41 @@ jQuery('#'+location)
 $('#newMenuItem').click(function(){
   //var temp = jQuery('#'+location).jstree("get_selected",true)
   //console.log(temp[0].id)
-  newMenuItems(Formids,'','use',items,'',navmenuHeadings)
+  newMenuItems(Formids,'','use',databaseid,'',navmenuHeadings)
   })
+  console.log('Store Page')
+  console.log('---------------------------')
+  console.log(' databaseid :', databaseid )
+  console.log(' Formids :', Formids )
+  console.log(' navmenuHeadings :', navmenuHeadings )
+  console.log(' databaseMenu :', databaseMenu )
+  console.log(' temp :', temp )
+  console.log('---------------------------')
+  console.log('Store Page')
+
+//Expand and Collapse all buttons.
+var html = '<div style="text-align:center"><button id="expandBtn" class="btn btn-default btn-xs">Expand</button><button id="collapseBtn" class="btn btn-default btn-xs">Collapse</button></div>'
+$('#menuItems').append(html)
+jQuery('#expandBtn').click(function () {
+ jQuery('#'+location).jstree('open_all');
+});
+jQuery('#collapseBtn').click(function () {
+ jQuery('#'+location).jstree('close_all');
+});
+//Expand and Collapse all buttons.
+  
 }
 
 ///////////////////////////////////////////////////////
 ////////  EVENT LISTNER FUNCTION AREA DATABASE ///////
 /////////////////////////////////////////////////////
-function templateloading(ids,template){
+function templateloading(ids){
 //Ensure that the first load error is covered , also any other errors.
 if(ids){
   jQuery.ajax({
    'async': true,
    'global': false,
-   'url': '/templateload?ids='+ids+'&template='+template,
+   'url': '/productload?ids='+ids,
    'success': function (dataSchemaObject) {
      jQuery('#panel').html("")
      jQuery('#panel').html(dataSchemaObject)
