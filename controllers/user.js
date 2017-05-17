@@ -23,7 +23,7 @@ exports.loginGet = function(req, res) {
     return res.redirect('/');
   }
   res.render('account/login', {
-    title: 'Log in'
+    title: 'Sign in | Heavy-lifting'
   });
 };
 
@@ -70,7 +70,7 @@ exports.signupGet = function(req, res) {
     return res.redirect('/');
   }
   res.render('account/signup', {
-    title: 'Sign up'
+    title: 'Sign up | Heavy-lifting'
   });
 };
 
@@ -114,7 +114,7 @@ exports.signupPost = function(req, res, next) {
  */
 exports.accountGet = function(req, res) {
   res.render('account/profile', {
-    title: 'My Account'
+    title: 'My Account | Heavy-lifting'
   });
 };
 
@@ -213,7 +213,7 @@ exports.forgotGet = function(req, res) {
     return res.redirect('/');
   }
   res.render('account/forgot', {
-    title: 'Forgot Password'
+    title: 'Forgot Password | Heavy-lifting'
   });
 };
 
@@ -292,7 +292,7 @@ exports.resetGet = function(req, res) {
         return res.redirect('/forgot');
       }
       res.render('account/reset', {
-        title: 'Password Reset'
+        title: 'Password Reset | Heavy-lifting'
       });
     });
 };
