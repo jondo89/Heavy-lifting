@@ -1,6 +1,6 @@
 
  <div style="text-align:center" >
-  <img src="https://heavy-lifting.herokuapp.com/img/heavy-lifting%20Square%20300x300.png" style="height:25px">  
+  <img src="https://heavy-lifting.herokuapp.com/img/heavy-lifting Square 50x50 inverse" style="height:25px">  
  </div>
 <h1> 
 Heavy-lifting is a design platform for Engineers.
