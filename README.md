@@ -1,4 +1,7 @@
- <img src="https://heavy-lifting.herokuapp.com/img/heavy-lifting%20Square%20300x300.png" style="height: 55px">  
+
+ <div style="text-align:center" >
+  <img src="https://heavy-lifting.herokuapp.com/img/heavy-lifting%20Square%20300x300.png" style="height: 25px">  
+ </div>
 <h1> 
 Heavy-lifting is a design platform for Engineers.
 </h1>
