@@ -1,3 +1,4 @@
+ <img src="/img/heavy-lifting Square 300x300.png" style="height: 55px">  
 <h1> 
 Heavy-lifting is a design platform for Engineers.
 </h1>
