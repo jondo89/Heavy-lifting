@@ -36,8 +36,7 @@ var componentController = require('./controllers/component');
 // Passport OAuth strategies
 require('./config/passport');
  
-recaptcha.init('6Ld74SEUAAAAAEk-ZDWZbVw6Bcvb8zQQxgT4Tyqr', '6Ld74SEUAAAAADgWL3K4DpWylpJgyqb3qGXcEvpu');
-
+ 
 var app = express();
 
 //favicon location

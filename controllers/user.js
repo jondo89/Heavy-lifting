@@ -4,7 +4,7 @@ var nodemailer = require('nodemailer');
 var passport = require('passport');
 var User = require('../models/User');
 var recaptcha = require('express-recaptcha');
-recaptcha.init('6Ld74SEUAAAAAEk-ZDWZbVw6Bcvb8zQQxgT4Tyqr', '6Ld74SEUAAAAADgWL3K4DpWylpJgyqb3qGXcEvpu');
+recaptcha.init('SITE_KEY', 'SECRET_KEY');
 
 
 /////////////////////////////////////////////////////

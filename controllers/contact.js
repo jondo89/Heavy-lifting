@@ -1,6 +1,6 @@
 var nodemailer = require('nodemailer');
 var recaptcha = require('express-recaptcha');
- recaptcha.init('6Ld74SEUAAAAAEk-ZDWZbVw6Bcvb8zQQxgT4Tyqr', '6Ld74SEUAAAAADgWL3K4DpWylpJgyqb3qGXcEvpu');
+recaptcha.init('6Ld74SEUAAAAAEk-ZDWZbVw6Bcvb8zQQxgT4Tyqr', '6Ld74SEUAAAAADgWL3K4DpWylpJgyqb3qGXcEvpu');
 
 
 var transporter = nodemailer.createTransport({
