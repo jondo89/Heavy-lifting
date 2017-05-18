@@ -1,4 +1,5 @@
 var nodemailer = require('nodemailer');
+var recaptcha = require('express-recaptcha');
 var transporter = nodemailer.createTransport({
   service: 'Mailgun',
   auth: {
@@ -20,6 +21,10 @@ exports.contactGet = function(req, res) {
  * POST /contact
  */
 exports.contactPost = function(req, res) {
+
+   recaptcha.verify(req, function(error){
+        if(!error){
+
   req.assert('name', 'Name cannot be blank').notEmpty();
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
@@ -44,4 +49,17 @@ exports.contactPost = function(req, res) {
     req.flash('success', { msg: 'Thank you! Your feedback has been submitted.' });
     res.redirect('/contact');
   });
+
+        }
+            //success code 
+        else{
+          req.assert('message', '<strong>Heads up!</strong> You may very well be a robot!').notEmpty();
+        }
+            //error code 
+    })
+
+
+
+
+
 };

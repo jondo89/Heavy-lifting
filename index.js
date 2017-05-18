@@ -11,6 +11,8 @@ var dotenv = require('dotenv');
 var exphbs = require('express-handlebars');
 var mongoose = require('mongoose');
 var passport = require('passport');
+var recaptcha = require('express-recaptcha');
+
 
 // Load environment variables from .env file
 dotenv.load();
@@ -33,6 +35,8 @@ var componentController = require('./controllers/component');
 
 // Passport OAuth strategies
 require('./config/passport');
+ 
+recaptcha.init('6Ld74SEUAAAAAEk-ZDWZbVw6Bcvb8zQQxgT4Tyqr', '6Ld74SEUAAAAADgWL3K4DpWylpJgyqb3qGXcEvpu');
 
 var app = express();
 
@@ -240,6 +244,9 @@ app.get('/component/new',  componentController.newcomp);
 //click to open with navmenu
 app.get('/pageload', readController.pageload);
 */
+
+ 
+
 
 app.get('/contact', contactController.contactGet);
 app.post('/contact', contactController.contactPost);
