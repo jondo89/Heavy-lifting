@@ -35,8 +35,8 @@ exports.contactPost = function(req, res) {
 
   var mailOptions = {
     from: req.body.name + ' ' + '<'+ req.body.email + '>',
-    to: 'your@email.com',
-    subject: '✔ Contact Form | Mega Boilerplate',
+    to: 'contact@isithelo.com',
+    subject: '✔ Contact Form | Heavy-lifting',
     text: req.body.message
   };
 

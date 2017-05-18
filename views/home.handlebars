@@ -10,6 +10,7 @@
 </head>
 <body>
 {{> javascript}}
+<script src='https://www.google.com/recaptcha/api.js'></script>
   {{> header}}
 <div class="full-page-header">
   <div class="container">
@@ -21,9 +22,17 @@
             <h3> 
               Use {{siteName}} to build, design and create projects, support your business, and work together on <strong>open source </strong> engineering databases.
             </h3>
-            <p>Functionality is limited as major development is still required.</p>
-              <div style="padding-top: 15px">
-              <a  href="/database" class="btn btn-default btn-lg">View the Database</a>
+       
+              <div style="padding-top: 35px">
+
+<div class="btn-group" role="group" aria-label="...">
+   <a  href="/database" class="btn btn-default btn-lg">Database</a>
+   <a  href="/store" class="btn btn-default btn-lg">Store</a>
+   <a  href="/components" class="btn btn-default btn-lg">Components</a>
+</div>
+
+
+             
              </div>
       </div>
       <div class="col-md-5" style="padding-top: 95px">

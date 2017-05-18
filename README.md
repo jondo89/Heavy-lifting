@@ -1,6 +1,6 @@
 
  <div style="text-align:center" >
-  <img src="https://heavy-lifting.herokuapp.com/img/heavy-lifting%20Square%20300x300.png" style="height:25px">  
+  <img src="https://heavy-lifting.herokuapp.com/img/heavy-lifting%20Square%20300x300.png" href="https://heavy-lifting.herokuapp.com/" target="_blank" style="height:25px">  
  </div>
 <h1> 
 Heavy-lifting is a design platform for Engineers.
@@ -8,7 +8,7 @@ Heavy-lifting is a design platform for Engineers.
 <h3> 
 Use Heavy-lifting to build, design and create projects, support your business, and work together on <strong>open source </strong> engineering databases.
 </h3>
-<p>It is possible the frame work would work as a CMS system.</p>
+ 
 
 
 <h1><a class="github-button" href="https://heavy-lifting.herokuapp.com/" target="_blank">Demo</a></h1>
@@ -16,7 +16,6 @@ Use Heavy-lifting to build, design and create projects, support your business, a
 Based on <a href="https://github.com/sahat/megaboilerplate">Mega Boilerplate</a>.
 
 Port is set to 5000.
-Designed to imitate GitHub
 
 Application Framework
 <ul>

@@ -140,52 +140,14 @@ if (req.user) {
 /////  PRIVACY STATEMENT    ///// 
 ////////////////////////////////
 exports.privacy = function(req, res) {
-//Perform Routing for Varios user type on the home page.
-if (req.user) {
- userid = req.user.id
- switch (true){
-  default:
-  heavyliftingModel.find().limit(5).exec(function (err, init) {
-    if (err) { return next(err); }
-    var ids = '58ddf10c7d12ca2fc4ef88cf'
-    var Formids = init[3]._id
-    res.render('templates', {
-      siteName : siteName,
-      items : JSON.stringify(ids),
-      Formids : JSON.stringify(Formids)
-    });
-  });
-  break;
-}
-} else {
- res.redirect('/signin');
-}
+res.render('privacy-statement')
 }; 
 
 //////////////////////////////////
 /////  TERMS STATEMENT    ///// 
 ////////////////////////////////
 exports.terms = function(req, res) {
-//Perform Routing for Varios user type on the home page.
-if (req.user) {
- userid = req.user.id
- switch (true){
-  default:
-  heavyliftingModel.find().limit(5).exec(function (err, init) {
-    if (err) { return next(err); }
-    var ids = '58ddf0b77d12ca2fc4ef88cc'
-    var Formids = init[3]._id
-    res.render('templates', {
-      siteName : siteName,
-      items : JSON.stringify(ids),
-      Formids : JSON.stringify(Formids)
-    });
-  });
-  break;
-}
-} else {
- res.redirect('/signin');
-}
+res.render('terms-of-service')
 }; 
 
 

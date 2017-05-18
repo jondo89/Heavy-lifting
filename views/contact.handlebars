@@ -1,9 +1,20 @@
-<div class="container">
-  <div class="panel">
-    <div class="panel-heading">
-      <h3 class="panel-title">Contact Form</h3>
-    </div>
+
+<script src='https://www.google.com/recaptcha/api.js'></script>
+<div class="login-container container" style="padding-bottom: 35px">
+
+     <div style="text-align: center">
+       <img src="/img/heavy-lifting Square 300x300.png" style="height: 55px">  
+     </div>
+    <div style="text-align: center;padding-bottom: 15px">
+        <h2>Contact the Heavy-lifting Team</h2>
+     </div>
+<div class="panel panel-default" >
+
     <div class="panel-body">
+   
+    <p></p>
+
+
       {{#if messages.success}}
         <div role="alert" class="alert alert-success">
           {{#each messages.success}}
@@ -21,27 +32,36 @@
       <form method="POST" class="form-horizontal">
         <div class="form-group">
           <label for="name" class="col-sm-2">Name</label>
-          <div class="col-sm-8">
+          <div class="col-md-10">
             <input type="text" name="name" id="name" class="form-control" autofocus>
           </div>
         </div>
         <div class="form-group">
           <label for="email" class="col-sm-2">Email</label>
-          <div class="col-sm-8">
+          <div class="col-md-10">
             <input type="email" name="email" id="email" class="form-control">
           </div>
         </div>
         <div class="form-group">
           <label for="message" class="col-sm-2">Body</label>
-          <div class="col-sm-8">
+          <div class="col-md-10">
             <textarea name="message" id="message" rows="7" class="form-control"></textarea>
           </div>
         </div>
-        <div class="form-group">
-          <div class="col-sm-offset-2 col-sm-8">
-            <button type="submit" class="btn btn-success">Send</button>
+
+           <div class="form-group"><label for="message" class="col-sm-2">Recaptcha</label>
+          <div class="  col-md-10">
+            <div class="g-recaptcha" data-sitekey="6Ld74SEUAAAAAEk-ZDWZbVw6Bcvb8zQQxgT4Tyqr"></div>
+
           </div>
         </div>
+
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-md-10" style="text-align: right;">
+            <button type="submit" class="btn btn-primary">Send</button>
+          </div>
+        </div>
+        
       </form>
     </div>
   </div>
