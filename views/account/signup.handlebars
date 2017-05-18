@@ -15,7 +15,7 @@
           {{/each}}
         </div>
       {{/if}}
-      <form method="POST">
+      <form method="POST" action="/signup">
         <div class="form-group">   
           <input type="text" name="name" id="name" placeholder="Pick a username" class="form-control" autofocus>
         </div>
@@ -25,16 +25,9 @@
         <div class="form-group">
           <input type="password" name="password" id="password" placeholder="Password" class="form-control">
         </div>
-
-
            <div class="form-group" >  
-           
             <div class="g-recaptcha" data-sitekey="6Ld74SEUAAAAAEk-ZDWZbVw6Bcvb8zQQxgT4Tyqr"></div>
-
-        
         </div>
-
-
         <div class="form-group">
           <small class="text-muted">By signing up, you agree to the <a href="/terms">Terms of Service</a> and <a href="/Privacy">Privacy Statment</a>.</small>
         </div>
