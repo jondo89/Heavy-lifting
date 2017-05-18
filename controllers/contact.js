@@ -1,5 +1,7 @@
 var nodemailer = require('nodemailer');
 var recaptcha = require('express-recaptcha');
+recaptcha.init('6Ld74SEUAAAAAEk-ZDWZbVw6Bcvb8zQQxgT4Tyqr', '6Ld74SEUAAAAADgWL3K4DpWylpJgyqb3qGXcEvpu');
+
 var transporter = nodemailer.createTransport({
   service: 'Mailgun',
   auth: {
@@ -21,7 +23,7 @@ exports.contactGet = function(req, res) {
  * POST /contact
  */
 exports.contactPost = function(req, res) {
-
+ 
    recaptcha.verify(req, function(error){
         if(!error){
 
@@ -53,7 +55,8 @@ exports.contactPost = function(req, res) {
         }
             //success code 
         else{
-          req.assert('message', '<strong>Heads up!</strong> You may very well be a robot!').notEmpty();
+          req.flash('error', { msg: ' Heads up!  You may very well be a robot!' });
+          return res.redirect('/contact');
         }
             //error code 
     })
