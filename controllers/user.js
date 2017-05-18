@@ -100,9 +100,9 @@ exports.signupGet = function(req, res) {
         }
 
 
-      User.findOne({ name: req.body.name }, function(err, user) {
-        if (user) {
-          req.flash('error', { msg: 'The username you have entered is already associated with another account.' });
+      User.findOne({ name: req.body.name }, function(err, username) {
+        if (username) {
+          req.flash('error', { msg: 'The user name you have entered is already associated with another account.' });
           return res.redirect('/signup');
         }
 
@@ -111,15 +111,16 @@ exports.signupGet = function(req, res) {
           name: req.body.name,
           email: req.body.email,
           password: req.body.password
-
-});
-
         });
         user.save(function(err) {
           req.logIn(user, function(err) {
             res.redirect('/');
           });
         });
+
+});
+
+
       });
     } else { 
       req.flash('error', { msg: 'Heads up , You may very well be a robot.' });
