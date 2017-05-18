@@ -7,6 +7,18 @@ var recaptcha = require('express-recaptcha');
 recaptcha.init('6Ld74SEUAAAAAEk-ZDWZbVw6Bcvb8zQQxgT4Tyqr', '6Ld74SEUAAAAADgWL3K4DpWylpJgyqb3qGXcEvpu');
 
 
+/////////////////////////////////////////////////////
+////////////   PRIMARY PERMISSIONS      ////////////
+///////////////////////////////////////////////////
+
+        //superadmin – somebody with access to the site network administration features and all other features. See the Create a Network article.
+        //administrator (slug: 'administrator') – somebody who has access to all the administration features within a single site.
+        //editor (slug: 'editor') – somebody who can publish and manage posts including the posts of other users.
+        //author (slug: 'author') – somebody who can publish and manage their own posts.
+        //contributor (slug: 'contributor') – somebody who can write and manage their own posts but cannot publish them.
+        //subscriber (slug: 'subscriber') – somebody who can only manage their profile.
+
+
 /**
  * Login required middleware
  */
@@ -34,22 +46,20 @@ exports.loginGet = function(req, res) {
  * POST /login
  */
 exports.loginPost = function(req, res, next) {
+
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.assert('password', 'Password cannot be blank').notEmpty();
   req.sanitize('email').normalizeEmail({ remove_dots: false });
-
   var errors = req.validationErrors();
-
   if (errors) {
     req.flash('error', errors);
-    return res.redirect('/login');
+    return res.redirect('/signin');
   }
-
   passport.authenticate('local', function(err, user, info) {
     if (!user) {
       req.flash('error', info);
-      return res.redirect('/login')
+      return res.redirect('/signin')
     }
     req.logIn(user, function(err) {
       res.redirect('/');
@@ -86,38 +96,39 @@ exports.signupGet = function(req, res) {
       req.assert('name', 'Name cannot be blank').notEmpty();
       req.assert('email', 'Email is not valid').isEmail();
       req.assert('email', 'Email cannot be blank').notEmpty();
-      req.assert('password', 'Password must be at least 4 characters long').len(4);
+      req.assert('password', 'Password must be at least 8 characters long').len(8);
       req.sanitize('email').normalizeEmail({ remove_dots: false });
       var errors = req.validationErrors();
       if (errors) {
         req.flash('error', errors);
         return res.redirect('/signup');
       }
+      //check the email for duplicate.
       User.findOne({ email: req.body.email }, function(err, user) {
         if (user) {
           req.flash('error', { msg: 'The email address you have entered is already associated with another account.' });
           return res.redirect('/signup');
         }
-
-
+        //check the user name for duplicate.
       User.findOne({ name: req.body.name }, function(err, username) {
         if (username) {
           req.flash('error', { msg: 'The user name you have entered is already associated with another account.' });
           return res.redirect('/signup');
         }
-
-
         user = new User({
           name: req.body.name,
           email: req.body.email,
-          password: req.body.password
+          password: req.body.password,
+          permission : 'subscriber'
         });
+
+
+
         user.save(function(err) {
           req.logIn(user, function(err) {
             res.redirect('/');
           });
         });
-
 });
 
 
@@ -144,7 +155,7 @@ exports.accountGet = function(req, res) {
  */
 exports.accountPut = function(req, res, next) {
   if ('password' in req.body) {
-    req.assert('password', 'Password must be at least 4 characters long').len(4);
+    req.assert('password', 'Password must be at least 8 characters long').len(8);
     req.assert('confirm', 'Passwords must match').equals(req.body.password);
   } else {
     req.assert('email', 'Email is not valid').isEmail();
@@ -321,7 +332,7 @@ exports.resetGet = function(req, res) {
  * POST /reset
  */
 exports.resetPost = function(req, res, next) {
-  req.assert('password', 'Password must be at least 4 characters long').len(4);
+  req.assert('password', 'Password must be at least 8 characters long').len(8);
   req.assert('confirm', 'Passwords must match').equals(req.body.password);
 
   var errors = req.validationErrors();
@@ -361,7 +372,7 @@ exports.resetPost = function(req, res, next) {
       var mailOptions = {
         from: 'support@yourdomain.com',
         to: user.email,
-        subject: 'Your Mega Boilerplate password has been changed',
+        subject: 'Your Heavy-lifting password has been changed',
         text: 'Hello,\n\n' +
         'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
       };

@@ -1,55 +1,4 @@
-<div class="media">
-  <div class="media-left">
-    <a href="#">
-    </a>  
-  </div>
-  <div class="media">
-    <div class="media-left">
-      <a href="#">
-        <img src="/img/25097074.png" style="width:155px">
-      </a>
-    </div>
-    <div class="media-body">
-      <div class="row" style=" ">
-        <div class="col-md-8" >
-          <h2 >Isithelo, Technical Solutions</h2>
-          <p>Progressive engineering into the mining industry.</p>
-          <div class="row" style=" ">
-            <div class="col-md-3"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> South Africa</div>
-            <div class="col-md-4"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span> http://www.isithelo.com</div>
-            <div class="col-md-4"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> contact@isithelo.com</div>
-          </div>
-        </div>
-        <div class="col-md-4" style="padding-top: 25px;text-align: right;">
-          {{#unless user}}
-          <input type="checkbox" checked="" data-toggle="toggle" data-on="Defaults" data-off="Defaults">
-          {{/unless}}
-          {{#if user}}
-          <input type="checkbox" data-toggle="toggle" data-on="Defaults" data-off="Defaults">
-          {{/if}}
-          <input type="checkbox"  data-toggle="toggle" data-on="Public" data-off="Public">
-          {{#if user}}
-          <!-- Single button -->
-          <div class="btn-group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Jonodav <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-right">
-              <li><a href="#" >Jonodav   <i class="fa fa-check" aria-hidden="true"></i></a></li>
-              <li><a href="#">Isithelo Mining</a></li>
-              <li><a href="#">Shiftbulk</a></li>
-              <li role="separator" class="divider"></li>
-              <li><a href="#"><i class="fa fa-users" aria-hidden="true"></i> Manage Organizations</a></li>
-              <li><a href="#"><i class="fa fa-plus" aria-hidden="true"></i> Create Organizations</a></li>
-            </ul>
-          </div>
-          {{/if}}
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<hr>
+ 
 <div class="row">
   <div class="col-md-6">
     <h1>Components</h1>
@@ -85,7 +34,8 @@
 </div>  
 <div class="col-md-8" id="browserArea">
   <div id="panel">  
-    <div class="alert alert-info" role="alert"> <strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>
+<div style="border-width: 2px; border-style: dashed; border-color: grey;padding:55px;text-align: center;border-radius: 5px;"><strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>
+
   </div>
 </div>
 </div>
@@ -128,7 +78,7 @@ function jstreeGet(ids){
       //Add the headings to the page.
       $('#descriptions').html(dataSchemaObject.thisitem[0].name)
       $('#details').html(dataSchemaObject.thisitem[0].detail)
-      $('#panel').html('')
+      $('#panel').html('<div style="border-width: 2px; border-style: dashed; border-color: grey;padding:55px;text-align: center;border-radius: 5px;"><strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>')
       var dataSchemaObject1 = fitstFormat(dataSchemaObject.children)
       //manipulate data to work with the jstree
       var jsTreeData = dataJStreeConvert (dataSchemaObject1)
