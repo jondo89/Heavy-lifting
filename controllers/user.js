@@ -26,7 +26,7 @@ exports.ensureAuthenticated = function(req, res, next) {
   if (req.isAuthenticated()) {
     next();
   } else {
-    res.redirect('/login');
+    res.redirect('/signin');
   }
 };
 
@@ -177,7 +177,10 @@ exports.accountPut = function(req, res, next) {
       user.email = req.body.email;
       user.name = req.body.name;
       user.bio = req.body.bio;
-      user.username = req.body.username;
+      //required for the disabled input area
+      if (req.body.username) {
+         user.username = req.body.username;
+      }
       user.company = req.body.company;
       user.location = req.body.location;
       user.website = req.body.website;
@@ -190,7 +193,7 @@ exports.accountPut = function(req, res, next) {
       } else {
         req.flash('success', { msg: 'Your profile information has been updated.' });
       }
-      res.redirect('/account');
+      res.redirect('/users/'+user.username );
     });
   });
 };
