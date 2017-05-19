@@ -109,8 +109,14 @@ app.use(function(req, res, next) {
 });
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', HomeController.index);
 
+app.get('http://', function(req, res, next){
+  res.redirect('https://')
+ 
+});
+
+
+ app.get('/', HomeController.index);
 
 /////////////////////////////
 ////       PAGES        //// 
