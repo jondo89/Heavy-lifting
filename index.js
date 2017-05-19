@@ -110,18 +110,7 @@ app.use(function(req, res, next) {
 app.use(express.static(path.join(__dirname, 'public')));
 
 
- // Redirect all HTTP traffic to HTTPS
-function ensureSecure(req, res, next){
-if(req.headers["x-forwarded-proto"] === "https"){
-  // OK, continue
-  return next();
-};
-res.redirect('https://'+req.hostname+req.url);
-};
-// Handle environments
-if (env == 'production') {
-  app.all('*', ensureSecure);
-}
+ 
 
  app.get('/', HomeController.index);
 
