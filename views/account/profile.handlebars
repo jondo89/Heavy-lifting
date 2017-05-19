@@ -1,127 +1,136 @@
-<div class="container">
-  <div class="panel">
-    <div class="panel-body">
-      {{#if messages.success}}
-        <div role="alert" class="alert alert-success">
-          {{#each messages.success}}
-            <div>{{msg}}</div>
-          {{/each}}
-        </div>
-      {{/if}}
-      {{#if messages.error}}
-        <div role="alert" class="alert alert-danger">
-          {{#each messages.error}}
-            <div>{{msg}}</div>
-          {{/each}}
-        </div>
-      {{/if}}
-      <form method="POST" action="/account?_method=PUT" class="form-horizontal">
-        <legend>Profile Information</legend>
-        <div class="form-group">
-          <label for="email" class="col-sm-3">Email</label>
-          <div class="col-sm-7">
-            <input type="email" name="email" id="email" class="form-control" value="{{user.email}}">
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="name" class="col-sm-3">Name</label>
-          <div class="col-sm-7">
-            <input type="text" name="name" id="name" class="form-control" value="{{user.name}}">
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-3">Gender</label>
-          <div class="col-sm-4">
-            <label class="radio-inline radio col-sm-4">
-              <input type="radio" name="gender" value="male" {{#ifeq user.gender 'male'}}checked{{/ifeq}}><span>Male</span>
-            </label>
-            <label class="radio-inline col-sm-4">
-              <input type="radio" name="gender" value="female" {{#ifeq user.gender 'female'}}checked{{/ifeq}}><span>Female</span>
-            </label>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="location" class="col-sm-3">Location</label>
-          <div class="col-sm-7">
-            <input type="text" name="location" id="location" class="form-control" value="{{user.location}}">
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="website" class="col-sm-3">Website</label>
-          <div class="col-sm-7">
-            <input type="text" name="website" id="website" class="form-control" value="{{user.website}}">
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-3">Gravatar</label>
-          <div class="col-sm-4">
-            <img src="{{user.gravatar}}" class="profile" width="100" height="100">
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="col-sm-offset-3 col-sm-4">
-            <button type="submit" class="btn btn-success">Update Profile</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-  <div class="panel">
-    <div class="panel-body">
-      <form method="POST" action="/account?_method=PUT" class="form-horizontal">
-        <legend>Change Password</legend>
-        <div class="form-group">
-          <label for="password" class="col-sm-3">New Password</label>
-          <div class="col-sm-7">
-            <input type="password" name="password" id="password" class="form-control">
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="confirm" class="col-sm-3">Confirm Password</label>
-          <div class="col-sm-7">
-            <input type="password" name="confirm" id="confirm" class="form-control">
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="col-sm-4 col-sm-offset-3">
-            <button type="submit" class="btn btn-success">Change Password</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-  <div class="panel">
-    <div class="panel-body">
-      <div class="form-horizontal">
-        <legend>Linked Accounts</legend>
-        <div class="form-group">
-          <div class="col-sm-offset-3 col-sm-4">
-          {{#if user.google}}
-            <p><a href="/unlink/google" class="text-danger">Unlink your Google account</a></p>
+ 
+<script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
+
+<div class="row" style="padding-top: 35px">
+  <div class="col-md-4">
+    <div class="media">
+      <div class="media-left">
+        <a href="#">
+          {{#if userload.picture}}
+          <div id="googlepic"></div>
           {{else}}
-            <p><a href="/auth/google">Link your Google account</a></p>
+          <img src="{{userload.gravatar}}" class="media-object">
           {{/if}}
-          {{#if user.github}}
-            <p><a href="/unlink/github" class="text-danger">Unlink your Github account</a></p>
-          {{else}}
-            <p><a href="/auth/github">Link your Github account</a></p>
-          {{/if}}
-          </div>
-        </div>
+        </a>
       </div>
     </div>
-  </div>
-  <div class="panel">
-    <div class="panel-body">
-      <form method="POST" action="/account?_method=DELETE" class="form-horizontal">
-        <legend>Delete Account</legend>
-        <div class="form-group">
-          <p class="col-sm-offset-3 col-sm-9">You can delete your account, but keep in mind this action is irreversible.</p>
-          <div class="col-sm-offset-3 col-sm-9">
-            <button type="submit" class="btn btn-danger">Delete my account</button>
-          </div>
-        </div>
-      </form>
+    <h1>{{userload.name}}</h1>
+    <h3>{{userload.username}}</h3>
+    <p>{{userload.bio}}</p>
+    {{#if userload.company}}
+    <div class="row">
+      <div class="col-sm-2">
+        <i class="fa fa-users" aria-hidden="true"></i>
+      </div>
+      <div class="col-sm-8">
+        {{dotdotdot userload.company}}
+      </div>
     </div>
+    {{/if}}
+    {{#if userload.location}}
+    <div class="row">
+      <div class="col-sm-2">
+        <i class="fa fa-map-marker" aria-hidden="true"></i>
+      </div>
+      <div class="col-sm-8">
+        {{userload.location}}
+      </div>
+    </div>
+    {{/if}}
+    {{#if userload.email}}
+    <div class="row">
+      <div class="col-sm-2">
+        <i class="fa fa-envelope-o" aria-hidden="true"></i>
+      </div>
+      <div class="col-sm-8">
+        <a href="mailto:{{userload.email}}">{{userload.email}}</a>
+      </div>
+    </div>
+    {{/if}}
+    {{#if userload.website}}
+    <div class="row">
+      <div class="col-sm-2">
+        <i class="fa fa-link" aria-hidden="true"></i>
+      </div>
+      <div class="col-sm-8">
+        <a href="http://{{userload.website}}" target="_blank">{{userload.website}}</a>
+      </div>
+    </div>
+    {{/if}}
+    {{#if userload.permission}}
+    <div class="row">
+      <div class="col-sm-2">
+        <i class="fa fa-key" aria-hidden="true"></i>
+      </div>
+      <div class="col-sm-8">
+        {{userload.permission}}
+      </div>
+    </div>
+    {{/if}}
+    <hr>
+    <h3>Organizations</h3>
+    <p>This user is not apart of any Organizations.</p>   
+  </div>
+  <div class="col-md-8">
+    <h1>Public Assemblies</h1>
+    <hr>
+    <div id="assemblies">
+      <p>No public assemblies are available for this user.</p>
+    </div>
+    <h1>Public Components</h1>
+    <hr>
+    <div id="components">
+      <p>No public components are available for this user.</p>
+    </div>
+ 
+    <h1>Contributions in the last year.</h1>
+       <hr>
+    <div id="cal-heatmap"></div>
   </div>
 </div>
+
+
+
+
+
+<script type="text/javascript">
+
+var username = JSON.stringify('{{userload.username}}')
+var user = JSON.stringify('{{user.username}}')
+
+
+
+
+  var text = '{{userload.picture}}'
+  text =text.replace("sz&#x3D;50", "sz&#x3D;200");
+  $('#googlepic').html('<img src="'+text+'" class="media-object">')
+
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+$( document ).ready(function() {
+  var username = JSON.stringify('{{userload.username}}')
+  //var calender =  {{calender}}
+  //console.log(calender)
+  heatmap()
+  if (username == user) {
+    $('#assemblies').html('Loggedin as '+user)
+    $('#components').html('Loggedin as '+user)
+    
+  }
+});
+
+///////////////////////////// 
+//////  HEAT MAP      //////
+/////////////////////////// 
+function heatmap(){
+  var cal = new CalHeatMap();
+  cal.init({
+    domain: "month",
+    range: 6,
+  });
+}
+
+</script>

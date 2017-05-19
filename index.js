@@ -80,9 +80,13 @@ var hbs = exphbs.create({
      
         partial: function (name) {
             return name;
-        }
+        },
+        'dotdotdot' : function(str) {
+  if (str.length > 16)
+    return str.substring(0,16) + '...';
+  return str;
     
-  }
+  }}
 });
 
 
@@ -109,10 +113,10 @@ app.use(function(req, res, next) {
 });
 app.use(express.static(path.join(__dirname, 'public')));
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  
 
- app.get('/', HomeController.index);
+app.get('/', HomeController.index);
 
 /////////////////////////////
 ////       PAGES        //// 
@@ -153,7 +157,7 @@ app.get('/delete',  adminController.delete);
 ////        USER INTERFACE CONTROLLER         //// 
 /////////////////////////////////////////////////
 app.get('/settings',  userInterfaceController.settings);
-app.get('/profile', userInterfaceController.profile);
+
 
 
 /////////////////////////////////////
@@ -241,12 +245,17 @@ app.get('/assembly/new',  assemblyController.newassy);
 ///////////////////////////////////
 app.get('/component/new',  componentController.newcomp);
 
-/* Redundant
-//click to open with navmenu
-app.get('/pageload', readController.pageload);
-*/
+ 
+//Rebuild routing
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
  
+
+/////////////////////////////////////
+////       PROFILE              //// 
+///////////////////////////////////
+app.get('/users/:username/', userInterfaceController.profile);
 
 
 app.get('/contact', contactController.contactGet);
@@ -265,9 +274,9 @@ app.post('/reset/:token', userController.resetPost);
 app.get('/signout', userController.signout);
 app.get('/unlink/:provider', userController.ensureAuthenticated, userController.unlink);
 app.get('/auth/google', passport.authenticate('google', { scope: 'profile email' }));
-app.get('/auth/google/callback', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/login' }));
+app.get('/auth/google/callback', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/signin' }));
 app.get('/auth/github', passport.authenticate('github', { scope: [ 'user:email profile repo' ] }));
-app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/', failureRedirect: '/login' }));
+app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/', failureRedirect: '/signin' }));
 
 /////////////////////////////
 ////       404          //// 

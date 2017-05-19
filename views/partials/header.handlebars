@@ -28,7 +28,7 @@
         {{> navbar}}   
         {{#if user}}
         <li class="dropdown">
-          <a href="#" data-toggle="dropdown" class="navbar-avatar dropdown-toggle">
+          <a href="#" data-toggle="dropdown" class="navbar-avatar dropdown-toggle" >
             {{#if user.picture}}
             <img src="{{user.picture}}" class="navbar-avatar-pic">
             {{else}}
@@ -36,9 +36,10 @@
             {{/if}}
             <i class="caret"></i>
           </a>
-          <ul class="dropdown-menu" style="width: 100%" id="usermenu"> 
+          <ul class="dropdown-menu"  id="usermenu"> 
+          <li><a href="/users/{{user.username}}">Your Profile</a></li>
           <li class="divider"></li>  
-          <li><a >Logged in as <strong>{{user.name}}</strong>  </a></li>
+          <li><a >Logged in as <strong>{{user.username}}</strong>  </a></li>
             <li class="divider"></li>       
             <li><a href="/signout">Sign out</a></li>
           </ul>

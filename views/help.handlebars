@@ -1,43 +1,33 @@
- 
-
-
     <h1 id="descriptions"></h1>
     <p id="details"></p>
     <div class="row">
       <div class="col-md-4" id="navMenuPanel">
-        <div class="panel panel-default">
-          <div class="panel-body">
-          <div id="myProgress">
-  <div id="myBar"> </div>
-</div>
-           <h5><strong>Navigation</strong> <small>Use the navigation tree to interact with the database.</small></h5>
-           <div class="panel">
-             <div style="padding-bottom:15px;padding-bottom:15px">
-              <input id="search_field" name="searchinput" type="search" placeholder="Search Navigation" class="form-control input-md">      
-            </div>
-            <div id="jstree"></div> 
-          </div>
-          <div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
-       
-          </div>
+        <div id="myProgress">
+          <div id="myBar"> </div>
         </div>
+        <h5><strong>Navigation</strong> <small>Use the navigation tree to interact with the database.</small></h5>
+        <div class="panel">
+         <div style="padding-bottom:15px;padding-bottom:15px">
+          <input id="search_field" name="searchinput" type="search" placeholder="Search Navigation" class="form-control input-md">      
+        </div>
+        <div id="jstree"></div> 
+      </div>
+      <div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
       </div>
     </div>  
     <div class="col-md-8" id="browserArea">
       <div id="panel">  
-        <div class="alert alert-info" role="alert"> <strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>
+        <div style="border-width: 2px; border-style: dashed; border-color: grey;padding:55px;text-align: center;border-radius: 5px;"><strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>
       </div>
     </div>
   </div>
- 
- 
 
-<script type="text/javascript">
-  var databaseid = {{{items}}};
-  var Formids = {{{Formids}}};
-  var navmenuHeadings = ['detail','description','icon','buttons','tabs','parent','template']
-  var databaseMenu = []
-  var temp =[]
+  <script type="text/javascript">
+    var databaseid = {{{items}}};
+    var Formids = {{{Formids}}};
+    var navmenuHeadings = ['detail','description','icon','buttons','tabs','parent','template']
+    var databaseMenu = []
+    var temp =[]
 
 /////////////////////////////
 ////     DEBUG AREA     //// 
@@ -65,12 +55,12 @@ function jstreeGet(ids){
     'global': false,
     'success': function (dataSchemaObject) {
       var dataSchemaObject = JSON.parse(dataSchemaObject)
- 
+
       
       //Add the headings to the page.
       $('#descriptions').html(dataSchemaObject.thisitem[0].name)
       $('#details').html(dataSchemaObject.thisitem[0].detail)
-      $('#panel').html('')
+      $('#panel').html('<div style="border-width: 2px; border-style: dashed; border-color: grey;padding:55px;text-align: center;border-radius: 5px;"><strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>')
 
       var dataSchemaObject1 = fitstFormat(dataSchemaObject.children)
       //manipulate data to work with the jstree
@@ -100,7 +90,7 @@ function fitstFormat(databaseMenu){
     databaseMenu = temp
     return databaseMenu
   }
- 
+
 ///////////////////////////// 
 //////  INITIALISE    //////
 /////////////////////////// 
@@ -240,18 +230,18 @@ $('#newMenuItem').click(function(){
   //var temp = jQuery('#'+location).jstree("get_selected",true)
   //console.log(temp[0].id)
   newMenuItems(Formids,'','use',databaseid,'',navmenuHeadings)
-  })
+})
 
 
-  console.log('Admin Page')
-  console.log('---------------------------')
-  console.log(' databaseid :', databaseid )
-  console.log(' Formids :', Formids )
-  console.log(' navmenuHeadings :', navmenuHeadings )
-  console.log(' databaseMenu :', databaseMenu )
-  console.log(' temp :', temp )
-  console.log('---------------------------')
-  console.log('Admin Page')
+console.log('Admin Page')
+console.log('---------------------------')
+console.log(' databaseid :', databaseid )
+console.log(' Formids :', Formids )
+console.log(' navmenuHeadings :', navmenuHeadings )
+console.log(' databaseMenu :', databaseMenu )
+console.log(' temp :', temp )
+console.log('---------------------------')
+console.log('Admin Page')
 
 }
 
@@ -315,4 +305,3 @@ function newMenuItems(formdata,idItem,raw,parentid,injectParentid,headings){
 }
 </script>
 
- 

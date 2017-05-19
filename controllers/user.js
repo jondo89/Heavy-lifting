@@ -176,7 +176,9 @@ exports.accountPut = function(req, res, next) {
     } else {
       user.email = req.body.email;
       user.name = req.body.name;
-      user.gender = req.body.gender;
+      user.bio = req.body.bio;
+      user.username = req.body.username;
+      user.company = req.body.company;
       user.location = req.body.location;
       user.website = req.body.website;
     }
