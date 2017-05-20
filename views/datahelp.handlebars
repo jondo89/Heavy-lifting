@@ -1,0 +1,367 @@
+<h2>Heavy-lifting Database Structure</h2>
+
+<h3>1. Heavy-lifting Collections</h3>
+<p>The table below shows the access permissions for the seperate collection sets.</p>
+<p><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span> Create , read , update , delete </p>
+<p>The collection set follows below.</p>
+<ul>
+  <li>Configuration</li>
+  <li>Database</li>
+  <li>User</li>
+  <li>Organization</li>
+  <li>Component</li>
+  <li>Forms</li>
+  <li>Assemblies</li>
+</ul>
+ 
+<h3>2. <i class="fa fa-database" aria-hidden="true"></i> Configuration</h3>
+<p>The configuration collection holds the site administration parameters. This includes S.E.O, Typical input variables and setting such as the site logo, titles and plugins.</p>
+<table class="table table-bordered">
+  <thead>
+    <tr style="text-align: center;">
+      <th>Configuration</th>
+      <th>Create</th>
+      <th>Read</th>
+      <th>Update</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="text-align: center;">
+      <td>superadmin</td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>administrator</td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>member</td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>user</td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>3. <i class="fa fa-database" aria-hidden="true"></i> Database</h3>
+<table class="table table-bordered">
+  <thead>
+    <tr style="text-align: center;">
+      <th>Database</th>
+      <th>Create</th>
+      <th>Read</th>
+      <th>Update</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="text-align: center;">
+      <td>superadmin</td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>administrator</td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>member</td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>user</td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>4. <i class="fa fa-database" aria-hidden="true"></i> User</h3>
+<table class="table table-bordered">
+  <thead>
+    <tr style="text-align: center;">
+      <th>Database</th>
+      <th>Create</th>
+      <th>Read</th>
+      <th>Update</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="text-align: center;">
+      <td>superadmin</td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>administrator</td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>member</td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>user</td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<h3>4. <i class="fa fa-database" aria-hidden="true"></i> Organization</h3>
+<table class="table table-bordered">
+  <thead>
+    <tr style="text-align: center;">
+      <th>Database</th>
+      <th>Create</th>
+      <th>Read</th>
+      <th>Update</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="text-align: center;">
+      <td>superadmin</td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>administrator</td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>member</td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>user</td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<h3>5. <i class="fa fa-database" aria-hidden="true"></i> Components</h3>
+<table class="table table-bordered">
+  <thead>
+    <tr style="text-align: center;">
+      <th>Components</th>
+      <th>Create</th>
+      <th>Read</th>
+      <th>Update</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="text-align: center;">
+      <td>superadmin</td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>administrator</td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>member</td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>user</td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+<h3>6. <i class="fa fa-database" aria-hidden="true"></i> Forms</h3>
+<table class="table table-bordered">
+  <thead>
+    <tr style="text-align: center;">
+      <th>Forms</th>
+      <th>Create</th>
+      <th>Read</th>
+      <th>Update</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="text-align: center;">
+      <td>superadmin</td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>administrator</td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>member</td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>user</td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+<h3>7. <i class="fa fa-database" aria-hidden="true"></i> Assemblies</h3>
+<table class="table table-bordered">
+  <thead>
+    <tr style="text-align: center;">
+      <th>Assemblies</th>
+      <th>Create</th>
+      <th>Read</th>
+      <th>Update</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="text-align: center;">
+      <td>superadmin</td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>administrator</td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>member</td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+    <tr style="text-align: center;">
+      <td>user</td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+      <td style="background-color: #5cb85c"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>8. Description</h3>
+<div style="padding-top: 55px"> </div>
+<pre >
+  Start with the orginizational redesign , 
+
+  Notes : 
+  Need a serperate DB for the organizations.
+  Need a serpate DB for all of the site specific items.
+
+  |||||||||||||| The seperation between admin and superadmin needs to be clearly defined.||||||||||||||
+
+  Process : 
+  1. Read
+  2. Update
+  3. Create
+  4. Delete
+
+  //superadmin – somebody with access to the site network administration features and all 
+  other features. See the Create a Network article.
+
+  //administrator (slug: 'administrator') – somebody who has access to all the 
+  administration features within a single site.
+
+  //member (slug: 'author') – somebody who can publish and manage their own posts.
+
+  //user (slug: 'contributor') – somebody who can write and manage their 
+  own posts but cannot publish them.
+
+  So basically , there is the person who creates the site , 
+
+  1. They need to easily upload changes to the configuration.
+  2. They need to easily upload changes to the database.
+  3. When uploading , they dont want to affect the User details 
+  4. When uploading , they dont want to affect the organization details.
+  5. When uploading , they dont want to affect the component details.
+  6. When uploading , they dont want to affect the forms.
+  7. When uploading , they dont want to affect the assemblies.
+
+  So at this stage there are 7 seperate collections.
+
+</pre>
+
+
