@@ -1,36 +1,28 @@
  
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-8">
     <h1>Components</h1>
-    <p>Use the interface below to get started on the creation and use of new site components.</p>
+    <p>Use the interface below to get started on the creation and use of new site components. By signing in you can create and modify your personnel collections, or manage your organizations.</p>
   </div>
 
-</div>    
+</div> 
+   <hr>
+   
 <div class="row">
   <div class="col-md-4" id="navMenuPanel">
-    <div class="collapse" id="collapseExample">
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <h5><strong>Advanced Search</strong> <small>use the text inputs to search the component table.</small></h5>
-          <div id="AdvancedSearch"></div>
-        </div>
-      </div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-body">
+ 
         <div id="myProgress">
           <div id="myBar"> </div>
         </div>
         <h5><strong>Navigation</strong> <small>Use the navigation tree to interact with the database.</small></h5>
-        <div class="panel">
+        <div class=" ">
          <div style="padding-bottom:15px;padding-bottom:15px">
           <input id="search_field" name="searchinput" type="search" placeholder="Search Navigation" class="form-control input-md">      
         </div>
         <div id="jstree"></div> 
       </div>
       <div id="menuItems"></div>
-    </div>
-  </div>
+     
 </div>  
 <div class="col-md-8" id="browserArea">
   <div id="panel">  
@@ -204,7 +196,7 @@ function loadNavMenu(location,dataNav){
       "keep_selected_style" : false
     },
     "multiple": false,
-    "plugins" : [ "wholerow" , "search" , "state"]
+    "plugins" : [  "search" , "state"]
   });
 
 /////////////////////////////////

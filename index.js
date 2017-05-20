@@ -80,9 +80,13 @@ var hbs = exphbs.create({
      
         partial: function (name) {
             return name;
-        }
+        },
+        'dotdotdot' : function(str) {
+  if (str.length > 16)
+    return str.substring(0,16) + '...';
+  return str;
     
-  }
+  }}
 });
 
 
@@ -109,6 +113,7 @@ app.use(function(req, res, next) {
 });
 app.use(express.static(path.join(__dirname, 'public')));
 
+<<<<<<< HEAD
 
  // Redirect all HTTP traffic to HTTPS
 function ensureSecure(req, res, next){
@@ -122,8 +127,12 @@ res.redirect('https://'+req.hostname+req.url);
 if (env == 'production') {
   app.all('*', ensureSecure);
 }
+=======
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+>>>>>>> e25ed38f5cac2a72271cbe1c8a7d7788bebd70d4
 
- app.get('/', HomeController.index);
+app.get('/', HomeController.index);
 
 /////////////////////////////
 ////       PAGES        //// 
@@ -138,11 +147,7 @@ app.get('/assemblies', pagesController.assemblies);
 app.get('/configuration', pagesController.configuration);
 app.get('/reports', pagesController.reports);
 
-/////////////////////////////////
-////       TEMPALTES        //// 
-///////////////////////////////
-app.get('/privacy', pagesController.privacy);
-app.get('/terms', pagesController.terms);
+
 
 ////////////////////////////////////////////
 ////       INITIALIZE DATABASE         //// 
@@ -164,7 +169,7 @@ app.get('/delete',  adminController.delete);
 ////        USER INTERFACE CONTROLLER         //// 
 /////////////////////////////////////////////////
 app.get('/settings',  userInterfaceController.settings);
-app.get('/profile', userInterfaceController.profile);
+
 
 
 /////////////////////////////////////
@@ -252,12 +257,40 @@ app.get('/assembly/new',  assemblyController.newassy);
 ///////////////////////////////////
 app.get('/component/new',  componentController.newcomp);
 
-/* Redundant
-//click to open with navmenu
-app.get('/pageload', readController.pageload);
-*/
+ 
+//Rebuild routing
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
  
+
+/////////////////////////////////////
+////       PROFILE              //// 
+///////////////////////////////////
+app.get('/users/:username/', userInterfaceController.profile);
+
+/////////////////////////////////////
+////       SETTINGS             //// 
+///////////////////////////////////
+app.get('/settings/:username/', userInterfaceController.settings);
+
+
+
+
+/////////////////////////////////
+////       TEMPALTES        //// 
+///////////////////////////////
+app.get('/privacy', pagesController.privacy);
+app.get('/terms', pagesController.terms);
+ 
+
+
+
+
+
+
+
+
 
 
 app.get('/contact', contactController.contactGet);
@@ -276,9 +309,9 @@ app.post('/reset/:token', userController.resetPost);
 app.get('/signout', userController.signout);
 app.get('/unlink/:provider', userController.ensureAuthenticated, userController.unlink);
 app.get('/auth/google', passport.authenticate('google', { scope: 'profile email' }));
-app.get('/auth/google/callback', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/login' }));
+app.get('/auth/google/callback', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/signin' }));
 app.get('/auth/github', passport.authenticate('github', { scope: [ 'user:email profile repo' ] }));
-app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/', failureRedirect: '/login' }));
+app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/', failureRedirect: '/signin' }));
 
 /////////////////////////////
 ////       404          //// 

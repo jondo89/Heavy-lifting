@@ -6,7 +6,7 @@
   <div class="col-md-7">
 
   </div>
-</div>
+</div><div id="searchArea"></div>
        <p></p>  
        <div id='formDelivery'>
        </div>
@@ -15,7 +15,11 @@
 
 
 
-
+<style type="text/css">
+  .dt-buttons{
+    padding-bottom: 15px;
+  }
+</style>
  
 
 
@@ -26,6 +30,7 @@
 
      <script type="text/javascript">
 
+$('#searchArea').append('<div style="padding-top:15px" class="collapse" id="collapseExample"> <div class="panel panel-default"> <div class="panel-body"> <h5><strong>Advanced Search</strong> <small>use the text inputs to search the component table.</small></h5> <div id="AdvancedSearch"></div> </div> </div> </div>')
 
 
 /////////////////////////////
@@ -347,7 +352,11 @@ var table = jQuery('#'+id).DataTable({
   })
   html+='     </tbody>'
   html+=' </table>'
+
+
+
   $('#AdvancedSearch').html(html)
+
 
   function filterColumn ( i ) {
     table.column( i ).search(
@@ -359,7 +368,10 @@ var table = jQuery('#'+id).DataTable({
     filterColumn( $(this).parents('tr').attr('data-column') );
   } );
 
-$('.dt-buttons').prepend('<a class="btn btn-primary btn-sm" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-search" aria-hidden="true"></i> Advanced Search</a>')
+$('.dt-buttons').prepend('<a class="btn btn-success btn-sm" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-search" aria-hidden="true"></i> Advanced Search</a>')
+
+
+
 //end of advanced filter option.
 }
 

@@ -113,13 +113,20 @@ function create_uid() {
 }
 
   $(document).ready(function() { 
+    var ids
+if (!items.elementID) {
+  ids = items._id
+} else {
+  ids = items.elementID
+}
+
     ///////////////////////////////// 
     //////  READ CHILDREN     //////
     /////////////////////////////// 
     jQuery.ajax({
       'async': true,
       'global': false,
-      'url': '/groups?data='+items.elementID,
+      'url': '/groups?data='+ids,
       'success': function (dataSchemaObject) {
         input = JSON.parse(dataSchemaObject);
         groupShow(input)

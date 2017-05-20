@@ -1,5 +1,3 @@
- 
-
 <nav id="mainNav" class="navbar navbar-inverse ">
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -7,28 +5,46 @@
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
         <span class="sr-only">Toggle navigation</span><i class="fa fa-bars"></i>
       </button>
-           <a class="navbar-brand" href="/" style="padding: 8px 0px 5px 11px">
+      <a class="navbar-brand" href="/" style="padding: 8px 0px 5px 11px">
         <img alt="Brand" src="/img/logo.png" style="height: 35px;padding: 5px"> 
       </a><a class="navbar-brand" href="/" style="">Heavy-lifting</a>
     </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right" id="deploy">
-        {{#unless user}}
         <li>
           <a href="/database">Database</a>
         </li>
         <li>
           <a href="/store">Store</a>
         </li>
+        {{#unless user}}
         <li>
           <a href="/components">Components</a>
-        </li>        
+        </li>
+                <li>
+          <a href="/help">Help</a>
+        </li>          
         {{/unless}}
-        {{> navbar}}   
+        {{#if user}}
+        <li>
+          <a href="/components/{{user.username}}">Components</a>
+        </li> 
+        <li>
+          <a href="/assemblies/{{user.username}}">Assemblies</a>
+        </li> 
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-plus" aria-hidden="true"></i> <span class="caret"></span></a>
+          <ul class="dropdown-menu" id="component">  
+            <li><a href="/organization/new">New Organization</a></li>
+            <li><a href="/component/new">New Component</a></li>
+            <li><a href="/assembly/new">New Assembly</a></li>
+          </ul>
+        </li>
+        {{/if}}
         {{#if user}}
         <li class="dropdown">
-          <a href="#" data-toggle="dropdown" class="navbar-avatar dropdown-toggle">
+          <a href="#" data-toggle="dropdown" class="navbar-avatar dropdown-toggle" >
             {{#if user.picture}}
             <img src="{{user.picture}}" class="navbar-avatar-pic">
             {{else}}
@@ -36,10 +52,13 @@
             {{/if}}
             <i class="caret"></i>
           </a>
-          <ul class="dropdown-menu" style="width: 100%" id="usermenu"> 
-          <li class="divider"></li>  
-          <li><a >Logged in as <strong>{{user.name}}</strong>  </a></li>
-            <li class="divider"></li>       
+          <ul class="dropdown-menu"  id="usermenu"> 
+            <li><a >Logged in as <strong>{{user.username}}</strong>  </a></li>
+            <li class="divider"></li>    
+            <li><a href="/users/{{user.username}}">Your Profile</a></li>
+            <li><a href="/settings/{{user.username}}">Settings</a></li>
+            <li><a href="/help">Help</a></li>
+            <li class="divider"></li>  
             <li><a href="/signout">Sign out</a></li>
           </ul>
         </li>
@@ -53,122 +72,16 @@
   </div>
   <!-- /.container-fluid -->
 </nav>
-
-
 {{#if user}}
-
 <script type="text/javascript">
-/////////////////////////////////////// 
-//////  LOAD NAVIGATION MENU    //////
-/////////////////////////////////////
-function LoadNavigationMenu(){
-  jQuery.ajax({
-   'async': true,
-   'global': false,
-   'url': '/navmenuload',
-   'success': function (dataSchemaObject) {
-    var navemenu = JSON.parse(dataSchemaObject)
-    var html=''
-    for (var i = 0; i < navemenu.length; i++) {
-      if (navemenu[i].elementID) {
-        html +='<li id="'+navemenu[i].entry.description+'_navmenu"><a href="/'+navemenu[i].entry.description+'" >'+navemenu[i].entry.description+'</a></li>'
-      } else {
-        html +='<li><a href="/'+navemenu[i].entry.description+'" >'+navemenu[i].entry.description+'</a></li>'
-      }
-    }
-    $('#deploy').prepend(html)
-/*
-    for (var i = 0; i < navemenu.length; i++) {
-      if (navemenu[i].elementID) {
-       $('#'+navemenu[i].elementID+'_navmenu').bind('click', NavbarClick);
-     } else {
-       $('#'+navemenu[i]._id+'_navmenu').bind('click', NavbarClick);
-     }
-   }
-   */
- }
-})
-}
-
-/////////////////////////////////
-//////  LOAD USER MENU    //////
-////////////////////////////////
-function loadusermenu(){
-  jQuery.ajax({
-   'async': true,
-   'global': false,
-   'url': '/loadusermenu',
-   'success': function (dataSchemaObject) {
-    var navemenu = JSON.parse(dataSchemaObject) 
-    
-    var html = ''    
-    for (var i = 0; i < navemenu.user.length; i++) {
-      html +='<li><a href="/'+navemenu.user[i].entry.value+'" id="'+navemenu.user[i].entry.description+'">'+navemenu.user[i].entry.description+'</a></li>'
-    }
-    html+='<li role="separator" class="divider"></li>'
-    for (var i = 0; i < navemenu.admin.length; i++) {
-      html +='<li><a href="/'+navemenu.admin[i].entry.value+'" id="'+navemenu.admin[i].entry.description+'">'+navemenu.admin[i].entry.description+'</a></li>'
-    }
-    html+='<li role="separator" class="divider"></li>'
-    for (var i = 0; i < navemenu.navmenu.length; i++) {
-      html +='<li><a href="/'+navemenu.navmenu[i].entry.value+'" id="'+navemenu.navmenu[i].entry.description+'">'+navemenu.navmenu[i].entry.description+'</a></li>'
-    }
-    $('#usermenu').prepend(html)
-  }
-})
-}
-
-/////////////////////////////////
-//////  LOAD USER MENU    //////
-////////////////////////////////
-function loadcompmenu(){
-  jQuery.ajax({
-   'async': true,
-   'global': false,
-   'url': '/loadcompmenu',
-   'success': function (dataSchemaObject) {
-    var navemenu = JSON.parse(dataSchemaObject)
-    var html=''
-    for (var i = 0; i < navemenu.length; i++) {
-      html +='<li><a href="/'+navemenu[i].entry.value+'" id="'+navemenu[i].entry.description+'">'+navemenu[i].entry.description+'</a></li>'
-    }
-    $('#component').html(html)
-  }
-})
-}
-
+ var user = JSON.parse(JSON.stringify('{{user.permission}}'))
 ///////////////////////////// 
 //////  INITIALISE    //////
 /////////////////////////// 
 $( document ).ready(function() {
-  LoadNavigationMenu()
-  loadusermenu()
-  loadcompmenu()
+  if (user=='superadmin') {
+    $("#usermenu").append('<li class="divider"></li> <li><a href="/configuration"><i class="fa fa-cog" aria-hidden="true"></i> Configuration</a></li><li><a href="/forms"><i class="fa fa-cog" aria-hidden="true"></i> Forms</a></li><li><a href="/admin"><i class="fa fa-cog" aria-hidden="true"></i> Admin Panel</a></li>')
+  }
 });
-
-/*
-//////////////////////////////////////////////
-////////    BUTTON CLICK NAVBAR     /////////
-////////////////////////////////////////////
-function NavbarClick(){
-  var temp = $(this).attr('id')
-    temp = temp.replace('_navmenu', '');
-  if (temp!='noload') {
-    pageLoad(temp)
-    move()
-  }
-}
-
-////////////////////////////////////
-////////    LOAD PAGE     /////////
-//////////////////////////////////
-function pageLoad(ids){
-  //Ensure that the first load error is covered , also any other errors.
-  if(ids){
-    jstreeGet(ids)
-  }
-}*/
-
-
 </script>
 {{/if}}

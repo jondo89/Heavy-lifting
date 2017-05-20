@@ -1,66 +1,29 @@
- <!DOCTYPE html>
- <html>
- <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{title}}</title>
-  {{> css}}
-</head>
-<body>
- 
-  {{> javascript}}
-   {{> header}}
 
 
-
-
-  <div class="container" >
-
-
-
-
-    <h1 id="descriptions"></h1>
-    <p id="details"></p>
-    <div class="row">
-      <div class="col-md-4" id="navMenuPanel">
-        <div class="panel panel-default">
-          <div class="panel-body">
-          <div id="myProgress">
-  <div id="myBar"> </div>
-</div>
-           <h5><strong>Navigation</strong> <small>Use the navigation tree to interact with the database.</small></h5>
-           <div class="panel">
-             <div style="padding-bottom:15px;padding-bottom:15px">
-              <input id="search_field" name="searchinput" type="search" placeholder="Search Navigation" class="form-control input-md">      
-            </div>
-            <div id="jstree"></div> 
-          </div>
-          <div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
-            
-          </div>
-        </div>
-      </div>
-    </div>  
-    <div class="col-md-8" id="browserArea">
-      <div id="panel">  
-        <div class="alert alert-info" role="alert"> <strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>
-      </div>
-    </div>
+<div class="row">
+  <div class="col-md-10">
+    <h1>Settings</h1>
+    <p>Use the interface below to edit your user preferences.</p>
   </div>
-</div>
- 
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="myModal">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
-       <div id="modal-body"></div>
-       <div id="formAreaModal"></div>
-     </div>
-     <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+</div>   <hr>
+<div class="row">
+<div class="col-md-4" id="navMenuPanel">       
+    <div id="myProgress">
+      <div id="myBar">
+      </div>
     </div>
+    <h5><strong>Navigation</strong> <small>Use the navigation tree to interact with the database.</small></h5>
+    <div class=" ">
+     <div style="padding-bottom:15px;padding-bottom:15px">
+      <input id="search_field" name="searchinput" type="search" placeholder="Search Navigation" class="form-control input-md">      
+    </div>
+    <div id="jstree"><pre><i class="fa fa-spinner fa-spin fa-fw"></i><span class=" ">Loading...</span></pre></div> 
+  </div>
+  <div id="menuItems"></div>
+</div>  
+<div class="col-md-8" id="browserArea">
+  <div id="panel">  
+    <div style="border-width: 2px; border-style: dashed; border-color: grey;padding:55px;text-align: center;border-radius: 5px;"><strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>
   </div>
 </div>
 </div>
@@ -98,12 +61,12 @@ function jstreeGet(ids){
     'global': false,
     'success': function (dataSchemaObject) {
       var dataSchemaObject = JSON.parse(dataSchemaObject)
- 
+
       
       //Add the headings to the page.
       $('#descriptions').html(dataSchemaObject.thisitem[0].name)
       $('#details').html(dataSchemaObject.thisitem[0].detail)
-      $('#panel').html('')
+      $('#panel').html('<div style="border-width: 2px; border-style: dashed; border-color: grey;padding:55px;text-align: center;border-radius: 5px;"><strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>')
 
       var dataSchemaObject1 = fitstFormat(dataSchemaObject.children)
       //manipulate data to work with the jstree
@@ -133,7 +96,7 @@ function fitstFormat(databaseMenu){
     databaseMenu = temp
     return databaseMenu
   }
- 
+
 ///////////////////////////// 
 //////  INITIALISE    //////
 /////////////////////////// 
@@ -230,7 +193,7 @@ function loadNavMenu(location,dataNav){
       "keep_selected_style" : false
     },
     "multiple": false,
-    "plugins" : [ "wholerow" , "search" , "state"]
+    "plugins" : [  "search" , "state"]
   });
 
 /////////////////////////////////
@@ -273,18 +236,32 @@ $('#newMenuItem').click(function(){
   //var temp = jQuery('#'+location).jstree("get_selected",true)
   //console.log(temp[0].id)
   newMenuItems(Formids,'','use',databaseid,'',navmenuHeadings)
-  })
+})
 
 
-  console.log('Admin Page')
-  console.log('---------------------------')
-  console.log(' databaseid :', databaseid )
-  console.log(' Formids :', Formids )
-  console.log(' navmenuHeadings :', navmenuHeadings )
-  console.log(' databaseMenu :', databaseMenu )
-  console.log(' temp :', temp )
-  console.log('---------------------------')
-  console.log('Admin Page')
+console.log('Admin Page')
+console.log('---------------------------')
+console.log(' databaseid :', databaseid )
+console.log(' Formids :', Formids )
+console.log(' navmenuHeadings :', navmenuHeadings )
+console.log(' databaseMenu :', databaseMenu )
+console.log(' temp :', temp )
+console.log('---------------------------')
+console.log('Admin Page')
+
+//Expand and Collapse all buttons.
+var html = '<div style="text-align:center"><button id="expandBtn" class="btn btn-default btn-xs">Expand</button><button id="collapseBtn" class="btn btn-default btn-xs">Collapse</button></div>'
+$('#menuItems').append(html)
+
+
+
+jQuery('#expandBtn').click(function () {
+ jQuery('#'+location).jstree('open_all');
+});
+jQuery('#collapseBtn').click(function () {
+ jQuery('#'+location).jstree('close_all');
+});
+//Expand and Collapse all buttons.
 
 }
 
@@ -346,12 +323,5 @@ function newMenuItems(formdata,idItem,raw,parentid,injectParentid,headings){
     }
   });
 }
-
-
 </script>
 
-{{> footer}}
-{{> analytics}}
-
-</body>
-</html>

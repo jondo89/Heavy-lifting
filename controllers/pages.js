@@ -25,11 +25,7 @@ exports.components = function(req, res) {
 /////     HELP    ///// 
 //////////////////////
 exports.help = function(req, res) {
-//Perform Routing for Varios user type on the home page.
-if (req.user) {
- userid = req.user.id
- switch (true){
-  default:
+ 
   heavyliftingModel.find().limit(5).exec(function (err, init) {
     if (err) { return next(err); }
     var ids = '58ddf0747d12ca2fc4ef88cb'
@@ -40,11 +36,8 @@ if (req.user) {
       Formids : JSON.stringify(Formids)
     });
   });
-  break;
-}
-} else {
- res.redirect('/signin');
-}
+ 
+ 
 };
 
 ////////////////////////
@@ -150,7 +143,7 @@ exports.terms = function(req, res) {
 res.render('terms-of-service')
 }; 
 
-
+ 
 ////////////////////
 /////  SITE    ///// 
 ///////////////////
