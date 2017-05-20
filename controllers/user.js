@@ -93,7 +93,7 @@ exports.signupGet = function(req, res) {
  exports.signupPost = function(req, res, next) {
    recaptcha.verify(req, function(error){
     if(!error){ 
-      req.assert('name', 'Name cannot be blank').notEmpty();
+      req.assert('name', 'Username cannot be blank').notEmpty();
       req.assert('email', 'Email is not valid').isEmail();
       req.assert('email', 'Email cannot be blank').notEmpty();
       req.assert('password', 'Password must be at least 8 characters long').len(8);

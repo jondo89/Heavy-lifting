@@ -257,6 +257,10 @@ app.get('/component/new',  componentController.newcomp);
 ///////////////////////////////////
 app.get('/users/:username/', userInterfaceController.profile);
 
+/////////////////////////////////////
+////       SETTINGS             //// 
+///////////////////////////////////
+app.get('/settings/:username/', userInterfaceController.settings);
 
 app.get('/contact', contactController.contactGet);
 app.post('/contact', contactController.contactPost);

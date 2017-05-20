@@ -31,7 +31,6 @@ exports.settings = function(req, res) {
 ////////// PROFILE PAGE ////////////
 ///////////////////////////////////
 exports.profile = function(req, res) {
-  console.log(req.params)
  //There is a requirement to limit the form size  , as such send the find and send the headings from the parent.
  var query1 = User.findOne(
  {

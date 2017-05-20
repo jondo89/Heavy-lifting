@@ -30,7 +30,13 @@ var userSchema = new mongoose.Schema({
 }, schemaOptions);
 
 userSchema.pre('save', function(next) {
-  var user = this;
+var user = this;
+if (!user.username) {
+  user.username = user.name.replace(/\s/g,'')
+}
+
+
+  
   if (!user.isModified('password')) { return next(); }
   bcrypt.genSalt(10, function(err, salt) {
     bcrypt.hash(user.password, salt, null, function(err, hash) {

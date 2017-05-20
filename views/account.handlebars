@@ -1,7 +1,3 @@
- 
-
-
- 
       {{#if messages.success}}
       <div role="alert" class="alert alert-success">
         {{#each messages.success}}
@@ -17,9 +13,6 @@
       </div>
       {{/if}} 
 
- 
-  <div class="panel">
-    <div class="panel-body">
       <form method="POST" action="/account?_method=PUT" class="form-horizontal">
         <legend>Change Password</legend>
         <div class="form-group">
@@ -40,10 +33,7 @@
           </div>
         </div>
       </form>
-    </div>
-  </div>
-  <div class="panel">
-    <div class="panel-body">
+ 
       <div class="form-horizontal">
         <legend>Linked Accounts</legend>
         <div class="form-group">
@@ -61,10 +51,7 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="panel">
-    <div class="panel-body">
+ 
       <form method="POST" action="/account?_method=DELETE" class="form-horizontal">
         <legend style="color:#d9534f">Delete Account</legend>
         <div class="form-group">
@@ -75,7 +62,6 @@
         </div>
       </form>
     </div>
-  </div>
-</div>
+ 
 
 
