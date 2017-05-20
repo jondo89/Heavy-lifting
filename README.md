@@ -41,10 +41,10 @@ Included in this is vast amounts of duplication and erroneous mistakes that are 
 <h5>Heavy-lifting aims to improve this through shared data control.</h5>
 <p>At the core of the design of Heavy-lifting are the following considerations: </p>
 <ul>
-<li>Record changes in data over time, <li>
-<li>provide access to vast amounts of peer review information to all users, <li>
-<li>build component and assembly structures, <li>
-<li>have an open data structure which can be modular in nature.<li>
+<li>Record changes in data over time</li>
+<li>provide access to vast amounts of peer review information to all users</li>
+<li>build component and assembly structures</li>
+<li>have an open data structure which can be modular in nature</li>
 </ul>
 
 <h2>Heavy-lifting Installation Instructions</h2>
