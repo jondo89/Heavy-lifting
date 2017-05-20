@@ -3,7 +3,7 @@
  
   <img src="https://heavy-lifting.herokuapp.com/img/heavy-lifting%20Square%20300x300.png" href="https://heavy-lifting.herokuapp.com/" target="_blank" style="height:25px">  
  
-  <img src="https://heavy-lifting.herokuapp.com/img/heavy-lifting%20Square%2050x50%20inverse.png" style="height:25px">  
+ 
  
  </div>
 <h1> 
