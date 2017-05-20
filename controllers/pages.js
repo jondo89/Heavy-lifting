@@ -150,7 +150,7 @@ exports.terms = function(req, res) {
 res.render('terms-of-service')
 }; 
 
-
+ 
 ////////////////////
 /////  SITE    ///// 
 ///////////////////

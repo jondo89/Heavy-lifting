@@ -131,11 +131,7 @@ app.get('/assemblies', pagesController.assemblies);
 app.get('/configuration', pagesController.configuration);
 app.get('/reports', pagesController.reports);
 
-/////////////////////////////////
-////       TEMPALTES        //// 
-///////////////////////////////
-app.get('/privacy', pagesController.privacy);
-app.get('/terms', pagesController.terms);
+
 
 ////////////////////////////////////////////
 ////       INITIALIZE DATABASE         //// 
@@ -261,6 +257,25 @@ app.get('/users/:username/', userInterfaceController.profile);
 ////       SETTINGS             //// 
 ///////////////////////////////////
 app.get('/settings/:username/', userInterfaceController.settings);
+
+
+
+
+/////////////////////////////////
+////       TEMPALTES        //// 
+///////////////////////////////
+app.get('/privacy', pagesController.privacy);
+app.get('/terms', pagesController.terms);
+ 
+
+
+
+
+
+
+
+
+
 
 app.get('/contact', contactController.contactGet);
 app.post('/contact', contactController.contactPost);
