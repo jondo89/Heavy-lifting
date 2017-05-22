@@ -17,6 +17,7 @@ var recaptcha = require('express-recaptcha');
 // Load environment variables from .env file
 dotenv.load();
 
+
 // Controllers
 var initController = require('./controllers/initialize');
 var HomeController = require('./controllers/home');
@@ -27,17 +28,23 @@ var userInterfaceController = require('./controllers/userinterface');
 var createController = require('./controllers/create');
 var readController = require('./controllers/read');
 var deleteController = require('./controllers/delete');
-var orginizationController = require('./controllers/orginization');
 var pagesController = require('./controllers/pages');
 var productController = require('./controllers/product');
 var assemblyController = require('./controllers/assembly');
 var componentController = require('./controllers/component');
 
+
+//Updated Controllers
+///////////////////////////////////////////////////////////////////////////////////
+var organizationController = require('./controllers/organization');
+
+
 // Passport OAuth strategies
 require('./config/passport');
  
- 
+
 var app = express();
+
 
 //favicon location
 var favicon = require('serve-favicon');
@@ -51,19 +58,19 @@ if (process.env.MONGODB_URI) {
 }
 
 
-
 mongoose.connection.on('error', function() {
   console.log('MongoDB Connection Error. Please make sure that MongoDB is running.');
   process.exit(1);
 });
+
 
 var db = mongoose.connection;
 db.once('open', function() {
   // we're connected!
   console.log('mongoose connection ok')
   //compile the schema for mongoose
-  
 });
+
 
 var hbs = exphbs.create({
   defaultLayout: 'main',
@@ -77,7 +84,6 @@ var hbs = exphbs.create({
     toJSON : function(object) {
       return JSON.stringify(object);
     },
-     
         partial: function (name) {
             return name;
         },
@@ -90,6 +96,18 @@ var hbs = exphbs.create({
 });
 
 
+ // Redirect all HTTP traffic to HTTPS
+function ensureSecure(req, res, next){
+if(req.headers["x-forwarded-proto"] === "https"){
+  // OK, continue
+  return next();
+};
+res.redirect('https://'+req.hostname+req.url);
+};
+// Handle environments
+if (app.get('env') == 'production') {
+  app.all('*', ensureSecure);
+}
 
 
 app.engine('handlebars', hbs.engine);
@@ -113,24 +131,9 @@ app.use(function(req, res, next) {
 });
 app.use(express.static(path.join(__dirname, 'public')));
 
-<<<<<<< HEAD
 
- // Redirect all HTTP traffic to HTTPS
-function ensureSecure(req, res, next){
-if(req.headers["x-forwarded-proto"] === "https"){
-  // OK, continue
-  return next();
-};
-res.redirect('https://'+req.hostname+req.url);
-};
-// Handle environments
-if (env == 'production') {
-  app.all('*', ensureSecure);
-}
-=======
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  
->>>>>>> e25ed38f5cac2a72271cbe1c8a7d7788bebd70d4
 
 app.get('/', HomeController.index);
 
@@ -140,13 +143,11 @@ app.get('/', HomeController.index);
 app.get('/store', pagesController.store);
 app.get('/components', pagesController.components);
 app.get('/database', pagesController.database);
-app.get('/organization/new', pagesController.neworg);
 app.get('/help', pagesController.help);
 app.get('/forms', pagesController.forms);
 app.get('/assemblies', pagesController.assemblies);
 app.get('/configuration', pagesController.configuration);
 app.get('/reports', pagesController.reports);
-
 
 
 ////////////////////////////////////////////
@@ -155,6 +156,7 @@ app.get('/reports', pagesController.reports);
 app.get('/init', initController.deletedb);
 app.get('/deletedb', initController.deletedb);
 app.get('/getdb', initController.getdb);
+
 
 //////////////////////////////////////////////////////////////////////
 ////        PRIMARY ADMINISTRATIVE DATABASE MODIFICATION         //// 
@@ -165,6 +167,7 @@ app.get('/read',  adminController.read);
 app.get('/update',  adminController.update);
 app.get('/delete',  adminController.delete);
 
+
 ///////////////////////////////////////////////////
 ////        USER INTERFACE CONTROLLER         //// 
 /////////////////////////////////////////////////
@@ -172,11 +175,7 @@ app.get('/settings',  userInterfaceController.settings);
 
 
 
-/////////////////////////////////////
-////       ORGINIZATION         //// 
-///////////////////////////////////
-app.get('/orginization',  orginizationController.orginization);
-app.get('/orginization/new',  orginizationController.new);
+
 
 /////////////////////////////////
 ////        DATABASE        //// 
@@ -198,6 +197,7 @@ app.post('/create',  createController.create);
 app.get('/deleteentryperm', deleteController.deleteentryperm);
 //get data by array of ids permanently.
 app.get('/deleteentry', deleteController.deleteentry);
+
 
 /////////////////////////////////////////
 ////       READ CONTROLLERS         //// 
@@ -241,40 +241,34 @@ app.get('/getformraw', readController.getformraw);
 // getformraw
 app.get('/getcompform', readController.getcompform);
 
+
 /////////////////////////////////////
 ////       PRODUCTS             //// 
 ///////////////////////////////////
 // getformraw
 app.get('/productload', productController.productload);
 
+
 /////////////////////////////////////
 ////       ASSEMBLY             //// 
 ///////////////////////////////////
 app.get('/assembly/new',  assemblyController.newassy);
 
-/////////////////////////////////////
-////       ASSEMBLY             //// 
-///////////////////////////////////
-app.get('/component/new',  componentController.newcomp);
 
- 
 //Rebuild routing
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
- 
 
 /////////////////////////////////////
 ////       PROFILE              //// 
 ///////////////////////////////////
 app.get('/users/:username/', userInterfaceController.profile);
 
+
 /////////////////////////////////////
 ////       SETTINGS             //// 
 ///////////////////////////////////
 app.get('/settings/:username/', userInterfaceController.settings);
-
-
 
 
 /////////////////////////////////
@@ -284,13 +278,12 @@ app.get('/privacy', pagesController.privacy);
 app.get('/terms', pagesController.terms);
  
 
-
-
-
-
-
-
-
+/////////////////////////////////////
+////       ORGANIZATION         //// 
+///////////////////////////////////
+app.get('/organization/new', organizationController.neworg);
+app.post('/organization/new', organizationController.createorgstatic);
+app.get('/organizations/:orgname/', organizationController.orgprofile);
 
 
 app.get('/contact', contactController.contactGet);
@@ -313,12 +306,14 @@ app.get('/auth/google/callback', passport.authenticate('google', { successRedire
 app.get('/auth/github', passport.authenticate('github', { scope: [ 'user:email profile repo' ] }));
 app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/', failureRedirect: '/signin' }));
 
+
 /////////////////////////////
 ////       404          //// 
 ///////////////////////////
 app.get('*', function(req, res){
   res.render('404',{layout:false});
 });
+
 
 // Production error handler
 if (app.get('env') === 'production') {
@@ -328,8 +323,10 @@ if (app.get('env') === 'production') {
   });
 }
 
+
 app.listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'));
 });
+
 
 module.exports = app;

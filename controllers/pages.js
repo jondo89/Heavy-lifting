@@ -103,31 +103,7 @@ exports.database = function(req, res) {
 
 }; 
 
-/////////////////////////////////
-/////  NEW ORGINIZATION    ///// 
-///////////////////////////////
-exports.neworg = function(req, res) {
-//Perform Routing for Varios user type on the home page.
-if (req.user) {
- userid = req.user.id
- switch (true){
-  default:
-  heavyliftingModel.find().limit(5).exec(function (err, init) {
-    if (err) { return next(err); }
-    var ids = '58d2010b118e812d18654119'
-    var Formids = init[3]._id
-    res.render('neworg', {
-      siteName : siteName,
-      items : JSON.stringify(ids),
-      Formids : JSON.stringify(Formids)
-    });
-  });
-  break;
-}
-} else {
- res.redirect('/signin');
-}
-}; 
+
 
 //////////////////////////////////
 /////  PRIVACY STATEMENT    ///// 

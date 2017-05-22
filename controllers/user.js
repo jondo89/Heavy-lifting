@@ -98,6 +98,7 @@ exports.signupGet = function(req, res) {
       req.assert('email', 'Email cannot be blank').notEmpty();
       req.assert('password', 'Password must be at least 8 characters long').len(8);
       req.sanitize('email').normalizeEmail({ remove_dots: false });
+      
       var errors = req.validationErrors();
       if (errors) {
         req.flash('error', errors);
@@ -121,17 +122,12 @@ exports.signupGet = function(req, res) {
           password: req.body.password,
           permission : 'subscriber'
         });
-
-
-
         user.save(function(err) {
           req.logIn(user, function(err) {
             res.redirect('/');
           });
         });
 });
-
-
       });
     } else { 
       req.flash('error', { msg: 'Heads up , You may very well be a robot.' });
