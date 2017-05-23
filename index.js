@@ -283,7 +283,7 @@ app.get('/terms', pagesController.terms);
 ///////////////////////////////////
 app.get('/organization/new', organizationController.neworg);
 app.post('/organization/new', organizationController.createorgstatic);
-app.get('/organizations/:orgname/', organizationController.orgprofile);
+ 
 
 
 app.get('/contact', contactController.contactGet);
