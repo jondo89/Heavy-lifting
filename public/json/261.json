@@ -1,1 +1,0 @@
-{"entry":{"type":"string","dependencies":"58df462b344d1e3cb4bd19e6","detail":"e.g, Acme, Inc.","description":"What is the name of the company?"},"objectType":"database","detail":"Use for the creation database items.","name":"Database Items","__v":0,"active":"true","revision":"updated","elementID":"58df464d344d1e3cb4bd19e7"}
