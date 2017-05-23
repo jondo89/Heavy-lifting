@@ -123,9 +123,9 @@ Download and install from the mongodb homepage.
 </ul>
 <div style="text-align: center;">
   
-  <p>Next step is to start the server and begin customizing.</p>
+  <p>Next step is import the demodata.json into your "heavylifting" mongodb collection on your localhost .</p>
 
-<a class="btn btn-primary" href="">Running the server</a>
+<a class="btn btn-primary" href="https://github.com/Isithelo/heavy-lifting/blob/master/public/json/demodata.json"><span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span> Download Mongo Demo Data</a>
 </div>
 
 
