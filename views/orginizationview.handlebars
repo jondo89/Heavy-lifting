@@ -1,6 +1,6 @@
 <h2 id="name"></h2>
 <p id="detail"></p>
-
+ddd
 <p></p>
 <div>
   <!-- Nav tabs -->
@@ -198,6 +198,22 @@ function uniqueIdforcformButton(){
   jQuery('#formDelivery').attr("id",formids);
 }
 
+
+////////////////////////////////////
+////  GET THE ORGANIZATIONS    //// 
+//////////////////////////////////
+function getorganizations(){
+  var username = '{{user.username}}'
+    jQuery.ajax({
+   'async': true,
+   'global': false,
+   'url': '/orguserread?username='+username,
+   'success': function (dataSchemaObject) {
+     console.log('returned value here')
+   }
+ });
+}
+
 ///////////////////////////// 
 //////  INITIALISE    //////
 /////////////////////////// 
@@ -205,5 +221,6 @@ $('document').ready(function(){
   layoutView() 
   tabview()
   tablist()
+  getorganizations()
 })
 </script>

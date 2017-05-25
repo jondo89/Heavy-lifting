@@ -1,4 +1,5 @@
 var heavyliftingModel      = require('../models/heavylifting.js');
+var organizationalModel      = require('../models/organizations.js');
 var siteName = 'Heavy-lifting'
 var User = require('../models/User');
 
@@ -59,4 +60,39 @@ exports.profile = function(req, res) {
  }
  //Query end
 })
+};
+
+////////////////////////////////////
+//////////  PAGE ////////////
+///////////////////////////////////
+exports.page = function(req, res) {
+  if (req.user) {
+    var template =  req.params.page 
+    var username =  req.params.username 
+    switch (true){
+      case(template=='organizations'):
+      var query1 = organizationalModel.find(
+      
+        {$or: [
+          {"entry.members": username },
+          {"entry.owner":  username }
+          ]}
+        )
+      query1.exec(function (err, query1_return) {
+        if(err){console.log('Error Here'); return;} 
+        console.log(query1_return)
+        res.render('settings/'+template,{
+          organizations : query1_return
+        });
+      //Query end
+    })
+      break;
+      default:
+      res.render('settings/'+template);
+      break;
+    }
+
+  } else {
+   res.redirect('/signin');
+ }
 };

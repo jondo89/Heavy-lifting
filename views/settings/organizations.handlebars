@@ -1,0 +1,65 @@
+
+<div class="row">
+  <div class="col-md-10">
+    <h1>Settings</h1>
+    <p>Use the interface below to edit your user preferences.</p>
+  </div>
+</div>   
+<hr>
+<div class="row">
+<div class="col-md-4" id="navMenuPanel">       
+<div class="list-group">
+  <a class="list-group-item" href="/users/{{user.username}}/settings/profile">Profile</a>
+  <a class="list-group-item " href="/users/{{user.username}}/settings/account">Account</a>
+  <a class="list-group-item active" href="/users/{{user.username}}/settings/organizations">Organizations</a>
+  <a class="list-group-item" href="/users/{{user.username}}/settings/components">Components</a>
+  <a class="list-group-item" href="/users/{{user.username}}/settings/assemblies">Assemblies</a>
+</div>
+</div>  
+<div class="col-md-8" id="browserArea">  
+<div class="row">
+<div class="col-md-8" >  
+ <h2>Organization</h2>
+      
+</div>
+<div class="col-md-4" style="text-align: right">  
+<a class="btn btn-default" href="/organizations/new" >New Organization</a>  
+</div>
+</div>
+      
+  <hr> 
+
+      
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Organization Name</th>
+      <th>Owner</th>
+      <th  style="text-align: center" >Leave</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each organizations}}
+    <tr>
+      <td>
+ <a href="/organizations/{{this.entry.name}}">{{this.entry.name}}</a>
+
+      </td>
+      <td>{{this.entry.owner}}   
+      </td>
+      </td>
+      <td style="text-align: center"><a class="btn btn-warning btn-xs" href="organizations/{{this.entry.name}}/leave/">Leave</a>
+      </td>
+    </tr>
+  {{/each}}
+  </tbody>
+</table>
+
+
+</div>
+
+<script type="text/javascript">
+ 
+</script>
+

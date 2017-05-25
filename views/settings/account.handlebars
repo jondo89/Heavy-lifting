@@ -1,0 +1,95 @@
+<div class="row">
+  <div class="col-md-10">
+    <h1>Settings</h1>
+    <p>Use the interface below to edit your user preferences.</p>
+  </div>
+</div>   <hr>
+<div class="row">
+<div class="col-md-4" id="navMenuPanel">       
+<div class="list-group">
+  <a class="list-group-item" href="/users/{{user.username}}/settings/profile">Profile</a>
+  <a class="list-group-item active" href="/users/{{user.username}}/settings/account">Account</a>
+  <a class="list-group-item" href="/users/{{user.username}}/settings/organizations">Organizations</a>
+  <a class="list-group-item" href="/users/{{user.username}}/settings/components">Components</a>
+  <a class="list-group-item" href="/users/{{user.username}}/settings/assemblies">Assemblies</a>
+</div>
+</div>  
+<div class="col-md-8" id="browserArea">
+
+        <h2>Account</h2>
+        <hr>
+
+       {{#if messages.success}}
+      <div role="alert" class="alert alert-success">
+        {{#each messages.success}}
+        <div>{{msg}}</div>
+        {{/each}}
+      </div>
+      {{/if}}
+      {{#if messages.error}}
+      <div role="alert" class="alert alert-danger">
+        {{#each messages.error}}
+        <div>{{msg}}</div>
+        {{/each}}
+      </div>
+      {{/if}} 
+
+      <form method="POST" action="/account?_method=PUT" class="form-horizontal">
+        <legend>Change Password</legend>
+        <div class="form-group">
+          <label for="password" class="col-sm-3">New Password</label>
+          <div class="col-sm-7">
+            <input type="password" name="password" id="password" class="form-control">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="confirm" class="col-sm-3">Confirm Password</label>
+          <div class="col-sm-7">
+            <input type="password" name="confirm" id="confirm" class="form-control">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-4 col-sm-offset-3">
+            <button type="submit" class="btn btn-default">Change Password</button>
+          </div>
+        </div>
+      </form>
+ 
+      <div class="form-horizontal">
+        <legend>Linked Accounts</legend>
+        <div class="form-group">
+          <div class="col-sm-offset-3 col-sm-4">
+            {{#if user.google}}
+            <p><a href="/unlink/google" class="text-danger">Unlink your Google account</a></p>
+            {{else}}
+            <p><a href="/auth/google">Link your Google account</a></p>
+            {{/if}}
+            {{#if user.github}}
+            <p><a href="/unlink/github" class="text-danger">Unlink your Github account</a></p>
+            {{else}}
+            <p><a href="/auth/github">Link your Github account</a></p>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+ 
+      <form method="POST" action="/account?_method=DELETE" class="form-horizontal">
+        <legend style="color:#d9534f">Delete Account</legend>
+        <div class="form-group">
+          <p class="col-sm-offset-3 col-sm-9">You can delete your account, but keep in mind this action is irreversible.</p>
+          <div class="col-sm-offset-3 col-sm-9">
+            <button type="submit" class="btn btn-danger">Delete my account</button>
+          </div>
+        </div>
+      </form>
+    </div>
+ 
+
+
+
+</div>
+
+<script type="text/javascript">
+ 
+</script>
+

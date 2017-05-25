@@ -167,16 +167,6 @@ app.get('/read',  adminController.read);
 app.get('/update',  adminController.update);
 app.get('/delete',  adminController.delete);
 
-
-///////////////////////////////////////////////////
-////        USER INTERFACE CONTROLLER         //// 
-/////////////////////////////////////////////////
-app.get('/settings',  userInterfaceController.settings);
-
-
-
-
-
 /////////////////////////////////
 ////        DATABASE        //// 
 ///////////////////////////////
@@ -258,19 +248,6 @@ app.get('/assembly/new',  assemblyController.newassy);
 //Rebuild routing
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-/////////////////////////////////////
-////       PROFILE              //// 
-///////////////////////////////////
-app.get('/users/:username/', userInterfaceController.profile);
-
-
-/////////////////////////////////////
-////       SETTINGS             //// 
-///////////////////////////////////
-app.get('/settings/:username/', userInterfaceController.settings);
-
-
 /////////////////////////////////
 ////       TEMPALTES        //// 
 ///////////////////////////////
@@ -278,12 +255,34 @@ app.get('/privacy', pagesController.privacy);
 app.get('/terms', pagesController.terms);
  
 
+///////////////////////////////////////////////////
+////        USER INTERFACE CONTROLLER         //// 
+/////////////////////////////////////////////////
+app.get('/users/:username/', userInterfaceController.profile);
+app.get('/users/:username/settings/', userInterfaceController.settings);
+app.get('/users/:username/settings/:page', userInterfaceController.page);
+
+
+
+
+
 /////////////////////////////////////
 ////       ORGANIZATION         //// 
 ///////////////////////////////////
-app.get('/organization/new', organizationController.neworg);
-app.post('/organization/new', organizationController.createorgstatic);
- 
+//Static
+app.get('/organizations/new', organizationController.neworg);
+app.post('/organizations/new', organizationController.createorgstatic);
+app.get('/organizations/:orgname/', organizationController.orgprofile);
+app.get('/organizations/:orgname/settings', organizationController.settings);
+app.get('/organizations/:orgname/components', organizationController.components);
+app.get('/organizations/:orgname/assemblies', organizationController.assemblies);
+app.get('/organizations/:orgname/people', organizationController.people);
+app.get('/organizations/:orgname/settings', organizationController.settings);
+
+app.get('/organizations/:orgname/settings/:page', organizationController.page);
+
+//Ajax
+app.get('/orguserread', organizationController.orguserread); // Get the active user organizations , owner and member.
 
 
 app.get('/contact', contactController.contactGet);

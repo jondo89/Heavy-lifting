@@ -33,13 +33,13 @@
 
 <h3>Create an organization account.</h3>
 <hr>
-<form method="POST" action="/organization/new" class="form-horizontal">
+<form method="POST" action="/organizations/new" class="form-horizontal">
   <div class="row">
     <div class="col-md-7">
-      
-      <div class="form-group">
-        <label for="name" class="col-md-12">Organization name</label>
+      <div class="form-group" id="nameGroup">
+        <label for="name" class="col-md-12">Organization name </label>
         <div class="col-md-12">
+        <div id="errmsg" style="font-size: 12px;color: red"></div> 
           <input type="text" name="name" id="name" class="form-control" value="">
           <p class="help-block"><small>The organization account will live at https://https://heavy-lifting.herokuapp.com/organizations/<span id="insert"></span></small></p>
         </div>
@@ -133,86 +133,86 @@
 
 <div class="row">
   <div class="col-md-7">
-  <div id="payment">
+    <div id="payment">
 
-<h5>Choose your payment method</h5>
-<div>
+      <h5>Choose your payment method</h5>
+      <div>
 
-  <!-- Nav tabs -->
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#Credit" aria-controls="Credit" role="tab" data-toggle="tab">Credit Card</a></li>
-    <li role="presentation"><a href="#Paypal" aria-controls="Paypal" role="tab" data-toggle="tab">Paypal</a></li>
- 
-  </ul>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active"><a href="#Credit" aria-controls="Credit" role="tab" data-toggle="tab">Credit Card</a></li>
+          <li role="presentation"><a href="#Paypal" aria-controls="Paypal" role="tab" data-toggle="tab">Paypal</a></li>
 
-  <!-- Tab panes -->
-  <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="Credit">
-      
- <p></p>
- 
-        <legend>Credit Card Information</legend>
-        <!-- Text input-->
-        <div class="form-group">
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane active" id="Credit">
+
+           <p></p>
+
+           <legend>Credit Card Information</legend>
+           <!-- Text input-->
+           <div class="form-group">
             <label class="col-md-4 control-label" for="AccountNo" id="AccountNo_label">* Card Number</label>
             <div class="col-md-8">
-                <input id="AccountNo" name="AccountNo" type="tel" value="1234123412341234" placeholder="Debit / Credit Card Number" class="form-control input-md" required=""> <span class="help-block" style="display: none;">Enter a valid debit or credit card number. Spaces will be shown automatically.</span> 
+              <input id="AccountNo" name="AccountNo" type="tel" value="1234123412341234" placeholder="Debit / Credit Card Number" class="form-control input-md" required=""> <span class="help-block" style="display: none;">Enter a valid debit or credit card number. Spaces will be shown automatically.</span> 
             </div>
-        </div>
-        <div class="form-group">
+          </div>
+          <div class="form-group">
             <label class="col-md-4 control-label" for="CCMonth">* Card Expiration</label>
             <div class="col-md-8">
-                <div class="row">
-                    <div class="col-md-6">
-                        <select class="form-control col-sm-2" name="CCMonth" id="CCMonth">
-                            <option>Month</option>
-                            <option value="01" Selected>Jan (01)</option>
-                            <option value="02">Feb (02)</option>
-                            <option value="03">Mar (03)</option>
-                            <option value="04">Apr (04)</option>
-                            <option value="05">May (05)</option>
-                            <option value="06">June (06)</option>
-                            <option value="07">July (07)</option>
-                            <option value="08">Aug (08)</option>
-                            <option value="09">Sep (09)</option>
-                            <option value="10">Oct (10)</option>
-                            <option value="11">Nov (11)</option>
-                            <option value="12">Dec (12)</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <select class="form-control" name="CCYear">
-                            <option>Year</option>
-                            <option value="15" selected>2015</option>
-                            <option value="16">2016</option>
-                            <option value="17">2017</option>
-                            <option value="18">2018</option>
-                            <option value="19">2019</option>
-                            <option value="20">2020</option>
-                            <option value="21">2021</option>
-                            <option value="22">2022</option>
-                            <option value="23">2023</option>
-                            <option value="24">2024</option>
-                            <option value="25">2025</option>
-                            <option value="26">2026</option>
-                            <option value="27">2027</option>
-                            <option value="28">2028</option>
-                            <option value="29">2029</option>
-                        </select>
-                    </div>
-                </div> <span class="help-block" style="display: none;">Select the card expiration date month and year.</span> 
+              <div class="row">
+                <div class="col-md-6">
+                  <select class="form-control col-sm-2" name="CCMonth" id="CCMonth">
+                    <option>Month</option>
+                    <option value="01" Selected>Jan (01)</option>
+                    <option value="02">Feb (02)</option>
+                    <option value="03">Mar (03)</option>
+                    <option value="04">Apr (04)</option>
+                    <option value="05">May (05)</option>
+                    <option value="06">June (06)</option>
+                    <option value="07">July (07)</option>
+                    <option value="08">Aug (08)</option>
+                    <option value="09">Sep (09)</option>
+                    <option value="10">Oct (10)</option>
+                    <option value="11">Nov (11)</option>
+                    <option value="12">Dec (12)</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <select class="form-control" name="CCYear">
+                    <option>Year</option>
+                    <option value="15" selected>2015</option>
+                    <option value="16">2016</option>
+                    <option value="17">2017</option>
+                    <option value="18">2018</option>
+                    <option value="19">2019</option>
+                    <option value="20">2020</option>
+                    <option value="21">2021</option>
+                    <option value="22">2022</option>
+                    <option value="23">2023</option>
+                    <option value="24">2024</option>
+                    <option value="25">2025</option>
+                    <option value="26">2026</option>
+                    <option value="27">2027</option>
+                    <option value="28">2028</option>
+                    <option value="29">2029</option>
+                  </select>
+                </div>
+              </div> <span class="help-block" style="display: none;">Select the card expiration date month and year.</span> 
             </div>
+          </div>
         </div>
-    </div>
-    <div role="tabpanel" class="tab-pane" id="Paypal">
+        <div role="tabpanel" class="tab-pane" id="Paypal">
 
-<div style="padding-top: 35px;padding-bottom: 35px">
-  </div>
+          <div style="padding-top: 35px;padding-bottom: 35px">
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-   </div>
-  </div> 
+</div> 
 </div> 
 <hr>
 <div class="row">
@@ -243,34 +243,22 @@
     </p>
   </div>
 </div><hr>
-    <div style="padding-bottom: 55px">
-        <button type="submit" class="btn btn-success">Create Organization</button>
-    </div>
+<div style="padding-bottom: 55px">
+  <button type="submit" id="submits" class="btn btn-success">Create Organization</button>
+</div>
 </form>
 </div>
-
-
-
-
-
-
-
-
 
 <script type="text/javascript">
   $(".hiddenInput").hide();
   $("#payment").hide();
-
-
   $(".showHideCheck").on("change", function() {
     $this = $(this);
     $input = $this.parent().find(".hiddenInput");
     if($this.is(":checked")) {
       $input.slideDown();
-      
     } else {
       $input.slideUp();
-    
     }
   });
 
@@ -289,21 +277,52 @@
   $(".free").on("change", function() {
     $this = $(this);
     $input = $(".teampay").parent().find(".hiddenInput");
- 
-  
-   
-      $input.slideUp();
-      $('#payment').slideUp();
-     
+    $input.slideUp();
+    $('#payment').slideUp();
+
   });
 
-$("#name").on("keyup", function() {
-$("#insert").html($("#name").val())
-})
+    jQuery.fn.extend({
+        disable: function(state) {
+            return this.each(function() {
+                var $this = $(this);
+                $this.toggleClass('disabled', state);
+            });
+        }
+    });
 
-$("#name").on("change", function() {
-$("#insert").html($("#name").val())
-})
+    $("#name").on("keyup", function() {
+      var value = $( this ).val();
+      var invalidChars = [  ];
+      var name = new RegExp('^[A-Za-z]+$');
+      if(value.match(name)) {
+        $("#insert").html($("#name").val())
+        $('#submits').prop('disabled', false);
+        $("#nameGroup").removeClass('has-error')
+        $('#errmsg').html('')
+      } else {
+        $("#nameGroup").addClass('has-error')
+        $('#submits').prop('disabled', true);
+        $('#errmsg').html('Username may only contain alphanumeric characters or single hyphens, and cannot begin or end with a hyphen.')
+      }
+    })
+
+    $("#name").on("change", function() {
+      var value = $( this ).val();
+      var invalidChars = [  ];
+      var name = new RegExp('^[A-Za-z]+$');
+      if(value.match(name)) {
+        $("#insert").html($("#name").val())
+        $('#submits').prop('disabled', false);
+        $("#nameGroup").removeClass('has-error')
+        $('#errmsg').html('')
+      } else {
+        $("#nameGroup").addClass('has-error')
+        $('#submits').prop('disabled', true);
+        $('#errmsg').html('Username may only contain alphanumeric characters or single hyphens, and cannot begin or end with a hyphen.')
+      }
+    })
+
 
 </script>
 

@@ -36,7 +36,7 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-plus" aria-hidden="true"></i> <span class="caret"></span></a>
           <ul class="dropdown-menu" id="component">  
-            <li><a href="/organization/new">New Organization</a></li>
+            <li><a href="/organizations/new">New Organization</a></li>
             <li><a href="/component/new">New Component</a></li>
             <li><a href="/assembly/new">New Assembly</a></li>
           </ul>
@@ -56,7 +56,7 @@
             <li><a >Logged in as <strong>{{user.username}}</strong>  </a></li>
             <li class="divider"></li>    
             <li><a href="/users/{{user.username}}">Your Profile</a></li>
-            <li><a href="/settings/{{user.username}}">Settings</a></li>
+            <li><a href="/users/{{user.username}}/settings/profile">Settings</a></li>
             <li><a href="/help">Help</a></li>
             <li class="divider"></li>  
             <li><a href="/signout">Sign out</a></li>
