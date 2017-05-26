@@ -201,27 +201,18 @@ exports.people = function(req, res) {
 ////////// ORGPUT PAGE ///////////
 /////////////////////////////////
 exports.orgPut = function(req, res, next) {
-
-
     req.assert('email', 'Email is not valid').isEmail();
-
     var errors = req.validationErrors();
-
     if (errors) {
         req.flash('error', errors);
         res.redirect('/organizations/'+req.params.orgname+'/settings/profile');
     }
-
     organizationalModel.findOne({ 'entry.name': req.params.orgname }, function(err, organizationItem) {
         organizationalModel.findById(organizationItem._id, function (err, orgid) {
           if (err) return handleError(err);
           if (orgid) { 
         //Painful parse issue.
         var temp = JSON.parse(JSON.stringify(orgid.entry))
-
-
-
-
         //Assign
         temp.displayname = req.body.displayname
         temp.description = req.body.description
@@ -240,4 +231,24 @@ exports.orgPut = function(req, res, next) {
     }
 });
     })
+};
+
+
+///////////////////////////////////////////
+//////////  ORGINIZATION LIST ////////////
+/////////////////////////////////////////
+exports.orglist = function(req, res) {
+  if (req.user) {
+    if (req.user.permission=="superadmin") {
+      organizationalModel.find(  function(err, username) {
+        res.render('orginizationlist',{
+          username : username
+        });
+      });
+    } else {
+     res.redirect('/signin');
+   }  
+ } else {
+   res.redirect('/signin');
+ }
 };

@@ -1,0 +1,28 @@
+ <h1>User List</h1>
+
+<p></p>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Permission</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each username}}
+    <tr>
+      <td>
+      <a href="/users/{{this.username}}">{{this.username}}</a>
+     </td>
+      <td>
+       {{this.email}}
+     </td>
+      <td>
+       {{this.permission}}
+     </td>
+   </td>
+ </tr>
+ {{/each}}
+</tbody>
+</table>

@@ -258,6 +258,7 @@ app.get('/terms', pagesController.terms);
 ///////////////////////////////////////////////////
 ////        USER INTERFACE CONTROLLER         //// 
 /////////////////////////////////////////////////
+app.get('/users/', userInterfaceController.users);
 app.get('/users/:username/', userInterfaceController.profile);
 app.get('/users/:username/settings/', userInterfaceController.settings);
 app.get('/users/:username/settings/:page', userInterfaceController.page);
@@ -270,6 +271,7 @@ app.get('/users/:username/settings/:page', userInterfaceController.page);
 ////       ORGANIZATION         //// 
 ///////////////////////////////////
 //Static
+app.get('/organizations', organizationController.orglist);
 app.get('/organizations/new', organizationController.neworg);
 app.post('/organizations/new', organizationController.createorgstatic);
 app.get('/organizations/:orgname/', organizationController.orgprofile);

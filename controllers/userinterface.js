@@ -1,5 +1,6 @@
 var heavyliftingModel      = require('../models/heavylifting.js');
 var organizationalModel      = require('../models/organizations.js');
+var User = require('../models/User');
 var siteName = 'Heavy-lifting'
 var User = require('../models/User');
 
@@ -62,9 +63,9 @@ exports.profile = function(req, res) {
 })
 };
 
-////////////////////////////////////
+//////////////////////////////
 //////////  PAGE ////////////
-///////////////////////////////////
+////////////////////////////
 exports.page = function(req, res) {
   if (req.user) {
     var template =  req.params.page 
@@ -93,6 +94,25 @@ exports.page = function(req, res) {
     }
 
   } else {
+   res.redirect('/signin');
+ }
+};
+
+//////////////////////////////
+//////////  USERS ////////////
+////////////////////////////
+exports.users = function(req, res) {
+  if (req.user) {
+    if (req.user.permission=="superadmin") {
+      User.find(  function(err, username) {
+        res.render('userlist',{
+          username : username
+        });
+      });
+    } else {
+     res.redirect('/signin');
+   }  
+ } else {
    res.redirect('/signin');
  }
 };

@@ -2,7 +2,9 @@
 <script type="text/javascript" src="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
 <link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
 
-    <div class="media">
+<div class="row">
+  <div class="col-md-3">
+        <div class="media">
       <div class="media-left">
         <a href="#">
           {{#if organization.entry.picture}}
@@ -13,12 +15,22 @@
         </a>
       </div>
     </div>
+
+
+  </div>
+  <div class="col-md-3">
+    
 <h1>{{organization.entry.displayname}}</h1>
 <h3>{{organization.entry.name}}</h3>
 <p>{{organization.entry.description}}</p>
+  </div>
+  <div class="col-md-6">
+    
+
+<div style="padding-top: 55px"></div>
     {{#if organization.entry.company}}
     <div class="row">
-      <div class="col-sm-2">
+      <div class="col-sm-2"  style="text-align: center;" >
         <i class="fa fa-users" aria-hidden="true"></i>
       </div>
       <div class="col-sm-8">
@@ -28,7 +40,7 @@
     {{/if}}
     {{#if organization.entry.location}}
     <div class="row">
-      <div class="col-sm-2">
+      <div class="col-sm-2"  style="text-align: center;">
         <i class="fa fa-map-marker" aria-hidden="true"></i>
       </div>
       <div class="col-sm-8">
@@ -38,7 +50,7 @@
     {{/if}}
     {{#if organization.entry.email}}
     <div class="row">
-      <div class="col-sm-2">
+      <div class="col-sm-2"  style="text-align: center;">
         <i class="fa fa-envelope-o" aria-hidden="true"></i>
       </div>
       <div class="col-sm-8">
@@ -48,7 +60,7 @@
     {{/if}}
     {{#if organization.entry.url}}
     <div class="row">
-      <div class="col-sm-2">
+      <div class="col-sm-2"  style="text-align: center;">
         <i class="fa fa-link" aria-hidden="true"></i>
       </div>
       <div class="col-sm-8">
@@ -57,5 +69,20 @@
     </div>
     {{/if}}
  
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     <hr>
