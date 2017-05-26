@@ -1,83 +1,10 @@
-  
-    <div class="media">
-      <div class="media-left">
-        <a href="#">
-          {{#if organization.entry.picture}}
-          <div id="googlepic"></div>
-          {{else}}
-          <img src="{{organization.entry.gravatar}}" class="media-object">
-          {{/if}}
-        </a>
-      </div>
-    </div>
-    <h1>{{organization.entry.name}}</h1>
-    <h3>{{organization.entry.username}}</h3>
-    <p>{{organization.entry.bio}}</p>
-    {{#if organization.entry.company}}
-    <div class="row">
-      <div class="col-sm-2">
-        <i class="fa fa-users" aria-hidden="true"></i>
-      </div>
-      <div class="col-sm-8">
-        {{dotdotdot organization.entry.company}}
-      </div>
-    </div>
-    {{/if}}
-    {{#if organization.entry.location}}
-    <div class="row">
-      <div class="col-sm-2">
-        <i class="fa fa-map-marker" aria-hidden="true"></i>
-      </div>
-      <div class="col-sm-8">
-        {{organization.entry.location}}
-      </div>
-    </div>
-    {{/if}}
-    {{#if organization.entry.business_email}}
-    <div class="row">
-      <div class="col-sm-2">
-        <i class="fa fa-envelope-o" aria-hidden="true"></i>
-      </div>
-      <div class="col-sm-8">
-        <a href="mailto:{{organization.entry.business_email}}">{{organization.entry.business_email}}</a>
-      </div>
-    </div>
-    {{/if}}
-    {{#if organization.entry.website}}
-    <div class="row">
-      <div class="col-sm-2">
-        <i class="fa fa-link" aria-hidden="true"></i>
-      </div>
-      <div class="col-sm-8">
-        <a href="http://{{organization.entry.website}}" target="_blank">{{organization.entry.website}}</a>
-      </div>
-    </div>
-    {{/if}}
-    {{#if organization.entry.owner}}
-    <div class="row">
-      <div class="col-sm-2">
-        <i class="fa fa-key" aria-hidden="true"></i>
-      </div>
-      <div class="col-sm-8">
-        {{organization.entry.owner}}
-      </div>
-    </div>
-    {{/if}}
-    {{#if organization.entry.members}}
-    <div class="row">
-      <div class="col-sm-2">
-        <i class="fa fa-key" aria-hidden="true"></i>
-      </div>
-      <div class="col-sm-8">
-        {{organization.entry.members}}
-      </div>
-    </div>
-    {{/if}}
+{{> orgheader}}
+
  
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" ><a href="/organizations/{{organization.entry.name}}" role="tab" >Summary</a></li>
     <li role="presentation"><a href="/organizations/{{organization.entry.name}}/components" role="tab">Components</a></li>
     <li role="presentation"><a href="/organizations/{{organization.entry.name}}/assemblies" role="tab">Assemblies</a></li>
     <li role="presentation" class="active"><a href="/organizations/{{organization.entry.name}}/people" role="tab">People</a></li>
-    <li role="presentation"><a href="/organizations/{{organization.entry.name}}/settings" role="tab">Settings</a></li>
+    <li role="presentation"><a href="/organizations/{{organization.entry.name}}/settings/profile" role="tab">Settings</a></li>
   </ul>

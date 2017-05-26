@@ -278,8 +278,11 @@ app.get('/organizations/:orgname/components', organizationController.components)
 app.get('/organizations/:orgname/assemblies', organizationController.assemblies);
 app.get('/organizations/:orgname/people', organizationController.people);
 app.get('/organizations/:orgname/settings', organizationController.settings);
-
 app.get('/organizations/:orgname/settings/:page', organizationController.page);
+app.put('/organizations/:orgname', userController.ensureAuthenticated, organizationController.orgPut);
+
+
+
 
 //Ajax
 app.get('/orguserread', organizationController.orguserread); // Get the active user organizations , owner and member.

@@ -29,9 +29,9 @@ if (req.user) {
     req.sanitize('email').normalizeEmail({ remove_dots: false });
     var errors = req.validationErrors();
     if (errors) {
-     req.flash('error', errors);
-     return res.redirect('/organization/new');
- }
+       req.flash('error', errors);
+       return res.redirect('/organization/new');
+   }
     //check the user name for duplicate.
     organizationalModel.findOne({ 'entry.name': req.body.name }, function(err, username) {
     	if (username) {
@@ -49,16 +49,14 @@ if (req.user) {
       user = new organizationalModel(temp);
       user.save(function(err) {
           req.logIn(user, function(err) {
-           res.redirect('/organizations/'+req.body.name);
-       });
+             res.redirect('/organizations/'+req.body.name);
+         });
       });
   });
 } else {
- res.redirect('/signin');
+   res.redirect('/signin');
 }
 }
-
-
 
 ////////////////////////////////////////////
 ////////// PROFILE ORGANIATION ////////////
@@ -78,7 +76,6 @@ exports.orgprofile = function(req, res) {
     })
 }
 
-
 ////////////////////////////////////////////
 ////////// PROFILE ORGANIATION ////////////
 //////////////////////////////////////////
@@ -97,41 +94,32 @@ exports.orguserread = function(req, res) {
     })
 }
 
-
-
 ////////////////////////////////////
 //////////  PAGE ////////////
 ///////////////////////////////////
 exports.page = function(req, res) {
-  if (req.user) {
-    var template =  req.params.page 
-    var username =  req.params.username 
-    switch (true){
-      case(template=='organizations'):
-      var query1 = organizationalModel.find(
-      
-        {$or: [
-          {"entry.members": username },
-          {"entry.owner":  username }
-          ]}
-        )
-      query1.exec(function (err, query1_return) {
-        if(err){console.log('Error Here'); return;} 
-        console.log(query1_return)
-        res.render('orgsettings/'+template,{
-          organizations : query1_return
-        });
-      //Query end
-    })
-      break;
-      default:
-      res.render('orgsettings/'+template);
-      break;
-    }
 
-  } else {
-   res.redirect('/signin');
- }
+
+   var template =  req.params.page 
+    //check the user name for duplicate.
+    organizationalModel.findOne({ 'entry.name': req.params.orgname }, function(err, username) {
+
+
+
+        if (username) {
+            res.render('orgsettings/'+template,{
+                organization : username
+            }
+            )
+        } else {
+            return res.redirect('/');
+        }
+
+
+
+    })
+
+
 };
 
 
@@ -153,9 +141,9 @@ exports.settings = function(req, res) {
     })
 };
 
- ////////////////////////////////////
-////////// components PAGE ///////////
-///////////////////////////////////
+ //////////////////////////////////////
+////////// COMPONENTS PAGE ///////////
+/////////////////////////////////////
 exports.components = function(req, res) {
     //check the user name for duplicate.
     organizationalModel.findOne({ 'entry.name': req.params.orgname }, function(err, username) {
@@ -172,9 +160,9 @@ exports.components = function(req, res) {
 };
 
 
- ////////////////////////////////////
-////////// SETTINGS PAGE ///////////
-///////////////////////////////////
+////////////////////////////////////
+////////// ASSEMBLIES PAGE ////////
+//////////////////////////////////
 exports.assemblies = function(req, res) {
     //check the user name for duplicate.
     organizationalModel.findOne({ 'entry.name': req.params.orgname }, function(err, username) {
@@ -191,9 +179,9 @@ exports.assemblies = function(req, res) {
 };
 
 
- ////////////////////////////////////
-////////// SETTINGS PAGE ///////////
 ///////////////////////////////////
+////////// PEOPLE PAGE ///////////
+/////////////////////////////////
 exports.people = function(req, res) {
     //check the user name for duplicate.
     organizationalModel.findOne({ 'entry.name': req.params.orgname }, function(err, username) {
@@ -209,4 +197,47 @@ exports.people = function(req, res) {
     })
 };
 
- 
+///////////////////////////////////
+////////// ORGPUT PAGE ///////////
+/////////////////////////////////
+exports.orgPut = function(req, res, next) {
+
+
+    req.assert('email', 'Email is not valid').isEmail();
+
+    var errors = req.validationErrors();
+
+    if (errors) {
+        req.flash('error', errors);
+        res.redirect('/organizations/'+req.params.orgname+'/settings/profile');
+    }
+
+    organizationalModel.findOne({ 'entry.name': req.params.orgname }, function(err, organizationItem) {
+        organizationalModel.findById(organizationItem._id, function (err, orgid) {
+          if (err) return handleError(err);
+          if (orgid) { 
+        //Painful parse issue.
+        var temp = JSON.parse(JSON.stringify(orgid.entry))
+
+
+
+
+        //Assign
+        temp.displayname = req.body.displayname
+        temp.description = req.body.description
+        temp.location = req.body.location
+        temp.url = JSON.stringify(req.body.url)
+        temp.email = req.body.email
+
+        orgid.entry = temp    
+        orgid.save(function(err,doc) {
+          req.flash('success', { msg: 'Your profile information has been updated.' });
+          res.redirect('/organizations/'+req.params.orgname+'/settings/profile');
+      });
+    } else {
+        req.flash('error', { msg: 'Something went wrong here.' });
+        res.redirect('/organizations/'+req.params.orgname+'/settings/profile');
+    }
+});
+    })
+};
