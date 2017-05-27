@@ -72,7 +72,6 @@ exports.orgprofile = function(req, res) {
         } else {
             return res.redirect('/');
         }
-
     })
 }
 
@@ -90,22 +89,16 @@ exports.orguserread = function(req, res) {
         } else {
             return res.redirect('/');
         }
-        
     })
 }
 
-////////////////////////////////////
+//////////////////////////////
 //////////  PAGE ////////////
-///////////////////////////////////
+////////////////////////////
 exports.page = function(req, res) {
-
-
    var template =  req.params.page 
     //check the user name for duplicate.
     organizationalModel.findOne({ 'entry.name': req.params.orgname }, function(err, username) {
-
-
-
         if (username) {
             res.render('orgsettings/'+template,{
                 organization : username
@@ -114,12 +107,7 @@ exports.page = function(req, res) {
         } else {
             return res.redirect('/');
         }
-
-
-
     })
-
-
 };
 
 
@@ -137,7 +125,6 @@ exports.settings = function(req, res) {
         } else {
             return res.redirect('/');
         }
-
     })
 };
 
@@ -155,7 +142,6 @@ exports.components = function(req, res) {
         } else {
             return res.redirect('/');
         }
-
     })
 };
 
@@ -174,7 +160,6 @@ exports.assemblies = function(req, res) {
         } else {
             return res.redirect('/');
         }
-
     })
 };
 
@@ -193,7 +178,6 @@ exports.people = function(req, res) {
         } else {
             return res.redirect('/');
         }
-
     })
 };
 
@@ -219,7 +203,6 @@ exports.orgPut = function(req, res, next) {
         temp.location = req.body.location
         temp.url = JSON.stringify(req.body.url)
         temp.email = req.body.email
-
         orgid.entry = temp    
         orgid.save(function(err,doc) {
           req.flash('success', { msg: 'Your profile information has been updated.' });

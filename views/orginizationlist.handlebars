@@ -1,7 +1,7 @@
- <h1>Organization List</h1>
+ <h1>Organization List     <span><a class="btn btn-success btn-xs" href="/organizations/new" >New Organization</a>  </span></h1>
 
 <p></p>
-<table class="table table-bordered">
+<table class="table table-bordered" id="Organization">
   <thead>
     <tr>
       <th>Username</th>
@@ -24,3 +24,25 @@
  {{/each}}
 </tbody>
 </table>
+
+<script type="text/javascript">
+  
+////////////////////////////////////
+////        INITIALIZE         //// 
+//////////////////////////////////
+$('document').ready(function(){
+var table = jQuery('#Organization').DataTable({
+  'destroy':true,
+  "pagingType": "numbers",        dom: 'Bfrtip',
+        buttons: [
+             { extend: 'csv', text: 'Export to CSV' ,className:'btn btn-default btn-sm' ,filename: 'Data export' ,title: 'Table export'}, { extend: 'pdf', text: 'Export PDF' ,className:'btn btn-default btn-sm' ,filename: 'Data export' ,title: 'Table export'}
+        ]
+  //  'order': [[ 2, 'asc' ]] ,
+});
+})
+
+
+
+
+
+</script>

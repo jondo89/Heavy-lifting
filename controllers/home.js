@@ -1,38 +1,28 @@
-
 var siteName = 'Heavy-lifting'
 var heavyliftingModel      = require('../models/heavylifting.js');
+var organizationalModel      = require('../models/organizations.js');
 
 exports.index = function(req, res) {
 //Perform Routing for Varios user type on the home page.
 if (req.user) {
-
- 
-
-var ids = '58d2115cd9c22811c4df3a08'
-    heavyliftingModel.find({
-      'entry.parent' : ids,
-      'active' : 'true'
-    }).exec(function (err, navmenu) {
-    if (err) { return next(err); }      
-    console.log('//////////////////////////////////')
-    console.log('//////// DEBUG NAVMENU //////////')
-    console.log('////////////////////////////////')      
- 
+  var query1 = organizationalModel.find(
+    {$or: [
+      {"entry.members": req.user.username },
+      {"entry.owner":  req.user.username }
+      ]}
+      )
+  query1.exec(function (err, query1_return) {
+    if(err){console.log('Error Here'); return;} 
     res.render('splash', {
- 
-      nav : JSON.stringify(navmenu),
-      layout: false
+      organizations : query1_return
     });
-
+      //Query end
+    })
+} else {
+  res.render('home', {
+    title: 'Home',
+    siteName : siteName,
+    layout: false
   });
-
- 
-
-    } else {
-    res.render('home', {
-      title: 'Home',
-      siteName : siteName,
-      layout: false
-    });
-    }
+}
 };

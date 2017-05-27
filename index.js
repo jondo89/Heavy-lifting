@@ -84,16 +84,17 @@ var hbs = exphbs.create({
     toJSON : function(object) {
       return JSON.stringify(object);
     },
-        partial: function (name) {
-            return name;
-        },
-        'dotdotdot' : function(str) {
-  if (str.length > 16)
-    return str.substring(0,16) + '...';
-  return str;
-    
-  }}
-});
+    partial: function (name) {
+      return name;
+    },
+    'dotdotdot' : function(str) {
+      if (str.length > 16)
+        return str.substring(0,16) + '...';
+      return str;
+    }}
+  });
+
+ 
 
 
  // Redirect all HTTP traffic to HTTPS

@@ -4,21 +4,14 @@
 {{> usernav organizations=true}}
 </div>  
 <div class="col-md-9" id="browserArea">  
-<div class="row">
-<div class="col-md-8" >  
- <h2>Organization</h2>
+ 
       
-</div>
-<div class="col-md-4" style="text-align: right">  
-<a class="btn btn-default" href="/organizations/new" >New Organization</a>  
-</div>
-</div>
-      
-  <hr> 
+   <div style="padding-top: 15px"></div>
+<a class="btn btn-success" href="/organizations/new" >New Organization</a>  
 
-      
+      <p></p>
 
-<table class="table table-bordered">
+<table class="table table-bordered" id="Organization">
   <thead>
     <tr>
       <th>Organization Name</th>
@@ -30,13 +23,14 @@
     {{#each organizations}}
     <tr>
       <td>
+
  <a href="/organizations/{{this.entry.name}}">{{this.entry.name}}</a>
 
       </td>
       <td>{{this.entry.owner}}   
       </td>
       </td>
-      <td style="text-align: center"><a class="btn btn-warning btn-xs" href="organizations/{{this.entry.name}}/leave/">Leave</a>
+      <td style="text-align: center"><a class="btn btn-default btn-xs" href="organizations/{{this.entry.name}}/leave/">Leave</a>
       </td>
     </tr>
   {{/each}}
@@ -47,6 +41,22 @@
 </div>
 
 <script type="text/javascript">
- 
+  
+////////////////////////////////////
+////        INITIALIZE         //// 
+//////////////////////////////////
+$('document').ready(function(){
+var table = jQuery('#Organization').DataTable({
+  'destroy':true,
+  "pagingType": "numbers", 
+        
+  //  'order': [[ 2, 'asc' ]] ,
+});
+})
+
+
+
+
+
 </script>
 

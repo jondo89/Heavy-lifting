@@ -1,7 +1,7 @@
  <h1>User List</h1>
 
 <p></p>
-<table class="table table-bordered">
+<table class="table table-bordered" id="User">
   <thead>
     <tr>
       <th>Username</th>
@@ -26,3 +26,25 @@
  {{/each}}
 </tbody>
 </table>
+
+<script type="text/javascript">
+  
+////////////////////////////////////
+////        INITIALIZE         //// 
+//////////////////////////////////
+$('document').ready(function(){
+var table = jQuery('#User').DataTable({
+  'destroy':true,
+  "pagingType": "numbers",        dom: 'Bfrtip',
+        buttons: [
+             { extend: 'csv', text: 'Export to CSV' ,className:'btn btn-default btn-sm' ,filename: 'Data export' ,title: 'Table export'}, { extend: 'pdf', text: 'Export PDF' ,className:'btn btn-default btn-sm' ,filename: 'Data export' ,title: 'Table export'}
+        ]
+  //  'order': [[ 2, 'asc' ]] ,
+});
+})
+
+
+
+
+
+</script>

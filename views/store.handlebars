@@ -1,54 +1,39 @@
     <div class="row">
-  <div class="col-md-12">
+      <div class="col-md-12">
         <h1>Store</h1>
-    <p>Use the interface below to browse the store. Login to compile detailed purchasing schedules.</p>
-  </div>
- 
-</div> 
-<hr>
-
+        <p>Use the interface below to browse the store. Login to compile detailed purchasing schedules.</p>
+      </div>
+    </div> 
+    <hr>
     <div class="row">
       <div class="col-md-4" id="navMenuPanel">
-
- 
-      
-         
-          <div id="myProgress">
-  <div id="myBar"> </div>
-</div>
-           <h5><strong>Navigation</strong> <small>Use the navigation tree to interact with the database.</small></h5>
-           <div class=" ">
-             <div style="padding-bottom:15px;padding-bottom:15px">
-              <input id="search_field" name="searchinput" type="search" placeholder="Search Navigation" class="form-control input-md">      
-            </div>
-            <div id="jstree"></div> 
-          </div>
-          <div id="menuItems"></div>
+        <div id="myProgress">
+          <div id="myBar"> </div>
         </div>
-   
-
-    <div class="col-md-8" id="browserArea">
- 
-      <div id="panel">  
-<div style="border-width: 2px; border-style: dashed; border-color: grey;padding:55px;text-align: center;border-radius: 5px;"><strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>
-
+        <h5><strong>Navigation</strong> <small>Use the navigation tree to interact with the database.</small></h5>
+        <div class=" ">
+         <div style="padding-bottom:15px;padding-bottom:15px">
+          <input id="search_field" name="searchinput" type="search" placeholder="Search Navigation" class="form-control input-md">      
+        </div>
+        <div id="jstree"></div> 
       </div>
- 
-
-
+      <div id="menuItems"></div>
     </div>
-
-
+    <div class="col-md-8" id="browserArea">
+      <div id="panel">  
+        <div style="border-width: 2px; border-style: dashed; border-color: grey;padding:55px;text-align: center;border-radius: 5px;"><strong><i class="fa fa-arrow-left" aria-hidden="true"></i>  Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>
+      </div>
+    </div>
   </div>
- 
- 
 
-<script type="text/javascript">
-  var databaseid = {{{items}}};
-  var Formids = {{{Formids}}};
-  var navmenuHeadings = ['detail','description','icon','buttons','tabs','parent','template']
-  var databaseMenu = []
-  var temp =[]
+
+
+  <script type="text/javascript">
+    var databaseid = {{{items}}};
+    var Formids = {{{Formids}}};
+    var navmenuHeadings = ['detail','description','icon','buttons','tabs','parent','template']
+    var databaseMenu = []
+    var temp =[]
 
 /////////////////////////////
 ////     DEBUG AREA     //// 
@@ -107,7 +92,7 @@ function fitstFormat(databaseMenu){
     databaseMenu = temp
     return databaseMenu
   }
- 
+
 ///////////////////////////// 
 //////  INITIALISE    //////
 /////////////////////////// 
@@ -247,19 +232,19 @@ $('#newMenuItem').click(function(){
   //var temp = jQuery('#'+location).jstree("get_selected",true)
   //console.log(temp[0].id)
   newMenuItems(Formids,'','use',databaseid,'',navmenuHeadings)
-  })
-  console.log('Store Page')
-  console.log('---------------------------')
-  console.log(' databaseid :', databaseid )
-  console.log(' Formids :', Formids )
-  console.log(' navmenuHeadings :', navmenuHeadings )
-  console.log(' databaseMenu :', databaseMenu )
-  console.log(' temp :', temp )
-  console.log('---------------------------')
-  console.log('Store Page')
+})
+console.log('Store Page')
+console.log('---------------------------')
+console.log(' databaseid :', databaseid )
+console.log(' Formids :', Formids )
+console.log(' navmenuHeadings :', navmenuHeadings )
+console.log(' databaseMenu :', databaseMenu )
+console.log(' temp :', temp )
+console.log('---------------------------')
+console.log('Store Page')
 
 //Expand and Collapse all buttons.
-var html = '<div style="text-align:center"><button id="expandBtn" class="btn btn-default btn-xs">Expand</button><button id="collapseBtn" class="btn btn-default btn-xs">Collapse</button></div>'
+var html = '<p></p><div style="text-align:center"><button id="expandBtn" class="btn btn-default btn-xs">Expand</button><button id="collapseBtn" class="btn btn-default btn-xs">Collapse</button></div>'
 $('#menuItems').append(html)
 jQuery('#expandBtn').click(function () {
  jQuery('#'+location).jstree('open_all');
@@ -268,7 +253,7 @@ jQuery('#collapseBtn').click(function () {
  jQuery('#'+location).jstree('close_all');
 });
 //Expand and Collapse all buttons.
-  
+
 }
 
 ///////////////////////////////////////////////////////
@@ -331,4 +316,3 @@ function newMenuItems(formdata,idItem,raw,parentid,injectParentid,headings){
 }
 </script>
 
- 

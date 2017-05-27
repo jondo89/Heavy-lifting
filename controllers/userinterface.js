@@ -73,7 +73,6 @@ exports.page = function(req, res) {
     switch (true){
       case(template=='organizations'):
       var query1 = organizationalModel.find(
-      
         {$or: [
           {"entry.members": username },
           {"entry.owner":  username }

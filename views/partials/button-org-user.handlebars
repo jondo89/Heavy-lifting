@@ -1,0 +1,22 @@
+    <!-- Single button -->
+    <div class="btn-group">
+    	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    		Jonodav <span class="caret"></span>
+    	</button>
+    	<ul class="dropdown-menu ">
+
+
+    		<li><a href="/users/{{user.username}}" >{{user.username}}   <i class="fa fa-check" aria-hidden="true"></i></a></li>
+    		{{#each organizations}}
+    		<li><a href="/organizations/{{this.entry.name}}" >{{this.entry.name}} </a></li>
+    		{{/each}}
+    		<li role="separator" class="divider"></li>
+
+
+
+    		<li><a href="/users/{{user.username}}/settings/organizations"><i class="fa fa-users" aria-hidden="true"></i> Manage Organizations</a></li>
+    		<li><a href="/organizations/new"><i class="fa fa-plus" aria-hidden="true"></i> Create Organizations</a></li>
+    	</ul>
+    </div>
+ 
+   
