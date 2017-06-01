@@ -265,6 +265,11 @@ app.get('/users/:username/settings/', userInterfaceController.settings);
 app.get('/users/:username/settings/:page', userInterfaceController.page);
 
 
+ 
+ 
+ 
+ 
+ 
 
 
 

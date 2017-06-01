@@ -93,13 +93,24 @@
           <div class="col-md-4">
             <div class="form-group">
               <div class="col-sm-12">
-                {{#if user.picture}}
-                <img src="{{user.picture}}" class="media-object">
-                {{else}}
-                <img src="{{user.gravatar}}" class="media-object">
-                {{/if}}
+  <h4  >Profile Picture</h4>
+  <!-- This wraps the whole cropper -->
+<div id="image-cropper" >
+  <!-- This is where the preview image is displayed -->
+ 
+     <div class="cropit-preview"  style="border: 1px solid #eee;position: relative;"></div>
+ 
+  <!-- This range input controls zoom -->
+  <!-- You can add additional elements here, e.g. the image icons -->
+  <input type="range" class="cropit-image-zoom-input" />
+  <p></p>
+  <!-- This is where user selects new image -->
+  <input type="file" class="cropit-image-input" name="picture" id="picture"/>
+  <!-- The cropit- classes above are needed
+       so cropit can identify these elements -->
+</div>
               </div>
-              <label class="col-sm-12">Gravatar</label>
+           
             </div>
           </div>
         </div>
@@ -111,8 +122,33 @@
 
 	</div>
 </div>
+<style type="text/css">
+  .cropit-preview {
+  /* You can specify preview size in CSS */
+  width: 255px;
+  height: 255px;
+ 
+}
 
+</style>
 <script type="text/javascript">
+{{#if user.picture}}
+var imageSrc = '{{{user.picture}}}'
+{{else}}
+var imageSrc = '{{{user.gravatar}}}'
+{{/if}}
 
+
+$('#image-cropper').cropit({ imageState: { src: imageSrc  } });
+
+// In the demos I'm passing in an imageState option
+// so it renders an image by default:
+// $('#image-cropper').cropit({ imageState: { src: { imageSrc } } });
+
+// Exporting cropped image
+$('.download-btn').click(function() {
+  var imageData = $('#image-cropper').cropit('export');
+  window.open(imageData);
+});
 </script>
 

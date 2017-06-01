@@ -1,62 +1,47 @@
-  {{> userheading}}
-  <div class="row">
-<div class="col-md-3" id="navMenuPanel">       
-{{> usernav organizations=true}}
-</div>  
-<div class="col-md-9" id="browserArea">  
- 
-      
-   <div style="padding-top: 15px"></div>
-<a class="btn btn-success" href="/organizations/new" >New Organization</a>  
-
-      <p></p>
-
-<table class="table table-bordered" id="Organization">
-  <thead>
-    <tr>
-      <th>Organization Name</th>
-      <th>Owner</th>
-      <th  style="text-align: center" >Leave</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each organizations}}
-    <tr>
-      <td>
-
- <a href="/organizations/{{this.entry.name}}">{{this.entry.name}}</a>
-
-      </td>
-      <td>{{this.entry.owner}}   
-      </td>
-      </td>
-      <td style="text-align: center"><a class="btn btn-default btn-xs" href="organizations/{{this.entry.name}}/leave/">Leave</a>
-      </td>
-    </tr>
-  {{/each}}
-  </tbody>
+<div class="row" style="padding-top: 25px">
+  <div class="col-md-3" id="navMenuPanel">       
+    {{> usernav organizations=true}}
+  </div>  
+  <div class="col-md-9" id="browserArea">
+   <h2>Organizations</h2>
+   <hr>
+   <table class="table table-bordered" id="Organization">
+    <thead>
+      <tr>
+        <th>Organization Name</th>
+        <th>Owner</th>
+        <th  style="text-align: center" >Leave</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each organizations}}
+      <tr>
+        <td>
+         <a href="/organizations/{{this.entry.name}}">{{this.entry.name}}</a>
+       </td>
+       <td>{{this.entry.owner}}   
+       </td>
+     </td>
+     <td style="text-align: center"><a class="btn btn-default btn-xs" href="organizations/{{this.entry.name}}/leave/">Leave</a>
+     </td>
+   </tr>
+   {{/each}}
+ </tbody>
 </table>
-
+<a class="btn btn-success" href="/organizations/new" >New Organization</a>  
+<p></p>
 </div>
 </div>
-
 <script type="text/javascript">
-  
 ////////////////////////////////////
 ////        INITIALIZE         //// 
 //////////////////////////////////
 $('document').ready(function(){
-var table = jQuery('#Organization').DataTable({
-  'destroy':true,
-  "pagingType": "numbers", 
-        
+  var table = jQuery('#Organization').DataTable({
+    'destroy':true,
+    "pagingType": "numbers",   
   //  'order': [[ 2, 'asc' ]] ,
 });
 })
-
-
-
-
-
 </script>
 

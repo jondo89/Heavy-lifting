@@ -2,10 +2,11 @@
     <div class="row">
       <div class="col-md-3">
             <div class="media">
-      <div class="media-left">
+      <div class="media-center">
+
         <a href="#">
           {{#if user.picture}}
-          <div id="googlepic"></div>
+           <img src="{{user.picture}}" class="media-object" style="max-width: 100%">
           {{else}}
           <img src="{{user.gravatar}}" class="media-object">
           {{/if}}

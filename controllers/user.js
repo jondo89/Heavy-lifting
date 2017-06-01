@@ -7,6 +7,8 @@ var recaptcha = require('express-recaptcha');
 recaptcha.init('SITE_KEY', 'SECRET_KEY');
 
 
+
+
 /////////////////////////////////////////////////////
 ////////////   PRIMARY PERMISSIONS      ////////////
 ///////////////////////////////////////////////////
@@ -22,7 +24,7 @@ recaptcha.init('SITE_KEY', 'SECRET_KEY');
 /**
  * Login required middleware
  */
-exports.ensureAuthenticated = function(req, res, next) {
+ exports.ensureAuthenticated = function(req, res, next) {
   if (req.isAuthenticated()) {
     next();
   } else {
@@ -33,7 +35,7 @@ exports.ensureAuthenticated = function(req, res, next) {
 /**
  * GET /login
  */
-exports.loginGet = function(req, res) {
+ exports.loginGet = function(req, res) {
   if (req.user) {
     return res.redirect('/');
   }
@@ -45,7 +47,7 @@ exports.loginGet = function(req, res) {
 /**
  * POST /login
  */
-exports.loginPost = function(req, res, next) {
+ exports.loginPost = function(req, res, next) {
 
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
@@ -70,7 +72,7 @@ exports.loginPost = function(req, res, next) {
 /**
  * GET /signout
  */
-exports.signout = function(req, res) {
+ exports.signout = function(req, res) {
   req.logout();
   res.redirect('/');
 };
@@ -78,7 +80,7 @@ exports.signout = function(req, res) {
 /**
  * GET /signup
  */
-exports.signupGet = function(req, res) {
+ exports.signupGet = function(req, res) {
   if (req.user) {
     return res.redirect('/');
   }
@@ -111,23 +113,23 @@ exports.signupGet = function(req, res) {
           return res.redirect('/signup');
         }
         //check the user name for duplicate.
-      User.findOne({ name: req.body.name }, function(err, username) {
-        if (username) {
-          req.flash('error', { msg: 'The user name you have entered is already associated with another account.' });
-          return res.redirect('/signup');
-        }
-        user = new User({
-          name: req.body.name,
-          email: req.body.email,
-          password: req.body.password,
-          permission : 'subscriber'
-        });
-        user.save(function(err) {
-          req.logIn(user, function(err) {
-            res.redirect('/');
+        User.findOne({ name: req.body.name }, function(err, username) {
+          if (username) {
+            req.flash('error', { msg: 'The user name you have entered is already associated with another account.' });
+            return res.redirect('/signup');
+          }
+          user = new User({
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.password,
+            permission : 'subscriber'
+          });
+          user.save(function(err) {
+            req.logIn(user, function(err) {
+              res.redirect('/');
+            });
           });
         });
-});
       });
     } else { 
       req.flash('error', { msg: 'Heads up , You may very well be a robot.' });
@@ -139,7 +141,7 @@ exports.signupGet = function(req, res) {
 /**
  * GET /account
  */
-exports.accountGet = function(req, res) {
+ exports.accountGet = function(req, res) {
   res.render('account/profile', {
     title: 'My Account | Heavy-lifting'
   });
@@ -149,27 +151,52 @@ exports.accountGet = function(req, res) {
  * PUT /account
  * Update profile information OR change password.
  */
+
+ 
+
+
+ 
+
 exports.accountPut = function(req, res, next) {
+ 
   if ('password' in req.body) {
     req.assert('password', 'Password must be at least 8 characters long').len(8);
     req.assert('confirm', 'Passwords must match').equals(req.body.password);
   } else {
-    req.assert('email', 'Email is not valid').isEmail();
-    req.assert('email', 'Email cannot be blank').notEmpty();
-    req.sanitize('email').normalizeEmail({ remove_dots: false });
+   // req.assert('email', 'Email is not valid').isEmail();
+   // req.assert('email', 'Email cannot be blank').notEmpty();
+    //req.sanitize('email').normalizeEmail({ remove_dots: false });
   }
 
   var errors = req.validationErrors();
 
   if (errors) {
-    req.flash('error', errors);
-    return res.redirect('/account');
+  req.flash('error', errors);
+  return res.redirect(  '/users/'+req.user.username+'/settings/profile'  );
   }
+
+
+
+
 
   User.findById(req.user.id, function(err, user) {
     if ('password' in req.body) {
       user.password = req.body.password;
     } else {
+
+
+//Profile Picture saving.
+  var image = req.body.croppedImg
+  var fs = require('fs');
+  var directory = 'public/uploads/'
+  var fileName = directory+user.id+'.jpg'
+  var data = image.replace(/^data:image\/\w+;base64,/, '');
+
+  fs.writeFile(fileName, data, {encoding: 'base64'}, function(err){
+  //Finished
+  });
+
+      user.picture = '/uploads/'+user.id+'.jpg'
       user.email = req.body.email;
       user.name = req.body.name;
       user.bio = req.body.bio;
@@ -197,7 +224,7 @@ exports.accountPut = function(req, res, next) {
 /**
  * DELETE /account
  */
-exports.accountDelete = function(req, res, next) {
+ exports.accountDelete = function(req, res, next) {
   User.remove({ _id: req.user.id }, function(err) {
     req.logout();
     req.flash('info', { msg: 'Your account has been permanently deleted.' });
@@ -208,27 +235,27 @@ exports.accountDelete = function(req, res, next) {
 /**
  * GET /unlink/:provider
  */
-exports.unlink = function(req, res, next) {
+ exports.unlink = function(req, res, next) {
   User.findById(req.user.id, function(err, user) {
     switch (req.params.provider) {
       case 'facebook':
-        user.facebook = undefined;
-        break;
+      user.facebook = undefined;
+      break;
       case 'google':
-        user.google = undefined;
-        break;
+      user.google = undefined;
+      break;
       case 'twitter':
-        user.twitter = undefined;
-        break;
+      user.twitter = undefined;
+      break;
       case 'vk':
-        user.vk = undefined;
-        break;
+      user.vk = undefined;
+      break;
       case 'github':
-          user.github = undefined;
-        break;      
+      user.github = undefined;
+      break;      
       default:
-        req.flash('error', { msg: 'Invalid OAuth Provider' });
-        return res.redirect('/account');
+      req.flash('error', { msg: 'Invalid OAuth Provider' });
+      return res.redirect('/account');
     }
     user.save(function(err) {
       req.flash('success', { msg: 'Your account has been unlinked.' });
@@ -240,7 +267,7 @@ exports.unlink = function(req, res, next) {
 /**
  * GET /forgot
  */
-exports.forgotGet = function(req, res) {
+ exports.forgotGet = function(req, res) {
   if (req.isAuthenticated()) {
     return res.redirect('/');
   }
@@ -252,7 +279,7 @@ exports.forgotGet = function(req, res) {
 /**
  * POST /forgot
  */
-exports.forgotPost = function(req, res, next) {
+ exports.forgotPost = function(req, res, next) {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('email', 'Email cannot be blank').notEmpty();
   req.sanitize('email').normalizeEmail({ remove_dots: false });
@@ -306,33 +333,33 @@ exports.forgotPost = function(req, res, next) {
         res.redirect('/forgot');
       });
     }
-  ]);
+    ]);
 };
 
 /**
  * GET /reset
  */
-exports.resetGet = function(req, res) {
+ exports.resetGet = function(req, res) {
   if (req.isAuthenticated()) {
     return res.redirect('/');
   }
   User.findOne({ passwordResetToken: req.params.token })
-    .where('passwordResetExpires').gt(Date.now())
-    .exec(function(err, user) {
-      if (!user) {
-        req.flash('error', { msg: 'Password reset token is invalid or has expired.' });
-        return res.redirect('/forgot');
-      }
-      res.render('account/reset', {
-        title: 'Password Reset | Heavy-lifting'
-      });
+  .where('passwordResetExpires').gt(Date.now())
+  .exec(function(err, user) {
+    if (!user) {
+      req.flash('error', { msg: 'Password reset token is invalid or has expired.' });
+      return res.redirect('/forgot');
+    }
+    res.render('account/reset', {
+      title: 'Password Reset | Heavy-lifting'
     });
+  });
 };
 
 /**
  * POST /reset
  */
-exports.resetPost = function(req, res, next) {
+ exports.resetPost = function(req, res, next) {
   req.assert('password', 'Password must be at least 8 characters long').len(8);
   req.assert('confirm', 'Passwords must match').equals(req.body.password);
 
@@ -346,21 +373,21 @@ exports.resetPost = function(req, res, next) {
   async.waterfall([
     function(done) {
       User.findOne({ passwordResetToken: req.params.token })
-        .where('passwordResetExpires').gt(Date.now())
-        .exec(function(err, user) {
-          if (!user) {
-            req.flash('error', { msg: 'Password reset token is invalid or has expired.' });
-            return res.redirect('back');
-          }
-          user.password = req.body.password;
-          user.passwordResetToken = undefined;
-          user.passwordResetExpires = undefined;
-          user.save(function(err) {
-            req.logIn(user, function(err) {
-              done(err, user);
-            });
+      .where('passwordResetExpires').gt(Date.now())
+      .exec(function(err, user) {
+        if (!user) {
+          req.flash('error', { msg: 'Password reset token is invalid or has expired.' });
+          return res.redirect('back');
+        }
+        user.password = req.body.password;
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+        user.save(function(err) {
+          req.logIn(user, function(err) {
+            done(err, user);
           });
         });
+      });
     },
     function(user, done) {
       var transporter = nodemailer.createTransport({
@@ -382,5 +409,5 @@ exports.resetPost = function(req, res, next) {
         res.redirect('/account');
       });
     }
-  ]);
+    ]);
 };

@@ -6,7 +6,7 @@
 <div class="row" style="padding-top: 35px">
   <div class="col-md-4">
     <div class="media">
-      <div class="media-left">
+      <div class="media-left" >  
         <a href="#">
           {{#if userload.picture}}
           <div id="googlepic"></div>
@@ -109,7 +109,7 @@ var user = JSON.stringify('{{user.username}}')
 
   var text = '{{userload.picture}}'
   text =text.replace("sz&#x3D;50", "sz&#x3D;200");
-  $('#googlepic').html('<img src="'+text+'" class="media-object">')
+  $('#googlepic').html('<img src="'+text+'" style="max-width: 100%" class="media-object">')
 
 ///////////////////////////// 
 //////  INITIALISE    //////
