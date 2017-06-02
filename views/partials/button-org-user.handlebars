@@ -4,14 +4,33 @@
     		
 <img src="/uploads/{{user.id}}.jpg " style="max-width: 30px">
 
-            Jonodav <span class="caret"></span>
+            {{user.username}}  <span class="caret"></span>
     	</button>
     	<ul class="dropdown-menu ">
 
 
     		<li><a href="/users/{{user.username}}" >{{user.username}}   <i class="fa fa-check" aria-hidden="true"></i></a></li>
     		{{#each organizations}}
-    		<li><a href="/organizations/{{this.entry.name}}" >{{this.entry.name}} </a></li>
+    		<li><a href="/organizations/{{this.entry.name}}" >
+<span>
+<div class="row">
+    
+
+
+<div class="col-sm-3">
+    <img src="{{this.entry.picture}}" class="media-object" style="max-width: 15px">
+</div>
+
+<div class="col-sm-6">
+    {{this.entry.name}} 
+</div>
+</div>
+
+</span>
+            
+
+
+            </a></li>
     		{{/each}}
     		<li role="separator" class="divider"></li>
 

@@ -4,19 +4,36 @@
 <table class="table table-bordered" id="Organization">
   <thead>
     <tr>
-      <th>Username</th>
-      <th>Name</th>
-     
+    <th>Organizations</th>
     </tr>
   </thead>
   <tbody>
     {{#each username}}
-    <tr>
-      <td>
-      <a href="/organizations/{{this.entry.name}}">{{this.entry.name}}</a>
-     </td>
-      <td>
-        {{this.entry.displayname}} 
+
+ <tr>
+<td>
+<div class="media">
+  <div class="media-left">
+    <a href="#">
+      <img src="{{this.entry.picture}}" class="media-object" style="max-width: 85px">
+    </a>
+  </div>
+  <div class="media-body">
+<div class="row">
+  <div class="col-md-3">
+     <a href="/organizations/{{this.entry.name}}"><h4>{{this.entry.displayname}}</h4></a>
+    Owned by : <a style="color:grey" href="/users/{{this.entry.owner}}">{{this.entry.owner}}   </a>
+  </div>
+  <div class="col-md-9">
+{{dotdotdotdot this.entry.description}}
+  </div>
+</div>
+  </div>
+</div>
+</td>
+   </tr>
+
+ 
      </td>
      
    </td>

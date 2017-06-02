@@ -4,25 +4,43 @@
 <table class="table table-bordered" id="User">
   <thead>
     <tr>
-      <th>Username</th>
-      <th>Email</th>
-      <th>Permission</th>
+      <th>Users</th>
+ 
     </tr>
   </thead>
   <tbody>
     {{#each username}}
-    <tr>
-      <td>
-      <a href="/users/{{this.username}}"><img src="/uploads/{{this.id}}.jpg " style="max-width: 30px">  {{this.username}}</a>
-     </td>
-      <td>
-       {{this.email}}
-     </td>
-      <td>
-       {{this.permission}}
-     </td>
-   </td>
- </tr>
+
+
+
+ 
+
+
+ <tr>
+<td>
+<div class="media">
+  <div class="media-left">
+    <a href="#">
+      <img src="/uploads/{{this.id}}.jpg " style="max-width: 85px">
+    </a>
+  </div>
+  <div class="media-body">
+<div class="row">
+  <div class="col-md-3">
+     <a href="/organizations/{{this.username}}"><h4>{{this.username}}</h4></a>
+    Public Email : <a style="color:grey" href="/users/{{this.email}}">{{this.email}}   </a>
+  </div>
+  <div class="col-md-9">
+{{dotdotdotdot this.bio}}
+  </div>
+</div>
+  </div>
+</div>
+</td>
+   </tr>
+
+
+
  {{/each}}
 </tbody>
 </table>

@@ -88,10 +88,27 @@ var hbs = exphbs.create({
       return name;
     },
     'dotdotdot' : function(str) {
+      if (str) {
       if (str.length > 16)
         return str.substring(0,16) + '...';
+      return str;}
+    },
+    'dotdotdotdot' : function(str) {
+
+if (str) {
+  if (str.length > 200)
+        return str.substring(0,200) + '...';
       return str;
-    }}
+  
+}
+
+    
+
+
+    }
+
+
+  }
   });
 
  

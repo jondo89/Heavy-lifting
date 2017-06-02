@@ -8,23 +8,37 @@
    <table class="table table-bordered" id="Organization">
     <thead>
       <tr>
-        <th>Organization Name</th>
-        <th>Owner</th>
-        <th  style="text-align: center" >Leave</th>
+        <th>Organizations</th>
+ 
       </tr>
     </thead>
     <tbody>
       {{#each organizations}}
-      <tr>
-        <td>
-         <a href="/organizations/{{this.entry.name}}">{{this.entry.name}}</a>
-       </td>
-       <td>{{this.entry.owner}}   
-       </td>
-     </td>
-     <td style="text-align: center"><a class="btn btn-default btn-xs" href="organizations/{{this.entry.name}}/leave/">Leave</a>
-     </td>
+ <tr>
+<td>
+<div class="media">
+  <div class="media-left">
+    <a href="#">
+      <img src="{{this.entry.picture}}" class="media-object" style="max-width: 65px">
+    </a>
+  </div>
+  <div class="media-body">
+<div class="row">
+  <div class="col-md-3">
+     <a href="/organizations/{{this.entry.name}}"><h4>{{this.entry.name}}</h4></a>
+    Owned by : <a style="color: grey" href="/users/{{this.entry.owner}}">{{this.entry.owner}}   </a>
+  </div>
+  <div class="col-md-9">
+{{dotdotdotdot this.entry.description}}
+  </div>
+</div>
+  </div>
+</div>
+</td>
    </tr>
+
+
+
    {{/each}}
  </tbody>
 </table>

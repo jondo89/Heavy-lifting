@@ -1,3 +1,12 @@
+
+<style type="text/css">
+  .cropit-preview {
+    /* You can specify preview size in CSS */
+    width: 200px;
+    height: 200px;
+  }
+</style> 
+
 {{> orgheader}}
 
 <ul class="nav nav-tabs" role="tablist">
@@ -93,25 +102,25 @@
           <div class="col-md-4">
             <div class="form-group">
               <div class="col-sm-12">
-  <h4  >Profile Picture</h4>
-  <!-- This wraps the whole cropper -->
-<div id="image-cropper" >
-  <!-- This is where the preview image is displayed -->
- 
-     <div class="cropit-preview"  style="border: 1px solid #eee;position: relative;"></div>
- 
-  <!-- This range input controls zoom -->
-  <!-- You can add additional elements here, e.g. the image icons -->
-  <input type="range" class="cropit-image-zoom-input" />
-  <p></p>
-  <!-- This is where user selects new image -->
-  <input type="file" class="cropit-image-input" name="picture" id="picture"/>
+                <h4  >Profile Picture</h4>
+                <!-- This wraps the whole cropper -->
+                <div id="image-cropper" >
+                  <!-- This is where the preview image is displayed -->
+                  <div class="cropit-preview"  style="border: 1px solid #eee;position: relative;"></div>
+                  <!-- This range input controls zoom -->
+                  <!-- You can add additional elements here, e.g. the image icons -->
+                  <input type="range" class="cropit-image-zoom-input" style="width: 200px" />
+                  <p></p>
+                  <!-- This is where user selects new image -->
+                  <input type="file" class="cropit-image-input"  />
+
+<input style="display: none;"  name="croppedImg" id="croppedImg"/>
+
   <!-- The cropit- classes above are needed
-       so cropit can identify these elements -->
+  so cropit can identify these elements -->
 </div>
-              </div>
-           
-            </div>
+</div>
+</div>
           </div>
         </div>
       </form>
@@ -122,33 +131,50 @@
 
 	</div>
 </div>
-<style type="text/css">
-  .cropit-preview {
-  /* You can specify preview size in CSS */
-  width: 255px;
-  height: 255px;
  
-}
-
-</style>
 <script type="text/javascript">
-{{#if user.picture}}
-var imageSrc = '{{{user.picture}}}'
-{{else}}
-var imageSrc = '{{{user.gravatar}}}'
-{{/if}}
 
 
-$('#image-cropper').cropit({ imageState: { src: imageSrc  } });
+  function activate(){
+    $('#username').prop('disabled', false);
+  }
 
-// In the demos I'm passing in an imageState option
-// so it renders an image by default:
-// $('#image-cropper').cropit({ imageState: { src: { imageSrc } } });
 
-// Exporting cropped image
-$('.download-btn').click(function() {
-  var imageData = $('#image-cropper').cropit('export');
-  window.open(imageData);
+  {{#if organization.entry.picture}}
+  var imageSrc = '{{{organization.entry.picture}}}'
+  {{else}}
+  var imageSrc = '{{{organization.entry.gravatar}}}'
+  {{/if}}
+  $('#image-cropper').cropit({ imageState: { src: imageSrc  } });
+
+
+////////////////////////////////
+///// LISTEN FOR CHANGES //////
+//////////////////////////////
+$('#image-cropper').change(function() {
+  var imageData = $('#image-cropper').cropit('export', {
+    type: 'image/jpeg',
+    quality: .4,
+    originalSize: true
+  });
+  $('#croppedImg').val(imageData);
 });
-</script>
 
+
+////////////////////////
+///// INITIALIZE //////
+//////////////////////
+    $(document).ready( function() {
+      $(':file').on('fileselect', function(event, numFiles, label) {
+        var input = $(this).parents('.input-group').find(':text'),
+        log = numFiles > 1 ? numFiles + ' files selected' : label;
+        if( input.length ) {
+          input.val(log);
+        } else {
+          if( log ) alert(log);
+        }
+      });
+    });
+
+
+  </script>

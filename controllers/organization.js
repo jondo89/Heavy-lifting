@@ -195,8 +195,26 @@ exports.orgPut = function(req, res, next) {
         organizationalModel.findById(organizationItem._id, function (err, orgid) {
           if (err) return handleError(err);
           if (orgid) { 
+
+
+//Profile Picture saving.
+  var image = req.body.croppedImg
+  var fs = require('fs');
+  var directory = 'public/uploads/'
+  var fileName = directory+orgid._id+'.jpg'
+  var data = image.replace(/^data:image\/\w+;base64,/, '');
+
+  fs.writeFile(fileName, data, {encoding: 'base64'}, function(err){
+  //Finished
+  });
+
+      
+
+
+
         //Painful parse issue.
         var temp = JSON.parse(JSON.stringify(orgid.entry))
+        temp.picture = '/uploads/'+orgid._id+'.jpg'
         //Assign
         temp.displayname = req.body.displayname
         temp.description = req.body.description
