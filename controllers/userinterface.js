@@ -49,12 +49,26 @@ exports.profile = function(req, res) {
     )
     query2.exec(function (err, calender) { 
       if(err){console.log('Error Here query2'); return;}
+
+
+  var query3 = organizationalModel.find(
+    {$or: [
+      {"entry.members": user.username },
+      {"entry.owner":  user.username }
+      ]}
+      )
+  query3.exec(function (err, query3_return) {
+    if(err){console.log('Error Here'); return;} 
+
       user.password = 'Kwakwakwa'
       res.render('account/profile', {
         userload : user,
-        calender : calender
+        calender : calender,
+        organizations : query3_return
       });
        //Query end
+
+})
      })
   } else {
    res.redirect('/');
@@ -62,6 +76,8 @@ exports.profile = function(req, res) {
  //Query end
 })
 };
+
+ 
 
 //////////////////////////////
 //////////  PAGE ////////////
@@ -115,3 +131,66 @@ exports.users = function(req, res) {
    res.redirect('/signin');
  }
 };
+
+
+////////////////////////////////
+//////////  SEARCH ////////////
+//////////////////////////////
+exports.usersearch = function(req, res) {
+  var myExp = new RegExp(req.param('item'), 'i');
+      var query1 = User.find({"username" : {$regex : myExp}})
+      query1.exec(function (err, query1_return) {
+        if(err){
+res.send("No user found");
+         return;} 
+         console.log(query1_return)
+                  res.send(
+                    { users : query1_return}
+                    );
+      })
+};
+
+
+///////////////////////////////////
+//////////  TEST MAIL ////////////
+/////////////////////////////////
+exports.testmail = function(req, res) {
+ 
+res.send("Sent");
+
+'use strict';
+var nodemailer = require('nodemailer');
+
+// create reusable transporter object using the default SMTP transport
+var transporter = nodemailer.createTransport({
+  host: ' ',
+  port: 587,
+  tls: {
+    rejectUnauthorized: false
+  },
+    secure: false, // secure:true for port 465, secure:false for port 587
+    auth: {
+      user: ' ',
+      pass: ' '
+    }
+  });
+
+// setup email data with unicode symbols
+var mailOptions = {
+    from: ' ', // sender address
+    to: ' ', // list of receivers
+    subject: 'Heavy-lifting - Confirm your e-mail', // Subject line
+    text: 'Hello world ?', // plain text body
+    html: 'SnapScan - Confirm your e-mail' // html body
+};
+
+// send mail with defined transport object
+transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+        return console.log(error);
+    }
+    console.log('Message %s sent: %s', info.messageId, info.response);
+});
+
+};
+

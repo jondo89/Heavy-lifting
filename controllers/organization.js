@@ -1,7 +1,8 @@
 var organizationalModel      = require('../models/organizations.js');
 var siteName = 'Heavy-lifting'
 var ObjectId = require('mongodb').ObjectID;
-
+var express = require('express');
+var app = express();
 ////////////////////////////////////////////
 /////  GO TO PAGE NEW ORGANIZATION    ///// 
 //////////////////////////////////////////
@@ -66,7 +67,8 @@ exports.orgprofile = function(req, res) {
     organizationalModel.findOne({ 'entry.name': req.params.orgname }, function(err, username) {
         if (username) {
             res.render('account/orgprofile',{
-                organization : username
+                organization : username,
+                organizations : req.userorgs 
             }
             )
         } else {
@@ -83,13 +85,37 @@ exports.orguserread = function(req, res) {
     organizationalModel.findOne({ 'entry.name': req.params.orgname }, function(err, username) {
         if (username) {
             res.render('account/orgprofile',{
-                organization : username
+                organization : username,
+                organizations : req.userorgs 
             }
             )
         } else {
             return res.redirect('/');
         }
     })
+}
+
+////////////////////////////////////////////
+////////// PROFILE ORGANIATION ////////////
+//////////////////////////////////////////
+exports.ajaxorguserread = function(req, res, next) {
+  if (req.user) {
+    console.log(req.user)
+      var username =  req.user.username
+      var query1 = organizationalModel.find(
+        {$or: [
+          {"entry.members": username },
+          {"entry.owner":  username }
+          ]}
+        )
+      query1.exec(function (err, query1_return) {
+      if(err){console.log('Error Here'); return;} 
+        req.userorgs = query1_return
+        next();
+    })
+} else {
+ next();
+}
 }
 
 //////////////////////////////
@@ -101,7 +127,8 @@ exports.page = function(req, res) {
     organizationalModel.findOne({ 'entry.name': req.params.orgname }, function(err, username) {
         if (username) {
             res.render('orgsettings/'+template,{
-                organization : username
+                organization : username,
+                organizations : req.userorgs 
             }
             )
         } else {
@@ -119,7 +146,8 @@ exports.settings = function(req, res) {
     organizationalModel.findOne({ 'entry.name': req.params.orgname }, function(err, username) {
         if (username) {
             res.render('orgsettings/settings',{
-                organization : username
+                organization : username,
+                organizations : req.userorgs 
             }
             )
         } else {
@@ -134,16 +162,21 @@ exports.settings = function(req, res) {
 exports.components = function(req, res) {
     //check the user name for duplicate.
     organizationalModel.findOne({ 'entry.name': req.params.orgname }, function(err, username) {
-        if (username) {
-            res.render('orgsettings/components',{
-                organization : username
-            }
-            )
-        } else {
-            return res.redirect('/');
-        }
+      if (username) {
+        var ids = '58d371b01373c63dccdee169'
+        var Formids = '58aa74140b9d3241280ecf17'
+        res.render('orgsettings/components', {
+          siteName : siteName,
+          items : JSON.stringify(ids),
+          Formids : JSON.stringify(Formids),
+          organization : username,
+          organizations : req.userorgs 
+        });
+      } else {
+        return res.redirect('/');
+      }
     })
-};
+  };
 
 
 ////////////////////////////////////
@@ -154,7 +187,8 @@ exports.assemblies = function(req, res) {
     organizationalModel.findOne({ 'entry.name': req.params.orgname }, function(err, username) {
         if (username) {
             res.render('orgsettings/assemblies',{
-                organization : username
+                organization : username,
+                organizations : req.userorgs 
             }
             )
         } else {
@@ -172,7 +206,8 @@ exports.people = function(req, res) {
     organizationalModel.findOne({ 'entry.name': req.params.orgname }, function(err, username) {
         if (username) {
             res.render('orgsettings/people',{
-                organization : username
+                organization : username,
+                organizations : req.userorgs 
             }
             )
         } else {
@@ -185,53 +220,52 @@ exports.people = function(req, res) {
 ////////// ORGPUT PAGE ///////////
 /////////////////////////////////
 exports.orgPut = function(req, res, next) {
-    req.assert('email', 'Email is not valid').isEmail();
-    var errors = req.validationErrors();
-    if (errors) {
-        req.flash('error', errors);
-        res.redirect('/organizations/'+req.params.orgname+'/settings/profile');
-    }
-    organizationalModel.findOne({ 'entry.name': req.params.orgname }, function(err, organizationItem) {
-        organizationalModel.findById(organizationItem._id, function (err, orgid) {
-          if (err) return handleError(err);
-          if (orgid) { 
-
-
+  req.assert('email', 'Email is not valid').isEmail();
+  var errors = req.validationErrors();
+  if (errors) {
+    req.flash('error', errors);
+    res.redirect('/organizations/'+req.params.orgname+'/settings/profile');
+  }
+  organizationalModel.findOne({ 'entry.name': req.params.orgname }, function(err, organizationItem) {
+    organizationalModel.findById(organizationItem._id, function (err, orgid) {
+      if (err) return handleError(err);
+      if (orgid) { 
 //Profile Picture saving.
-  var image = req.body.croppedImg
-  var fs = require('fs');
-  var directory = 'public/uploads/'
-  var fileName = directory+orgid._id+'.jpg'
-  var data = image.replace(/^data:image\/\w+;base64,/, '');
-
-  fs.writeFile(fileName, data, {encoding: 'base64'}, function(err){
+var image = req.body.croppedImg
+var fs = require('fs');
+var directory = 'public/uploads/'
+var fileName = directory+orgid._id+'.jpg'
+var data = image.replace(/^data:image\/\w+;base64,/, '');
+fs.writeFile(fileName, data, {encoding: 'base64'}, function(err){
   //Finished
-  });
-
-      
-
-
-
+});
         //Painful parse issue.
         var temp = JSON.parse(JSON.stringify(orgid.entry))
         temp.picture = '/uploads/'+orgid._id+'.jpg'
         //Assign
-        temp.displayname = req.body.displayname
+        
+
+if (req.body.name !=null) {
+   temp.name = req.body.name
+}
+       
+
+temp.displayname = req.body.displayname
         temp.description = req.body.description
         temp.location = req.body.location
-        temp.url = JSON.stringify(req.body.url)
+        temp.url = req.body.url
         temp.email = req.body.email
         orgid.entry = temp    
         orgid.save(function(err,doc) {
           req.flash('success', { msg: 'Your profile information has been updated.' });
           res.redirect('/organizations/'+req.params.orgname+'/settings/profile');
-      });
-    } else {
+        });
+      } else {
         req.flash('error', { msg: 'Something went wrong here.' });
         res.redirect('/organizations/'+req.params.orgname+'/settings/profile');
-    }
-});
-    })
+      }
+    });
+  })
 };
 
 

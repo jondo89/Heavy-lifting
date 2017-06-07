@@ -1,44 +1,29 @@
     <!-- Single button -->
     <div class="btn-group">
     	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    		
-<img src="/uploads/{{user.id}}.jpg " style="max-width: 30px">
-
+            <img src="/uploads/{{user.id}}.jpg " style="max-width: 30px">
             {{user.username}}  <span class="caret"></span>
-    	</button>
-    	<ul class="dropdown-menu ">
-
-
-    		<li><a href="/users/{{user.username}}" >{{user.username}}   <i class="fa fa-check" aria-hidden="true"></i></a></li>
-    		{{#each organizations}}
-    		<li><a href="/organizations/{{this.entry.name}}" >
-<span>
-<div class="row">
-    
-
-
-<div class="col-sm-3">
-    <img src="{{this.entry.picture}}" class="media-object" style="max-width: 15px">
+        </button>
+        <ul class="dropdown-menu ">
+          <li>
+           <a href="/users/{{user.username}}"  style="text-align: right;background: #63e8b2; color: #f6fffb;">
+            <span class="media">
+                {{user.username}} 
+                <img src="/uploads/{{user.id}}.jpg " style="max-width: 25px">    
+            </span>
+        </a>
+    </li>
+    {{#each organizations}}
+    <li><a href="/organizations/{{this.entry.name}}" > 
+        <span class="media">
+            <img src="{{this.entry.picture}}"  style="max-width: 25px">
+            {{this.entry.displayname}} 
+        </span>
+    </a></li>
+    {{/each}}
+    <li role="separator" class="divider"></li>
+    <li><a href="/users/{{user.username}}/settings/organizations"><i class="fa fa-users" aria-hidden="true"></i> Manage Organizations</a></li>
+    <li><a href="/organizations/new"><i class="fa fa-plus" aria-hidden="true"></i> Create Organizations</a></li>
+</ul>
 </div>
 
-<div class="col-sm-6">
-    {{this.entry.name}} 
-</div>
-</div>
-
-</span>
-            
-
-
-            </a></li>
-    		{{/each}}
-    		<li role="separator" class="divider"></li>
-
-
-
-    		<li><a href="/users/{{user.username}}/settings/organizations"><i class="fa fa-users" aria-hidden="true"></i> Manage Organizations</a></li>
-    		<li><a href="/organizations/new"><i class="fa fa-plus" aria-hidden="true"></i> Create Organizations</a></li>
-    	</ul>
-    </div>
- 
-   

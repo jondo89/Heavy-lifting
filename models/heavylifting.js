@@ -16,6 +16,8 @@ var heavylifting = mongoose.Schema({
 'entry' :Schema.Types.Mixed,
 'parentid' :String,
 'name' :String,
+'organizations' :String,
+'users' :String,
 'elementID' :{ type: String, default: '' },
 'userID' :String,
 'revision' :{ type: String, default: 'created' },

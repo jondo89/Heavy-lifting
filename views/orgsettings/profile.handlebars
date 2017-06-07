@@ -17,8 +17,6 @@
 	<li role="presentation" class="active"><a href="/organizations/{{organization.entry.name}}/settings/profile" role="tab">Settings</a></li>
 </ul>
 
-
-   
 <div class="row" style="padding-top: 25px">
 	<div class="col-md-3" id="navMenuPanel">       
 		<div class="list-group">
@@ -27,7 +25,6 @@
 		</div>
 	</div>  
 	<div class="col-md-9" id="browserArea">
-
 
   {{#if messages.success}}
       <div role="alert" class="alert alert-success">
@@ -55,7 +52,6 @@
                 <p class="help-block">Changing your username can have unforeseen consequences. <a class="btn btn-default btn-xs"  onclick="activate()">Change</a></p>
               </div>
             </div>
-
             <div class="form-group">
               <label for="displayname" class="col-sm-12">Organization display name</label>
               <div class="col-sm-12">
@@ -92,10 +88,9 @@
                 <input type="email" name="billingemail" id="billingemail" class="form-control" value="{{organization.entry.billingemail}}">
               </div>
             </div> 
-
             <div class="form-group">
               <div class="col-sm-4">
-                <button type="submit" class="btn btn-default">Update Profile</button>
+                <button type="submit" onclick="updates()" class="btn btn-default">Update Profile</button>
               </div>
             </div>
           </div>
@@ -106,15 +101,15 @@
                 <!-- This wraps the whole cropper -->
                 <div id="image-cropper" >
                   <!-- This is where the preview image is displayed -->
-                  <div class="cropit-preview"  style="border: 1px solid #eee;position: relative;"></div>
+                  <div class="cropit-preview" id="pic" style="border: 1px solid #eee;position: relative;"></div>
                   <!-- This range input controls zoom -->
                   <!-- You can add additional elements here, e.g. the image icons -->
                   <input type="range" class="cropit-image-zoom-input" style="width: 200px" />
                   <p></p>
                   <!-- This is where user selects new image -->
-                  <input type="file" class="cropit-image-input"  />
+                  <input type="file" id="filechange" class="cropit-image-input"  />
 
-<input style="display: none;"  name="croppedImg" id="croppedImg"/>
+<input  style="display: none;" name="croppedImg" id="croppedImg"/>
 
   <!-- The cropit- classes above are needed
   so cropit can identify these elements -->
@@ -124,29 +119,28 @@
           </div>
         </div>
       </form>
-
-
-
-
-
 	</div>
 </div>
- 
+
 <script type="text/javascript">
+////////////////////////////////
+///// Username change    //////
+//////////////////////////////
+function activate(){
+  $('#name').prop('disabled', false);
+}
 
-
-  function activate(){
-    $('#username').prop('disabled', false);
-  }
-
-
-  {{#if organization.entry.picture}}
-  var imageSrc = '{{{organization.entry.picture}}}'
-  {{else}}
-  var imageSrc = '{{{organization.entry.gravatar}}}'
-  {{/if}}
-  $('#image-cropper').cropit({ imageState: { src: imageSrc  } });
-
+///////////////////////////////////////////////////
+///// UPDATE THE PIC DATA HOLER WITH SUBMIT //////
+/////////////////////////////////////////////////
+function updates(){
+  var imageData = $('#image-cropper').cropit('export', {
+    type: 'image/jpeg',
+    quality: .4,
+    originalSize: true
+  });
+  $('#croppedImg').val(imageData);
+}
 
 ////////////////////////////////
 ///// LISTEN FOR CHANGES //////
@@ -160,11 +154,16 @@ $('#image-cropper').change(function() {
   $('#croppedImg').val(imageData);
 });
 
-
 ////////////////////////
 ///// INITIALIZE //////
 //////////////////////
     $(document).ready( function() {
+  {{#if organization.entry.picture}}
+  var imageSrc = '{{{organization.entry.picture}}}'
+  {{else}}
+  var imageSrc = '{{{organization.entry.gravatar}}}'
+  {{/if}}
+  $('#image-cropper').cropit({ imageState: { src: imageSrc  } });
       $(':file').on('fileselect', function(event, numFiles, label) {
         var input = $(this).parents('.input-group').find(':text'),
         log = numFiles > 1 ? numFiles + ' files selected' : label;
@@ -175,6 +174,4 @@ $('#image-cropper').change(function() {
         }
       });
     });
-
-
   </script>

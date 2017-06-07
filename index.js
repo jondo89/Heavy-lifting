@@ -153,13 +153,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  
 
-app.get('/', HomeController.index);
+
 
 /////////////////////////////
 ////       PAGES        //// 
 ///////////////////////////
 app.get('/store', pagesController.store);
-app.get('/components', pagesController.components);
 app.get('/database', pagesController.database);
 app.get('/help', pagesController.help);
 app.get('/forms', pagesController.forms);
@@ -267,12 +266,16 @@ app.get('/assembly/new',  assemblyController.newassy);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////
+////       HOME             //// 
+///////////////////////////////
+app.get('/', HomeController.index);
+
+/////////////////////////////////
 ////       TEMPALTES        //// 
 ///////////////////////////////
 app.get('/privacy', pagesController.privacy);
 app.get('/terms', pagesController.terms);
  
-
 ///////////////////////////////////////////////////
 ////        USER INTERFACE CONTROLLER         //// 
 /////////////////////////////////////////////////
@@ -280,15 +283,7 @@ app.get('/users/', userInterfaceController.users);
 app.get('/users/:username/', userInterfaceController.profile);
 app.get('/users/:username/settings/', userInterfaceController.settings);
 app.get('/users/:username/settings/:page', userInterfaceController.page);
-
-
- 
- 
- 
- 
- 
-
-
+app.get('/usersearch', userInterfaceController.usersearch);
 
 /////////////////////////////////////
 ////       ORGANIZATION         //// 
@@ -297,22 +292,44 @@ app.get('/users/:username/settings/:page', userInterfaceController.page);
 app.get('/organizations', organizationController.orglist);
 app.get('/organizations/new', organizationController.neworg);
 app.post('/organizations/new', organizationController.createorgstatic);
-app.get('/organizations/:orgname/', organizationController.orgprofile);
-app.get('/organizations/:orgname/settings', organizationController.settings);
-app.get('/organizations/:orgname/components', organizationController.components);
-app.get('/organizations/:orgname/assemblies', organizationController.assemblies);
-app.get('/organizations/:orgname/people', organizationController.people);
-app.get('/organizations/:orgname/settings', organizationController.settings);
-app.get('/organizations/:orgname/settings/:page', organizationController.page);
+app.get('/organizations/:orgname/', organizationController.ajaxorguserread ,organizationController.orgprofile);
+app.get('/organizations/:orgname/settings',organizationController.ajaxorguserread , organizationController.settings);
+app.get('/organizations/:orgname/components', organizationController.ajaxorguserread ,organizationController.components);
+app.get('/organizations/:orgname/assemblies',organizationController.ajaxorguserread , organizationController.assemblies);
+app.get('/organizations/:orgname/people', organizationController.ajaxorguserread ,organizationController.people);
+app.get('/organizations/:orgname/settings',organizationController.ajaxorguserread , organizationController.settings);
+app.get('/organizations/:orgname/settings/:page', organizationController.ajaxorguserread , organizationController.page);
 app.put('/organizations/:orgname', userController.ensureAuthenticated, organizationController.orgPut);
-
-
-
 
 //Ajax
 app.get('/orguserread', organizationController.orguserread); // Get the active user organizations , owner and member.
+ 
+
+///////////////////////////////////
+////       COMPONENTS         //// 
+/////////////////////////////////
+app.get('/components/', componentController.components);
+
+//User Components
+app.get('/components/users/', componentController.usersview);
+app.get('/components/users/:username/', componentController.users);
+app.get('/components/users/:username/:compid', componentController.compiduser);
+//Organization Components
+app.get('/components/organizations/', componentController.organizationsview);
+app.get('/components/organizations/:orgname', componentController.organizations);
+app.get('/components/organizations/:orgname/:compid', componentController.compidorg);
 
 
+/////////////////////////////////////
+////       EMAILING             //// 
+///////////////////////////////////
+//Testing of the smtp mail , work great.
+app.get('/testmail', userInterfaceController.testmail);
+
+
+
+
+//////////////////////////////////////////DEFAULTS//////////////////////////////////////////
 app.get('/contact', contactController.contactGet);
 app.post('/contact', contactController.contactPost);
 app.get('/account', userController.ensureAuthenticated, userController.accountGet);

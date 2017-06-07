@@ -1,66 +1,70 @@
 <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript" src="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
 <link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
-<p></p>
-<div class="row">
- {{#if organization.entry.picture}}
- <div class="col-md-3">
-  <div class="media">
-    <div class="media-left">
-      <a href="/organizations/{{organization.entry.name}}">
+ 
+<div class="row" style="padding-top: 25px" >
+<div class="col-md-10">
+<div class="media">
+     {{#if organization.entry.picture}}
+  <div class="media-left">
+    <a href="#">
+  
+ <a href="/organizations/{{organization.entry.name}}">
         <img src="{{organization.entry.picture}}" class="media-object" style="max-width: 200px">
       </a>
-    </div>
+
+    </a>
   </div>
-</div>
 {{/if}}
-<div class="col-md-5">
-  <h1>{{organization.entry.displayname}}</h1>
-  <h3>{{organization.entry.name}}</h3>
+  <div class="media-body">
+  <h1>{{organization.entry.displayname}}  <small>{{dotdotdot organization.entry.name}}</small></h1>
   <p>{{dotdotdotdot organization.entry.description }}</p>
-</div>
-<div class="col-md-4">
-  <div style="padding-top: 55px"></div>
+
+
+<div class="row" style="padding-top: 25px" >
   {{#if organization.entry.company}}
-  <div class="row">
-    <div class="col-sm-2"  style="text-align: center;" >
-      <i class="fa fa-users" aria-hidden="true"></i>
-    </div>
-    <div class="col-sm-8">
-      {{dotdotdot organization.entry.company}}
-    </div>
+  <div class="col-md-4" style="color: grey"> 
+      <i class="fa fa-users" aria-hidden="true"></i>  {{dotdotdot organization.entry.company}}
   </div>
   {{/if}}
+
   {{#if organization.entry.location}}
-  <div class="row">
-    <div class="col-sm-2"  style="text-align: center;">
-      <i class="fa fa-map-marker" aria-hidden="true"></i>
-    </div>
-    <div class="col-sm-8">
-      {{organization.entry.location}}
-    </div>
+  <div class="col-md-3" style="color: grey">
+      <i class="fa fa-map-marker" aria-hidden="true"></i>   {{dotdotdot organization.entry.location }}
   </div>
   {{/if}}
+
   {{#if organization.entry.email}}
-  <div class="row">
-    <div class="col-sm-2"  style="text-align: center;">
-      <i class="fa fa-envelope-o" aria-hidden="true"></i>
-    </div>
-    <div class="col-sm-8">
-      <a href="mailto:{{organization.entry.email}}">{{organization.entry.email}}</a>
-    </div>
+  <div class="col-md-5" style="color: grey">
+      <i class="fa fa-envelope-o" aria-hidden="true"></i>   <a style="color: grey" href="mailto:{{organization.entry.email}}">{{dotdotdot organization.entry.email}}</a>
   </div>
   {{/if}}
+
   {{#if organization.entry.url}}
-  <div class="row">
-    <div class="col-sm-2"  style="text-align: center;">
-      <i class="fa fa-link" aria-hidden="true"></i>
-    </div>
-    <div class="col-sm-8">
-      <a href="http://{{organization.entry.url}}" target="_blank">{{organization.entry.url}}</a>
-    </div>
+  <div class="col-md-4" style="color: grey">
+      <i class="fa fa-link" aria-hidden="true"></i>   <a style="color: grey" href="http://{{organization.entry.url}}" target="_blank">{{dotdotdot organization.entry.url}}</a>  
   </div>
   {{/if}}
+
+  </div>
+  </div>
+</div>
+
+
+
+
+ </div>
+<div class="col-md-2">
+
+ 
+
+{{#if user}}
+<div style="text-align: right;">
+   {{> button-org-user }}
+</div>
+ {{/if}}
+ 
+
 
 </div>
 </div>

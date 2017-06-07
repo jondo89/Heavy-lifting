@@ -5,40 +5,51 @@
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
         <span class="sr-only">Toggle navigation</span><i class="fa fa-bars"></i>
       </button>
-      
 
 
-<form class="form-inline">
-  <div class="form-group">
-<a class="navbar-brand" href="/" style="padding: 8px 0px 5px 11px">
-        <img alt="Brand" src="/img/logo.png" style="height: 35px;padding: 5px"> 
-      </a> 
-  </div>
-  <div class="form-group">
- 
-    <input style="background-color: #4c4646;" type="email" class="form-control" id="exampleInputEmail2" placeholder="Heavy-lifting">
-  </div>
-  <button type="submit" style="background-color: #a09797;color: #fff;" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
-</form>
-
+      <form class="form-inline">
+        <div class="form-group">
+          <a class="navbar-brand" href="/" style="padding: 8px 0px 5px 11px">
+            <img alt="Brand" src="/img/logo.png" style="height: 35px;padding: 5px"> 
+          </a> 
+        </div>
+        <div class="form-group"  >
+          <input style="background-color: #4c4646;color: white" type="search" class="form-control" id="exampleInputEmail2" placeholder="Heavy-lifting">
+        </div>
+         
+      </form>
 
 
     </div>
+
+   
+      <ul class="nav navbar-nav navbar-left"  >
+        <li >
+          <a href="/database" style="color: rgba(255,255,255,0.75)">Database</a>
+        </li>
+        <li>
+          <a href="/store" style="color: rgba(255,255,255,0.75)">Store</a>
+        </li>
+        <li>
+          <a href="/components" style="color: rgba(255,255,255,0.75)">Components</a>
+        </li>
+
+         
+        </ul>
+       
+
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right" id="deploy">
-        <li>
-          <a href="/database">Database</a>
-        </li>
-        <li>
-          <a href="/store">Store</a>
-        </li>
-                <li>
-          <a href="/help">Help</a>
-        </li>    
+    
+
+
+  <li>
+          <a href="/help" style="color: rgba(255,255,255,0.75)">Help</a>
+        </li> 
+
         {{#if user}}
-   
-        <li class="dropdown">
+        <li class="dropdown" data-toggle="tooltip" data-placement="right" title="Create new.">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-plus" aria-hidden="true"></i> <span class="caret"></span></a>
           <ul class="dropdown-menu" id="component">  
             <li><a href="/organizations/new">New Organization</a></li>
@@ -48,7 +59,7 @@
         </li>
         {{/if}}
         {{#if user}}
-        <li class="dropdown">
+        <li class="dropdown" data-toggle="tooltip" data-placement="right" title="View profile and more.">
           <a href="#" data-toggle="dropdown" class="navbar-avatar dropdown-toggle" >
             {{#if user.picture}}
             <img src="{{user.picture}}" class="navbar-avatar-pic">
@@ -85,7 +96,7 @@
 /////////////////////////// 
 $( document ).ready(function() {
   if (user=='superadmin') {
-    $("#usermenu").append('<li class="divider"></li> <li><a href="/configuration"><i class="fa fa-cog" aria-hidden="true"></i> Configuration</a></li><li><a href="/forms"><i class="fa fa-cog" aria-hidden="true"></i> Forms</a></li><li><a href="/admin"><i class="fa fa-cog" aria-hidden="true"></i> Admin Panel</a></li><li><a href="/users"><i class="fa fa-cog" aria-hidden="true"></i> Users</a></li><li><a href="/organizations"><i class="fa fa-cog" aria-hidden="true"></i> Organizations</a></li>')
+    $("#usermenu").append('<li class="divider"></li> <li><a href="/configuration"><i class="fa fa-cog" aria-hidden="true"></i> Configuration</a></li><li><a href="/forms"><i class="fa fa-cog" aria-hidden="true"></i> Forms</a></li><li><a href="/admin"><i class="fa fa-cog" aria-hidden="true"></i> Admin Panel</a></li><li><a href="/users"><i class="fa fa-cog" aria-hidden="true"></i> Users</a></li><li><a href="/organizations"><i class="fa fa-cog" aria-hidden="true"></i> Organizations</a></li><li><a href="/components"><i class="fa fa-cog" aria-hidden="true"></i> Components</a></li>')
   }
 });
 </script>
