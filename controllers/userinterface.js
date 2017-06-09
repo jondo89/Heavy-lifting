@@ -96,7 +96,7 @@ exports.page = function(req, res) {
         )
       query1.exec(function (err, query1_return) {
         if(err){console.log('Error Here'); return;} 
-        console.log(query1_return)
+        //console.log(query1_return)
         res.render('settings/'+template,{
           organizations : query1_return
         });
@@ -143,7 +143,7 @@ exports.usersearch = function(req, res) {
         if(err){
 res.send("No user found");
          return;} 
-         console.log(query1_return)
+         //console.log(query1_return)
                   res.send(
                     { users : query1_return}
                     );

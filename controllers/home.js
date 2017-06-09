@@ -14,13 +14,14 @@ if (req.user) {
   query1.exec(function (err, query1_return) {
     if(err){console.log('Error Here'); return;} 
     res.render('splash', {
-      organizations : query1_return
+      organizations : query1_return,
+      title: req.user.username + ' | Heavy-lifting' ,
     });
       //Query end
     })
 } else {
   res.render('home', {
-    title: 'Home',
+    title: 'Heavy-lifting',
     siteName : siteName,
     layout: false
   });

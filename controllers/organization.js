@@ -9,19 +9,21 @@ var app = express();
 exports.neworg = function(req, res) {
     //Perform Routing for Varios user type on the home page.
     if (req.user) {
-    	res.render('neworg')
+    	res.render('neworg',{
+        title: 'New Organization | Heavy-lifting' ,
+      })
     } else {
         res.redirect('/signin');
     }
 }; 
 
 ///////////////////////////////////////////////
-///////   CREATE ORGINIZATION STATIC  ////////
+///////   CREATE ORGaNIZATION STATIC  ////////
 /////////////////////////////////////////////
 exports.createorgstatic = function(req, res) {
-    console.log('//////////////////////////////////////////')
-    console.log('//////  CREATE NEW ORGINIZATION  ////////')
-    console.log('////////////////////////////////////////')
+    //console.log('//////////////////////////////////////////')
+   //console.log('//////  CREATE NEW ORGaNIZATION  ////////')
+   // console.log('////////////////////////////////////////')
 //Allow for new credit cards every time , Do not call old CC details.	
 if (req.user) {
     req.assert('name', 'Username cannot be blank').notEmpty();
@@ -68,7 +70,8 @@ exports.orgprofile = function(req, res) {
         if (username) {
             res.render('account/orgprofile',{
                 organization : username,
-                organizations : req.userorgs 
+                organizations : req.userorgs ,
+                title: username.entry.name + ' | Heavy-lifting' ,
             }
             )
         } else {
@@ -86,7 +89,8 @@ exports.orguserread = function(req, res) {
         if (username) {
             res.render('account/orgprofile',{
                 organization : username,
-                organizations : req.userorgs 
+                organizations : req.userorgs ,
+                title: username.entry.name + ' | Heavy-lifting' ,
             }
             )
         } else {
@@ -100,7 +104,7 @@ exports.orguserread = function(req, res) {
 //////////////////////////////////////////
 exports.ajaxorguserread = function(req, res, next) {
   if (req.user) {
-    console.log(req.user)
+    //console.log(req.user)
       var username =  req.user.username
       var query1 = organizationalModel.find(
         {$or: [
@@ -128,7 +132,9 @@ exports.page = function(req, res) {
         if (username) {
             res.render('orgsettings/'+template,{
                 organization : username,
-                organizations : req.userorgs 
+                organizations : req.userorgs ,
+                title: 'Settings | '+username.entry.name   ,
+
             }
             )
         } else {
@@ -147,7 +153,8 @@ exports.settings = function(req, res) {
         if (username) {
             res.render('orgsettings/settings',{
                 organization : username,
-                organizations : req.userorgs 
+                organizations : req.userorgs ,
+                title: 'Settings | '+username.entry.name   ,
             }
             )
         } else {
@@ -170,7 +177,8 @@ exports.components = function(req, res) {
           items : JSON.stringify(ids),
           Formids : JSON.stringify(Formids),
           organization : username,
-          organizations : req.userorgs 
+          organizations : req.userorgs ,
+          title: 'Components | '+username.entry.name   ,
         });
       } else {
         return res.redirect('/');
@@ -188,7 +196,8 @@ exports.assemblies = function(req, res) {
         if (username) {
             res.render('orgsettings/assemblies',{
                 organization : username,
-                organizations : req.userorgs 
+                organizations : req.userorgs ,
+                title: 'Assemblies | '+username.entry.name   ,
             }
             )
         } else {
@@ -207,7 +216,8 @@ exports.people = function(req, res) {
         if (username) {
             res.render('orgsettings/people',{
                 organization : username,
-                organizations : req.userorgs 
+                organizations : req.userorgs ,
+                title: 'People | '+username.entry.name   ,
             }
             )
         } else {
@@ -270,14 +280,15 @@ temp.displayname = req.body.displayname
 
 
 ///////////////////////////////////////////
-//////////  ORGINIZATION LIST ////////////
+//////////  ORGaNIZATION LIST ////////////
 /////////////////////////////////////////
 exports.orglist = function(req, res) {
   if (req.user) {
     if (req.user.permission=="superadmin") {
       organizationalModel.find(  function(err, username) {
         res.render('orginizationlist',{
-          username : username
+          username : username,
+          title: 'Organizations | Heavy-lifting'   ,
         });
       });
     } else {

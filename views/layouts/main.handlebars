@@ -8,27 +8,19 @@
   {{> css}}
 </head>
 <body>
-
   {{> javascript}}
-
   {{> header}}
   <style type="text/css">
     .dt-buttons {
       padding-top: 15px;
     }
   </style>
-
-  <div>
- 
-</div>
-
-
-<div class="container" >
- {{{body}}}
-</div>
-{{#if user}}
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="myModal">
+  <div class="container" >
+   {{{body}}}
+ </div>
+ {{#if user}}
+ <!-- Modal -->
+ <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="myModal">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-body">
@@ -46,15 +38,8 @@
 </div>
 </div> 
 {{/if}}
-
-
-
 {{> footer}}
-
-
-
 {{> analytics}}
-
 </body>
 </html>
 

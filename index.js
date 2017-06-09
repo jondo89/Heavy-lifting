@@ -211,8 +211,7 @@ app.get('/deleteentry', deleteController.deleteentry);
 ///////////////////////////////////////
 //admin page table view.
 app.get('/getCollectionData', readController.getCollectionData);
-//search for the form to load.
-app.get('/getform', readController.getform);
+
 //get data by array of ids.
 app.get('/getdata', readController.getdata);
 //get data by array of ids.
@@ -262,6 +261,11 @@ app.get('/productload', productController.productload);
 app.get('/assembly/new',  assemblyController.newassy);
 
 
+
+//search for the form to load.
+app.get('/getform',  componentController.additionaldetails , readController.getform);
+
+
 //Rebuild routing
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -309,7 +313,8 @@ app.get('/orguserread', organizationController.orguserread); // Get the active u
 ////       COMPONENTS         //// 
 /////////////////////////////////
 app.get('/components/', componentController.components);
-
+app.get('/component/new', organizationController.ajaxorguserread , componentController.componentforms, componentController.newcomp);
+ 
 //User Components
 app.get('/components/users/', componentController.usersview);
 app.get('/components/users/:username/', componentController.users);
@@ -318,6 +323,9 @@ app.get('/components/users/:username/:compid', componentController.compiduser);
 app.get('/components/organizations/', componentController.organizationsview);
 app.get('/components/organizations/:orgname', componentController.organizations);
 app.get('/components/organizations/:orgname/:compid', componentController.compidorg);
+
+ 
+
 
 
 /////////////////////////////////////

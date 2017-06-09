@@ -1,522 +1,117 @@
- 
-
- 
 <h1>Create a new component</h1>
-<p>Components are used as building blocks for assemblies, including the revision history.</p>
-  <hr>
+<p>Components are used as building blocks for assemblies. These components can be created here as standalone items, or in the assembly hierarchy.</p>
+<hr>
 <div class="row" style="padding-top: 15px" >
 	<div class="col-md-4">
-	<!-- Select Basic -->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="selectbasic">Owner</label>
-  <div class="col-md-8">
-    <select id="selectbasic" name="selectbasic" class="form-control">
-      <option value="1">Jonodav</option>
-      <option value="2">Isithelo</option>
-      <option value="2">Shiftbulk</option>
-    </select><span class="help-block">Select the owner of the assembly.</span>  
+        <form class="form-horizontal">
+            <fieldset>
+               <!-- Select Basic -->
+               <div class="form-group">
+                  <label class="col-md-4 control-label" for="selectbasic">Owner</label>
+                  <div class="col-md-8">
+                    <select title="Select your surfboard" id="selectpicker" class="form-control">
+                      <option data-css="max-height:25px" data-thumbnail="/uploads/{{user.id}}.jpg">{{user.username}}</option>
+                      {{#each organizations}}
+                      <option data-css="max-height:25px" data-thumbnail="{{this.entry.picture}}">{{this.entry.displayname}} </option>
+                      {{/each}}
+                  </select>
+              </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-4 control-label" for="selectbasic">Description</label>
+            <div class="col-md-8">
+               <textarea class="form-control" name="paragraph_text" cols="5" rows="3" placeholder="Add a description for later."></textarea> 
+           </div>
+       </div>
+       <div class="form-group">
+          <label class="col-md-4 control-label" for="selectbasic">Select Component Type</label>
+          <div class="col-md-8">
+            <select id="selectbasicss" name="selectbasic" class="form-control"  data-live-search="true">
+                <option value="None" >None</option>
+                {{#each componentlist}}
+                <option data-childtype="{{this.childType}}" value="{{this.elementID}}">{{this.entry.description}}</option>
+                {{/each}}
+            </select><span class="help-block">The applicable structure of the component.</span>  
+        </div>
+    </div>
+    <!-- Multiple Radios -->
+    <div class="form-group">
+      <label class="col-md-4 control-label" for="radios">Select the sharing permissions</label>
+      <div class="col-md-8">
+          <div class="radio">
+            <label for="radios-0">
+              <input type="radio" name="radios" id="radios-0" value="1" checked="checked">
+              Public
+          </label><span class="help-block">Anyone can see this repository. You choose who can commit.</span>  
+      </div>
+      <div class="radio">
+        <label for="radios-1">
+          <input type="radio" name="radios" id="radios-1" value="2">
+          Private
+      </label><span class="help-block">You choose who can see and commit to this repository.</span>  
   </div>
 </div>
-
-
-<div class="form-group">
-  <label class="col-md-4 control-label" for="selectbasic">Select Component Type</label>
-  <div class="col-md-8">
-    <select id="selectbasic" name="selectbasic" class="form-control">
-      <option value="1">Idler</option>
-      <option value="2">Pulley</option>
-      <option value="2">Conveyor</option>
-    </select><span class="help-block">The applicable structure of the component.</span>  
-  </div>
 </div>
-
-<!-- Multiple Radios -->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="radios">Select the sharing permissions</label>
-  <div class="col-md-8">
-  <div class="radio">
-    <label for="radios-0">
-      <input type="radio" name="radios" id="radios-0" value="1" checked="checked">
-      Public
-    </label><span class="help-block">Anyone can see this repository. You choose who can commit.</span>  
-	</div>
-  <div class="radio">
-    <label for="radios-1">
-      <input type="radio" name="radios" id="radios-1" value="2">
-      Private
-    </label><span class="help-block">You choose who can see and commit to this repository.</span>  
-	</div>
-  </div>
-</div>
-
 <!-- Button -->
 <div class="form-group">
   <label class="col-md-4 control-label" for="singlebutton">Create Assembly</label>
   <div class="col-md-4">
     <button id="singlebutton" name="singlebutton" class="btn btn-success">Submit</button>
-  </div>
 </div>
-
 </div>
-
-
-<div class="col-md-7">
-	<h1>The Component structure</h1>
-<div id="e6aec503-9c88-c028-0e38-059aafc33b45"><div id="form_590d8ed475b75f0d84bd4150e6aec503-9c88-c028-0e38-059aafc33b45" class=""><form role="form" id="alpaca21" data-alpaca-form-id="alpaca21" class="alpaca-form">
-
-        <div class="alpaca-field alpaca-field-object alpaca-optional alpaca-create alpaca-top" data-alpaca-field-id="alpaca20" data-alpaca-field-path="/" data-alpaca-field-name="">
-
-        <legend class="alpaca-container-label">
-
-
-            Forms
-
-
-        </legend>
-
-
-        <div class="alpaca-container alpaca-vertical alpaca-container-has-items" data-alpaca-container-item-count="17">
-
-
-            <div class="alpaca-container-item alpaca-container-item-first" data-alpaca-container-item-index="0" data-alpaca-container-item-name="590d8ef275b75f0d84bd4151" data-alpaca-container-item-parent-field-id="alpaca20">
-
-        <div class="form-group alpaca-field alpaca-field-select alpaca-optional" data-alpaca-field-id="alpaca22" data-alpaca-field-path="/590d8ef275b75f0d84bd4151" data-alpaca-field-name="590d8ef275b75f0d84bd4151">
-
-        <label class="control-label alpaca-control-label" for="alpaca22">Idler Type</label>
-
-        <select id="alpaca22" name="590d8ef275b75f0d84bd4151" class="alpaca-control form-control">
-
-
-        <option value="">None</option>
-
-        <option value="1 Roll Extended Return">1 Roll Extended Return</option>
-        <option value="1 Roll Flat Carry">1 Roll Flat Carry</option>
-        <option value="1 Roll Flat Return">1 Roll Flat Return</option>
-        <option value="2 Roll Flat Return">2 Roll Flat Return</option>
-        <option value="2 Roll V-Return">2 Roll V-Return</option>
-        <option value="Impact 2 Roll">Impact 2 Roll</option>
-        <option value="Impact 3 Roll">Impact 3 Roll</option>
-        <option value="Impact 5 Roll">Impact 5 Roll</option>
-        <option value="Picking Centre Roll">Picking Centre Roll</option>
-        <option value="Troughing 2 Roll">Troughing 2 Roll</option>
-        <option value="Troughing 3 Roll">Troughing 3 Roll</option>
-        <option value="Troughing 5 Roll">Troughing 5 Roll</option>
-
-
-    </select>
-
-        <p class="help-block ">
-            <i class="glyphicon glyphicon-info-sign"></i>
-            The application specific to this idler frame design.
-        </p>
-
-
-    </div>
-
-    </div>
-
-
-            <div class="alpaca-container-item" data-alpaca-container-item-index="1" data-alpaca-container-item-name="590d8f1675b75f0d84bd4153" data-alpaca-container-item-parent-field-id="alpaca20">
-
-        <div class="form-group alpaca-field alpaca-field-select alpaca-optional" data-alpaca-field-id="alpaca23" data-alpaca-field-path="/590d8f1675b75f0d84bd4153" data-alpaca-field-name="590d8f1675b75f0d84bd4153">
-
-        <label class="control-label alpaca-control-label" for="alpaca23">Idler Frame Design</label>
-
-        <select id="alpaca23" name="590d8f1675b75f0d84bd4153" class="alpaca-control form-control">
-
-
-        <option value="">None</option>
-
-        <option value="Flat Return - 40 Drop">Flat Return - 40 Drop</option>
-        <option value="Flat Return - 90 Drop">Flat Return - 90 Drop</option>
-        <option value="Garland - 'C' type hook">Garland - 'C' type hook</option>
-        <option value="Garland - 'J' type hook">Garland - 'J' type hook</option>
-        <option value="Inline Angle Iron">Inline Angle Iron</option>
-        <option value="Off Set Angle Iron">Off Set Angle Iron</option>
-        <option value="Picking Idlers">Picking Idlers</option>
-        <option value="Training">Training</option>
-        <option value="Underslung Offset Belt Saver">Underslung Offset Belt Saver</option>
-        <option value="V-Return">V-Return</option>
-
-
-    </select>
-
-        <p class="help-block ">
-            <i class="glyphicon glyphicon-info-sign"></i>
-            Idler mounting frame design.
-        </p>
-
-
-    </div>
-
-    </div>
-
-
-            <div class="alpaca-container-item" data-alpaca-container-item-index="2" data-alpaca-container-item-name="590dab646771cb3fd8651d40" data-alpaca-container-item-parent-field-id="alpaca20">
-
-        <div class="form-group alpaca-field alpaca-field-select alpaca-optional" data-alpaca-field-id="alpaca24" data-alpaca-field-path="/590dab646771cb3fd8651d40" data-alpaca-field-name="590dab646771cb3fd8651d40">
-
-        <label class="control-label alpaca-control-label" for="alpaca24">Roll Diameter</label>
-
-        <select id="alpaca24" name="590dab646771cb3fd8651d40" class="alpaca-control form-control">
-
-
-        <option value="">None</option>
-
-        <option value="101">101</option>
-        <option value="108">108</option>
-        <option value="127">127</option>
-        <option value="133">133</option>
-        <option value="133.1">133.1</option>
-        <option value="152">152</option>
-        <option value="159">159</option>
-        <option value="165">165</option>
-        <option value="178">178</option>
-        <option value="219">219</option>
-
-
-    </select>
-
-        <p class="help-block ">
-            <i class="glyphicon glyphicon-info-sign"></i>
-            Idler Roll Diameter
-        </p>
-
-
-    </div>
-
-    </div>
-
-
-            <div class="alpaca-container-item" data-alpaca-container-item-index="3" data-alpaca-container-item-name="590d8f3775b75f0d84bd4154" data-alpaca-container-item-parent-field-id="alpaca20">
-
-        <div class="form-group alpaca-field alpaca-field-select alpaca-optional" data-alpaca-field-id="alpaca25" data-alpaca-field-path="/590d8f3775b75f0d84bd4154" data-alpaca-field-name="590d8f3775b75f0d84bd4154">
-
-        <label class="control-label alpaca-control-label" for="alpaca25">Shaft Series</label>
-
-        <select id="alpaca25" name="590d8f3775b75f0d84bd4154" class="alpaca-control form-control">
-
-
-        <option value="">None</option>
-
-        <option value="20">20</option>
-        <option value="25">25</option>
-        <option value="25">25</option>
-        <option value="25">25</option>
-        <option value="30">30</option>
-        <option value="30">30</option>
-        <option value="35">35</option>
-        <option value="40">40</option>
-
-
-    </select>
-
-        <p class="help-block ">
-            <i class="glyphicon glyphicon-info-sign"></i>
-            Idler shaft series.
-        </p>
-
-
-    </div>
-
-    </div>
-
-
-            <div class="alpaca-container-item" data-alpaca-container-item-index="4" data-alpaca-container-item-name="590d8f5875b75f0d84bd4155" data-alpaca-container-item-parent-field-id="alpaca20">
-
-        <div class="form-group alpaca-field alpaca-field-select alpaca-optional" data-alpaca-field-id="alpaca26" data-alpaca-field-path="/590d8f5875b75f0d84bd4155" data-alpaca-field-name="590d8f5875b75f0d84bd4155">
-
-        <label class="control-label alpaca-control-label" for="alpaca26">Belt Width</label>
-
-        <select id="alpaca26" name="590d8f5875b75f0d84bd4155" class="alpaca-control form-control">
-
-
-        <option value="">None</option>
-
-        <option value="1050">1050</option>
-        <option value="1200">1200</option>
-        <option value="1350">1350</option>
-        <option value="1500">1500</option>
-        <option value="1650">1650</option>
-        <option value="1800">1800</option>
-        <option value="2000">2000</option>
-        <option value="2100">2100</option>
-        <option value="2200">2200</option>
-        <option value="2400">2400</option>
-        <option value="400">400</option>
-        <option value="450">450</option>
-        <option value="500">500</option>
-        <option value="600">600</option>
-        <option value="750">750</option>
-        <option value="900">900</option>
-
-
-    </select>
-
-        <p class="help-block ">
-            <i class="glyphicon glyphicon-info-sign"></i>
-            conveyor belt widths
-        </p>
-
-
-    </div>
-
-    </div>
-
-
-            <div class="alpaca-container-item" data-alpaca-container-item-index="5" data-alpaca-container-item-name="590d902775b75f0d84bd415d" data-alpaca-container-item-parent-field-id="alpaca20">
-
-        <div class="form-group alpaca-field alpaca-field-select alpaca-optional" data-alpaca-field-id="alpaca27" data-alpaca-field-path="/590d902775b75f0d84bd415d" data-alpaca-field-name="590d902775b75f0d84bd415d">
-
-        <label class="control-label alpaca-control-label" for="alpaca27">Wing Roll Angle</label>
-
-        <select id="alpaca27" name="590d902775b75f0d84bd415d" class="alpaca-control form-control">
-
-
-        <option value="">None</option>
-
-        <option value="35">35</option>
-        <option value="45">45</option>
-
-
-    </select>
-
-
-
-    </div>
-
-    </div>
-
-
-            <div class="alpaca-container-item" data-alpaca-container-item-index="6" data-alpaca-container-item-name="590d922c75b75f0d84bd416e" data-alpaca-container-item-parent-field-id="alpaca20">
-
-        <div class="form-group alpaca-field alpaca-field-text alpaca-optional alpaca-autocomplete" data-alpaca-field-id="alpaca28" data-alpaca-field-path="/590d922c75b75f0d84bd416e" data-alpaca-field-name="590d922c75b75f0d84bd416e">
-
-        <label class="control-label alpaca-control-label" for="alpaca28">Rotating Mass</label>
-
-        <input type="text" id="alpaca28" name="590d922c75b75f0d84bd416e" class="alpaca-control form-control" autocomplete="off">
-
-        <p class="help-block ">
-            <i class="glyphicon glyphicon-info-sign"></i>
-            Total rotating mass of the idler set.
-        </p>
-
-
-    </div>
-
-    </div>
-
-
-            <div class="alpaca-container-item" data-alpaca-container-item-index="7" data-alpaca-container-item-name="590d958975b75f0d84bd4180" data-alpaca-container-item-parent-field-id="alpaca20">
-
-        <div class="form-group alpaca-field alpaca-field-text alpaca-optional alpaca-autocomplete" data-alpaca-field-id="alpaca29" data-alpaca-field-path="/590d958975b75f0d84bd4180" data-alpaca-field-name="590d958975b75f0d84bd4180">
-
-        <label class="control-label alpaca-control-label" for="alpaca29">Image</label>
-
-        <input type="text" id="alpaca29" name="590d958975b75f0d84bd4180" class="alpaca-control form-control" autocomplete="off">
-
-        <p class="help-block ">
-            <i class="glyphicon glyphicon-info-sign"></i>
-            Image
-        </p>
-
-
-    </div>
-
-    </div>
-
-
-            <div class="alpaca-container-item" data-alpaca-container-item-index="8" data-alpaca-container-item-name="590d997675b75f0d84bd4189" data-alpaca-container-item-parent-field-id="alpaca20">
-
-        <div class="form-group alpaca-field alpaca-field-text alpaca-optional alpaca-autocomplete" data-alpaca-field-id="alpaca30" data-alpaca-field-path="/590d997675b75f0d84bd4189" data-alpaca-field-name="590d997675b75f0d84bd4189">
-
-        <label class="control-label alpaca-control-label" for="alpaca30">Roll Mass</label>
-
-        <input type="text" id="alpaca30" name="590d997675b75f0d84bd4189" class="alpaca-control form-control" autocomplete="off">
-
-        <p class="help-block ">
-            <i class="glyphicon glyphicon-info-sign"></i>
-            The mass of 1 roll.
-        </p>
-
-
-    </div>
-
-    </div>
-
-
-            <div class="alpaca-container-item" data-alpaca-container-item-index="9" data-alpaca-container-item-name="590d998b75b75f0d84bd418a" data-alpaca-container-item-parent-field-id="alpaca20">
-
-        <div class="form-group alpaca-field alpaca-field-text alpaca-optional alpaca-autocomplete" data-alpaca-field-id="alpaca31" data-alpaca-field-path="/590d998b75b75f0d84bd418a" data-alpaca-field-name="590d998b75b75f0d84bd418a">
-
-        <label class="control-label alpaca-control-label" for="alpaca31">Idler Set Mass</label>
-
-        <input type="text" id="alpaca31" name="590d998b75b75f0d84bd418a" class="alpaca-control form-control" autocomplete="off">
-
-        <p class="help-block ">
-            <i class="glyphicon glyphicon-info-sign"></i>
-            The total mass of this idler set.
-        </p>
-
-
-    </div>
-
-    </div>
-
-
-            <div class="alpaca-container-item" data-alpaca-container-item-index="10" data-alpaca-container-item-name="590da8b26771cb3fd8651d3a" data-alpaca-container-item-parent-field-id="alpaca20">
-
-        <div class="form-group alpaca-field alpaca-field-text alpaca-optional alpaca-autocomplete" data-alpaca-field-id="alpaca32" data-alpaca-field-path="/590da8b26771cb3fd8651d3a" data-alpaca-field-name="590da8b26771cb3fd8651d3a">
-
-        <label class="control-label alpaca-control-label" for="alpaca32">Frame Mass</label>
-
-        <input type="text" id="alpaca32" name="590da8b26771cb3fd8651d3a" class="alpaca-control form-control" autocomplete="off">
-
-        <p class="help-block ">
-            <i class="glyphicon glyphicon-info-sign"></i>
-            Idler Set Frame Mass
-        </p>
-
-
-    </div>
-
-    </div>
-
-
-            <div class="alpaca-container-item" data-alpaca-container-item-index="11" data-alpaca-container-item-name="590d999275b75f0d84bd418b" data-alpaca-container-item-parent-field-id="alpaca20">
-
-        <div class="form-group alpaca-field alpaca-field-text alpaca-optional alpaca-autocomplete" data-alpaca-field-id="alpaca33" data-alpaca-field-path="/590d999275b75f0d84bd418b" data-alpaca-field-name="590d999275b75f0d84bd418b">
-
-        <label class="control-label alpaca-control-label" for="alpaca33">A</label>
-
-        <input type="text" id="alpaca33" name="590d999275b75f0d84bd418b" class="alpaca-control form-control" autocomplete="off">
-
-        <p class="help-block ">
-            <i class="glyphicon glyphicon-info-sign"></i>
-            Standard Dimension Placeholder
-        </p>
-
-
-    </div>
-
-    </div>
-
-
-            <div class="alpaca-container-item" data-alpaca-container-item-index="12" data-alpaca-container-item-name="590d999675b75f0d84bd418c" data-alpaca-container-item-parent-field-id="alpaca20">
-
-        <div class="form-group alpaca-field alpaca-field-text alpaca-optional alpaca-autocomplete" data-alpaca-field-id="alpaca34" data-alpaca-field-path="/590d999675b75f0d84bd418c" data-alpaca-field-name="590d999675b75f0d84bd418c">
-
-        <label class="control-label alpaca-control-label" for="alpaca34">B</label>
-
-        <input type="text" id="alpaca34" name="590d999675b75f0d84bd418c" class="alpaca-control form-control" autocomplete="off">
-
-        <p class="help-block ">
-            <i class="glyphicon glyphicon-info-sign"></i>
-            Standard Dimension Placeholder
-        </p>
-
-
-    </div>
-
-    </div>
-
-
-            <div class="alpaca-container-item" data-alpaca-container-item-index="13" data-alpaca-container-item-name="590d999b75b75f0d84bd418d" data-alpaca-container-item-parent-field-id="alpaca20">
-
-        <div class="form-group alpaca-field alpaca-field-text alpaca-optional alpaca-autocomplete" data-alpaca-field-id="alpaca35" data-alpaca-field-path="/590d999b75b75f0d84bd418d" data-alpaca-field-name="590d999b75b75f0d84bd418d">
-
-        <label class="control-label alpaca-control-label" for="alpaca35">C</label>
-
-        <input type="text" id="alpaca35" name="590d999b75b75f0d84bd418d" class="alpaca-control form-control" autocomplete="off">
-
-        <p class="help-block ">
-            <i class="glyphicon glyphicon-info-sign"></i>
-            Standard Dimension Placeholder
-        </p>
-
-
-    </div>
-
-    </div>
-
-
-            <div class="alpaca-container-item" data-alpaca-container-item-index="14" data-alpaca-container-item-name="590d99a075b75f0d84bd418e" data-alpaca-container-item-parent-field-id="alpaca20">
-
-        <div class="form-group alpaca-field alpaca-field-text alpaca-optional alpaca-autocomplete" data-alpaca-field-id="alpaca36" data-alpaca-field-path="/590d99a075b75f0d84bd418e" data-alpaca-field-name="590d99a075b75f0d84bd418e">
-
-        <label class="control-label alpaca-control-label" for="alpaca36">D</label>
-
-        <input type="text" id="alpaca36" name="590d99a075b75f0d84bd418e" class="alpaca-control form-control" autocomplete="off">
-
-        <p class="help-block ">
-            <i class="glyphicon glyphicon-info-sign"></i>
-            Standard Dimension Placeholder
-        </p>
-
-
-    </div>
-
-    </div>
-
-
-            <div class="alpaca-container-item" data-alpaca-container-item-index="15" data-alpaca-container-item-name="590d99a475b75f0d84bd418f" data-alpaca-container-item-parent-field-id="alpaca20">
-
-        <div class="form-group alpaca-field alpaca-field-text alpaca-optional alpaca-autocomplete" data-alpaca-field-id="alpaca37" data-alpaca-field-path="/590d99a475b75f0d84bd418f" data-alpaca-field-name="590d99a475b75f0d84bd418f">
-
-        <label class="control-label alpaca-control-label" for="alpaca37">E</label>
-
-        <input type="text" id="alpaca37" name="590d99a475b75f0d84bd418f" class="alpaca-control form-control" autocomplete="off">
-
-        <p class="help-block ">
-            <i class="glyphicon glyphicon-info-sign"></i>
-            Standard Dimension Placeholder
-        </p>
-
-
-    </div>
-
-    </div>
-
-
-            <div class="alpaca-container-item alpaca-container-item-last" data-alpaca-container-item-index="16" data-alpaca-container-item-name="590da29f6771cb3fd8651d23" data-alpaca-container-item-parent-field-id="alpaca20">
-
-        <div class="form-group alpaca-field alpaca-field-select alpaca-optional" data-alpaca-field-id="alpaca38" data-alpaca-field-path="/590da29f6771cb3fd8651d23" data-alpaca-field-name="590da29f6771cb3fd8651d23">
-
-        <label class="control-label alpaca-control-label" for="alpaca38">Reference Document</label>
-
-        <select id="alpaca38" name="590da29f6771cb3fd8651d23" class="alpaca-control form-control">
-
-
-        <option value="">None</option>
-
-        <option value="3 ROLL LINK SUSPENDED 'GARLAND SERIES 25 - 'C' type hook'">3 ROLL LINK SUSPENDED 'GARLAND SERIES 25 - 'C' type hook'</option>
-        <option value="3 ROLL LINK SUSPENDED 'GARLAND' SERIES 25 - 'J' type hook">3 ROLL LINK SUSPENDED 'GARLAND' SERIES 25 - 'J' type hook</option>
-        <option value="5 ROLL OFF-SET TROUGHING IDLER SERIES 25 - 35° 'BELT SAVER' 'UNDERSLUNG' TROUGH">5 ROLL OFF-SET TROUGHING IDLER SERIES 25 - 35° 'BELT SAVER' 'UNDERSLUNG' TROUGH</option>
-
-
-    </select>
-
-        <p class="help-block ">
-            <i class="glyphicon glyphicon-info-sign"></i>
-            Reference Document
-        </p>
-
-
-    </div>
-
-    </div>
-
-
-    </div>
-
-    </div>
-
-        <div class="alpaca-form-buttons-container">
-                    <button data-key="submit" type="submit" id="submit" class="alpaca-form-button alpaca-form-button-submit btn btn-default">Submit</button>
-        </div>
-
-    </form></div></div>
+</fieldset>
+</form>
 </div>
+<div class="col-md-7" id="loadformhere">
+
+
+     <div id="panel">  
+       <div style="border-width: 2px; border-style: dashed; border-color: grey;padding:55px;text-align: center;border-radius: 5px;"><strong>   Getting Started!</strong> You are creating a new component.</div> </div>
 
 </div>
+</div>
 
+<script type="text/javascript">
+ 
+   $('#selectpicker').selectpicker();
+   $('#selectbasicss').selectpicker();
+   var componentlist =  {{{componentlistParse}}}
+   $('#selectbasicss').change(function(){
+    var itemID = $('#selectbasicss').val()
+    for (var i = 0; i < componentlist.length; i++) {
+        if (componentlist[i].elementID == itemID) {
+            var formToUse = componentlist[i].childType
+        }
+    }
+    var headings = ["description","detail","icon","headings"]
+    var entry =''    
+
+if (itemID == 'None') {
+    var html = '<div style="border-width: 2px; border-style: dashed; border-color: grey;padding:55px;text-align: center;border-radius: 5px;"><strong>   Getting Started!</strong> You are creating a new component.</div>'
+       $('#loadformhere').html(html) 
+} else {
+    loadformModal(formToUse,'','component',itemID,headings,entry)
+}
+
+    
+
+})
+
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+////////////////////////////////////                                                                                                              
+function loadformModal(formdata,idItem,raw,parentid,headings,entry){
+  var headings = JSON.stringify(headings)
+  var entry = JSON.stringify(entry)
+  jQuery.ajax({
+    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings+'&entry='+entry,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+
+      $('#loadformhere').html(dataSchemaObject)
+      
+  }
+});
+}
+</script>

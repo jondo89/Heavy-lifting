@@ -13,6 +13,7 @@ exports.components = function(req, res) {
     var Formids = init[3]._id
     res.render('components', {
       siteName : siteName,
+      title: 'Components | Heavy-lifting',
       items : JSON.stringify(ids),
       Formids : JSON.stringify(Formids)
     });
@@ -32,6 +33,7 @@ exports.help = function(req, res) {
     var Formids = init[3]._id
     res.render('help', {
       siteName : siteName,
+          title: 'Help | Heavy-lifting',
       items : JSON.stringify(ids),
       Formids : JSON.stringify(Formids)
     });
@@ -78,6 +80,7 @@ var ids = '58d222d18d9bfd28846eb792'
     var Formids = init[3]._id
     res.render('store', {
       siteName : siteName,
+      title: 'Store | Heavy-lifting',
       items : JSON.stringify(ids),
       Formids : JSON.stringify(Formids)
     });
@@ -96,6 +99,7 @@ exports.database = function(req, res) {
     var Formids = init[3]._id
     res.render('database', {
       siteName : siteName,
+      title: 'Database | Heavy-lifting',
       items : JSON.stringify(ids),
       Formids : JSON.stringify(Formids)
     });
@@ -109,14 +113,18 @@ exports.database = function(req, res) {
 /////  PRIVACY STATEMENT    ///// 
 ////////////////////////////////
 exports.privacy = function(req, res) {
-res.render('privacy-statement')
+res.render('privacy-statement',{
+      title: 'Privacy | Heavy-lifting',
+})
 }; 
 
 //////////////////////////////////
 /////  TERMS STATEMENT    ///// 
 ////////////////////////////////
 exports.terms = function(req, res) {
-res.render('terms-of-service')
+res.render('terms-of-service',{
+      title: 'Terms of Service | Heavy-lifting',
+})
 }; 
 
  

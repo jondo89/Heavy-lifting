@@ -1,40 +1,39 @@
-
 <div class="row">
   <div class="col-md-12" id="colLeft">
   <div id="mapLoad"></div>
     <div id="formDelivery"></div>
   </div>  
   <div class="col-md-0" id="colRight">
-
- 
-   
  <div id="navig" data-spy="affix" data-offset-top="10">
     <div id="pickerArea" style="overflow: auto;"></div>
  </div>
-
- 
   </div>  
 </div>
 
 <script type="text/javascript">
 
- 
-
   var formdata = {{{formdata}}}
+  
   var idItem = {{{idItem}}}
   var raw = {{{raw}}}
   var parentid = {{{parentid}}}
   var formid1 = create_uid()
   var parentItem = {{{parentItem}}}
-  
   var htmlcompile  ={}
-
   var lat 
   var long
   var alt
   var myMarker
   var googleMapsObject
 
+  {{#if query2}}
+
+  {{else}}
+ 
+  {{/if}}
+ var query2 = {{{query2}}}
+
+ 
   {{#if headings}}
   var headingsTemp = {{{headings}}}
   {{else}}
@@ -715,6 +714,7 @@ function displayLocationElevation(location, elevator) {
 //////////   ADDING THE MORE INFO BUTTON       /////////
 ///////////////////////////////////////////////////////
 function findandappendSelect(){
+ 
 if (query2) { 
   for (var i = 0; i < query2.length; i++) {
     if(query2[i].entry.objectType ){

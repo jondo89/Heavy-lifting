@@ -110,6 +110,7 @@ heavyliftingModel.find().limit(3).exec(function (err, forms) {
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
+/*
 console.log('-----------getform------------')
 console.log('formdata : ',JSON.stringify(formdata))
 console.log('idItem : ',JSON.stringify(idItem))
@@ -118,10 +119,15 @@ console.log('raw :',JSON.stringify(raw))
 console.log('parentItem :',JSON.stringify(parentItem[0]))
 console.log('headings :',headings)
 console.log('entry :',entry)
-console.log('-----------getform------------')
+console.log('-----------getform------------')*/
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
+
+  console.log('///////////////////////////////ADDITIONAL DETAIL MIDDLEWARE///////////////////////////////////')
+  console.log(req.additionaldetails)
+  console.log('///////////////////////////////ADDITIONAL DETAIL MIDDLEWARE///////////////////////////////////')
+
 res.render('form', {
   title: 'Form',
   siteName : siteName,
@@ -132,6 +138,12 @@ res.render('form', {
   raw :JSON.stringify(raw) ,
   parentItem : JSON.stringify(parentItem[0]) ,
   entry : entry, 
+
+
+  additionaldetails : req.additionaldetails ,
+  query2 : req.additionaldetailsParse ,
+
+
   layout: false,
 });
 });
@@ -648,12 +660,13 @@ query.exec(function (err, query_return) {
     } 
 
   
-  console.log('Debug 4.',query_return)
+  //console.log('Debug 4.',query_return)
 res.send(JSON.stringify(query_return));
 //a parent ID for the group to pull , then a filter by the ID field.
 })
- 
 }
+
+
 //////////////////////////////////////////
 ///////////   READ  GROUPS  /////////////
 ////////////////////////////////////////
@@ -827,11 +840,13 @@ var query1 = heavyliftingModel.find(
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
+/*
 console.log('-----------getdatacomp------------')
 console.log('formdata : ',JSON.stringify(formdata))
 console.log('idItem : ',JSON.stringify(idItem))
 console.log('raw :',JSON.stringify(raw))
 console.log('-----------getdatacomp------------')
+*/
 /////////////////////////////
 ////      DEBUG         //// 
 ///////////////////////////
@@ -859,9 +874,11 @@ for (var i = 0; i < form.length; i++) {
     }
 }
 //turn into something that alpaca understands.
+/*
 console.log('-----------getdatacomp------------')
 console.log('form : ',JSON.stringify(form))
 console.log('-----------getdatacomp------------')
+*/
       res.send({
         formdata : form , 
         idItem : temp
@@ -1112,6 +1129,7 @@ var json = {
 ////       DEPLOY THE REQUESTED TEMPLATE         //// 
 ////////////////////////////////////////////////////
 exports.findme = function(req, res) {
+
 console.log('//////////////////////////////////////////////////////////////////////////////')
 console.log('/////////////////////////////      findme     ////////////////////////////////')
 console.log('//////////////////////////////////////////////////////////////////////////////')
@@ -1139,7 +1157,7 @@ var query = heavyliftingModel.findOne(
     }
     ]
   })
-console.log('Debug 0.')
+//console.log('Debug 0.')
 query.exec(function (err, query_return) {
  if(err){console.log('Error Here'); return;}
  if(query_return){
@@ -1181,10 +1199,12 @@ query1.exec(function (err, query_return1) {
     } else {
       console.log('query_return1 failed')
     } 
+/*
     console.log('//  Debug from here findme //')
     console.log('query_return',query_return)
     console.log('query_return1',query_return1)
     console.log('//  Debug from here findme //')
+*/
     res.send( {
       query  :  query_return,
       query1  :  query_return1
@@ -1250,11 +1270,11 @@ if(err){
       console.log('query_return failed')
     }
 
-
+/*
     console.log('//  Debug from here findme //')
     console.log('query_return',query_return)
- 
     console.log('//  Debug from here findme //')
+    */
     res.send( {
       query  :  query_return
     });
@@ -1448,6 +1468,7 @@ for (var i = 0; i < query4_return.length; i++) {
 }else {
   console.log('query4_return failed')
 }
+/*
 console.log('//  Debug from here  //')
 console.log('query_return',query_return)
 console.log('query1_return',query1_return)
@@ -1458,8 +1479,7 @@ console.log('query5_return',query5_return)
 console.log('ids',ids)
 console.log('childitem',childitem)
 console.log('//  Debug from here  //')
-
-
+*/
 
 if (templates) {
   var template = templates
@@ -1684,6 +1704,8 @@ for (var i = 0; i < query4_return.length; i++) {
 }else {
   console.log('query4_return failed')
 }
+
+/*
 console.log('//  Debug from here  //')
 console.log('query_return',query_return)
 console.log('query1_return',query1_return)
@@ -1694,7 +1716,7 @@ console.log('query5_return',query5_return)
 console.log('ids',ids)
 console.log('childitem',childitem)
 console.log('//  Debug from here  //')
-
+*/
 
 
   var template = 'defaultassy' 
