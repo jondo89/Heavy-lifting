@@ -55,27 +55,39 @@ if (req.user.permission =='superadmin') {
 }
 
 exports.usersview = function(req, res) {
-	res.render('newcomp')
+	res.render('newcomp',{
+				    title: 'Components | Heavy-lifting',
+	})
 }
 
 exports.users = function(req, res) {
-	res.render('newcomp')
+	res.render('newcomp',{
+				    title: 'Components | Heavy-lifting',
+	})
 }
 
 exports.compiduser = function(req, res) {
-	res.render('newcomp')
+	res.render('newcomp',{
+				    title: 'Components | Heavy-lifting',
+	})
 }
 
 exports.organizationsview = function(req, res) {
-	res.render('newcomp')
+	res.render('newcomp',{
+				    title: 'Components | Heavy-lifting',
+	})
 }
 
 exports.organizations = function(req, res) {
-	res.render('newcomp')
+	res.render('newcomp',{
+				    title: 'Components | Heavy-lifting',
+	})
 }
 
 exports.compidorg = function(req, res) {
-	res.render('newcomp')
+	res.render('newcomp',{
+				    title: 'Components | Heavy-lifting',
+	})
 }
 
 ////////////////////////////////////////////

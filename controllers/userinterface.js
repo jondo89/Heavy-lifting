@@ -19,7 +19,8 @@ exports.settings = function(req, res) {
       res.render('settings', {
         siteName : siteName,
         items : JSON.stringify(ids),
-        Formids : JSON.stringify(Formids)
+        Formids : JSON.stringify(Formids),
+      title: 'Setttings | Heavy-lifting',
       });
     });
     break;
@@ -64,7 +65,8 @@ exports.profile = function(req, res) {
       res.render('account/profile', {
         userload : user,
         calender : calender,
-        organizations : query3_return
+        organizations : query3_return,
+        title: user.username+' | Heavy-lifting',
       });
        //Query end
 
@@ -98,7 +100,8 @@ exports.page = function(req, res) {
         if(err){console.log('Error Here'); return;} 
         //console.log(query1_return)
         res.render('settings/'+template,{
-          organizations : query1_return
+          organizations : query1_return,
+          title: template+' | Heavy-lifting',
         });
       //Query end
     })
@@ -121,7 +124,10 @@ exports.users = function(req, res) {
     if (req.user.permission=="superadmin") {
       User.find(  function(err, username) {
         res.render('userlist',{
-          username : username
+          username : username,
+          title: 'Users | Heavy-lifting',
+ 
+
         });
       });
     } else {
@@ -141,7 +147,7 @@ exports.usersearch = function(req, res) {
       var query1 = User.find({"username" : {$regex : myExp}})
       query1.exec(function (err, query1_return) {
         if(err){
-res.send("No user found");
+                  res.send("No user found");
          return;} 
          //console.log(query1_return)
                   res.send(

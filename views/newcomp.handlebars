@@ -1,31 +1,26 @@
-<h1>Create a new component</h1>
+<h1><i class="fa fa-cog fa-1x" aria-hidden="true"></i>   Create a new component</h1>
 <p>Components are used as building blocks for assemblies. These components can be created here as standalone items, or in the assembly hierarchy.</p>
 <hr>
 <div class="row" style="padding-top: 15px" >
-	<div class="col-md-4">
-        <form class="form-horizontal">
-            <fieldset>
-               <!-- Select Basic -->
-               <div class="form-group">
-                  <label class="col-md-4 control-label" for="selectbasic">Owner</label>
-                  <div class="col-md-8">
-                    <select title="Select your surfboard" id="selectpicker" class="form-control">
-                      <option data-css="max-height:25px" data-thumbnail="/uploads/{{user.id}}.jpg">{{user.username}}</option>
-                      {{#each organizations}}
-                      <option data-css="max-height:25px" data-thumbnail="{{this.entry.picture}}">{{this.entry.displayname}} </option>
-                      {{/each}}
-                  </select>
-              </div>
+	<div class="col-md-12">
+      <div class="form-horizontal">
+    
+            <div class="col-md-6">
+             <!-- Select Basic -->
+             <div class="form-group">
+              <label class="col-md-12   text-left" for="selectbasic">Owner</label>
+              <div class="col-md-12">
+                <select title="Select your surfboard" id="selectpicker" class="form-control">
+                  <option data-css="max-height:25px" data-thumbnail="/uploads/{{user.id}}.jpg">{{user.username}}</option>
+                  {{#each organizations}}
+                  <option data-css="max-height:25px" data-thumbnail="{{this.entry.picture}}">{{this.entry.displayname}} </option>
+                  {{/each}}
+              </select>
           </div>
-          <div class="form-group">
-            <label class="col-md-4 control-label" for="selectbasic">Description</label>
-            <div class="col-md-8">
-               <textarea class="form-control" name="paragraph_text" cols="5" rows="3" placeholder="Add a description for later."></textarea> 
-           </div>
-       </div>
-       <div class="form-group">
-          <label class="col-md-4 control-label" for="selectbasic">Select Component Type</label>
-          <div class="col-md-8">
+      </div>
+      <div class="form-group">
+          <label class="col-md-12  " for="selectbasic">Select Component Type</label>
+          <div class="col-md-12">
             <select id="selectbasicss" name="selectbasic" class="form-control"  data-live-search="true">
                 <option value="None" >None</option>
                 {{#each componentlist}}
@@ -35,48 +30,91 @@
         </div>
     </div>
     <!-- Multiple Radios -->
+
+</div>
+<div class="col-md-6">
+  <div class="form-group">
+    <label class="col-md-12  " for="selectbasic">Description</label>
+    <div class="col-md-12">
+     <textarea class="form-control" name="paragraph_text" cols="5" rows="4" placeholder="Add a description for later."></textarea> 
+ </div>
+</div>
+ 
+
+
+
+</div>
+<div class="col-md-12">
+
+
+
+
     <div class="form-group">
-      <label class="col-md-4 control-label" for="radios">Select the sharing permissions</label>
-      <div class="col-md-8">
-          <div class="radio">
+      <label class="col-md-2  " for="radios">Select the sharing permissions</label>
+      <div class="col-md-10">
+      <div class="col-md-6">
+           <div class="radio">
             <label for="radios-0">
               <input type="radio" name="radios" id="radios-0" value="1" checked="checked">
-              Public
+              <i class="fa fa-unlock-alt" aria-hidden="true"></i> Public
           </label><span class="help-block">Anyone can see this repository. You choose who can commit.</span>  
       </div>
-      <div class="radio">
-        <label for="radios-1">
-          <input type="radio" name="radios" id="radios-1" value="2">
-          Private
-      </label><span class="help-block">You choose who can see and commit to this repository.</span>  
   </div>
-</div>
-</div>
-<!-- Button -->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="singlebutton">Create Assembly</label>
-  <div class="col-md-4">
-    <button id="singlebutton" name="singlebutton" class="btn btn-success">Submit</button>
-</div>
-</div>
-</fieldset>
-</form>
-</div>
-<div class="col-md-7" id="loadformhere">
 
 
-     <div id="panel">  
-       <div style="border-width: 2px; border-style: dashed; border-color: grey;padding:55px;text-align: center;border-radius: 5px;"><strong>   Getting Started!</strong> You are creating a new component.</div> </div>
+  <div class="col-md-6" id='private'>
+    <div class="radio" > <label for="radios-1" style="color:grey"> <input type="radio" name="radios" id="radios-1" value="2" disabled> <i class="fa fa-lock" aria-hidden="true" ></i> Private </label><span class="help-block">
+
+Your new repository will be public. In order to make this component private, you’ll need to <a href="http://localhost:5000/users/{{user.username}}/settings/billing">upgrade your account</a>.
+
+    </span> </div>
+</div>
+
+
+</div>
+</div>
+
+
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+ 
+</div>
+ <div class="col-md-12">
+     <hr>
+ </div>
+
+<div class="col-md-12" id="loadformhere">
+
+
+   <div id="panel">  
+   </div>
 
 </div>
 </div>
 
 <script type="text/javascript">
+
+var userpermission = '{{user.permission}}'
+console.log(userpermission)
+if (userpermission == "member" | userpermission == "superadmin") {
  
-   $('#selectpicker').selectpicker();
-   $('#selectbasicss').selectpicker();
-   var componentlist =  {{{componentlistParse}}}
-   $('#selectbasicss').change(function(){
+var html= '<div class="radio"> <label for="radios-1"> <input type="radio" name="radios" id="radios-1" value="2"> <i class="fa fa-lock" aria-hidden="true"></i> Private </label><span class="help-block">You choose who can see and commit to this repository.</span> </div>'
+$('#private').html(html)
+}
+
+ $('#selectpicker').selectpicker();
+ $('#selectbasicss').selectpicker();
+ var componentlist =  {{{componentlistParse}}}
+ $('#selectbasicss').change(function(){
     var itemID = $('#selectbasicss').val()
     for (var i = 0; i < componentlist.length; i++) {
         if (componentlist[i].elementID == itemID) {
@@ -86,12 +124,12 @@
     var headings = ["description","detail","icon","headings"]
     var entry =''    
 
-if (itemID == 'None') {
-    var html = '<div style="border-width: 2px; border-style: dashed; border-color: grey;padding:55px;text-align: center;border-radius: 5px;"><strong>   Getting Started!</strong> You are creating a new component.</div>'
-       $('#loadformhere').html(html) 
-} else {
-    loadformModal(formToUse,'','component',itemID,headings,entry)
-}
+    if (itemID == 'None') {
+        var html = '<div style="border-width: 2px; border-style: dashed; border-color: grey;padding:55px;text-align: center;border-radius: 5px;"><strong>   Getting Started!</strong> You are creating a new component.</div>'
+        $('#loadformhere').html(html) 
+    } else {
+        loadformModal(formToUse,'','component',itemID,headings,entry)
+    }
 
     
 

@@ -1,5 +1,9 @@
 <div class="row">
-  <div class="col-md-12" id="colLeft">
+  <div class="col-md-8" id="colLeft">
+<div style="padding-left: 10px">
+  <h1 id="titles"></h1>
+  <p id="details"></p>
+  </div> 
   <div id="mapLoad"></div>
     <div id="formDelivery"></div>
   </div>  
@@ -33,7 +37,9 @@
   {{/if}}
  var query2 = {{{query2}}}
 
- 
+
+
+
   {{#if headings}}
   var headingsTemp = {{{headings}}}
   {{else}}
@@ -82,6 +88,8 @@ function create_uid() {
 ////        INITIALIZE         //// 
 //////////////////////////////////
 $(document).ready(function(){
+  $('#titles').html(parentItem.name)
+  $('#details').html(parentItem.detail)
   //create a unique id for the form deployment.
   jQuery('#formDelivery').attr("id",formid1);
   //check if the data id was sent as well as the form id
@@ -129,7 +137,7 @@ function getdata(formdata,idItem,raw){
 ///////////////////////////////////////////
 function formatAlpaca(objectOld) {
   var tempSchema ={
-    "title" : parentItem.name,
+  
     "type" : "object",
     "properties" : {
     }
@@ -138,7 +146,7 @@ function formatAlpaca(objectOld) {
     "form" : {
       "buttons" : {
         "submit" : {
-          "title" : "Submit",
+          "title" : "Save",
           "id" : "submit",
           "click" : ""
         }
@@ -364,6 +372,8 @@ arr[index]["dataSource"] = function(callback) {
 }
 }
 });
+
+
 switch(true){
   //the use button will require the form to remove any element ids as this will be a new entry.
   case(raw=='use'):

@@ -15,10 +15,13 @@ recaptcha.init('SITE_KEY', 'SECRET_KEY');
 
         //superadmin – somebody with access to the site network administration features and all other features. See the Create a Network article.
         //administrator (slug: 'administrator') – somebody who has access to all the administration features within a single site.
-        //editor (slug: 'editor') – somebody who can publish and manage posts including the posts of other users.
-        //author (slug: 'author') – somebody who can publish and manage their own posts.
-        //contributor (slug: 'contributor') – somebody who can write and manage their own posts but cannot publish them.
-        //subscriber (slug: 'subscriber') – somebody who can only manage their profile.
+        //member (slug: 'member') – paid user of orgmember..
+        //user (slug: 'user') – somebody who can only manage their profile.
+
+
+    
+    
+
 
 
 /**
@@ -122,7 +125,7 @@ recaptcha.init('SITE_KEY', 'SECRET_KEY');
             name: req.body.name,
             email: req.body.email,
             password: req.body.password,
-            permission : 'subscriber'
+            permission : 'user'
           });
           user.save(function(err) {
             req.logIn(user, function(err) {

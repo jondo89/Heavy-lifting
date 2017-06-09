@@ -251,7 +251,7 @@ console.log('Admin Page')
 
 
 //Expand and Collapse all buttons.
-var html = '<div style="text-align:center"><button id="expandBtn" class="btn btn-default btn-xs">Expand</button><button id="collapseBtn" class="btn btn-default btn-xs">Collapse</button></div>'
+var html = '<div style="text-align:center"><button id="expandBtn" class="btn btn-default btn-xs"><i class="fa fa-plus-circle" aria-hidden="true"></i></button><button id="collapseBtn" class="btn btn-default btn-xs"><i class="fa fa-minus-circle" aria-hidden="true"></i></button></div>'
 $('#menuItems').append(html)
 jQuery('#expandBtn').click(function () {
 	jQuery('#'+location).jstree('open_all');

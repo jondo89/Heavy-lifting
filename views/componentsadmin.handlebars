@@ -1,7 +1,7 @@
 {{> adminheader}}
  
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-12">
     <h1>Components</h1>
     <p>Use the interface below to get started on the creation and use of new site components. By signing in you can create and modify your personnel collections, or manage your organizations.</p>
   </div>
@@ -253,7 +253,7 @@ console.log('Admin Page')
 
 
 //Expand and Collapse all buttons.
-var html = '<div style="text-align:center"><button id="expandBtn" class="btn btn-default btn-xs">Expand</button><button id="collapseBtn" class="btn btn-default btn-xs">Collapse</button></div>'
+var html = '<div style="text-align:center"><button id="expandBtn" class="btn btn-default btn-xs"><i class="fa fa-plus-circle" aria-hidden="true"></i></button><button id="collapseBtn" class="btn btn-default btn-xs"><i class="fa fa-minus-circle" aria-hidden="true"></i></button></div>'
 $('#menuItems').append(html)
 jQuery('#expandBtn').click(function () {
  jQuery('#'+location).jstree('open_all');
