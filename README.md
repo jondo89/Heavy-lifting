@@ -14,7 +14,6 @@ Use Heavy-lifting to build, design and create projects, support your business, a
 </h3>
  
 
-
 <h1><a class="github-button" href="https://heavy-lifting.herokuapp.com/" target="_blank">Demo</a></h1>
 
 Based on <a href="https://github.com/sahat/megaboilerplate">Mega Boilerplate</a>.
