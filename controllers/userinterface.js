@@ -20,7 +20,7 @@ exports.settings = function(req, res) {
         siteName : siteName,
         items : JSON.stringify(ids),
         Formids : JSON.stringify(Formids),
-      title: 'Setttings | Heavy-lifting',
+        title: 'Setttings | Heavy-lifting',
       });
     });
     break;
@@ -50,36 +50,27 @@ exports.profile = function(req, res) {
     )
     query2.exec(function (err, calender) { 
       if(err){console.log('Error Here query2'); return;}
-
-
-  var query3 = organizationalModel.find(
-    {$or: [
-      {"entry.members": user.username },
-      {"entry.owner":  user.username }
-      ]}
-      )
-  query3.exec(function (err, query3_return) {
-    if(err){console.log('Error Here'); return;} 
-
       user.password = 'Kwakwakwa'
       res.render('account/profile', {
         userload : user,
         calender : calender,
-        organizations : query3_return,
+        organizations : req.organizations,
+        organizationsParse:req.organizationsParse,
+        userorgcomplist:req.userorgcomplist,
+        userorgcomplistParse:req.userorgcomplistParse,
+        componentlist : req.componentlist,
+        componentlistParse : req.componentlistParse,
+        componentlistall : req.componentlistall,
+        componentlistParseall : req.componentlistParseall,
         title: user.username+' | Heavy-lifting',
       });
-       //Query end
-
-})
-     })
+    })
   } else {
    res.redirect('/');
  }
  //Query end
 })
 };
-
- 
 
 //////////////////////////////
 //////////  PAGE ////////////
@@ -95,12 +86,41 @@ exports.page = function(req, res) {
           {"entry.members": username },
           {"entry.owner":  username }
           ]}
-        )
+          )
       query1.exec(function (err, query1_return) {
         if(err){console.log('Error Here'); return;} 
-        //console.log(query1_return)
         res.render('settings/'+template,{
           organizations : query1_return,
+          organizations : req.organizations,
+          organizationsParse:req.organizationsParse,
+          userorgcomplist:req.userorgcomplist,
+          userorgcomplistParse:req.userorgcomplistParse,
+          componentlist : req.componentlist,
+          componentlistParse : req.componentlistParse,
+          componentlistall : req.componentlistall,
+          componentlistParseall : req.componentlistParseall,
+          title: template+' | Heavy-lifting',
+        });
+      //Query end
+    })
+      break;
+      case(template=='components'):
+      var query1 = organizationalModel.find(
+        {$or: [
+          {"entry.members": username },
+          {"entry.owner":  username }
+          ]}
+          )
+      query1.exec(function (err, query1_return) {
+        if(err){console.log('Error Here'); return;} 
+        res.render('settings/'+template,{
+          organizationsParse:req.organizationsParse,
+          userorgcomplist:req.userorgcomplist,
+          userorgcomplistParse:req.userorgcomplistParse,
+          componentlist : req.componentlist,
+          componentlistParse : req.componentlistParse,
+          componentlistall : req.componentlistall,
+          componentlistParseall : req.componentlistParseall,
           title: template+' | Heavy-lifting',
         });
       //Query end
@@ -110,7 +130,6 @@ exports.page = function(req, res) {
       res.render('settings/'+template);
       break;
     }
-
   } else {
    res.redirect('/signin');
  }
@@ -126,8 +145,6 @@ exports.users = function(req, res) {
         res.render('userlist',{
           username : username,
           title: 'Users | Heavy-lifting',
- 
-
         });
       });
     } else {
@@ -138,35 +155,30 @@ exports.users = function(req, res) {
  }
 };
 
-
 ////////////////////////////////
 //////////  SEARCH ////////////
 //////////////////////////////
 exports.usersearch = function(req, res) {
   var myExp = new RegExp(req.param('item'), 'i');
-      var query1 = User.find({"username" : {$regex : myExp}})
-      query1.exec(function (err, query1_return) {
-        if(err){
-                  res.send("No user found");
-         return;} 
+  var query1 = User.find({"username" : {$regex : myExp}})
+  query1.exec(function (err, query1_return) {
+    if(err){
+      res.send("No user found");
+      return;} 
          //console.log(query1_return)
-                  res.send(
-                    { users : query1_return}
-                    );
-      })
+         res.send(
+          { users : query1_return}
+          );
+       })
 };
-
 
 ///////////////////////////////////
 //////////  TEST MAIL ////////////
 /////////////////////////////////
 exports.testmail = function(req, res) {
- 
-res.send("Sent");
-
-'use strict';
-var nodemailer = require('nodemailer');
-
+  res.send("Sent");
+  'use strict';
+  var nodemailer = require('nodemailer');
 // create reusable transporter object using the default SMTP transport
 var transporter = nodemailer.createTransport({
   host: ' ',
@@ -180,7 +192,6 @@ var transporter = nodemailer.createTransport({
       pass: ' '
     }
   });
-
 // setup email data with unicode symbols
 var mailOptions = {
     from: ' ', // sender address
@@ -188,15 +199,13 @@ var mailOptions = {
     subject: 'Heavy-lifting - Confirm your e-mail', // Subject line
     text: 'Hello world ?', // plain text body
     html: 'SnapScan - Confirm your e-mail' // html body
-};
-
+  };
 // send mail with defined transport object
 transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-        return console.log(error);
-    }
-    console.log('Message %s sent: %s', info.messageId, info.response);
+  if (error) {
+    return console.log(error);
+  }
+  console.log('Message %s sent: %s', info.messageId, info.response);
 });
-
 };
 

@@ -113,8 +113,16 @@ The NPM service will now download and install into the cloned directory. When co
 </li>
 <pre>npm install express</pre>
 
+<li>Step 8 - the google recaptcha is from the following npom scource.
+</li>
+<pre>npm install express-recaptcha --save</pre>
+
+
 
 <li>Step 8 - Robomongo is a very useful tool for viewing the mongodb database structure. Install from their website.
+
+
+
 
 <pre>
 Download and install from the mongodb homepage.

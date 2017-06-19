@@ -13,10 +13,8 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var recaptcha = require('express-recaptcha');
 
-
 // Load environment variables from .env file
 dotenv.load();
-
 
 // Controllers
 var initController = require('./controllers/initialize');
@@ -33,23 +31,18 @@ var productController = require('./controllers/product');
 var assemblyController = require('./controllers/assembly');
 var componentController = require('./controllers/component');
 
-
 //Updated Controllers
 ///////////////////////////////////////////////////////////////////////////////////
 var organizationController = require('./controllers/organization');
 
-
 // Passport OAuth strategies
 require('./config/passport');
- 
 
 var app = express();
-
 
 //favicon location
 var favicon = require('serve-favicon');
 app.use(favicon(__dirname + '/public/img//favicon/favicon-16x16.png')); 
-
 
 if (process.env.MONGODB_URI) {
   mongoose.connect(process.env.MONGODB_URI);
@@ -57,12 +50,10 @@ if (process.env.MONGODB_URI) {
   mongoose.connect(process.env.MONGODB);
 }
 
-
 mongoose.connection.on('error', function() {
   console.log('MongoDB Connection Error. Please make sure that MongoDB is running.');
   process.exit(1);
 });
-
 
 var db = mongoose.connection;
 db.once('open', function() {
@@ -70,7 +61,6 @@ db.once('open', function() {
   console.log('mongoose connection ok')
   //compile the schema for mongoose
 });
-
 
 var hbs = exphbs.create({
   defaultLayout: 'main',
@@ -89,34 +79,27 @@ var hbs = exphbs.create({
     },
     'dotdotdot' : function(str) {
       if (str) {
-      if (str.length > 16)
-        return str.substring(0,16) + '...';
-      return str;}
-    },
-    'dotdotdotdot' : function(str) {
+        if (str.length > 16)
+          return str.substring(0,16) + '...';
+        return str;}
+      },
+      'dotdotdotdot' : function(str) {
 
-if (str) {
-  if (str.length > 200)
-        return str.substring(0,200) + '...';
-      return str;
-  
-}
-
-    
-
-
+        if (str) {
+          if (str.length > 200)
+            return str.substring(0,200) + '...';
+          return str;
+        }
+      }
     }
-
-
-  }
   });
 
- 
+
 
 
  // Redirect all HTTP traffic to HTTPS
-function ensureSecure(req, res, next){
-if(req.headers["x-forwarded-proto"] === "https"){
+ function ensureSecure(req, res, next){
+  if(req.headers["x-forwarded-proto"] === "https"){
   // OK, continue
   return next();
 };
@@ -151,7 +134,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- 
+
 
 
 
@@ -217,17 +200,17 @@ app.get('/getdata', readController.getdata);
 //get data by array of ids.
 app.get('/getdatacomp', readController.getdatacomp);
  //get data by parentid
-app.get('/parentid', readController.parentid);
+ app.get('/parentid', readController.parentid);
  //get data 
-app.get('/getshortdata', readController.getshortdata);
+ app.get('/getshortdata', readController.getshortdata);
  //get jstree 
-app.get('/jstree', readController.jstree);
+ app.get('/jstree', readController.jstree);
   //get the select ddrop down items
-app.get('/getformfield', readController.getformfield);
+  app.get('/getformfield', readController.getformfield);
   //get the select templatename
-app.get('/templatename', readController.templatename);
+  app.get('/templatename', readController.templatename);
   //get the select groups
-app.get('/groups', readController.groups);
+  app.get('/groups', readController.groups);
 //get the navmenu
 app.get('/navmenuload', readController.navmenuload);
 //get the usermenu
@@ -269,24 +252,21 @@ app.get('/getform',  componentController.additionaldetails , readController.getf
 //Rebuild routing
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/////////////////////////////////
-////       HOME             //// 
-///////////////////////////////
-app.get('/', HomeController.index);
+
 
 /////////////////////////////////
 ////       TEMPALTES        //// 
 ///////////////////////////////
 app.get('/privacy', pagesController.privacy);
 app.get('/terms', pagesController.terms);
- 
+
 ///////////////////////////////////////////////////
 ////        USER INTERFACE CONTROLLER         //// 
 /////////////////////////////////////////////////
 app.get('/users/', userInterfaceController.users);
-app.get('/users/:username/', userInterfaceController.profile);
-app.get('/users/:username/settings/', userInterfaceController.settings);
-app.get('/users/:username/settings/:page', userInterfaceController.page);
+app.get('/users/:username/',componentController.componentforms, componentController.usercomponents,organizationController.userorganizations,componentController.organizationcomponents ,userInterfaceController.profile);
+app.get('/users/:username/settings/',userInterfaceController.settings);
+app.get('/users/:username/settings/:page', componentController.componentforms,componentController.usercomponents,organizationController.userorganizations,componentController.organizationcomponents , userInterfaceController.page);
 app.get('/usersearch', userInterfaceController.usersearch);
 
 /////////////////////////////////////
@@ -307,14 +287,19 @@ app.put('/organizations/:orgname', userController.ensureAuthenticated, organizat
 
 //Ajax
 app.get('/orguserread', organizationController.orguserread); // Get the active user organizations , owner and member.
- 
+
 
 ///////////////////////////////////
 ////       COMPONENTS         //// 
 /////////////////////////////////
 app.get('/components/', componentController.components);
+app.get('/componentssuperadmin/', componentController.componentssuperadmin);
+
+
+
+
 app.get('/component/new', organizationController.ajaxorguserread , componentController.componentforms, componentController.newcomp);
- 
+
 //User Components
 app.get('/components/users/', componentController.usersview);
 app.get('/components/users/:username/', componentController.users);
@@ -324,7 +309,7 @@ app.get('/components/organizations/', componentController.organizationsview);
 app.get('/components/organizations/:orgname', componentController.organizations);
 app.get('/components/organizations/:orgname/:compid', componentController.compidorg);
 
- 
+
 
 
 
@@ -338,6 +323,12 @@ app.get('/testmail', userInterfaceController.testmail);
 
 
 //////////////////////////////////////////DEFAULTS//////////////////////////////////////////
+
+/////////////////////////////////
+////       HOME             //// 
+///////////////////////////////
+app.get('/', HomeController.index);
+
 app.get('/contact', contactController.contactGet);
 app.post('/contact', contactController.contactPost);
 app.get('/account', userController.ensureAuthenticated, userController.accountGet);

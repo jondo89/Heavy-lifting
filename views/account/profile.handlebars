@@ -84,7 +84,7 @@
       <div role="tabpanel" class="tab-pane active" id="Summary">
         <div class="row">
           <div class="col-md-6">
-            <h3>Components <small>you contribute to <span class="badge">42</span></small></h3>
+            <h3>Components <small>you contribute to <span class="badge" id="compcount">0</span></small></h3>
             <div class="panel panel-default">
               <div class="panel-body">
                 <div id="components">
@@ -105,70 +105,33 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a>  <span class="label label-success">Private</span></td>
-                          </tr>
-                          <tr>
-                            <td><a>Conveyor Belt  </a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Idler Arrangements</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Equipment Relocation  </a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Operations</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Idler Rolls</a>  <span class="label label-success">Private</span></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a>  <span class="label label-success">Private</span></td>
-                          </tr>
-                          <tr>
-                            <td><a>Conveyor Belt</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Idler Arrangements</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Operations</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a>  <span class="label label-success">Private</span></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Idler Rolls</a></td>
-                          </tr>
                         </tbody>
-                      </table></div>
-                      <div role="tabpanel" class="tab-pane" id="profile"></div>
-                      <div role="tabpanel" class="tab-pane" id="messages"></div>
+                      </table>
+                      </div>
+                      <div role="tabpanel" class="tab-pane" id="profile"> <p></p>
+                                             <table class="table table-bordered table-condensed" id="componentstablePublic" > 
+                        <thead>
+                          <tr>
+                            <th>Description</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table> 
+
+                      </div>
+                      <div role="tabpanel" class="tab-pane" id="messages"> <p></p>
+                                             <table class="table table-bordered table-condensed" id="componentstablePrivate" > 
+                        <thead>
+                          <tr>
+                            <th>Description</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table> 
+
+                      </div>
                     </div>
                     <a href="/component/new" class="btn btn-default" href="#" role="button">Create Component</a>
                   </div>
@@ -281,6 +244,90 @@
 </div>
 
 <script type="text/javascript">
+  function componentList(){
+    var componentlistParse = {{{componentlistParse}}}
+    var componentlistParseall = {{{componentlistParseall}}}
+    var userorgcomplistParse = {{{userorgcomplistParse}}}
+
+    //User Components innto table
+    var temp = []
+    var count =0
+ 
+    var html
+    var htmlpublic
+    var htmlprivate
+    for (var i = 0; i < componentlistParse.length; i++) {
+      for (var j = 0; j < componentlistParseall.length; j++) {
+        if (componentlistParse[i].elementID == componentlistParseall[j].parentid) {
+          if (componentlistParseall[j].visibility == 'private') {
+            html += '<tr><td><a>'+componentlistParse[i].name+'</a>   <span class="label label-success">Private</span></td></tr>'
+            htmlprivate += '<tr><td><a>'+componentlistParse[i].name+'</a>   <span class="label label-success">Private</span></td></tr>'
+          } else {
+            html += '<tr><td><a>'+componentlistParse[i].name+'</a></td></tr>'
+            htmlpublic += '<tr><td><a>'+componentlistParse[i].name+'</a></td></tr>'
+          }
+          temp.push(componentlistParseall[j]+' / '+componentlistParse[i].name)
+        }
+      }
+    }
+ 
+count = temp.length
+$('#componentstable').append(html)
+$('#componentstablePublic').append(htmlpublic)
+$('#componentstablePrivate').append(htmlprivate)
+
+
+    //org componentns by user into form
+    var temp = []
+    var html
+    var htmlpublic
+    var htmlprivate
+    for (var i = 0; i < componentlistParse.length; i++) {
+      for (var j = 0; j < userorgcomplistParse.length; j++) {
+        if (componentlistParse[i].elementID == userorgcomplistParse[j].parentid) {
+          if (userorgcomplistParse[j].visibility == 'private') {
+            html += '<tr><td><a>'+userorgcomplistParse[j].organizationowner+' / '+componentlistParse[i].name+'</a>   <span class="label label-success">Private</span></td></tr>'
+            htmlprivate +='<tr><td><a>'+userorgcomplistParse[j].organizationowner+' / '+componentlistParse[i].name+'</a>   <span class="label label-success">Private</span></td></tr>'
+          } else {
+            html += '<tr><td><a>'+userorgcomplistParse[j].organizationowner+' / '+componentlistParse[i].name+'</a></td></tr>'
+             htmlpublic +='<tr><td><a>'+userorgcomplistParse[j].organizationowner+' / '+componentlistParse[i].name+'</a></td></tr>'
+          }
+          temp.push(userorgcomplistParse[j].organizationowner+' / '+componentlistParse[i].name)
+        }
+      }
+    }
+    if (count + temp.length == 0) {       
+        var html = '<tr><td><a>No Components</a></td></tr>'
+        var html = '<tr><td><a>No Components</a></td></tr>'
+        var html = '<tr><td><a>No Components</a></td></tr>'
+    }  
+    $('#componentstable').append(html)
+    $('#componentstablePublic').append(htmlpublic)
+    $('#componentstablePrivate').append(htmlprivate)
+    //component count
+    $('#compcount').html(count + temp.length)
+ 
+
+  var table = jQuery('#componentstable').DataTable({
+    'destroy':true,
+    "pagingType": "numbers",   "bLengthChange": false, "dom": '<lf<t>ip>',"bInfo" : false
+  //  'order': [[ 2, 'asc' ]] ,
+  });
+  var html = '<tr><td><a>No Components</a></td></tr>'
+  $('#componentstablePublic').prepend(html)
+  var html = '<tr><td><a>No Components</a></td></tr>'
+  $('#componentstablePrivate').prepend(html)
+  var table = jQuery('#componentstablePublic').DataTable({
+    'destroy':true,
+    "pagingType": "numbers",   "bLengthChange": false, "dom": '<lf<t>ip>',"bInfo" : false
+  //  'order': [[ 2, 'asc' ]] ,
+});
+  var table = jQuery('#componentstablePrivate').DataTable({
+    'destroy':true,
+    "pagingType": "numbers",   "bLengthChange": false, "dom": '<lf<t>ip>',"bInfo" : false
+  //  'order': [[ 2, 'asc' ]] ,
+});
+  }
   var username = JSON.stringify('{{userload.username}}')
   var user = JSON.stringify('{{user.username}}')
   var text = '{{userload.picture}}'
@@ -296,8 +343,8 @@ $( document ).ready(function() {
   //console.log(calender)
   heatmap()
   if (username == user) {
-
   }
+  componentList()
 });
 
 ///////////////////////////// 
@@ -311,25 +358,16 @@ function heatmap(){
   });
 }
 
-
-
 ////////////////////////////////////
 ////        INITIALIZE         //// 
 //////////////////////////////////
 $('document').ready(function(){
-  var table = jQuery('#componentstable').DataTable({
-    'destroy':true,
-    "pagingType": "numbers",   "bLengthChange": false, "dom": '<lf<t>ip>',"bInfo" : false
-  //  'order': [[ 2, 'asc' ]] ,
-});
+
   var tables = jQuery('#assystable').DataTable({
     'destroy':true,
     "pagingType": "numbers",   "bLengthChange": false, "dom": '<lf<t>ip>',"bInfo" : false
   //  'order': [[ 2, 'asc' ]] ,
 });
-
-
-
 })
 </script>
 

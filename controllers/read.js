@@ -34,6 +34,9 @@ query.exec(function (err, docs1) {
 ////       DEPLOY THE HANDLEBARS FORM         //// 
 /////////////////////////////////////////////////
 exports.getform = function(req, res) {
+ if (req.user) {
+
+
 //Error trap and handling of form calls , all calls are based on Which form , using what data , any by editing self , editing raw or creating new.
 //Which id form to use.
 var formdata = req.param('formdata')
@@ -138,16 +141,16 @@ res.render('form', {
   raw :JSON.stringify(raw) ,
   parentItem : JSON.stringify(parentItem[0]) ,
   entry : entry, 
-
-
   additionaldetails : req.additionaldetails ,
   query2 : req.additionaldetailsParse ,
-
-
   layout: false,
 });
 });
 });
+} else {
+  res.send('<div class="alert alert-danger" role="alert">You have been logged out. <a href="/signin" >Sign in.</a></div>')
+}
+
 }
 
 

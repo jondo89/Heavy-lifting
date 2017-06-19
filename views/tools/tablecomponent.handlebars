@@ -1,25 +1,21 @@
      <div role="tabpanel" class="tab-pane active" id="tableComponent">
-     <div class="row">
-  <div class="col-md-3">
-  </div>
-  <div class="col-md-7">
-  </div>
-</div><div id="searchArea"></div>
-       <p></p>  
-       <div id='formDelivery'>
-       </div>
-     </div>
-<style type="text/css">
-  .dt-buttons{
-    padding-bottom: 15px;
-  }
-</style>
-
-
-
-     <script type="text/javascript">
-$('#searchArea').append('<div style="padding-top:15px" class="collapse" id="collapseExample"> <div class="panel panel-default"> <div class="panel-body"> <h5><strong>Advanced Search</strong> <small>use the text inputs to search the component table.</small></h5> <div id="AdvancedSearch"></div> </div> </div> </div>')
-
+       <div class="row">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-7">
+        </div>
+      </div><div id="searchArea"></div>
+      <p></p>  
+      <div id='formDelivery'>
+      </div>
+    </div>
+    <style type="text/css">
+      .dt-buttons{
+        padding-bottom: 15px;
+      }
+    </style>
+    <script type="text/javascript">
+      $('#searchArea').append('<p></p><div style="padding-top:15px" class="collapse" id="collapseExample"> <div class="panel panel-default"> <div class="panel-body"> <h5><strong>Advanced Search</strong> <small>use the text inputs to search the component table.</small></h5> <div id="AdvancedSearch"></div> </div> </div> </div>')
 
 /////////////////////////////
 ////     DEBUG AREA     //// 
@@ -36,24 +32,18 @@ console.log( 'formids : ',formids )
 console.log( '-------------------------' )
 console.log( 'tableComponent loading' )
 
- 
 var modifiedTableListData
 var modifiedListData
 
- 
-
 tablelistdata.sort(function(a, b) {
-   if (a.entry.order && b.entry.order) {
-return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+ if (a.entry.order && b.entry.order) {
+  return parseFloat(a.entry.order) - parseFloat(b.entry.order);
 }
 });
 query3.sort(function(a, b) {
-
-if (a.entry.order && b.entry.order) {
-return parseFloat(a.entry.order) - parseFloat(b.entry.order);
-}
-
-  
+  if (a.entry.order && b.entry.order) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+  }
 });
 query2.sort(function(a, b) {
   return parseFloat(a.entry.order) - parseFloat(b.entry.order);
@@ -67,8 +57,6 @@ $('document').ready(function(){
   dataFormatComp()
   datableload(modifiedTableListData)
 })
-
- 
 
 ///////////////////////////////////////////////////
 ////        REQUIRED FORMATING OF DATA        //// 
@@ -190,15 +178,15 @@ for (var i = 0; i < data.length; i++) {
   }
   for (var j = 0; j < headings.length; j++) {
     html += '<td style=" vertical-align:middle">'
-      if ( headings[j]=='Url') {
-if (data[i][headings[j]] != undefined) {
-  html += '<a href="'+data[i][headings[j]]+'" target="_blank">Link</a>'
-} else {
-  html += "Blank"
-}
-      } else  {
-        html += data[i][headings[j]]
+    if ( headings[j]=='Url') {
+      if (data[i][headings[j]] != undefined) {
+        html += '<a href="'+data[i][headings[j]]+'" target="_blank">Link</a>'
+      } else {
+        html += "Blank"
       }
+    } else  {
+      html += data[i][headings[j]]
+    }
     html += '</td>'
   }
   html += '</tr>'
@@ -206,7 +194,6 @@ if (data[i][headings[j]] != undefined) {
 html += '<tbody>'
 $('#'+id).html(html)
 } 
-
 
 /////////////////////////////////////////////////////////////////////
 ////////    USED FOR THE COMPILATION OF THE DETAILS TABLE  /////////
@@ -222,7 +209,6 @@ function detailTableLoad (data,id){
 //pull in the element id of query 2 for the correct mofiy form
 var componentFom = query1[0].elementID
 html += '<table class="table table-bordered table-condensed">  '
-
 html += '<thead><tr><th>Description</th><th>Value</th><th>Units</th><th>Detail</th></tr></thead>'
 html += '<tbody>'
 for (key in data) {
@@ -233,25 +219,25 @@ for (key in data) {
       html += data[key][i]['description']
       html += '</td>'
       html += '<td>'
-switch(true){
-  case(data[key][i]['description']=='Url'):
-    if (data[key][i]['value'] != undefined) {
-      html += '<a href="'+data[key][i]['value']+'" target="_blank">Link</a>'
-    } else {
-      html += "Blank"
-    }
-  break;
-  case(data[key][i]['description']=='Image'):
-    if (data[key][i]['value'] != undefined) {
-      html += '<img style="max-width:150px" src="'+data[key][i]['value']+'" alt="..." class="img-rounded">'
-    } else {
-      html += "Blank"
-    }
-  break;
-  default:
-    html += data[key][i]['value']
-  break;
-}
+      switch(true){
+        case(data[key][i]['description']=='Url'):
+        if (data[key][i]['value'] != undefined) {
+          html += '<a href="'+data[key][i]['value']+'" target="_blank">Link</a>'
+        } else {
+          html += "Blank"
+        }
+        break;
+        case(data[key][i]['description']=='Image'):
+        if (data[key][i]['value'] != undefined) {
+          html += '<img style="max-width:150px" src="'+data[key][i]['value']+'" alt="..." class="img-rounded">'
+        } else {
+          html += "Blank"
+        }
+        break;
+        default:
+        html += data[key][i]['value']
+        break;
+      }
       html += '</td>'      
       html += '<td>'
       html += data[key][i]['units']
@@ -284,9 +270,9 @@ function loadDataTable(id){
 var table = jQuery('#'+id).DataTable({
   'destroy':true,
   "pagingType": "numbers",        dom: 'Bfrtip',
-        buttons: [
-             { extend: 'csv', text: 'Export to CSV' ,className:'btn btn-default btn-sm' ,filename: 'Data export' ,title: 'Table export'}, { extend: 'pdf', text: 'Export PDF' ,className:'btn btn-default btn-sm' ,filename: 'Data export' ,title: 'Table export'}
-        ]
+  buttons: [
+  { extend: 'csv', text: 'Export to CSV' ,className:'btn btn-default btn-sm' ,filename: 'Data export' ,title: 'Table export'}, { extend: 'pdf', text: 'Export PDF' ,className:'btn btn-default btn-sm' ,filename: 'Data export' ,title: 'Table export'}
+  ]
   //  'order': [[ 2, 'asc' ]] ,
 });
   //Add event listener for opening and closing details
@@ -317,49 +303,35 @@ var table = jQuery('#'+id).DataTable({
            });
           }
         });
-
-
-
 //Start of advanced filter option.
-  var html = ''
-  var counter = 0
- 
-  html+='<table class="table table-condensed ">'
- 
-  html+='    <tbody>'
-  $( '#'+id+' thead th' ).each(function(){
-    if ($( this ).text()=='') {
-      counter+=1
-    }  else {
-      html+='<tr id="filter_col'+counter+1+'" data-column="'+counter+'">'
-      html+= '<td>'+$( this ).text()+'</td>'
-      html+=    '<td align="center"><input placeholder="Search '+$( this ).text()+'" type="text" class="form-control" id="col'+counter+'_filter"></td>'
-      html+= ' </tr>'
-      counter+=1
-    }
-  })
-  html+='     </tbody>'
-  html+=' </table>'
-
-
-
-  $('#AdvancedSearch').html(html)
-
-
-  function filterColumn ( i ) {
-    table.column( i ).search(
-      $('#col'+i+'_filter').val()
-      ).draw();
+var html = ''
+var counter = 0
+html+='<form class="form-horizontal">'
+html+='<fieldset>'
+html+='<div class="row">'
+$( '#'+id+' thead th' ).each(function(){
+  if ($( this ).text()=='') {
+    counter+=1
+  }  else {
+    html+='<div class="col-md-4" id="filter_col'+counter+1+'" data-column="'+counter+'" style="padding-bottom:5px">'
+    html+='  <input  name="textinput" type="text" placeholder="Search '+$( this ).text()+'" class="form-control input-md" id="col'+counter+'_filter">'
+    html+='  </div>'
+    counter+=1
   }
-
-  $('input.form-control').on( 'keyup click', function () {
-    filterColumn( $(this).parents('tr').attr('data-column') );
-  } );
-
-$('.dt-buttons').prepend('<a class="btn btn-primary btn-sm" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-search" aria-hidden="true"></i> Advanced Search</a>')
-
-
-
+})
+html+='</div>'
+html+='</fieldset>'
+html+='</form>'
+$('#AdvancedSearch').html(html)
+function filterColumn ( i ) {
+  table.column( i ).search(
+    $('#col'+i+'_filter').val()
+    ).draw();
+}
+$('input.form-control').on( 'keyup click', function () {
+  filterColumn( $(this).parents('div').attr('data-column') );
+} );
+$('.dt-buttons').prepend('<a class="btn btn-default btn-sm" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-search" aria-hidden="true"></i> Advanced Search</a>')
 //end of advanced filter option.
 }
 
@@ -370,16 +342,10 @@ function formatDefault ( d ) {
   // `d` is the original data object for the row
   var html=''
   html += detailTableLoad  (modifiedListData,d)
-
   {{#if user}}
   html+='<h4>Options</h4><p>The following options are availble for this item.</p>'
-
-
   html +='<div class="row">'
- html +='<div class="col-md-7">'
-
-
-
+  html +='<div class="col-md-7">'
   html +='<div class="btn-group" role="group" aria-label="...">'
   for (var j = 0; j < items.entry.buttons.length; j++) {
     switch(true){
@@ -424,19 +390,14 @@ function formatDefault ( d ) {
   } 
   html +='  </div>'
   html +='</div>'
-   html +='<div class="col-md-5">'
+  html +='<div class="col-md-5">'
   html +='<pre> id : '+d+'</pre>'
   html += '<div id="'+d+'_loadingArea" ></div>'
-      html +='</div>'
-     html +='</div>'
-
-{{/if}}
-
+  html +='</div>'
+  html +='</div>'
+  {{/if}}
   return html;
 }
-
-
-
 
 /////////////////////////
 //////  DELETE   ///////
@@ -576,8 +537,6 @@ function modifyItemComp(id){
     var entry = {
       elementID : id
     } 
-
-
     console.log('Tracing here',childType,id,'componentedit',parentIdTemp,headings, entry)
   //The id of the emement needs to be injected into the form , as it does not have that data.
   loadformModal(childType,id,'componentedit',parentIdTemp,headings, entry)
@@ -686,7 +645,6 @@ function modifyItem(id){
 //////  MODIFY     //////
 ////////////////////////
 function EditWithraw(id){
-
   id = id.replace('_raw', '');
   childType = $('#'+id+'').data('childtype')
   //Used for the check self when modifiing.

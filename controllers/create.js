@@ -7,19 +7,14 @@ var ObjectId = require('mongodb').ObjectID;
 exports.create = function(req, res) {
 	var dataset = req.body	
 
-	console.log('/////////////DEBUG CREATE FOR ACTIVE =TRUE //////////////')
-	console.log('Init req.body',dataset)
-	console.log(dataset.elementID)
-	console.log('/////////////DEBUG CREATE FOR ACTIVE =TRUE //////////////')
+console.log('/////////////DEBUG CREATE FOR ACTIVE =TRUE //////////////')
+console.log('Init req.body',dataset)
+console.log(dataset.elementID)
+console.log('/////////////DEBUG CREATE FOR ACTIVE =TRUE //////////////')
 
 //Imidiate login redirect.
 if (req.user) {
-
 } else {
-
-		console.log('/////////////NOT LOGGED IN //////////////')
- 
-  console.log('/////////////NOT LOGGED IN //////////////')
   res.send({redirect: '/signin'});
 }
 
@@ -47,16 +42,10 @@ delete dataset._id
 	}
 }
 
-
-
 console.log(dataset.elementID)
-
-
-
 console.log('/////////////DEBUG CREATE FOR ACTIVE =TRUE //////////////')
 console.log('Init req.body',dataset)
 console.log('/////////////DEBUG CREATE FOR ACTIVE =TRUE //////////////')
-
 
 
 if (req.user) {
@@ -113,15 +102,11 @@ if (userid == '586b5bbe935a6d19040c5447' | userid == '5878b000d1f7c0220c1d2903')
 				}
 			});
 		}
-
 	}
 } else {
 	console.log('step 8 - user not logged in')
 	userid=''
 	res.send({redirect: '/signin'});
 }
-
-
-
 };
 

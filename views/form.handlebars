@@ -333,7 +333,9 @@ function formInit(schema,options,data){
     options.form.buttons.submit.click = function(e){
       e.preventDefault()
       var value = this.getValue();
-      formPost(value,data)
+      if (value) {
+        formPost(value,data)
+      }
     }
 //Special case varible use to ensure timing issue the index variable passing into the form dropdown.
 var arr = options.fields
@@ -553,6 +555,32 @@ switch(true){
   primer.elementID = ''
   primer.revision = 'created'
   primer.active = "true"
+
+
+  //permission routing for the ownership of components.
+  if (owner) {
+    if (owner==username) {
+      primer.userowner = owner
+    } else {
+      primer.organizationowner = owner
+    }
+  } else {
+    primer.userowner = user.username
+  }
+  if (detail) {
+      primer.detail = detail
+  }
+
+if (userpermission) {
+    if (userpermission == "member" | userpermission == "superadmin") {
+      if (visibility =="private") {
+        primer.visibility = visibility
+      }
+    }
+}
+
+
+
   break;
   case(raw=='componentedit'):
   var primer = {
@@ -609,6 +637,11 @@ switch(true){
   $("#form_"+formdata+idItem+formid1).html(html)
   break;
 }
+ 
+ 
+
+
+
 //Jquery send to server
 jQuery.ajax({
   'url': '/create',
@@ -629,13 +662,15 @@ jQuery.ajax({
         $('#myModal').modal('hide')
       //pageLoad(databaseid)
       if (parentItem.route) {
-       window.location = parentItem.route
+       //window.location = parentItem.route
      } else {
       var temp = '/signin'
       window.temp
     }
   },
-});   
+});    
+
+
 }
 
 //////////////////////////////////////////////
@@ -732,7 +767,7 @@ if (query2) {
       //console.log(query2[i].elementID)
       //console.log('//////////////////////////////////')
       html=''
-      html+='<button type="button" id="'+query2[i].entry.objectType+'_findme" onclick="findme(this.id)" class="btn btn-success btn-xs">More Info</button>'
+      html+='<button type="button" id="'+query2[i].entry.objectType+'_findme" onclick="findme(this.id)" class="btn btn-primary btn-xs">List Pick</button>'
       html+=$('[name="'+query2[i].elementID+'"]').before(html)
     }
   }
