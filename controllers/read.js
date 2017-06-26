@@ -2,6 +2,11 @@ var heavyliftingModel      = require('../models/heavylifting.js');
 var siteName = 'Heavy-lifting'
 var ObjectId = require('mongodb').ObjectID;
 
+function logIt(message) {
+    var stack = new Error().stack,
+        caller = stack.split('\n')[2].trim();
+    console.log(caller + ":" + message);
+}
 
 exports.getCollectionData = function(req, res) {
   var types = req.param('objectType')
@@ -153,6 +158,7 @@ res.render('form', {
 
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////DELETE//////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////
 ////       DEPLOY THE REQUESTED TEMPLATE         //// 
@@ -376,6 +382,9 @@ if (query_return.entry.template) {
 //Query end
 })
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////DELETE//////////////////////////////////////////////////////////
+
 
 ///////////////////////////////////////////////////
 ////       SEND THE DATABASE INFORMATION      //// 
@@ -1920,3 +1929,206 @@ console.log('-----------getform------------')
 //Query end
 })
 }
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Middelware -  Limit to 1 query.
+
+//////////////////////////////
+//  1.RETURN CURRENT ITEM  //
+////////////////////////////
+exports.query = function(req, res, next) {
+    var query = heavyliftingModel.findOne(
+{
+  $and : 
+  [
+  {$or: [
+    {"elementID": req.param('compgroupid') },
+    {"_id":  req.param('compgroupid') }
+    ]}, 
+    {
+      "active": "true" 
+    }
+    ]
+  })
+    query.exec(function (err, query_return) {
+      if(err){logIt('query_return failed'); return;} 
+//autopoulate the elementID
+if(query_return){
+  for (var i = 0; i < query_return.length; i++) {
+        //the menu item elementid should arrive poulated to avoid confusion.
+        if(query_return[i].elementID==''){
+          query_return[i].elementID=query_return[i]._id
+        }
+    }
+} else {
+  logIt('query_return failed');
+} 
+logIt(query_return);
+req.query = query_return,
+next();
+})
+}
+
+///////////////////////////
+// 2.RETURN CHILD ITEM  //
+/////////////////////////
+exports.query1 = function(req, res, next) {
+if (req.query.childType) {
+ childitem=req.query.childType 
+} else {
+  logIt('Investigation required here');
+  childitem='58f8a43a6baa3a33ccff5299'
+}
+var query1 = heavyliftingModel.find(
+{
+  $and : 
+  [
+  {$or: [
+    {"elementID": childitem },
+    {"_id":  childitem }
+    ]}, 
+    {
+      "active": "true" 
+    }
+    ]
+  })
+    query1.exec(function (err, query1_return) {
+      if(err){logIt('query1_return failed'); return;} 
+//autopoulate the elementID
+if(query1_return){
+  for (var i = 0; i < query1_return.length; i++) {
+        //the menu item elementid should arrive poulated to avoid confusion.
+        if(query1_return[i].elementID==''){
+          query1_return[i].elementID=query1_return[i]._id
+        }
+    }
+} else {
+  logIt('query1_return failed');
+} 
+logIt(query1_return);
+req.query1 = query1_return,
+next();
+})
+}
+
+////////////////////////////////////////////////////////////////////
+// 3.RETURN THE ASSOCIATED FORM ELMENTS OF THE ABOVE CHILD ITEM  //
+//////////////////////////////////////////////////////////////////
+exports.query2 = function(req, res, next) {
+if (req.query.childType) {
+ childitem=req.query.childType 
+} else {
+  logIt('Investigation required here');
+  childitem='58f8a43a6baa3a33ccff5299'
+}  
+var query2 = heavyliftingModel.find(
+{
+  $and : 
+  [
+  {
+    "parentid": childitem 
+  }, 
+  {
+    "active": "true" 
+  }
+  ]
+})
+    query2.exec(function (err, query2_return) {
+      if(err){logIt('query2_return failed'); return;} 
+//autopoulate the elementID
+if(query2_return){
+  for (var i = 0; i < query2_return.length; i++) {
+        //the menu item elementid should arrive poulated to avoid confusion.
+        if(query2_return[i].elementID==''){
+          query2_return[i].elementID=query2_return[i]._id
+        }
+    }
+} else {
+  logIt('query2_return failed');
+} 
+logIt(query2_return);
+req.query2 = query2_return,
+next();
+})
+}
+
+///////////////////////////////////////
+//  4.ENTRIES CREATED BY THIS FORM  //
+/////////////////////////////////////
+exports.query3 = function(req, res, next) {
+var query3 = heavyliftingModel.find(
+{
+  $and : 
+  [
+  {
+    "parentid": req.param('compgroupid') 
+  }, 
+  {
+    "active": "true" 
+  }
+  ]
+})
+    query3.exec(function (err, query3_return) {
+      if(err){logIt('query3_return failed'); return;} 
+//autopoulate the elementID
+if(query3_return){
+  for (var i = 0; i < query3_return.length; i++) {
+        //the menu item elementid should arrive poulated to avoid confusion.
+        if(query3_return[i].elementID==''){
+          query3_return[i].elementID=query3_return[i]._id
+        }
+    }
+} else {
+  logIt('query3_return failed');
+} 
+logIt(query3_return);
+req.query3 = query3_return,
+next();
+})
+}
+
+///////////////////////////////////////
+//  5.LEGACY ITEM FOR PRIMER FORMS  //
+/////////////////////////////////////
+exports.query4 = function(req, res, next) {
+if (req.query.childType) {
+ childitem=req.query.childType 
+} else {
+  logIt('Investigation required here');
+  childitem='58f8a43a6baa3a33ccff5299'
+}    
+var query4 = heavyliftingModel.find(
+{
+    'entry.parent' : childitem,
+    'active' : 'true'
+})
+    query4.exec(function (err, query4_return) {
+      if(err){logIt('query4_return failed'); return;} 
+//autopoulate the elementID
+if(query4_return){
+  for (var i = 0; i < query4_return.length; i++) {
+        //the menu item elementid should arrive poulated to avoid confusion.
+        if(query4_return[i].elementID==''){
+          query4_return[i].elementID=query4_return[i]._id
+        }
+    }
+} else {
+  logIt('query4_return failed');
+} 
+logIt(query4_return);
+req.query4 = query4_return,
+next();
+})
+}
+
+ 

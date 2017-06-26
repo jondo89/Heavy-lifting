@@ -1,6 +1,8 @@
 <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript" src="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
 <link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
+
+
 <div class="row" style="padding-top: 35px">
   <div class="col-md-4">
     <div class="media">
@@ -85,9 +87,9 @@
         <div class="row">
           <div class="col-md-6">
             <h3>Components <small>you contribute to <span class="badge" id="compcount">0</span></small></h3>
-            <div class="panel panel-default">
+            <div class="panel panel-default"  id="components" style="display: none;">
               <div class="panel-body">
-                <div id="components">
+                <div>
                   <!-- Nav tabs -->
                   <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">All</a></li>
@@ -133,16 +135,17 @@
 
                       </div>
                     </div>
-                    <a href="/component/new" class="btn btn-default" href="#" role="button">Create Component</a>
+                    
                   </div>
                 </div>
               </div>
+              <a href="/component/new" class="btn btn-default" href="#" role="button">Create Component</a>
             </div>
             <div class="col-md-6">
               <h3>Assemblies <small>you contribute to <span class="badge">31</span></small></h3>
-              <div class="panel panel-default">
+              <div class="panel panel-default"  id="assemblies">
                 <div class="panel-body">
-                 <div id="assemblies">
+                 <div>
                   <!-- Nav tabs -->
                   <ul class="nav nav-tabs" role="tablist" style="">
                     <li role="presentation" class="active"><a href="#home1" aria-controls="home1" role="tab" data-toggle="tab">All</a></li>
@@ -225,10 +228,11 @@
                       <div role="tabpanel" class="tab-pane" id="profile"></div>
                       <div role="tabpanel" class="tab-pane" id="messages"></div>
                     </div>
-                    <a href="/assembly/new" class="btn btn-default" href="#" role="button">Create Assembly</a>
+                   
                   </div>
                 </div>
               </div>
+               <a href="/assembly/new" class="btn btn-default" href="#" role="button">Create Assembly</a>
             </div>
           </div>
           <h3>Recent Contributions.</h3>
@@ -241,21 +245,31 @@
      </div>
    </div>
  </div>
+
+
+
 </div>
 
 <script type="text/javascript">
+
+  var itemsParse = {{{itemsParse}}}
+  var componentlistParse = {{{componentlistParse}}}
+  var componentlistParseall = {{{componentlistParseall}}}
+  var userorgcomplistParse = {{{userorgcomplistParse}}}
+
   function componentList(){
-    var componentlistParse = {{{componentlistParse}}}
-    var componentlistParseall = {{{componentlistParseall}}}
-    var userorgcomplistParse = {{{userorgcomplistParse}}}
+
+
+
+
 
     //User Components innto table
     var temp = []
     var count =0
  
-    var html
-    var htmlpublic
-    var htmlprivate
+    var html = ''
+    var htmlpublic = ''
+    var htmlprivate = ''
     for (var i = 0; i < componentlistParse.length; i++) {
       for (var j = 0; j < componentlistParseall.length; j++) {
         if (componentlistParse[i].elementID == componentlistParseall[j].parentid) {
@@ -279,9 +293,9 @@ $('#componentstablePrivate').append(htmlprivate)
 
     //org componentns by user into form
     var temp = []
-    var html
-    var htmlpublic
-    var htmlprivate
+    var html = ''
+    var htmlpublic = ''
+    var htmlprivate = ''
     for (var i = 0; i < componentlistParse.length; i++) {
       for (var j = 0; j < userorgcomplistParse.length; j++) {
         if (componentlistParse[i].elementID == userorgcomplistParse[j].parentid) {
@@ -298,9 +312,11 @@ $('#componentstablePrivate').append(htmlprivate)
     }
     if (count + temp.length == 0) {       
         var html = '<tr><td><a>No Components</a></td></tr>'
-        var html = '<tr><td><a>No Components</a></td></tr>'
-        var html = '<tr><td><a>No Components</a></td></tr>'
-    }  
+        var htmlpublic = '<tr><td><a>No Components</a></td></tr>'
+        var htmlprivate = '<tr><td><a>No Components</a></td></tr>'
+       }  else {
+    $('#components').show();
+    }
     $('#componentstable').append(html)
     $('#componentstablePublic').append(htmlpublic)
     $('#componentstablePrivate').append(htmlprivate)
@@ -313,10 +329,11 @@ $('#componentstablePrivate').append(htmlprivate)
     "pagingType": "numbers",   "bLengthChange": false, "dom": '<lf<t>ip>',"bInfo" : false
   //  'order': [[ 2, 'asc' ]] ,
   });
-  var html = '<tr><td><a>No Components</a></td></tr>'
-  $('#componentstablePublic').prepend(html)
-  var html = '<tr><td><a>No Components</a></td></tr>'
-  $('#componentstablePrivate').prepend(html)
+
+
+ 
+
+
   var table = jQuery('#componentstablePublic').DataTable({
     'destroy':true,
     "pagingType": "numbers",   "bLengthChange": false, "dom": '<lf<t>ip>',"bInfo" : false
@@ -334,10 +351,43 @@ $('#componentstablePrivate').append(htmlprivate)
   text =text.replace("sz&#x3D;50", "sz&#x3D;200");
   $('#googlepic').html('<img src="'+text+'" style="max-width: 100%" class="media-object">')
 
+ 
 ///////////////////////////// 
-//////  INITIALISE    //////
+//////  HEAT MAP      //////
 /////////////////////////// 
-$( document ).ready(function() {
+function heatmap(){
+ var parserData = function (data) {
+  var dataJSON = {};
+  for(var i=0; i<data.length; i++) {
+    var date = new Date(data[i].created); // Date of activity 
+    var sec = date.getTime()/1000; // Convert to sec
+    // Pair "Key-Value" for calendar data
+    if(dataJSON[sec]) {
+      dataJSON[sec]++;
+    } else {
+      dataJSON[sec] = 1;
+    }
+  }
+
+  return dataJSON;
+}
+var cal = new CalHeatMap();
+cal.init({
+   itemSelector: "#cal-heatmap",
+  domain: "month",
+  subDomain: "day",
+ // cellSize: 20,
+  //subDomainTextFormat: "%d",
+  range: 11,
+start: new Date(2016, 10),
+   data: itemsParse, // Dates Array
+   afterLoadData: parserData      // Parser function
+});
+}
+////////////////////////////////////
+////        INITIALIZE         //// 
+//////////////////////////////////
+$('document').ready(function(){
   var username = JSON.stringify('{{userload.username}}')
   //var calender =  {{calender}}
   //console.log(calender)
@@ -345,23 +395,14 @@ $( document ).ready(function() {
   if (username == user) {
   }
   componentList()
-});
 
-///////////////////////////// 
-//////  HEAT MAP      //////
-/////////////////////////// 
-function heatmap(){
-  var cal = new CalHeatMap();
-  cal.init({
-    domain: "month",
-    range: 9,
-  });
-}
+  
+   
 
-////////////////////////////////////
-////        INITIALIZE         //// 
-//////////////////////////////////
-$('document').ready(function(){
+
+
+
+
 
   var tables = jQuery('#assystable').DataTable({
     'destroy':true,

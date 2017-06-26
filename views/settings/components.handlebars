@@ -11,9 +11,9 @@
 			<div role="tabpanel" class="tab-pane active" id="Summary">
 				<div class="row">
 					<div class="col-md-12">
-						<a class="btn btn-success" href="/component/new" >New Component</a>   
+						<a class="btn btn-primary" href="/component/new" >New Component</a>   
 						<p></p>
-						<div id="components">
+						<div id="components" style="display: none;">
 							<!-- Nav tabs -->
 							<ul class="nav nav-tabs" role="tablist">
 								<li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">All</a></li>
@@ -21,7 +21,7 @@
 								<li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Private</a></li>
 							</ul>
 							<!-- Tab panes -->
-							<div class="tab-content">
+							<div class="tab-content" >
 								<div role="tabpanel" class="tab-pane active" id="home">
 									<p></p>
 									<table class="table table-bordered table-condensed" id="componentstable" > 
@@ -67,39 +67,35 @@
 </div>
 
 <script type="text/javascript">
-	function componentList(){
-		var componentlistParse = {{{componentlistParse}}}
-		var componentlistParseall = {{{componentlistParseall}}}
-		var userorgcomplistParse = {{{userorgcomplistParse}}}
+	function componentList(){ var componentlistParse = {{{componentlistParse}}}
+	var componentlistParseall = {{{componentlistParseall}}}
+	var userorgcomplistParse = {{{userorgcomplistParse}}}
     //User Components innto table
     var temp = []
     var count =0
-    var html
-    var htmlpublic
-    var htmlprivate
+    var htms = ''
+    var htmpublic = ''
+    var htmprivate = ''
     for (var i = 0; i < componentlistParse.length; i++) {
     	for (var j = 0; j < componentlistParseall.length; j++) {
     		if (componentlistParse[i].elementID == componentlistParseall[j].parentid) {
     			if (componentlistParseall[j].visibility == 'private') {
-    				html += '<tr><td><a>'+componentlistParse[i].name+'</a>   <span class="label label-success">Private</span></td></tr>'
-    				htmlprivate += '<tr><td><a>'+componentlistParse[i].name+'</a>   <span class="label label-success">Private</span></td></tr>'
+    				htms += '<tr><td><a>'+componentlistParse[i].name+'</a>   <span class="label label-success">Private</span></td></tr>'
+    				htmprivate += '<tr><td><a>'+componentlistParse[i].name+'</a>   <span class="label label-success">Private</span></td></tr>'
     			} else {
-    				html += '<tr><td><a>'+componentlistParse[i].name+'</a></td></tr>'
-    				htmlpublic += '<tr><td><a>'+componentlistParse[i].name+'</a></td></tr>'
+    				htms += '<tr><td><a>'+componentlistParse[i].name+'</a></td></tr>'
+    				htmpublic += '<tr><td><a>'+componentlistParse[i].name+'</a></td></tr>'
     			}
     			temp.push(componentlistParseall[j]+' / '+componentlistParse[i].name)
     		}
     	}
     }
     count = temp.length
-    $('#componentstable').append(html)
-    $('#componentstablePublic').append(htmlpublic)
-    $('#componentstablePrivate').append(htmlprivate)
     //org componentns by user into form
     var temp = []
-    var html
-    var htmlpublic
-    var htmlprivate
+    var html = ''
+    var htmlpublic = ''
+    var htmlprivate = ''
     for (var i = 0; i < componentlistParse.length; i++) {
     	for (var j = 0; j < userorgcomplistParse.length; j++) {
     		if (componentlistParse[i].elementID == userorgcomplistParse[j].parentid) {
@@ -116,9 +112,14 @@
     }
     if (count + temp.length == 0) {       
     	var html = '<tr><td><a>No Components</a></td></tr>'
-    	var html = '<tr><td><a>No Components</a></td></tr>'
-    	var html = '<tr><td><a>No Components</a></td></tr>'
-    }  
+    	var htmlpublic = '<tr><td><a>No Components</a></td></tr>'
+    	var htmlprivate = '<tr><td><a>No Components</a></td></tr>'
+    }  else {
+    	$('#components').show();
+    }
+    $('#componentstable').append(htms)
+    $('#componentstablePublic').append(htmpublic)
+    $('#componentstablePrivate').append(htmprivate)
     $('#componentstable').append(html)
     $('#componentstablePublic').append(htmlpublic)
     $('#componentstablePrivate').append(htmlprivate)
@@ -129,10 +130,6 @@
     	"pagingType": "numbers",   "bLengthChange": false, "dom": '<lf<t>ip>',"bInfo" : false
   //  'order': [[ 2, 'asc' ]] ,
 });
-    var html = '<tr><td><a>No Components</a></td></tr>'
-    $('#componentstablePublic').prepend(html)
-    var html = '<tr><td><a>No Components</a></td></tr>'
-    $('#componentstablePrivate').prepend(html)
     var table = jQuery('#componentstablePublic').DataTable({
     	'destroy':true,
     	"pagingType": "numbers",   "bLengthChange": false, "dom": '<lf<t>ip>',"bInfo" : false

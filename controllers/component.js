@@ -151,6 +151,24 @@ exports.componentssuperadmin = function(req, res) {
 	}
 }
 
+///////////////////////////////////////////////////////////////////////
+////       ADDITIONAL DETAILS AND OPTIONS FOR COMPONENT           //// 
+/////////////////////////////////////////////////////////////////////
+exports.compmore = function(req, res) {
+          res.render(req.param('template'), {
+            query  :  JSON.stringify(req.query),
+            query1 :  JSON.stringify(req.query1),
+            query2 :  JSON.stringify(req.query2),
+            query3 :  JSON.stringify(req.query3),
+            query4 :  JSON.stringify(req.query4),
+            componentlistid : req.param('compgroupid'),
+            title: 'Components | Heavy-lifting',
+          });
+}
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -169,6 +187,7 @@ var componetsToCall = [
 '59044d82f588ab3c34e267b1',
 '5902fa49e39d634468d2b7a3',
 '58fdb5100c8b981ccc7c242c',
+"594910fc8cda6431945a2fb6"
 ]
 var query1 = heavyliftingModel.find(
 {
@@ -209,6 +228,10 @@ next();
 exports.usercomponents = function(req, res, next) {
 //verify the string query.
 if (req.componentlist) {
+  if (req.user) { 
+  		req.params.username = req.user.username
+  }
+
 	var componentlist = req.componentlist
 	var parentidlist =[]
 	for (var i = 0; i < componentlist.length; i++) {
@@ -259,9 +282,6 @@ if (req.componentlist) {
 		for (var i = 0; i < organizations.length; i++) {
 			orglist.push(organizations[i].entry.name)
 		}
-
-console.log(orglist,parentidlist)
-
 		var query1 = heavyliftingModel.find(
 			{"parentid": parentidlist ,
 			"organizationowner": orglist }

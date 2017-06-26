@@ -1,6 +1,9 @@
 <h2 id="name"></h2>
 <p id="detail"></p>
 
+
+<div id="more"></div>
+
 <p></p>
 <div>
   <!-- Nav tabs -->
@@ -10,13 +13,13 @@
   <div class="tab-content" id="tab">
   </div>
 </div>
- 
+<p></p>
 {{#if user}}
 
 <div class="row">
   <div class="col-md-7">
     <div  id="toolbar" class="btn-group" role="group" aria-label="..." style="color: grey">
-</div>
+    </div>
 
   </div>
   <div class="col-md-5">
@@ -55,19 +58,19 @@ $('#name').html(items.name)
 $('#detail').html(items.detail)
 
 tablelistdata.sort(function(a, b) {
-      if (a.entry.order && b.entry.order) {
-return parseFloat(a.entry.order) - parseFloat(b.entry.order);
-}
+  if (a.entry.order && b.entry.order) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+  }
 });
 query3.sort(function(a, b) {
   if (a.entry.order && b.entry.order) {
-return parseFloat(a.entry.order) - parseFloat(b.entry.order);
-}
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+  }
 });
- query2.sort(function(a, b) {
-    if (a.entry.order && b.entry.order) {
-return parseFloat(a.entry.order) - parseFloat(b.entry.order);
-}
+query2.sort(function(a, b) {
+  if (a.entry.order && b.entry.order) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+  }
 });
 
 /////////////////////////////
@@ -88,9 +91,9 @@ console.log( 'databasetablelist loading' )
 
 
 if(items.elementID) {
-$("#formIdHere").html('id : '+items.elementID)
+  $("#formIdHere").html('id : '+items.elementID)
 }else{
-$("#formIdHere").html('id : '+items._id)
+  $("#formIdHere").html('id : '+items._id)
 }
 
 /////////////////////////////
@@ -105,9 +108,6 @@ function layoutView() {
   templateLoad(['parentraw'],'toolbar')
   templateLoad(['add'],'toolbar')
 }
-
-
-
 }
 
 /////////////////////////////
@@ -121,9 +121,6 @@ function tabview() {
 }  else {
   templateLoad(['table'],'tab')
 }
-
-
-
 }
 
 /////////////////////////////
@@ -202,8 +199,13 @@ function uniqueIdforcformButton(){
 //////  INITIALISE    //////
 /////////////////////////// 
 $('document').ready(function(){
-  layoutView() 
-  tabview()
-  tablist()
+  if (items.entry.moreinfotemp) { 
+  //more info button.
+  var html = '<a type="button" href="/Components/'+items.entry.moreinfotemp+'/'+templateload+'" class="btn btn-info" style="position: absolute;right: 20px"><i class="fa fa-calculator" aria-hidden="true" ></i></a>'
+  $('#more').html(html)
+}
+layoutView() 
+tabview()
+tablist()
 })
 </script>

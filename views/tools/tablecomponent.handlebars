@@ -6,7 +6,7 @@
         </div>
       </div><div id="searchArea"></div>
       <p></p>  
-      <div id='formDelivery'>
+      <div id='formDelivery' style="overflow: auto;">
       </div>
     </div>
     <style type="text/css">
@@ -129,7 +129,7 @@ if (items.entry.headings) {
 }
 var tempVarIDs = formids+'_tableloadID'
     //inject the ID html table into the page.
-    $('#'+formids).html('<table id="'+tempVarIDs+'" class="table table-bordered table-compressed table-hover" cellspacing="0" width="100%"></table>')
+    $('#'+formids).html('<table id="'+tempVarIDs+'" class="table table-bordered table-compressed table-hover " cellspacing="0" width="100%"></table>')
     //error message text
     var html = ''
     html += '<div class="alert alert-danger" role="alert"> '

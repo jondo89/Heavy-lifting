@@ -62,6 +62,8 @@ exports.profile = function(req, res) {
         componentlistParse : req.componentlistParse,
         componentlistall : req.componentlistall,
         componentlistParseall : req.componentlistParseall,
+        items:req.items, //list of all heavy-lifting DB entires
+        itemsParse:req.itemsParse,//list of all heavy-lifting DB entires
         title: user.username+' | Heavy-lifting',
       });
     })

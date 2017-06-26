@@ -1,0 +1,678 @@
+<div class="row">
+  <div class="col-md-12">
+    <h1>Idler Rolls <small>You are viewing <span class="badge" id="spans">0</span> components</small></h1>
+    <p>This is the idler roll design page. Create you design sets and then upload to an assembly.</p>
+  </div>
+</div> 
+<div class="row"> 
+  <div class="col-md-6">
+    <div class="row">
+      <div class="col-md-12">
+        <textarea class="form-control" id="CadExportArea" name="CadExportArea" style="display: none"></textarea>
+      </div>
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <a style="position: absolute;right: 25px" download="Idlers.scr" id="downloadlink" class="btn btn-info" style="" data-toggle="tooltip" data-placement="top" title="Drag and drop the SCR file into AutCAD to draw this idler, ensure Onsnap is disabled"><i class="fa fa-file-code-o" aria-hidden="true"></i>
+            </a>
+            <div style="text-align:center;cursor:all-scroll;" id="canvasWidth">
+            <p>Click and drag to zoom and pan.</p>
+              <canvas id="canvas" style="" ></canvas>
+            </div>
+       </div>
+        </div>
+                    <div class="panel panel-default">
+          <div class="panel-body">
+            <div id="highCharts"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{>tablebrowser}}
+  <script type="text/javascript">
+//this is the activation area for the JAVASCRIPT on the page
+var defaultIdler
+var data=[]
+
+var query = {{{query}}}
+var query1 = {{{query1}}}
+var query2 = {{{query2}}}
+var query3 =  {{{query3}}} 
+var query4 = {{{query4}}}
+
+ 
+var idlerJSON 
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+$('document').ready(function(){
+   //start by clearing the loading spinner.
+  $('#viewArea').html("")
+  //auotcad button event listner
+  load();
+  //start javascript
+  activateCanvasIdler()
+})
+
+/////////////////////////////////////////////
+////////  EXPORT TO SCR FILE AUTOCAD ///////
+///////////////////////////////////////////
+function load() {
+  var textFile = null,
+  makeTextFile = function (text) {
+    var data = new Blob([text], {type: 'text/plain'});
+    // If we are replacing a previously generated file we need to
+    // manually revoke the object URL to avoid memory leaks.
+    if (textFile !== null) {
+      window.URL.revokeObjectURL(textFile);
+    }
+    textFile = window.URL.createObjectURL(data);
+    return textFile;
+  };
+  var create = document.getElementById('downloadlink')
+  var textbox = document.getElementById('CadExportArea')
+  create.addEventListener('click', function () {
+    var link = document.getElementById('downloadlink');
+    link.href = makeTextFile(textbox.value);
+  }, false);
+}
+
+function drawIdler(locations,item,translates)
+{
+
+  idlerJSON = query3[item].entry
+  idlerJSON['590461817ce01f21cc0c076f'] = parseFloat(idlerJSON['590461817ce01f21cc0c076f'])
+  idlerJSON['590460167ce01f21cc0c0767'] = parseFloat(idlerJSON['590460167ce01f21cc0c0767'])
+  idlerJSON['58fc8e737272c0425864d8c4'] = parseFloat(idlerJSON['58fc8e737272c0425864d8c4'])
+  idlerJSON['58fc8e3e7272c0425864d8bf'] = parseFloat(idlerJSON['58fc8e3e7272c0425864d8bf'])
+  idlerJSON['59045f7a7ce01f21cc0c0763'] = parseFloat(idlerJSON['59045f7a7ce01f21cc0c0763'])
+  idlerJSON['590462167ce01f21cc0c0773'] = parseFloat(idlerJSON['590462167ce01f21cc0c0773'])
+  idlerJSON['590468e87ce01f21cc0c079f'] = parseFloat(idlerJSON['590468e87ce01f21cc0c079f'])
+  idlerJSON['590468d77ce01f21cc0c079e'] = parseFloat(idlerJSON['590468d77ce01f21cc0c079e'])
+  idlerJSON['590469a27ce01f21cc0c07a7'] = parseFloat(idlerJSON['590469a27ce01f21cc0c07a7'])
+  idlerJSON['59046a5b7ce01f21cc0c07aa'] = parseFloat(idlerJSON['59046a5b7ce01f21cc0c07aa'])
+  function idlerCreate(){
+
+ 
+//x;y
+var idler = {
+  "1": drawrRectangle(idlerJSON["59045f7a7ce01f21cc0c0763"],idlerJSON["590460167ce01f21cc0c0767"]),  
+  "2": drawrRectangle(idlerJSON["59045f7a7ce01f21cc0c0763"],idlerJSON["590460167ce01f21cc0c0767"]),
+  "3": drawrRectangle(idlerJSON["58fc8e737272c0425864d8c4"],(idlerJSON["590461817ce01f21cc0c076f"])+(idlerJSON["590462167ce01f21cc0c0773"])+(idlerJSON["590462167ce01f21cc0c0773"])),   
+  "4": drawrRectangle(idlerJSON["58fc8e737272c0425864d8c4"],idlerJSON["590462167ce01f21cc0c0773"]),     
+  "5": drawrRectangle(idlerJSON["58fc8e737272c0425864d8c4"],idlerJSON["590462167ce01f21cc0c0773"]),    
+
+      //bearing
+
+      "bearing11": drawrRectangle((idlerJSON['590468d77ce01f21cc0c079e']-idlerJSON['58fc8e737272c0425864d8c4'])/2,idlerJSON['590468e87ce01f21cc0c079f']),  
+      "bearing12": drawrRectangle((idlerJSON['590468d77ce01f21cc0c079e']-idlerJSON['58fc8e737272c0425864d8c4'])/2,idlerJSON['590468e87ce01f21cc0c079f']),  
+
+      "bearing21": drawrRectangle((idlerJSON['590468d77ce01f21cc0c079e']-idlerJSON['58fc8e737272c0425864d8c4'])/2,idlerJSON['590468e87ce01f21cc0c079f']),  
+      "bearing22": drawrRectangle((idlerJSON['590468d77ce01f21cc0c079e']-idlerJSON['58fc8e737272c0425864d8c4'])/2,idlerJSON['590468e87ce01f21cc0c079f']),  
+
+
+      //seal
+
+      "seal11": drawrRectangle((idlerJSON['590468d77ce01f21cc0c079e']-idlerJSON['58fc8e737272c0425864d8c4'])/2,idlerJSON['590468e87ce01f21cc0c079f']),  
+      "seal12": drawrRectangle((idlerJSON['590468d77ce01f21cc0c079e']-idlerJSON['58fc8e737272c0425864d8c4'])/2,idlerJSON['590468e87ce01f21cc0c079f']),  
+
+      "seal21": drawrRectangle((idlerJSON['590468d77ce01f21cc0c079e']-idlerJSON['58fc8e737272c0425864d8c4'])/2,idlerJSON['590468e87ce01f21cc0c079f']),  
+      "seal22": drawrRectangle((idlerJSON['590468d77ce01f21cc0c079e']-idlerJSON['58fc8e737272c0425864d8c4'])/2,idlerJSON['590468e87ce01f21cc0c079f']),  
+
+
+      //bearing housing
+
+
+      "TL1":drawrRectangle(idlerJSON['58fc8e3e7272c0425864d8bf']/2 - idlerJSON['59045f7a7ce01f21cc0c0763'] - idlerJSON['590468d77ce01f21cc0c079e']/2 , idlerJSON['59045f7a7ce01f21cc0c0763']),  
+      "TL2":drawrRectangle(idlerJSON['59045f7a7ce01f21cc0c0763'],idlerJSON['590469a27ce01f21cc0c07a7'] +  idlerJSON['590468e87ce01f21cc0c079f']),  
+      "TL3":drawrRectangle(idlerJSON['590468d77ce01f21cc0c079e']/2 - idlerJSON['58fc8e737272c0425864d8c4']/2,idlerJSON['59045f7a7ce01f21cc0c0763']),  
+
+      "BL1":drawrRectangle(idlerJSON['58fc8e3e7272c0425864d8bf']/2 - idlerJSON['59045f7a7ce01f21cc0c0763'] - idlerJSON['590468d77ce01f21cc0c079e']/2 , idlerJSON['59045f7a7ce01f21cc0c0763']),   
+      "BL2":drawrRectangle(idlerJSON['59045f7a7ce01f21cc0c0763'],idlerJSON['590469a27ce01f21cc0c07a7'] +  idlerJSON['590468e87ce01f21cc0c079f']),   
+      "BL3":drawrRectangle(idlerJSON['590468d77ce01f21cc0c079e']/2 - idlerJSON['58fc8e737272c0425864d8c4']/2,idlerJSON['59045f7a7ce01f21cc0c0763']), 
+
+      "TR1":drawrRectangle(idlerJSON['58fc8e3e7272c0425864d8bf']/2 - idlerJSON['59045f7a7ce01f21cc0c0763'] - idlerJSON['590468d77ce01f21cc0c079e']/2 , idlerJSON['59045f7a7ce01f21cc0c0763']),  
+      "TR2":drawrRectangle(idlerJSON['59045f7a7ce01f21cc0c0763'],idlerJSON['590469a27ce01f21cc0c07a7'] +  idlerJSON['590468e87ce01f21cc0c079f']),  
+      "TR3":drawrRectangle(idlerJSON['590468d77ce01f21cc0c079e']/2 - idlerJSON['58fc8e737272c0425864d8c4']/2,idlerJSON['59045f7a7ce01f21cc0c0763']),  
+
+      "BR1":drawrRectangle(idlerJSON['58fc8e3e7272c0425864d8bf']/2 - idlerJSON['59045f7a7ce01f21cc0c0763'] - idlerJSON['590468d77ce01f21cc0c079e']/2 , idlerJSON['59045f7a7ce01f21cc0c0763']),   
+      "BR2":drawrRectangle(idlerJSON['59045f7a7ce01f21cc0c0763'],idlerJSON['590469a27ce01f21cc0c07a7'] +  idlerJSON['590468e87ce01f21cc0c079f']),   
+      "BR3":drawrRectangle(idlerJSON['590468d77ce01f21cc0c079e']/2 - idlerJSON['58fc8e737272c0425864d8c4']/2,idlerJSON['59045f7a7ce01f21cc0c0763']), 
+
+    };
+
+//////////////////////////////////
+//////////  OFFSET AREA  /////////
+//////////////////////////////////
+
+//THe rectangle sizes are set above , here the rectanges are offset from the 0,0 to suit the idler size.
+
+
+////////////////////////////
+//////     ROLL   /////////
+///////////////////////////
+
+for (var i = 0; i < idler["1"].length; i++) {
+  idler["1"][i].y = idler["1"][i].y - idlerJSON["58fc8e3e7272c0425864d8bf"]/2 + idlerJSON["59045f7a7ce01f21cc0c0763"]/2
+};
+for (var i = 0; i < idler["2"].length; i++) {
+  idler["2"][i].y = idler["2"][i].y + idlerJSON["58fc8e3e7272c0425864d8bf"]/2 - idlerJSON["59045f7a7ce01f21cc0c0763"]/2
+};
+
+//Flat offset
+for (var i = 0; i < idler["4"].length; i++) {
+  idler["4"][i].x = idler["4"][i].x - idlerJSON["590461817ce01f21cc0c076f"]/2 - idlerJSON["590462167ce01f21cc0c0773"]/2
+};
+for (var i = 0; i < idler["5"].length; i++) {
+  idler["5"][i].x = idler["5"][i].x + idlerJSON["590461817ce01f21cc0c076f"]/2 + idlerJSON["590462167ce01f21cc0c0773"]/2
+};
+
+///////////////////////////
+//////  BEARINGS  /////////
+///////////////////////////
+
+//Offset of rectangles here
+//build bearing
+for (var i = 0; i < idler["bearing11"].length; i++) {
+  idler["bearing11"][i].y = idler["bearing11"][i].y + idlerJSON['590468d77ce01f21cc0c079e']/2-((idlerJSON['590468d77ce01f21cc0c079e']-idlerJSON['58fc8e737272c0425864d8c4'])/2)/2
+};
+for (var i = 0; i < idler["bearing12"].length; i++) {
+  idler["bearing12"][i].y = idler["bearing12"][i].y - idlerJSON['590468d77ce01f21cc0c079e']/2+((idlerJSON['590468d77ce01f21cc0c079e']-idlerJSON['58fc8e737272c0425864d8c4'])/2)/2
+};
+
+
+//Offset of rectangles here
+//build bearing
+for (var i = 0; i < idler["bearing21"].length; i++) {
+  idler["bearing21"][i].y = idler["bearing21"][i].y + idlerJSON['590468d77ce01f21cc0c079e']/2-((idlerJSON['590468d77ce01f21cc0c079e']-idlerJSON['58fc8e737272c0425864d8c4'])/2)/2
+};
+for (var i = 0; i < idler["bearing22"].length; i++) {
+  idler["bearing22"][i].y = idler["bearing22"][i].y - idlerJSON['590468d77ce01f21cc0c079e']/2+((idlerJSON['590468d77ce01f21cc0c079e']-idlerJSON['58fc8e737272c0425864d8c4'])/2)/2
+};
+
+
+
+//left and right
+for (var i = 0; i < idler["bearing11"].length; i++) {
+  idler["bearing11"][i].x = idler["bearing11"][i].x-idlerJSON['590461817ce01f21cc0c076f']/2+1+idlerJSON['590468e87ce01f21cc0c079f']/2+idlerJSON['59046a5b7ce01f21cc0c07aa']+idlerJSON['590469a27ce01f21cc0c07a7']
+};
+for (var i = 0; i < idler["bearing12"].length; i++) {
+  idler["bearing12"][i].x = idler["bearing12"][i].x -idlerJSON['590461817ce01f21cc0c076f']/2+1+idlerJSON['590468e87ce01f21cc0c079f']/2+idlerJSON['59046a5b7ce01f21cc0c07aa']+idlerJSON['590469a27ce01f21cc0c07a7']
+};
+
+
+
+//left and right
+for (var i = 0; i < idler["bearing21"].length; i++) {
+  idler["bearing21"][i].x = idler["bearing21"][i].x+idlerJSON['590461817ce01f21cc0c076f']/2-1-idlerJSON['590468e87ce01f21cc0c079f']/2-idlerJSON['59046a5b7ce01f21cc0c07aa']-idlerJSON['590469a27ce01f21cc0c07a7']
+};
+for (var i = 0; i < idler["bearing22"].length; i++) {
+  idler["bearing22"][i].x = idler["bearing22"][i].x +idlerJSON['590461817ce01f21cc0c076f']/2-1-idlerJSON['590468e87ce01f21cc0c079f']/2-idlerJSON['59046a5b7ce01f21cc0c07aa']-idlerJSON['590469a27ce01f21cc0c07a7']
+};
+
+
+////////////////////////
+//////  SEAL  /////////
+//////////////////////
+
+
+//Offset of rectangles here
+//build seal
+for (var i = 0; i < idler["seal11"].length; i++) {
+  idler["seal11"][i].y = idler["seal11"][i].y + idlerJSON['590468d77ce01f21cc0c079e']/2-((idlerJSON['590468d77ce01f21cc0c079e']-idlerJSON['58fc8e737272c0425864d8c4'])/2)/2
+};
+for (var i = 0; i < idler["seal12"].length; i++) {
+  idler["seal12"][i].y = idler["seal12"][i].y - idlerJSON['590468d77ce01f21cc0c079e']/2+((idlerJSON['590468d77ce01f21cc0c079e']-idlerJSON['58fc8e737272c0425864d8c4'])/2)/2
+};
+
+
+//Offset of rectangles here
+//build seal
+for (var i = 0; i < idler["seal21"].length; i++) {
+  idler["seal21"][i].y = idler["seal21"][i].y + idlerJSON['590468d77ce01f21cc0c079e']/2-((idlerJSON['590468d77ce01f21cc0c079e']-idlerJSON['58fc8e737272c0425864d8c4'])/2)/2
+};
+for (var i = 0; i < idler["seal22"].length; i++) {
+  idler["seal22"][i].y = idler["seal22"][i].y - idlerJSON['590468d77ce01f21cc0c079e']/2+((idlerJSON['590468d77ce01f21cc0c079e']-idlerJSON['58fc8e737272c0425864d8c4'])/2)/2
+};
+
+
+
+//Offset of rectangles here
+//left and right
+
+for (var i = 0; i < idler["seal11"].length; i++) {
+  idler["seal11"][i].x = idler["seal11"][i].x+idlerJSON['590461817ce01f21cc0c076f']/2-1-idlerJSON['59046a5b7ce01f21cc0c07aa']-idlerJSON['59046a5b7ce01f21cc0c07aa']
+};
+for (var i = 0; i < idler["seal12"].length; i++) {
+  idler["seal12"][i].x = idler["seal12"][i].x +idlerJSON['590461817ce01f21cc0c076f']/2-1-idlerJSON['59046a5b7ce01f21cc0c07aa']-idlerJSON['59046a5b7ce01f21cc0c07aa']
+};
+
+
+
+for (var i = 0; i < idler["seal21"].length; i++) {
+  idler["seal21"][i].x = idler["seal21"][i].x-idlerJSON['590461817ce01f21cc0c076f']/2+1+idlerJSON['59046a5b7ce01f21cc0c07aa']+idlerJSON['59046a5b7ce01f21cc0c07aa']
+};
+for (var i = 0; i < idler["seal22"].length; i++) {
+  idler["seal22"][i].x = idler["seal22"][i].x -idlerJSON['590461817ce01f21cc0c076f']/2+1+idlerJSON['59046a5b7ce01f21cc0c07aa']+idlerJSON['59046a5b7ce01f21cc0c07aa']
+};
+
+
+
+///////////////////////////////////
+//////  BEARING HOUSING  /////////
+/////////////////////////////////
+
+//left and right
+for (var i = 0; i < idler["TL1"].length; i++) {
+  idler["TL1"][i].x = idler["TL1"][i].x+idlerJSON['590461817ce01f21cc0c076f']/2 - 1 - idlerJSON['59046a5b7ce01f21cc0c07aa'] - idlerJSON['59045f7a7ce01f21cc0c0763']/2
+};
+for (var i = 0; i < idler["TL2"].length; i++) {
+  idler["TL2"][i].x = idler["TL2"][i].x+idlerJSON['590461817ce01f21cc0c076f']/2 - 1 - idlerJSON['59046a5b7ce01f21cc0c07aa'] - idlerJSON['59045f7a7ce01f21cc0c0763']/2 - idlerJSON['590469a27ce01f21cc0c07a7']/2 -  idlerJSON['590468e87ce01f21cc0c079f']/2 - idlerJSON['59045f7a7ce01f21cc0c0763']/2
+};
+for (var i = 0; i < idler["TL3"].length; i++) {
+  idler["TL3"][i].x = idler["TL3"][i].x+idlerJSON['590461817ce01f21cc0c076f']/2 - 1 - idlerJSON['59046a5b7ce01f21cc0c07aa'] - idlerJSON['59045f7a7ce01f21cc0c0763']/2 - idlerJSON['590469a27ce01f21cc0c07a7'] - idlerJSON['590468e87ce01f21cc0c079f']
+};
+
+for (var i = 0; i < idler["BL1"].length; i++) {
+  idler["BL1"][i].x = idler["BL1"][i].x+idlerJSON['590461817ce01f21cc0c076f']/2 - 1 - idlerJSON['59046a5b7ce01f21cc0c07aa'] - idlerJSON['59045f7a7ce01f21cc0c0763']/2
+};
+for (var i = 0; i < idler["BL2"].length; i++) {
+  idler["BL2"][i].x = idler["BL2"][i].x+idlerJSON['590461817ce01f21cc0c076f']/2 - 1 - idlerJSON['59046a5b7ce01f21cc0c07aa'] - idlerJSON['59045f7a7ce01f21cc0c0763']/2 - idlerJSON['590469a27ce01f21cc0c07a7']/2 -  idlerJSON['590468e87ce01f21cc0c079f']/2 - idlerJSON['59045f7a7ce01f21cc0c0763']/2
+};
+for (var i = 0; i < idler["BL3"].length; i++) {
+  idler["BL3"][i].x = idler["BL3"][i].x+idlerJSON['590461817ce01f21cc0c076f']/2 - 1 - idlerJSON['59046a5b7ce01f21cc0c07aa'] - idlerJSON['59045f7a7ce01f21cc0c0763']/2 - idlerJSON['590469a27ce01f21cc0c07a7'] - idlerJSON['590468e87ce01f21cc0c079f']
+};
+///////////////////////////////////////////////////////////////////////////////
+for (var i = 0; i < idler["TR1"].length; i++) {
+  idler["TR1"][i].x = idler["TR1"][i].x - idlerJSON['590461817ce01f21cc0c076f']/2 + 1 + idlerJSON['59046a5b7ce01f21cc0c07aa'] + idlerJSON['59045f7a7ce01f21cc0c0763']/2
+};
+for (var i = 0; i < idler["TR2"].length; i++) {
+  idler["TR2"][i].x = idler["TR2"][i].x - idlerJSON['590461817ce01f21cc0c076f']/2 + 1 + idlerJSON['59046a5b7ce01f21cc0c07aa'] + idlerJSON['59045f7a7ce01f21cc0c0763']/2 + idlerJSON['590469a27ce01f21cc0c07a7']/2 +  idlerJSON['590468e87ce01f21cc0c079f']/2 + idlerJSON['59045f7a7ce01f21cc0c0763']/2
+};
+for (var i = 0; i < idler["TR3"].length; i++) {
+  idler["TR3"][i].x = idler["TR3"][i].x - idlerJSON['590461817ce01f21cc0c076f']/2 + 1 + idlerJSON['59046a5b7ce01f21cc0c07aa'] + idlerJSON['59045f7a7ce01f21cc0c0763']/2 + idlerJSON['590469a27ce01f21cc0c07a7'] + idlerJSON['590468e87ce01f21cc0c079f']
+};
+
+for (var i = 0; i < idler["BR1"].length; i++) {
+  idler["BR1"][i].x = idler["BR1"][i].x - idlerJSON['590461817ce01f21cc0c076f']/2 + 1 + idlerJSON['59046a5b7ce01f21cc0c07aa'] + idlerJSON['59045f7a7ce01f21cc0c0763']/2
+};
+for (var i = 0; i < idler["BR2"].length; i++) {
+  idler["BR2"][i].x = idler["BR2"][i].x - idlerJSON['590461817ce01f21cc0c076f']/2 + 1 + idlerJSON['59046a5b7ce01f21cc0c07aa'] + idlerJSON['59045f7a7ce01f21cc0c0763']/2 + idlerJSON['590469a27ce01f21cc0c07a7']/2 +  idlerJSON['590468e87ce01f21cc0c079f']/2 + idlerJSON['59045f7a7ce01f21cc0c0763']/2
+};
+for (var i = 0; i < idler["BR3"].length; i++) {
+  idler["BR3"][i].x = idler["BR3"][i].x - idlerJSON['590461817ce01f21cc0c076f']/2 + 1 + idlerJSON['59046a5b7ce01f21cc0c07aa'] + idlerJSON['59045f7a7ce01f21cc0c0763']/2 + idlerJSON['590469a27ce01f21cc0c07a7'] + idlerJSON['590468e87ce01f21cc0c079f']
+};
+
+
+
+//Up and Down
+for (var i = 0; i < idler["TL1"].length; i++) {
+  idler["TL1"][i].y = idler["TL1"][i].y -(idlerJSON['58fc8e3e7272c0425864d8bf']/2 - idlerJSON['59045f7a7ce01f21cc0c0763'] - idlerJSON['590468d77ce01f21cc0c079e']/2 )/2 - idlerJSON['590468d77ce01f21cc0c079e']/2
+}; 
+for (var i = 0; i < idler["TL2"].length; i++) {
+  idler["TL2"][i].y = idler["TL2"][i].y - (idlerJSON['59045f7a7ce01f21cc0c0763'])/2 - idlerJSON['590468d77ce01f21cc0c079e']/2
+};
+for (var i = 0; i < idler["TL3"].length; i++) {
+  idler["TL3"][i].y = idler["TL3"][i].y - (idlerJSON['590468d77ce01f21cc0c079e']/2 - idlerJSON['58fc8e737272c0425864d8c4']/2)/2 - idlerJSON['58fc8e737272c0425864d8c4']/2
+};
+
+for (var i = 0; i < idler["BL1"].length; i++) {
+  idler["BL1"][i].y = idler["BL1"][i].y +(idlerJSON['58fc8e3e7272c0425864d8bf']/2 - idlerJSON['59045f7a7ce01f21cc0c0763'] - idlerJSON['590468d77ce01f21cc0c079e']/2 )/2 + idlerJSON['590468d77ce01f21cc0c079e']/2
+}; 
+for (var i = 0; i < idler["BL2"].length; i++) {
+  idler["BL2"][i].y = idler["BL2"][i].y + (idlerJSON['59045f7a7ce01f21cc0c0763'])/2 + idlerJSON['590468d77ce01f21cc0c079e']/2
+};
+for (var i = 0; i < idler["BL3"].length; i++) {
+  idler["BL3"][i].y = idler["BL3"][i].y + (idlerJSON['590468d77ce01f21cc0c079e']/2 - idlerJSON['58fc8e737272c0425864d8c4']/2)/2 + idlerJSON['58fc8e737272c0425864d8c4']/2
+};
+
+for (var i = 0; i < idler["TR1"].length; i++) {
+  idler["TR1"][i].y = idler["TR1"][i].y -(idlerJSON['58fc8e3e7272c0425864d8bf']/2 - idlerJSON['59045f7a7ce01f21cc0c0763'] - idlerJSON['590468d77ce01f21cc0c079e']/2 )/2 - idlerJSON['590468d77ce01f21cc0c079e']/2
+}; 
+for (var i = 0; i < idler["TR2"].length; i++) {
+  idler["TR2"][i].y = idler["TR2"][i].y - (idlerJSON['59045f7a7ce01f21cc0c0763'])/2 - idlerJSON['590468d77ce01f21cc0c079e']/2
+};
+for (var i = 0; i < idler["TR3"].length; i++) {
+  idler["TR3"][i].y = idler["TR3"][i].y - (idlerJSON['590468d77ce01f21cc0c079e']/2 - idlerJSON['58fc8e737272c0425864d8c4']/2)/2 - idlerJSON['58fc8e737272c0425864d8c4']/2
+};
+
+for (var i = 0; i < idler["BR1"].length; i++) {
+  idler["BR1"][i].y = idler["BR1"][i].y +(idlerJSON['58fc8e3e7272c0425864d8bf']/2 - idlerJSON['59045f7a7ce01f21cc0c0763'] - idlerJSON['590468d77ce01f21cc0c079e']/2 )/2 + idlerJSON['590468d77ce01f21cc0c079e']/2
+}; 
+for (var i = 0; i < idler["BR2"].length; i++) {
+  idler["BR2"][i].y = idler["BR2"][i].y + (idlerJSON['59045f7a7ce01f21cc0c0763'])/2 + idlerJSON['590468d77ce01f21cc0c079e']/2
+};
+for (var i = 0; i < idler["BR3"].length; i++) {
+  idler["BR3"][i].y = idler["BR3"][i].y + (idlerJSON['590468d77ce01f21cc0c079e']/2 - idlerJSON['58fc8e737272c0425864d8c4']/2)/2 + idlerJSON['58fc8e737272c0425864d8c4']/2
+};
+
+return idler
+}
+//clear the text area for the autoCAD extract prior to use
+
+//fixed variables , modify if required.
+//scale
+var sx = 1;
+var sy = 1;
+//Translation
+var tx = 0
+var ty = translates
+//rotation
+var theta = 0
+var idler = idlerCreate(data,'this');
+idler = transformMatrix(idler,sx,sy,theta,tx,ty)  
+autoCAD(idler)         
+drawidlerCanvas(locations,idler,'grey')     
+
+};
+
+
+
+//this is the transformation matrix.used to move , rotate and scale any point arrays.
+function transformMatrix(transformArray,sx,sy,theta,tx,ty)
+{
+ for (var key in transformArray) {
+   //change 0 to 1 in the loop below to skip the datum point.
+   for (var i = 0; i < transformArray[key].length; i++) {
+                //scaling
+                transformArray[key][i].x = transformArray[key][i].x*sx
+                transformArray[key][i].y = transformArray[key][i].y*sy
+                //rotation
+                tempx = (Math.cos(theta)*transformArray[key][i].x)-(Math.sin(theta)*transformArray[key][i].y)
+                tempy = (Math.sin(theta)*transformArray[key][i].x)+(Math.cos(theta)*transformArray[key][i].y)
+                transformArray[key][i].x = tempx
+                transformArray[key][i].y = tempy
+                //translate
+                transformArray[key][i].x = transformArray[key][i].x+tx
+                transformArray[key][i].y = transformArray[key][i].y+ty
+              };
+            }
+            return transformArray
+          };
+
+///////////////////////////////////////////////////////
+/////this is to populate the src file for autocad/////
+/////////////////////////////////////////////////////
+function autoCAD (transformArray) {
+    //console.log(transformArray)
+    //start by clearing the belting paragraph text box.
+    for (var key in transformArray) {
+      var Roll = "pline "   
+     //change 0 to 1 in the loop below to skip the datum point.
+     for (var i = 1; i < transformArray[key].length; i++) {
+      Roll=Roll.concat((transformArray[key][i].x) +","+ (transformArray[key][i].y) + " ")
+    };
+    Roll=Roll.concat("c ")
+    $("#CadExportArea").append(Roll);
+  }
+  $("#CadExportArea").append(Roll);
+};
+
+//this is a default draw rectangle function.
+function drawrRectangle (height,width) {
+  x=0;
+  y=0;
+  var rectan=([]);//starting coordinate
+  //5 points in total
+  rectan.push(
+  {
+    "x":x, 
+    "y":y,
+    "drawn" :"yes"
+  });
+  //5 points in total
+  rectan.push(
+  {
+    "x":-width/2,
+    "y":height/2,
+    "drawn" :"yes"
+  });
+  rectan.push(
+  {
+    "x":width/2,
+    "y":height/2,
+    "drawn" :"yes"
+  });
+  rectan.push(
+  {
+    "x":width/2,
+    "y":-height/2,
+    "drawn" :"yes"
+  });
+  rectan.push(
+  {
+    "x":-width/2,
+    "y":-height/2,
+    "drawn" :"yes"
+  });
+  return  rectan
+};
+
+//this draws the idlder on the canvas at the required location.
+function drawidlerCanvas(locations,transformArray,colour)
+{
+  var canvas = document.getElementById(locations);
+  var ctx = canvas.getContext('2d');
+  ctx.beginPath();
+  for (var key in transformArray) {
+    ctx.moveTo(transformArray[key][1].x,transformArray[key][1].y)
+    for (var i = 1; i < transformArray[key].length; i++) {
+      transformArray[key][i]
+      ctx.lineTo(transformArray[key][i].x,transformArray[key][i].y);
+    };
+    ctx.lineTo(transformArray[key][1].x,transformArray[key][1].y)
+    ctx.lineWidth = 1;
+    //ctx.fillStyle = "none";
+    //ctx.fill();     
+    ctx.stroke();
+  }
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.lineTo(0,500);
+  ctx.moveTo(0,0);
+  ctx.lineTo(-1000,0);
+  ctx.moveTo(0,0);
+  ctx.lineTo(0,-500);
+  ctx.moveTo(0,0);
+  ctx.lineTo(1000,0);
+  ctx.lineWidth = .5;
+  ctx.fillStyle = colour;
+  ctx.stroke();
+};
+
+//////////////////////////////////////////////////////
+////////////  CANVAS ZOOM AND PAN AREA  /////////////
+////////////////////////////////////////////////////
+function activateCanvasIdler(){
+  var canvas = document.getElementById('canvas');
+  canvas.width= $('#canvasWidth').width()-50
+  canvas.height = $('#canvasWidth').width()-150
+  var gkhead = new Image;
+  var ball   = new Image;
+  var ctx = canvas.getContext('2d');
+  trackTransforms(ctx);
+  ctx.translate(canvas.width/2,canvas.height/2);
+  function redraw(){
+      // Clear the entire canvas
+      var p1 = ctx.transformedPoint(0,0);
+      var p2 = ctx.transformedPoint(canvas.width,canvas.height);
+      ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
+      ctx.save();
+      ctx.translate(0,0);
+      ctx.beginPath();
+      ctx.stroke();
+      ctx.scale(.4,.4)
+      ctx.beginPath();
+      //i think this is where is is safe to draw
+      var filterdata = table.rows( { search:'applied' } ).data()
+      $("#CadExportArea").html('');
+      for (var i = 0; i < filterdata.length; i++) {
+        for (var j = 0; j < query3.length; j++) {
+          if (filterdata[i][12] == query3[j]._id) {
+            drawIdler("canvas",i,i*300)
+          }
+        }
+       }
+      //commented out at Zambian airport.
+      //idlerProperties(data)
+      ctx.restore();
+    }
+    redraw();
+    var lastX=canvas.width/2, lastY=canvas.height/2;
+    var dragStart,dragged;
+    canvas.addEventListener('mousedown',function(evt){
+      //document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
+      lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
+      lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
+      dragStart = ctx.transformedPoint(lastX,lastY);
+      dragged = false;
+    },false);
+    canvas.addEventListener('mousemove',function(evt){
+      lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
+      lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
+      dragged = true;
+      if (dragStart){
+        var pt = ctx.transformedPoint(lastX,lastY);
+        ctx.translate(pt.x-dragStart.x,pt.y-dragStart.y);
+        redraw();
+      }
+    },false);
+    try {
+      document.getElementById('InputForm').addEventListener('click',function(evt){
+        lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
+        lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
+        dragged = true;
+      //i think this is where is is safe to draw
+      $("#CadExportArea").html('');
+      var filterdata = table.rows( { search:'applied' } ).data()
+      for (var i = 0; i < filterdata.length; i++) {
+        for (var j = 0; j < query3.length; j++) {
+          if (filterdata[i][12] == query3[j]._id) {
+            drawIdler("canvas",i,i*300)
+          }
+        }
+       }
+        redraw();
+        
+    //console.log(data)
+    return false;
+  },false);
+    }
+    catch(err) {
+      //console.log("form not open")
+    }
+    canvas.addEventListener('mouseup',function(evt){
+      dragStart = null;
+      if (!dragged) zoom(evt.shiftKey ? -1 : 1 );
+    },false);
+    var scaleFactor = 1.1;
+    var zoom = function(clicks){
+      var pt = ctx.transformedPoint(lastX,lastY);
+      ctx.translate(pt.x,pt.y);
+      var factor = Math.pow(scaleFactor,clicks);
+      ctx.scale(factor,factor);
+      ctx.translate(-pt.x,-pt.y);
+      redraw();
+    }
+    var handleScroll = function(evt){
+      var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
+      if (delta) zoom(delta);
+      return evt.preventDefault() && false;
+    };
+    canvas.addEventListener('DOMMouseScroll',handleScroll,false);
+    canvas.addEventListener('mousewheel',handleScroll,false);
+    gkhead.src = '';
+    ball.src   = '';
+  // Adds ctx.getTransform() - returns an SVGMatrix
+  // Adds ctx.transformedPoint(x,y) - returns an SVGPoint
+
+/////////////////////////////////
+///////  THIS IS GOOD  /////////
+///////////////////////////////
+function trackTransforms(ctx){var svg = document.createElementNS("http://www.w3.org/2000/svg",'svg'); var xform = svg.createSVGMatrix(); ctx.getTransform = function(){ return xform; }; var savedTransforms = []; var save = ctx.save; ctx.save = function(){savedTransforms.push(xform.translate(0,0)); return save.call(ctx); }; var restore = ctx.restore; ctx.restore = function(){xform = savedTransforms.pop(); return restore.call(ctx); }; var scale = ctx.scale; ctx.scale = function(sx,sy){xform = xform.scaleNonUniform(sx,sy); return scale.call(ctx,sx,sy); }; var rotate = ctx.rotate; ctx.rotate = function(radians){xform = xform.rotate(radians*180/Math.PI); return rotate.call(ctx,radians); }; var translate = ctx.translate; ctx.translate = function(dx,dy){xform = xform.translate(dx,dy); return translate.call(ctx,dx,dy); }; var transform = ctx.transform; ctx.transform = function(a,b,c,d,e,f){var m2 = svg.createSVGMatrix(); m2.a=a; m2.b=b; m2.c=c; m2.d=d; m2.e=e; m2.f=f; xform = xform.multiply(m2); return transform.call(ctx,a,b,c,d,e,f); }; var setTransform = ctx.setTransform; ctx.setTransform = function(a,b,c,d,e,f){xform.a = a; xform.b = b; xform.c = c; xform.d = d; xform.e = e; xform.f = f; return setTransform.call(ctx,a,b,c,d,e,f); }; var pt  = svg.createSVGPoint(); ctx.transformedPoint = function(x,y){pt.x=x; pt.y=y; return pt.matrixTransform(xform.inverse()); } } }
+
+///////////////////////////////////
+///////  HARDCODED AREA  /////////
+/////////////////////////////////
+var idlerVariables = [
+{
+  'Names' : 'Gauge length',
+  'dataAtt' : 'data-228',
+  'formId' : '590461817ce01f21cc0c076f',//590461817ce01f21cc0c076f 6-4-9-5
+},{
+  'Names' : 'Roll Width',
+  'dataAtt' : 'data-227',
+  'formId' : '590460167ce01f21cc0c0767',//590460167ce01f21cc0c0767 6-491
+},{
+  'Names' : 'Shaft Series',
+  'dataAtt' : 'data-474',
+  'formId' : '58fc8e737272c0425864d8c4',//58fc8e737272c0425864d8c4 6-493
+},{
+  'Names' : 'Roll Diameter',
+  'dataAtt' : 'data-188',
+  'formId' : '58fc8e3e7272c0425864d8bf',//58fc8e3e7272c0425864d8bf 6-517
+},{
+  'Names' : 'Wall Thickness',
+  'dataAtt' : 'data-189',
+  'formId' : '59045f7a7ce01f21cc0c0763',//59045f7a7ce01f21cc0c0763 6-523
+},{
+  'Names' : 'Flat Length',
+  'dataAtt' : 'data-464',
+  'formId' : '590462167ce01f21cc0c0773',//590462167ce01f21cc0c0773 6-497
+},{
+  'Names' : 'Designation',
+  'dataAtt' : 'data-470',
+  'formId' : 7354,
+},{
+  'Names' : 'B (mm) Bearing Width',
+  'dataAtt' : 'data-472',
+  'formId' : '590468e87ce01f21cc0c079f',//590468e87ce01f21cc0c079f 7-353
+},{
+  'Names' : 'D (mm) outer Race Diameter',
+  'dataAtt' : 'data-473',
+  'formId' : '590468d77ce01f21cc0c079e',//590468d77ce01f21cc0c079e 7-352
+},{
+  'Names' : 'Limiting speed r/min',
+  'dataAtt' : 'data-476',
+  'formId' : 7349,
+},{
+  'Names' : 'Reference speed r/min',
+  'dataAtt' : 'data-477',
+  'formId' : 7357,
+},{
+  'Names' : 'Pu (kN)',
+  'dataAtt' : 'data-478',
+  'formId' : 7358,
+},{
+  'Names' : 'C0 (kN)',
+  'dataAtt' : 'data-479',
+  'formId' : 7359,
+},{
+  'Names' : 'C (kN)',
+  'dataAtt' : 'data-480',
+  'formId' : 7355,
+},{
+  'Names' : 'Seal thickness',
+  'dataAtt' : 'data-472',
+  'formId' : '590469a27ce01f21cc0c07a7',//590469a27ce01f21cc0c07a7 7-274
+},{
+  'Names' : 'Seal clearance',
+  'dataAtt' : 'data-472',
+  'formId' : '59046a5b7ce01f21cc0c07aa',//59046a5b7ce01f21cc0c07aa 7-275
+}
+,{
+  'Names' : 'Idler Type',
+  'dataAtt' : 'data-226',
+  'formId' : 6470,
+},{
+  'Names' : 'Idler shell material.',
+  'dataAtt' : 'data-465',
+  'formId' : 8198,
+}
+];
+
+
+
+
+</script>    

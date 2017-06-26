@@ -30,10 +30,8 @@ var pagesController = require('./controllers/pages');
 var productController = require('./controllers/product');
 var assemblyController = require('./controllers/assembly');
 var componentController = require('./controllers/component');
-
-//Updated Controllers
-///////////////////////////////////////////////////////////////////////////////////
 var organizationController = require('./controllers/organization');
+var heavyliftingController = require('./controllers/heavy-lifting');
 
 // Passport OAuth strategies
 require('./config/passport');
@@ -264,7 +262,7 @@ app.get('/terms', pagesController.terms);
 ////        USER INTERFACE CONTROLLER         //// 
 /////////////////////////////////////////////////
 app.get('/users/', userInterfaceController.users);
-app.get('/users/:username/',componentController.componentforms, componentController.usercomponents,organizationController.userorganizations,componentController.organizationcomponents ,userInterfaceController.profile);
+app.get('/users/:username/',componentController.componentforms, componentController.usercomponents,organizationController.userorganizations,componentController.organizationcomponents,heavyliftingController.heavyliftingalluser ,userInterfaceController.profile);
 app.get('/users/:username/settings/',userInterfaceController.settings);
 app.get('/users/:username/settings/:page', componentController.componentforms,componentController.usercomponents,organizationController.userorganizations,componentController.organizationcomponents , userInterfaceController.page);
 app.get('/usersearch', userInterfaceController.usersearch);
@@ -294,10 +292,6 @@ app.get('/orguserread', organizationController.orguserread); // Get the active u
 /////////////////////////////////
 app.get('/components/', componentController.components);
 app.get('/componentssuperadmin/', componentController.componentssuperadmin);
-
-
-
-
 app.get('/component/new', organizationController.ajaxorguserread , componentController.componentforms, componentController.newcomp);
 
 //User Components
@@ -310,7 +304,11 @@ app.get('/components/organizations/:orgname', componentController.organizations)
 app.get('/components/organizations/:orgname/:compid', componentController.compidorg);
 
 
+//Viewer and calculator
+app.get('/components/:compid', componentController.compmore);
 
+//Viewer and calculator (Group) - Stage 2
+app.get('/components/:template/:compgroupid',readController.query,readController.query1,readController.query2,readController.query3,readController.query4 , componentController.compmore);
 
 
 /////////////////////////////////////
@@ -321,13 +319,14 @@ app.get('/testmail', userInterfaceController.testmail);
 
 
 
-
-//////////////////////////////////////////DEFAULTS//////////////////////////////////////////
-
 /////////////////////////////////
 ////       HOME             //// 
 ///////////////////////////////
-app.get('/', HomeController.index);
+
+app.get('/',componentController.componentforms, componentController.usercomponents,organizationController.userorganizations,componentController.organizationcomponents ,heavyliftingController.heavyliftingalluser, HomeController.index);
+
+
+//////////////////////////////////////////DEFAULTS//////////////////////////////////////////
 
 app.get('/contact', contactController.contactGet);
 app.post('/contact', contactController.contactPost);
