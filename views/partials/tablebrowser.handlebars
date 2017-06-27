@@ -12,22 +12,50 @@
   </ul>
   <!-- Tab panes -->
   <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="home">
-      <h3>Search</h3>
+    <div role="tabpanel"   class="tab-pane active" id="home">
+
+<p></p>
+
+<div class="panel panel-default">
+  <div class="panel-body" style="max-height: 617px;overflow: auto">
+          <h3>Search</h3>
       <p>Search these components.</p>
       <div  id="searchtable"></div>
+  </div>
+</div>
+
     </div>
 
     <div role="tabpanel" class="tab-pane" id="messages">
+
+
+<p></p>
+
+<div class="panel panel-default">
+  <div class="panel-body" style="max-height: 617px;overflow: auto">
       <h3>Graphing</h3>
       <p>Graph these components.</p>
       <div id="graphingtable"></div>
+  </div>
+</div>
+
+
+
     </div>
 
     <div role="tabpanel" class="tab-pane" id="create">
       <h3>Create</h3>
-      <p>create these components.</p>
+
    
+<p></p>
+
+<div class="panel panel-default">
+  <div class="panel-body" style="max-height: 617px;overflow: auto">
+      <p>create these components.</p>
+  </div>
+</div>
+
+
     </div>
 
     <div role="tabpanel" class="tab-pane" id="export">
@@ -51,7 +79,10 @@
 
 <div class="row">
   <div class="col-md-12">
-        <h3>Data Set</h3>
+
+<div class="panel panel-default">
+  <div class="panel-body" >
+             <h3>Data Set</h3>
       <p>The filtered data set.</p>
       <div style="overflow: auto;">
         <table id="tableID" class="table table-bordered table-condensed">
@@ -59,6 +90,13 @@
         <tbody></tbody>
       </table>
       </div>
+  </div>
+</div>
+
+
+
+
+
   </div>
 </div>
 
@@ -74,6 +112,18 @@
   var query3  =  {{{query3}}} 
   var query4  =  {{{query4}}}
 var table
+
+
+ 
+query3.sort(function(a, b) {
+  if (a.entry.order && b.entry.order) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+  }
+});
+query2.sort(function(a, b) {
+  return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+});
+
 /////////////////////////////
 ////     DEBUG AREA     //// 
 ///////////////////////////
@@ -113,11 +163,9 @@ function printcomp(){
    html += query2[i].entry.description 
    html +=   '</th>'
  }
-
    html +=    '<th>'
    html += '_id'
    html +=   '</th>'
-
  html += '</tr>'
  html +='</thead>'
  html +=  '<tbody>'
@@ -134,12 +182,9 @@ function printcomp(){
      html +=   '</td>'
    }
  }
-
-
      html +=    '<td>'
      html += query3[j].entry['_id']
      html +=   '</td>'
-
  html +='</tr>'
 }
 html += ' </tbody>'
@@ -156,7 +201,7 @@ $('document').ready(function(){
     //start javascript
   activateCanvasIdler()
 
-$('#col12_show').click()
+ 
 
 })
 
@@ -448,7 +493,7 @@ plotHightChart(series,xaxisLabel,yaxisLabel)
             zoomType: 'xy'
         },
         title: {
-            text: 'Idler Rolls'
+            text: 'Component Graph'
         },
         credits: false,        
         xAxis: {

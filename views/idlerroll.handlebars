@@ -41,6 +41,14 @@ var query2 = {{{query2}}}
 var query3 =  {{{query3}}} 
 var query4 = {{{query4}}}
 
+query3.sort(function(a, b) {
+  if (a.entry.order && b.entry.order) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+  }
+});
+query2.sort(function(a, b) {
+  return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+});
  
 var idlerJSON 
 ///////////////////////////// 
@@ -53,6 +61,7 @@ $('document').ready(function(){
   load();
   //start javascript
   activateCanvasIdler()
+  $('#col18_show').click()
 })
 
 /////////////////////////////////////////////
@@ -82,6 +91,7 @@ function drawIdler(locations,item,translates)
 {
 
   idlerJSON = query3[item].entry
+
   idlerJSON['590461817ce01f21cc0c076f'] = parseFloat(idlerJSON['590461817ce01f21cc0c076f'])
   idlerJSON['590460167ce01f21cc0c0767'] = parseFloat(idlerJSON['590460167ce01f21cc0c0767'])
   idlerJSON['58fc8e737272c0425864d8c4'] = parseFloat(idlerJSON['58fc8e737272c0425864d8c4'])
@@ -372,30 +382,29 @@ drawidlerCanvas(locations,idler,'grey')
 //this is the transformation matrix.used to move , rotate and scale any point arrays.
 function transformMatrix(transformArray,sx,sy,theta,tx,ty)
 {
- for (var key in transformArray) {
-   //change 0 to 1 in the loop below to skip the datum point.
-   for (var i = 0; i < transformArray[key].length; i++) {
-                //scaling
-                transformArray[key][i].x = transformArray[key][i].x*sx
-                transformArray[key][i].y = transformArray[key][i].y*sy
-                //rotation
-                tempx = (Math.cos(theta)*transformArray[key][i].x)-(Math.sin(theta)*transformArray[key][i].y)
-                tempy = (Math.sin(theta)*transformArray[key][i].x)+(Math.cos(theta)*transformArray[key][i].y)
-                transformArray[key][i].x = tempx
-                transformArray[key][i].y = tempy
-                //translate
-                transformArray[key][i].x = transformArray[key][i].x+tx
-                transformArray[key][i].y = transformArray[key][i].y+ty
-              };
-            }
-            return transformArray
-          };
+  for (var key in transformArray) {
+ //change 0 to 1 in the loop below to skip the datum point.
+ for (var i = 0; i < transformArray[key].length; i++) {
+    //scaling
+    transformArray[key][i].x = transformArray[key][i].x*sx
+    transformArray[key][i].y = transformArray[key][i].y*sy
+    //rotation
+    tempx = (Math.cos(theta)*transformArray[key][i].x)-(Math.sin(theta)*transformArray[key][i].y)
+    tempy = (Math.sin(theta)*transformArray[key][i].x)+(Math.cos(theta)*transformArray[key][i].y)
+    transformArray[key][i].x = tempx
+    transformArray[key][i].y = tempy
+    //translate
+    transformArray[key][i].x = transformArray[key][i].x+tx
+    transformArray[key][i].y = transformArray[key][i].y+ty
+  };
+}
+return transformArray
+};
 
 ///////////////////////////////////////////////////////
 /////this is to populate the src file for autocad/////
 /////////////////////////////////////////////////////
 function autoCAD (transformArray) {
-    //console.log(transformArray)
     //start by clearing the belting paragraph text box.
     for (var key in transformArray) {
       var Roll = "pline "   
@@ -417,7 +426,7 @@ function drawrRectangle (height,width) {
   //5 points in total
   rectan.push(
   {
-    "x":x, 
+    "x":x,
     "y":y,
     "drawn" :"yes"
   });
@@ -509,7 +518,8 @@ function activateCanvasIdler(){
       $("#CadExportArea").html('');
       for (var i = 0; i < filterdata.length; i++) {
         for (var j = 0; j < query3.length; j++) {
-          if (filterdata[i][12] == query3[j]._id) {
+
+          if (filterdata[i][18] == query3[j].elementID) {
             drawIdler("canvas",i,i*300)
           }
         }
@@ -548,7 +558,7 @@ function activateCanvasIdler(){
       var filterdata = table.rows( { search:'applied' } ).data()
       for (var i = 0; i < filterdata.length; i++) {
         for (var j = 0; j < query3.length; j++) {
-          if (filterdata[i][12] == query3[j]._id) {
+         if (filterdata[i][18] == query3[j].elementID) {
             drawIdler("canvas",i,i*300)
           }
         }
