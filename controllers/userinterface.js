@@ -1,8 +1,9 @@
 var heavyliftingModel      = require('../models/heavylifting.js');
 var organizationalModel      = require('../models/organizations.js');
+ 
 var User = require('../models/User');
-var siteName = 'Heavy-lifting'
-var User = require('../models/User');
+
+var sitename = "Heavy-lifting"
 
  ////////////////////////////////////
 ////////// SETTINGS PAGE ///////////
@@ -20,7 +21,7 @@ exports.settings = function(req, res) {
         siteName : siteName,
         items : JSON.stringify(ids),
         Formids : JSON.stringify(Formids),
-        title: 'Setttings | Heavy-lifting',
+        pagetitle: 'Setttings | '+sitename+'',
       });
     });
     break;
@@ -62,9 +63,9 @@ exports.profile = function(req, res) {
         componentlistParse : req.componentlistParse,
         componentlistall : req.componentlistall,
         componentlistParseall : req.componentlistParseall,
-        items:req.items, //list of all heavy-lifting DB entires
-        itemsParse:req.itemsParse,//list of all heavy-lifting DB entires
-        title: user.username+' | Heavy-lifting',
+        items:req.items, //list of all '+sitename+' DB entires
+        itemsParse:req.itemsParse,//list of all '+sitename+' DB entires
+        pagetitle: user.username+' | '+sitename+'',
       });
     })
   } else {
@@ -101,7 +102,7 @@ exports.page = function(req, res) {
           componentlistParse : req.componentlistParse,
           componentlistall : req.componentlistall,
           componentlistParseall : req.componentlistParseall,
-          title: template+' | Heavy-lifting',
+          pagetitle: template+' | '+sitename+'',
         });
       //Query end
     })
@@ -123,7 +124,7 @@ exports.page = function(req, res) {
           componentlistParse : req.componentlistParse,
           componentlistall : req.componentlistall,
           componentlistParseall : req.componentlistParseall,
-          title: template+' | Heavy-lifting',
+          pagetitle: template+' | '+sitename+'',
         });
       //Query end
     })
@@ -146,7 +147,7 @@ exports.users = function(req, res) {
       User.find(  function(err, username) {
         res.render('userlist',{
           username : username,
-          title: 'Users | Heavy-lifting',
+          pagetitle: 'Users | '+sitename+'',
         });
       });
     } else {
@@ -198,7 +199,7 @@ var transporter = nodemailer.createTransport({
 var mailOptions = {
     from: ' ', // sender address
     to: ' ', // list of receivers
-    subject: 'Heavy-lifting - Confirm your e-mail', // Subject line
+    subject: ''+sitename+' - Confirm your e-mail', // Subject line
     text: 'Hello world ?', // plain text body
     html: 'SnapScan - Confirm your e-mail' // html body
   };
@@ -211,3 +212,20 @@ transporter.sendMail(mailOptions, (error, info) => {
 });
 };
 
+//////////////////////////////////
+/////  PRIVACY STATEMENT    ///// 
+////////////////////////////////
+exports.privacy = function(req, res) {
+res.render('privacy-statement',{
+      pagetitle: 'Privacy | '+sitename+'',
+})
+}; 
+
+//////////////////////////////////
+/////  TERMS STATEMENT    ///// 
+////////////////////////////////
+exports.terms = function(req, res) {
+res.render('terms-of-service',{
+      pagetitle: 'Terms of Service | '+sitename+'',
+})
+}; 

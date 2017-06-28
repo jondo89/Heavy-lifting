@@ -6,23 +6,7 @@ var User = require('../models/User');
 var recaptcha = require('express-recaptcha');
 recaptcha.init('SITE_KEY', 'SECRET_KEY');
 
-
-
-
-/////////////////////////////////////////////////////
-////////////   PRIMARY PERMISSIONS      ////////////
-///////////////////////////////////////////////////
-
-        //superadmin – somebody with access to the site network administration features and all other features. See the Create a Network article.
-        //administrator (slug: 'administrator') – somebody who has access to all the administration features within a single site.
-        //member (slug: 'member') – paid user of orgmember..
-        //user (slug: 'user') – somebody who can only manage their profile.
-
-
-    
-    
-
-
+var sitename = 'Heavy-lifting'
 
 /**
  * Login required middleware
@@ -42,8 +26,8 @@ recaptcha.init('SITE_KEY', 'SECRET_KEY');
   if (req.user) {
     return res.redirect('/');
   }
-  res.render('account/login', {
-    title: 'Sign in | Heavy-lifting'
+  res.render('account/signin', {
+    pagetitle: 'Sign in | '+sitename+''
   });
 };
 
@@ -88,7 +72,7 @@ recaptcha.init('SITE_KEY', 'SECRET_KEY');
     return res.redirect('/');
   }
   res.render('account/signup', {
-    title: 'Sign up | Heavy-lifting'
+    pagetitle: 'Sign up | '+sitename+''
   });
 };
 
@@ -146,7 +130,7 @@ recaptcha.init('SITE_KEY', 'SECRET_KEY');
  */
  exports.accountGet = function(req, res) {
   res.render('account/profile', {
-    title: 'My Account | Heavy-lifting'
+    pagetitle: 'My Account | '+sitename+''
   });
 };
 
@@ -275,7 +259,7 @@ exports.accountPut = function(req, res, next) {
     return res.redirect('/');
   }
   res.render('account/forgot', {
-    title: 'Forgot Password | Heavy-lifting'
+    pagetitle: 'Forgot Password | '+sitename+''
   });
 };
 
@@ -325,7 +309,7 @@ exports.accountPut = function(req, res, next) {
       var mailOptions = {
         to: user.email,
         from: 'support@yourdomain.com',
-        subject: '✔ Reset your password on Heavy-lifting',
+        subject: '✔ Reset your password on '+sitename+'',
         text: 'You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n' +
         'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
         'http://' + req.headers.host + '/reset/' + token + '\n\n' +
@@ -354,7 +338,7 @@ exports.accountPut = function(req, res, next) {
       return res.redirect('/forgot');
     }
     res.render('account/reset', {
-      title: 'Password Reset | Heavy-lifting'
+      pagetitle: 'Password Reset | '+sitename+''
     });
   });
 };
@@ -403,7 +387,7 @@ exports.accountPut = function(req, res, next) {
       var mailOptions = {
         from: 'support@yourdomain.com',
         to: user.email,
-        subject: 'Your Heavy-lifting password has been changed',
+        subject: 'Your '+sitename+' password has been changed',
         text: 'Hello,\n\n' +
         'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
       };

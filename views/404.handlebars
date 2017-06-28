@@ -4,8 +4,16 @@
   <meta charset="utf-8" />
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Error 404 | Heavy-lifting</title>
+  <title>Error 404 | {{sitename}}</title>
   {{> css}}
+  <style type="text/css">
+    .outer{
+      background-color: rgba(0,0,0,0.5);
+      filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1,startColorStr="#E6FFFFFF",endColorStr="#E6FFFFFF");
+      -ms-filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1,startColorStr="#E6FFFFFF",endColorStr="#E6FFFFFF");
+    }
+
+  </style>
 </head>
 <body>
   {{> javascript}}
@@ -26,16 +34,18 @@
   <div class="full-page-header">
     <div class="container">
       <div class="row">
-        <div class="col-md-7" style="padding-top: 95px">
-          <h1> 
-           ERROR 404
-         </h1>
-         <h1> 
-           This is not the page you are looking for...
-         </h1>
-         <h3> 
-          Use the navigation menu above to browse the site.
-        </h3>
+        <div class="col-md-12" style="padding-top: 95px">
+          <div class="well outer" style="color: white">
+           <h1> 
+             ERROR 404
+           </h1>
+           <h1> 
+             This is not the page you are looking for...
+           </h1>
+           <p style="padding-top: 15px"> 
+            Use the navigation menu above to browse the site.
+          </p>
+        </div>
       </div>
     </div>
   </div>

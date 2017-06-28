@@ -38,10 +38,19 @@ require('./config/passport');
 
 var app = express();
 
-//favicon location
+///////////////////////////////////////
+///////   FAVICON LOCATION    ////////
+/////////////////////////////////////
 var favicon = require('serve-favicon');
-app.use(favicon(__dirname + '/public/img//favicon/favicon-16x16.png')); 
+try {
+  app.use(favicon(__dirname + '/public/img/favicon/favicon-16x16.png'));   
+} catch (err){
+  console.log('Favicon not found in the required directory.')
+}
 
+////////////////////////////////////////////////////
+///////   HEROKU VS LOCALHOST .ENV SWAP    ////////
+//////////////////////////////////////////////////
 if (process.env.MONGODB_URI) {
   mongoose.connect(process.env.MONGODB_URI);
 } else {
@@ -92,9 +101,9 @@ var hbs = exphbs.create({
     }
   });
 
-
-
-
+/////////////////////////////////////////////
+///////   HTTPS TRAFFIC REDIRECT    ////////
+///////////////////////////////////////////
  // Redirect all HTTP traffic to HTTPS
  function ensureSecure(req, res, next){
   if(req.headers["x-forwarded-proto"] === "https"){
@@ -108,12 +117,14 @@ if (app.get('env') == 'production') {
   app.all('*', ensureSecure);
 }
 
-
 app.engine('handlebars', hbs.engine);
-
-
 app.set('view engine', 'handlebars');
+
+/////////////////////////////////////////////
+///////   LOCALHOST PORT SETTING    ////////
+///////////////////////////////////////////
 app.set('port', process.env.PORT || 5000);
+
 app.use(compression());
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -130,11 +141,18 @@ app.use(function(req, res, next) {
 });
 app.use(express.static(path.join(__dirname, 'public')));
 
+//////////////////////////////////////////
+////     SET YOUR APP DETAILS        //// 
+////////////////////////////////////////
+app.locals.sitename = 'Heavy-lifting';
+app.locals.website = 'https://heavy-lifting.herokuapp.com/';
+app.locals.repo = 'https://github.com/Isithelo/heavy-lifting';
+
+/////////////////////////////
+////     ROUTING        //// 
+///////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 
 /////////////////////////////
 ////       PAGES        //// 
@@ -147,14 +165,12 @@ app.get('/assemblies', pagesController.assemblies);
 app.get('/configuration', pagesController.configuration);
 app.get('/reports', pagesController.reports);
 
-
 ////////////////////////////////////////////
 ////       INITIALIZE DATABASE         //// 
 //////////////////////////////////////////
 app.get('/init', initController.deletedb);
 app.get('/deletedb', initController.deletedb);
 app.get('/getdb', initController.getdb);
-
 
 //////////////////////////////////////////////////////////////////////
 ////        PRIMARY ADMINISTRATIVE DATABASE MODIFICATION         //// 
@@ -171,12 +187,10 @@ app.get('/delete',  adminController.delete);
 //Load Template
 app.get('/templateload', readController.templateload);
 
-
 /////////////////////////////////////////
 ////       CREATE CONTROLLERS       //// 
 ///////////////////////////////////////
 app.post('/create',  createController.create);
-
 
 ///////////////////////////////////////////
 ////       DELETE CONTROLLERS         //// 
@@ -185,7 +199,6 @@ app.post('/create',  createController.create);
 app.get('/deleteentryperm', deleteController.deleteentryperm);
 //get data by array of ids permanently.
 app.get('/deleteentry', deleteController.deleteentry);
-
 
 /////////////////////////////////////////
 ////       READ CONTROLLERS         //// 
@@ -197,18 +210,18 @@ app.get('/getCollectionData', readController.getCollectionData);
 app.get('/getdata', readController.getdata);
 //get data by array of ids.
 app.get('/getdatacomp', readController.getdatacomp);
- //get data by parentid
- app.get('/parentid', readController.parentid);
- //get data 
- app.get('/getshortdata', readController.getshortdata);
- //get jstree 
- app.get('/jstree', readController.jstree);
-  //get the select ddrop down items
-  app.get('/getformfield', readController.getformfield);
-  //get the select templatename
-  app.get('/templatename', readController.templatename);
-  //get the select groups
-  app.get('/groups', readController.groups);
+//get data by parentid
+app.get('/parentid', readController.parentid);
+//get data 
+app.get('/getshortdata', readController.getshortdata);
+//get jstree 
+app.get('/jstree', readController.jstree);
+//get the select ddrop down items
+app.get('/getformfield', readController.getformfield);
+//get the select templatename
+app.get('/templatename', readController.templatename);
+//get the select groups
+app.get('/groups', readController.groups);
 //get the navmenu
 app.get('/navmenuload', readController.navmenuload);
 //get the usermenu
@@ -228,35 +241,28 @@ app.get('/getformraw', readController.getformraw);
 // getformraw
 app.get('/getcompform', readController.getcompform);
 
-
 /////////////////////////////////////
 ////       PRODUCTS             //// 
 ///////////////////////////////////
 // getformraw
 app.get('/productload', productController.productload);
 
-
 /////////////////////////////////////
 ////       ASSEMBLY             //// 
 ///////////////////////////////////
 app.get('/assembly/new',  assemblyController.newassy);
 
-
-
 //search for the form to load.
 app.get('/getform',  componentController.additionaldetails , readController.getform);
-
 
 //Rebuild routing
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
 /////////////////////////////////
 ////       TEMPALTES        //// 
 ///////////////////////////////
-app.get('/privacy', pagesController.privacy);
-app.get('/terms', pagesController.terms);
+app.get('/privacy', userInterfaceController.privacy);
+app.get('/terms', userInterfaceController.terms);
 
 ///////////////////////////////////////////////////
 ////        USER INTERFACE CONTROLLER         //// 
@@ -348,14 +354,12 @@ app.get('/auth/google/callback', passport.authenticate('google', { successRedire
 app.get('/auth/github', passport.authenticate('github', { scope: [ 'user:email profile repo' ] }));
 app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/', failureRedirect: '/signin' }));
 
-
 /////////////////////////////
 ////       404          //// 
 ///////////////////////////
 app.get('*', function(req, res){
   res.render('404',{layout:false});
 });
-
 
 // Production error handler
 if (app.get('env') === 'production') {
@@ -365,10 +369,8 @@ if (app.get('env') === 'production') {
   });
 }
 
-
 app.listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'));
 });
-
 
 module.exports = app;

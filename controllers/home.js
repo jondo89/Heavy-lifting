@@ -24,8 +24,6 @@ if (req.user) {
     });
 } else {
   res.render('home', {
-    title: 'Heavy-lifting',
-    siteName : siteName,
     layout: false
   });
 }

@@ -50,35 +50,65 @@ The NPM service will now download and install into the cloned directory. The NPM
 <pre>npm install</pre>
  
 
-<li>Step 5 - in order to bring in the favicon (tab icons) server, use the following at the command prompt to install the favicon module.
+<li>In order to bring in the favicon (tab icons) server, use the following at the command prompt to install the favicon module.
 </li>
 <pre>npm install serve-favicon</pre>
 
 
-<li>• Step 6 - to make life much easier, install nodemon. Nodemon provides some welcome server management for troublesome server crashes , type into the cmd(command) prompt: 
+<li>To make life much easier, install nodemon. Nodemon provides some welcome server management for troublesome server crashes , type into the cmd(command) prompt: 
 </li>
 <pre>npm install -g nodemon</pre>
 
 
-<li>Step 7 - in order to communicate between the mongo server and the client side , expressjs needs to be installed. type into the cmd prompt 
+<li>In order to communicate between the mongo server and the client side , expressjs needs to be installed. type into the cmd prompt 
 </li>
 <pre>npm install express</pre>
 
 
-<li>Step 8 - Robomongo is a very useful tool for viewing the mongodb database structure. Install from their website.
-
+<li>Robomongo is a very useful tool for viewing the mongodb database structure. Install from their website.
 <pre>
 Download and install from the mongodb homepage.
 <a href="https://robomongo.org/" target="_blank">https://robomongo.org/</a>  
 </pre>
+
+
+<li>To ensure non-robotic users signin and signup , install the express recaptcha package.
+</li>
+<pre>npm install express-recaptcha --save</pre>
+
+<li>Dependant on the version of expressjs installed , the following may be required.
+</li>
+<pre>
+npm install morgan
+npm install compression
+npm install method-override
+npm install express-session
+npm install express-flash
+npm install body-parser
+npm install express-validator
+npm install dotenv
+npm install express-handlebars
+npm install passport
+npm install mongoose
+npm install async
+npm install nodemailer
+npm install crypto
+npm install bcrypt-nodejs
+npm install passport-google-oauth
+npm install passport-local
+</pre>
+
+
+
 </ul>
-<div style="text-align: center;">
+ 
   
   <p>Next step is import the demodata.json into your "heavylifting" mongodb collection on your localhost .</p>
 
 <a class="btn btn-primary" href="/json/demodata.json"><span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span> Download Mongo Demo Data</a>
-</div>
+<p></p> 
 
+<p>If you are getting stuck , this is a port of the quality work done on Megaboilerplate. Here are the installation instructions for <a href="https://github.com/sahat/megaboilerplate#express" target="_blank">Megaboilerplate</a></p>
 
 
  <div style="padding-bottom:45px"></div>

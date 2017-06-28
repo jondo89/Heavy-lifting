@@ -18,10 +18,8 @@ exports.components = function(req, res) {
       Formids : JSON.stringify(Formids)
     });
   });
- 
 };
  
-
 ////////////////////////
 /////     HELP    ///// 
 //////////////////////
@@ -38,8 +36,6 @@ exports.help = function(req, res) {
       Formids : JSON.stringify(Formids)
     });
   });
- 
- 
 };
 
 ////////////////////////
@@ -105,26 +101,6 @@ exports.database = function(req, res) {
     });
   });
 
-}; 
-
-
-
-//////////////////////////////////
-/////  PRIVACY STATEMENT    ///// 
-////////////////////////////////
-exports.privacy = function(req, res) {
-res.render('privacy-statement',{
-      title: 'Privacy | Heavy-lifting',
-})
-}; 
-
-//////////////////////////////////
-/////  TERMS STATEMENT    ///// 
-////////////////////////////////
-exports.terms = function(req, res) {
-res.render('terms-of-service',{
-      title: 'Terms of Service | Heavy-lifting',
-})
 }; 
 
  
