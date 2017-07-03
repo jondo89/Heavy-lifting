@@ -1,35 +1,26 @@
-{{> adminheader}}
- <h1>User List</h1>
-
+ <h1>{{sitename}} Users</h1>
 <p></p>
 <table class="table table-bordered" id="User">
   <thead>
     <tr>
       <th>Users</th>
- 
     </tr>
   </thead>
   <tbody>
     {{#each username}}
-
-
-
- 
-
-
  <tr>
 <td>
 <div class="media">
   <div class="media-left">
     <a href="#">
-      <img src="/uploads/{{this.id}}.jpg " style="max-width: 85px">
+      <img src="/uploads/{{this.id}}.jpg " style="max-width: 85px;border-radius: 2px;border: 1px;border-color: #d8d8d8;border-style: solid;">
     </a>
   </div>
   <div class="media-body">
 <div class="row">
   <div class="col-md-3">
      <a href="/organizations/{{this.username}}"><h4>{{this.username}}</h4></a>
-    Public Email : <a style="color:grey" href="/users/{{this.email}}">{{this.email}}   </a>
+    <a style="color:grey" href="/users/{{this.username}}">View Public Profile</a>
   </div>
   <div class="col-md-9">
 {{dotdotdotdot this.bio}}
@@ -39,31 +30,18 @@
 </div>
 </td>
    </tr>
-
-
-
  {{/each}}
 </tbody>
 </table>
 
 <script type="text/javascript">
-  
 ////////////////////////////////////
 ////        INITIALIZE         //// 
 //////////////////////////////////
 $('document').ready(function(){
 var table = jQuery('#User').DataTable({
   'destroy':true,
-  "pagingType": "numbers",        dom: 'Bfrtip',
-        buttons: [
-             { extend: 'csv', text: 'Export to CSV' ,className:'btn btn-default btn-sm' ,filename: 'Data export' ,title: 'Table export'}, { extend: 'pdf', text: 'Export PDF' ,className:'btn btn-default btn-sm' ,filename: 'Data export' ,title: 'Table export'}
-        ]
-  //  'order': [[ 2, 'asc' ]] ,
+  "pagingType": "numbers",    
 });
 })
-
-
-
-
-
 </script>

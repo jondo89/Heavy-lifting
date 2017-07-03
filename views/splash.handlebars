@@ -113,61 +113,70 @@
 		
 
 
-		<h3>Assemblies <small>you contribute to <span class="badge" id="compcount">0</span></small></h3>
-		<div class="panel panel-default"  id="components"  >
-			<div class="panel-body">
-				<div>
-					<!-- Nav tabs -->
-					<ul class="nav nav-tabs" role="tablist">
-						<li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">All</a></li>
-						<li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Public</a></li>
-						<li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Private</a></li>
-					</ul>
-					<!-- Tab panes -->
-					<div class="tab-content">
-						<div role="tabpanel" class="tab-pane active" id="home">
-							<p></p>
-							<table class="table table-bordered table-condensed" id=" " > 
-								<thead>
-									<tr>
-										<th>Description</th>
-									</tr>
-								</thead>
-								<tbody>
-								</tbody>
-							</table>
-						</div>
-						<div role="tabpanel" class="tab-pane" id="profile"> <p></p>
-							<table class="table table-bordered table-condensed" id="componentstablePublic" > 
-								<thead>
-									<tr>
-										<th>Description</th>
-									</tr>
-								</thead>
-								<tbody>
-								</tbody>
-							</table> 
+{{#if userorgcomplist}}
+<h3>Assemblies <small>you contribute to <span class="badge" id="compcount">0</span></small></h3>
+    <div class="panel panel-default"  id="components" style="display: none;">
+      <div class="panel-body">
+        <div>
+          <!-- Nav tabs -->
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">All</a></li>
+            <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Public</a></li>
+            <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Private</a></li>
+          </ul>
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="home">
+              <p></p>
+              <table class="table table-bordered table-condensed" id="componentstable" > 
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="profile"> <p></p>
+              <table class="table table-bordered table-condensed" id="componentstablePublic" > 
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table> 
 
-						</div>
-						<div role="tabpanel" class="tab-pane" id="messages"> <p></p>
-							<table class="table table-bordered table-condensed" id="componentstablePrivate" > 
-								<thead>
-									<tr>
-										<th>Description</th>
-									</tr>
-								</thead>
-								<tbody>
-								</tbody>
-							</table> 
+            </div>
+            <div role="tabpanel" class="tab-pane" id="messages"> <p></p>
+              <table class="table table-bordered table-condensed" id="componentstablePrivate" > 
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table> 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-						</div>
-					</div>
+    <a class="btn btn-success " href="/component/new"><i class="fa fa-plus" aria-hidden="true"></i> Create a Assemblies</a> 
+{{else}}
+<h3>Assemblies <small>you contribute to <span class="badge" id="compcount">0</span></small></h3>
+    <div style="border-width: 1px; border-style: dashed; border-color: grey;padding:15px;border-radius: 5px;">
+      <p>No Assemblies found </p>
+      <a class="btn btn-success " href="/Assemblies/new"><i class="fa fa-plus" aria-hidden="true"></i> Create an Assemblies</a> 
+    </div>
 
-				</div>
-			</div>
-		</div>
+{{/if}}
 
-		<a class="btn btn-success  " href="/assembly/new"> <i class="fa fa-plus" aria-hidden="true"></i> Create an Assembly</a> 
+		 
 
 	</div>
 
