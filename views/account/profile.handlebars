@@ -9,7 +9,7 @@
       <div class="media-left" >  
         <a href="#">
           {{#if userload.picture}}
-          <div id="googlepic"></div>
+          <div id="googlepic" style="text-align: center;"></div>
           {{else}}
           <img src="{{userload.gravatar}}" class="media-object">
           {{/if}}
@@ -69,178 +69,183 @@
     </div>
     {{/if}}
     <hr>
+    {{#if organizations}}
     <h3>Organizations</h3>
     <div class="row">
       {{#each organizations}}
       <div class="col-md-2">
         <a href="/organizations/{{this.entry.name}}" title="{{this.entry.name}}" >
-          <img src="{{this.entry.picture}}" class="media-object" style="max-width: 45px">
+          <img src="{{this.entry.picture}}" class="media-object" style="max-width: 45px;border-radius: 2px;border: 1px;border-color: #d8d8d8;border-style: solid;">
         </a>
       </div>
       {{/each}}
     </div>
-  </div>
+    {{else}}
+    <div  class="row" style="text-align: center">
+      <a class="btn btn-default btn-sm" href="">Create an Organization</a>
+    </div>
+    {{/if}}
+</div>
   <div class="col-md-8">
     <!-- Tab panes -->
     <div class="tab-content">
       <div role="tabpanel" class="tab-pane active" id="Summary">
         <div class="row">
           <div class="col-md-6">
-            <h3>Components <small>you contribute to <span class="badge" id="compcount">0</span></small></h3>
-            <div class="panel panel-default"  id="components" style="display: none;">
-              <div class="panel-body">
-                <div>
-                  <!-- Nav tabs -->
-                  <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">All</a></li>
-                    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Public</a></li>
-                    <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Private</a></li>
-                  </ul>
-                  <!-- Tab panes -->
-                  <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="home">
-                      <p></p>
-                      <table class="table table-bordered table-condensed" id="componentstable" > 
-                        <thead>
-                          <tr>
-                            <th>Description</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                      </table>
-                      </div>
-                      <div role="tabpanel" class="tab-pane" id="profile"> <p></p>
-                                             <table class="table table-bordered table-condensed" id="componentstablePublic" > 
-                        <thead>
-                          <tr>
-                            <th>Description</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                      </table> 
 
-                      </div>
-                      <div role="tabpanel" class="tab-pane" id="messages"> <p></p>
-                                             <table class="table table-bordered table-condensed" id="componentstablePrivate" > 
-                        <thead>
-                          <tr>
-                            <th>Description</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                      </table> 
-
-                      </div>
-                    </div>
-                    
-                  </div>
-                </div>
-              </div>
-              <a href="/component/new" class="btn btn-default" href="#" role="button">Create Component</a>
+ 
+  
+{{#if userorgcomplist}}
+<h3>Components <small>you contribute to <span class="badge" id="compcount">0</span></small></h3>
+    <div class="panel panel-default"  id="components" style="display: none;">
+      <div class="panel-body">
+        <div>
+          <!-- Nav tabs -->
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">All</a></li>
+            <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Public</a></li>
+            <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Private</a></li>
+          </ul>
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="home">
+              <p></p>
+              <table class="table table-bordered table-condensed" id="componentstable" > 
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
             </div>
-            <div class="col-md-6">
-              <h3>Assemblies <small>you contribute to <span class="badge">31</span></small></h3>
-              <div class="panel panel-default"  id="assemblies">
-                <div class="panel-body">
-                 <div>
-                  <!-- Nav tabs -->
-                  <ul class="nav nav-tabs" role="tablist" style="">
-                    <li role="presentation" class="active"><a href="#home1" aria-controls="home1" role="tab" data-toggle="tab">All</a></li>
-                    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Public</a></li>
-                    <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Private</a></li>
-                  </ul>
-                  <!-- Tab panes -->
-                  <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="home1">
-                      <p></p>
-                      <table class="table table-bordered table-condensed" id="assystable" > 
-                        <thead>
-                          <tr>
-                            <th>Description</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a>  <span class="label label-success">Private</span></td>
-                          </tr>
-                          <tr>
-                            <td><a>Conveyor Belt  </a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Idler Arrangements</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Equipment Relocation  </a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Operations</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Idler Rolls</a>  <span class="label label-success">Private</span></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a>  <span class="label label-success">Private</span></td>
-                          </tr>
-                          <tr>
-                            <td><a>Conveyor Belt</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Idler Arrangements</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Operations</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a>  <span class="label label-success">Private</span></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Heavy-lifting\</a><a>Equipment Relocation</a></td>
-                          </tr>
-                          <tr>
-                            <td><a>Idler Rolls</a></td>
-                          </tr>
-                        </tbody>
-                      </table></div>
-                      <div role="tabpanel" class="tab-pane" id="profile"></div>
-                      <div role="tabpanel" class="tab-pane" id="messages"></div>
-                    </div>
-                   
-                  </div>
-                </div>
-              </div>
-               <a href="/assembly/new" class="btn btn-default" href="#" role="button">Create Assembly</a>
+            <div role="tabpanel" class="tab-pane" id="profile"> <p></p>
+              <table class="table table-bordered table-condensed" id="componentstablePublic" > 
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table> 
+
+            </div>
+            <div role="tabpanel" class="tab-pane" id="messages"> <p></p>
+              <table class="table table-bordered table-condensed" id="componentstablePrivate" > 
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table> 
             </div>
           </div>
-          <h3>Recent Contributions.</h3>
+        </div>
+      </div>
+    </div>
+
+    <a class="btn btn-success " href="/component/new"><i class="fa fa-plus" aria-hidden="true"></i> Create a Component</a> 
+{{else}}
+<h3>Components <small>you contribute to <span class="badge" id="compcount">0</span></small></h3>
+    <div style="border-width: 1px; border-style: dashed; border-color: grey;padding:15px;border-radius: 5px;">
+      <p>No components found </p>
+      <a class="btn btn-success " href="/component/new"><i class="fa fa-plus" aria-hidden="true"></i> Create a Component</a> 
+    </div>
+
+{{/if}}
+
+
+
+
+
+            </div>
+<div class="col-md-6">
+
+
+            
+  
+{{#if userorgcomplist}}
+<h3>Assemblies <small>you contribute to <span class="badge" id="compcount">0</span></small></h3>
+    <div class="panel panel-default"  id="components" style="display: none;">
+      <div class="panel-body">
+        <div>
+          <!-- Nav tabs -->
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">All</a></li>
+            <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Public</a></li>
+            <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Private</a></li>
+          </ul>
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="home">
+              <p></p>
+              <table class="table table-bordered table-condensed" id="componentstable" > 
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="profile"> <p></p>
+              <table class="table table-bordered table-condensed" id="componentstablePublic" > 
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table> 
+
+            </div>
+            <div role="tabpanel" class="tab-pane" id="messages"> <p></p>
+              <table class="table table-bordered table-condensed" id="componentstablePrivate" > 
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table> 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a class="btn btn-success " href="/component/new"><i class="fa fa-plus" aria-hidden="true"></i> Create a Assemblies</a> 
+{{else}}
+<h3>Assemblies <small>you contribute to <span class="badge" id="compcount">0</span></small></h3>
+    <div style="border-width: 1px; border-style: dashed; border-color: grey;padding:15px;border-radius: 5px;">
+      <p>No Assemblies found </p>
+      <a class="btn btn-success " href="/Assemblies/new"><i class="fa fa-plus" aria-hidden="true"></i> Create an Assemblies</a> 
+    </div>
+
+{{/if}}
+
+
+
+          </div>
+            
+<div class="col-md-12">
+
+          <h3>Recent Contributions. <small>Click on the item to view the days contributions.</small></h3>
           <div class="panel panel-default">
             <div class="panel-body">
              <div id="cal-heatmap"></div>
            </div>
          </div>
+</div>
+
+
        </div>
      </div>
    </div>

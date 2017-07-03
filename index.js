@@ -141,12 +141,16 @@ app.use(function(req, res, next) {
 });
 app.use(express.static(path.join(__dirname, 'public')));
 
-//////////////////////////////////////////
-////     SET YOUR APP DETAILS        //// 
-////////////////////////////////////////
-app.locals.sitename = 'Heavy-lifting';
-app.locals.website = 'https://heavy-lifting.herokuapp.com/';
-app.locals.repo = 'https://github.com/Isithelo/heavy-lifting';
+///////////////////////////////////////////////
+////     SET YOUR APP.JSON DETAILS        //// 
+/////////////////////////////////////////////
+var myModule = require('./app.json');
+var sitename = myModule.sitename
+var website = myModule.website
+var repo = myModule.repo
+app.locals.sitename = sitename
+app.locals.website = website
+app.locals.repo = repo
 
 /////////////////////////////
 ////     ROUTING        //// 

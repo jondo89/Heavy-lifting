@@ -2,10 +2,12 @@ var heavyliftingModel      = require('../models/heavylifting.js');
 var organizationalModel      = require('../models/organizations.js');
 var User = require('../models/User');
 var siteName = 'Heavy-lifting'
-var User = require('../models/User');
+ 
 
 
-
+///////////////////////////////////////
+////       HOME CONTROLLER        //// 
+/////////////////////////////////////
 exports.index = function(req, res) {
 //Perform Routing for Varios user type on the home page.
 if (req.user) {

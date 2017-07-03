@@ -3,39 +3,52 @@
 <script type="text/javascript" src="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
 <link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
 
-
-
-
 <div class="row">
 	<div class="col-md-7">
-	<p></p>
+		<p></p>
+
+    
+
 		{{#if organizations}}
-		{{> button-org-user}}
+		<h3>Organizations <small>All user organizations are listed below.</small></h3>
+    <div class="row">
+      {{#each organizations}}
+      <div class="col-md-1">
+        <a href="/organizations/{{this.entry.name}}" title="{{this.entry.name}}"  >
+          <img src="{{this.entry.picture}}" class="media-object" style="max-width: 45px;border-radius: 2px;border: 1px;border-color: #d8d8d8;border-style: solid;">
+        </a>
+      </div>
+      {{/each}}
+    </div>
 		{{else}}
-		<a class="btn btn-success btn-xl" href="/organizations/new"><i class="fa fa-plus" aria-hidden="true"></i> Create an Organization</a> 
+		<h3>Organizations <small>Get started by creating your organization.</small></h3>
+		<div style="border-width: 1px; border-style: dashed; border-color: grey;padding:15px;border-radius: 5px;">
+			<p>No organizations found </p>
+			<a class="btn btn-success btn-xl" href="/organizations/new"><i class="fa fa-plus" aria-hidden="true"></i> Create an Organization</a> 
+		</div>
 		{{/if}}
- 
-
-          <h3>Recent Contributions. <small>Click on the item to view the days contributions.</small></h3>
-          <div class="panel panel-default">
-            <div class="panel-body">
-             <div id="cal-heatmap"></div>
-
-           </div>
-         </div>
 
 
-         <div>
-         	<h3>Recent activity</h3> 
-         	<div style="border-width: 2px; border-style: dashed; border-color: grey;padding:55px;text-align: center;border-radius: 5px;"><strong>Welcome!</strong> You are just getting started, setup you profile, create an organization then get started with a new component.</div>
-         </div>
+		<h3>Recent Contributions. <small>Click on the item to view the days contributions.</small></h3>
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<div id="cal-heatmap"></div>
+			</div>
+		</div>
+		<div>
 
+			<h3>Recent activity <small>Details of your interaction on the site are shown below.</small></h3> 
+			<div style="border-width: 1px; border-style: dashed; border-color: grey;padding:55px;text-align: center;border-radius: 5px;"><strong>Welcome!</strong> You are just getting started, setup you profile, create an organization then get started with a new component.</div>
+		</div>
 
 	</div>
-	<div class="col-md-5">
-	<p></p>
 
-		<h3>Components <small>you contribute to <span class="badge" id="compcount">0</span></small></h3>
+	<div class="col-md-5">
+		<p></p>
+
+
+{{#if userorgcomplist}}
+<h3>Components <small>you contribute to <span class="badge" id="compcount">0</span></small></h3>
 		<div class="panel panel-default"  id="components" style="display: none;">
 			<div class="panel-body">
 				<div>
@@ -81,14 +94,25 @@
 								<tbody>
 								</tbody>
 							</table> 
-
 						</div>
 					</div>
-
 				</div>
 			</div>
 		</div>
-		<a class="btn btn-success " href="/component/new">Create a Component</a> 
+
+		<a class="btn btn-success " href="/component/new"><i class="fa fa-plus" aria-hidden="true"></i> Create a Component</a> 
+{{else}}
+<h3>Components <small>you contribute to <span class="badge" id="compcount">0</span></small></h3>
+		<div style="border-width: 1px; border-style: dashed; border-color: grey;padding:15px;border-radius: 5px;">
+			<p>No components found </p>
+			<a class="btn btn-success " href="/component/new"><i class="fa fa-plus" aria-hidden="true"></i> Create a Component</a> 
+		</div>
+
+{{/if}}
+
+		
+
+
 		<h3>Assemblies <small>you contribute to <span class="badge" id="compcount">0</span></small></h3>
 		<div class="panel panel-default"  id="components"  >
 			<div class="panel-body">
@@ -143,7 +167,7 @@
 			</div>
 		</div>
 
-<a class="btn btn-success  " href="/assembly/new">Create an Assembly</a> 
+		<a class="btn btn-success  " href="/assembly/new"> <i class="fa fa-plus" aria-hidden="true"></i> Create an Assembly</a> 
 
 	</div>
 
@@ -152,12 +176,12 @@
 
 
 <script type="text/javascript">
-  var itemsParse = {{{itemsParse}}}
-  var componentlistParse = {{{componentlistParse}}}
-  var componentlistParseall = {{{componentlistParseall}}}
-  var userorgcomplistParse = {{{userorgcomplistParse}}}
+	var itemsParse = {{{itemsParse}}}
+	var componentlistParse = {{{componentlistParse}}}
+	var componentlistParseall = {{{componentlistParseall}}}
+	var userorgcomplistParse = {{{userorgcomplistParse}}}
 	function componentList(){
- 
+
 //User Components innto table
 var temp = []
 var count =0
@@ -233,8 +257,8 @@ var table = jQuery('#componentstablePrivate').DataTable({
 //////  INITIALISE    //////
 /////////////////////////// 
 $( document ).ready(function() {
-	  heatmap()
- 
+	heatmap()
+
 	componentList()
 });
 
@@ -242,30 +266,30 @@ $( document ).ready(function() {
 //////  HEAT MAP      //////
 /////////////////////////// 
 function heatmap(){
- var parserData = function (data) {
-  var dataJSON = {};
-  for(var i=0; i<data.length; i++) {
+	var parserData = function (data) {
+		var dataJSON = {};
+		for(var i=0; i<data.length; i++) {
     var date = new Date(data[i].created); // Date of activity 
     var sec = date.getTime()/1000; // Convert to sec
     // Pair "Key-Value" for calendar data
     if(dataJSON[sec]) {
-      dataJSON[sec]++;
+    	dataJSON[sec]++;
     } else {
-      dataJSON[sec] = 1;
+    	dataJSON[sec] = 1;
     }
-  }
+}
 
-  return dataJSON;
+return dataJSON;
 }
 var cal = new CalHeatMap();
 cal.init({
-   itemSelector: "#cal-heatmap",
-  domain: "month",
-  subDomain: "day",
+	itemSelector: "#cal-heatmap",
+	domain: "month",
+	subDomain: "day",
  // cellSize: 20,
   //subDomainTextFormat: "%d",
   range: 8,
-start: new Date(2016, 10),
+  start: new Date(2016, 10),
    data: itemsParse, // Dates Array
    afterLoadData: parserData      // Parser function
 });
