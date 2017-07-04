@@ -67,7 +67,6 @@ passport.use(new GoogleStrategy({
           done(err);
         } else {
           var newUser = new User({
-            username: username,
             name: profile.displayName,
             email: profile.emails[0].value,
             gender: profile._json.gender,
@@ -118,7 +117,6 @@ passport.use(new GithubStrategy({
           done(err);
         } else {
           var newUser = new User({
-            username: username,
             name: profile.displayName,
             email: profile._json.email,
             location: profile._json.location,
