@@ -3,7 +3,14 @@ var organizationalModel      = require('../models/organizations.js');
 var User = require('../models/User');
 var siteName = 'Heavy-lifting'
  
-
+///////////////////////////////////////////////
+////     SET YOUR APP.JSON DETAILS        //// 
+/////////////////////////////////////////////
+//Not working ? try double dots on the json url..
+var myModule = require('../app.json');
+var sitename = myModule.sitename
+var website = myModule.website
+var repo = myModule.repo
 
 ///////////////////////////////////////
 ////       HOME CONTROLLER        //// 
@@ -22,7 +29,7 @@ if (req.user) {
       componentlistParseall : req.componentlistParseall,
       items:req.items, //list of all heavy-lifting DB entires
       itemsParse:req.itemsParse,//list of all heavy-lifting DB entires
-      title: req.user.username + ' | Heavy-lifting' ,
+      pagetitle: req.user.username +' | '+sitename+'',
     });
 } else {
   res.render('home', {
@@ -30,3 +37,4 @@ if (req.user) {
   });
 }
 };
+ 

@@ -1,14 +1,10 @@
-<script src='https://www.google.com/recaptcha/api.js'></script>
 <div class="login-container container">
-
-
      <div style="text-align: center">
        <img src="/img/Logo square 300x300.png" style="height: 55px">  
      </div>
     <div style="text-align: center;padding-bottom: 15px">
-        <h2>Sign in to Heavy-lifting</h2>
+        <h2>Reset your {{sitename}} password</h2>
      </div>
-
 <div class="panel panel-default">
     <div class="panel-body">
       {{#if messages.success}}
@@ -26,7 +22,6 @@
         </div>
       {{/if}}
       <form method="POST">
-        <legend>Reset Password</legend>
         <div class="form-group">
           <label for="password">New Password</label>
           <input type="password" name="password" id="password" placeholder="New password" class="form-control" autofocus>
@@ -35,8 +30,6 @@
           <label for="confirm">Confirm Password</label>
           <input type="password" name="confirm" id="confirm" placeholder="Confirm password" class="form-control">
         </div>
-
-        
         <div class="form-group">
           <button type="submit" class="btn btn-success">Change Password</button>
         </div>
