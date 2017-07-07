@@ -91,10 +91,16 @@ var hbs = exphbs.create({
         return str;}
       },
       'dotdotdotdot' : function(str) {
-
         if (str) {
           if (str.length > 200)
             return str.substring(0,200) + '...';
+          return str;
+        }
+      },
+      'dotdotdotdotdot' : function(str) {
+        if (str) {
+          if (str.length > 400)
+            return str.substring(0,400) + '...';
           return str;
         }
       }
@@ -152,9 +158,9 @@ app.locals.sitename = sitename
 app.locals.website = website
 app.locals.repo = repo
 
-/////////////////////////////
-////     ROUTING        //// 
-///////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////                                                            ROUTING                                                                     //// 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -285,16 +291,18 @@ app.get('/organizations', organizationController.orglist);
 app.get('/organizations/new', organizationController.neworg);
 app.post('/organizations/new', organizationController.createorgstatic);
 app.get('/organizations/:orgname/', organizationController.ajaxorguserread ,organizationController.orgprofile);
-app.get('/organizations/:orgname/settings',organizationController.ajaxorguserread , organizationController.settings);
-app.get('/organizations/:orgname/components', organizationController.ajaxorguserread ,organizationController.components);
-app.get('/organizations/:orgname/assemblies',organizationController.ajaxorguserread , organizationController.assemblies);
+app.get('/organizations/:orgname/settings',organizationController.ajaxorguserread , organizationController.organizationpermission, organizationController.settings);
 app.get('/organizations/:orgname/people', organizationController.ajaxorguserread ,organizationController.people);
 app.get('/organizations/:orgname/settings',organizationController.ajaxorguserread , organizationController.settings);
 app.get('/organizations/:orgname/settings/:page', organizationController.ajaxorguserread , organizationController.page);
 app.put('/organizations/:orgname', userController.ensureAuthenticated, organizationController.orgPut);
+app.get('/leaveorganiztion/:ids',  organizationController.leaveorganiztion);
 
 //Ajax
 app.get('/orguserread', organizationController.orguserread); // Get the active user organizations , owner and member.
+
+app.get('/organizations/:orgname/components', organizationController.ajaxorguserread ,organizationController.components);
+app.get('/organizations/:orgname/assemblies',organizationController.ajaxorguserread , organizationController.assemblies);
 
 
 ///////////////////////////////////
@@ -336,8 +344,9 @@ app.get('/testmail', userInterfaceController.testmail);
 app.get('/',componentController.componentforms, componentController.usercomponents,organizationController.userorganizations,componentController.organizationcomponents ,heavyliftingController.heavyliftingalluser, HomeController.index);
 
 
-//////////////////////////////////////////DEFAULTS//////////////////////////////////////////
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////                                                            USER                                                                        //// 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get('/contact', contactController.contactGet);
 app.post('/contact', contactController.contactPost);
 app.get('/account', userController.ensureAuthenticated, userController.accountGet);

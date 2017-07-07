@@ -1,17 +1,17 @@
-<div class="container" style="width: 750px;">
+<div class="container">
   <h1 >Sign up your team</h1>
-  <table class="table table-bordered">
+  <table class="table table-bordered" style="border-radius: 5px">
     <tr>
-      <td style="padding-bottom: 22px;width: 33%" class="success">
+      <td style="padding-bottom: 22px;width: 33%;text-align: center" class="success">
        <h3><i class="fa fa-check" aria-hidden="true" style="color: #5cb85c"></i> <strong class="step" style="font-size:24px">Completed</strong></h3>
        Create personal account  
      </td>
-     <td style="padding-bottom: 22px;width: 33%;">
-      <h3><i class="fa fa-users" aria-hidden="true" style="color: #337ab7"></i> <strong class="step" style="font-size:24px">Step 2:</strong></h3>
+     <td style="padding-bottom: 22px;width: 33%;text-align: center">
+      <h3><i class="fa fa-users" aria-hidden="true" style="color: #337ab7"></i> <strong class="step" style="font-size:24px">Step 2</strong></h3>
       Create organization
     </td>
-    <td style="padding-bottom: 22px;width: 33%">
-     <h3><strong class="step" style="font-size:24px">Step 3:</strong></h3>
+    <td style="padding-bottom: 22px;width: 33%;text-align: center">
+     <h3><strong class="step" style="font-size:24px">Step 3</strong></h3>
      Invite members 
    </td>
  </tr>
@@ -41,7 +41,7 @@
         <div class="col-md-12">
         <div id="errmsg" style="font-size: 12px;color: red"></div> 
           <input type="text" name="name" id="name" class="form-control" value="">
-          <p class="help-block"><small>The organization account will live at https://https://heavy-lifting.herokuapp.com/organizations/<span id="insert"></span></small></p>
+          <p class="help-block"><small>The organization account will live at {{website}}organizations/<span id="insert"></span></small></p>
         </div>
       </div>
     </div>
