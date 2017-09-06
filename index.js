@@ -167,7 +167,7 @@ app.locals.repo = repo
 /////////////////////////////
 ////       PAGES        //// 
 ///////////////////////////
-app.get('/store', pagesController.store);
+app.get('/shop', pagesController.shop);
 app.get('/database', pagesController.database);
 app.get('/help', pagesController.help);
 app.get('/forms', pagesController.forms);

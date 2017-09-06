@@ -1,62 +1,126 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{sitename}}</title>
   {{> css}}
-    <style type="text/css">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <meta name="msvalidate.01" content="6F54F88A443C656EFB178CEF11C4E7E9" />
+  <meta name="google-site-verification" content="V6ZQykcqytIxvH_JCfowxQfGXB9Qn-rgaQ-iIrtoW3c" />  
+  <meta name="flattr:id" content="ljw99y">
+  <title>{{sitename}}</title>
+  <style type="text/css">
     .outer{
       background-color: rgba(0,0,0,0.5);
       filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1,startColorStr="#E6FFFFFF",endColorStr="#E6FFFFFF");
       -ms-filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=1,startColorStr="#E6FFFFFF",endColorStr="#E6FFFFFF");
     }
-
+    .recaptch-placeholder{
+      min-height: 88px;
+    }
   </style><!-- Place this tag in your head or just before your close body tag. -->
-<script async defer src="https://buttons.github.io/buttons.js"></script>
-</head>
-<body>
-  {{> javascript}}
-  <script src='https://www.google.com/recaptcha/api.js'></script>
-  {{> header}}
-  <div class="full-page-header">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-7" style="padding-top: 95px">
-          
-         <div class="well outer"  >
-           <h1> 
-           {{sitename}} is a design platform for Engineers.
-         </h1><!-- Place this tag where you want the button to render. -->
-
-         <h3  > 
-          Use {{sitename}} to build, design and create projects, support your business, and work together. From <strong>open source </strong> to <strong>business </strong>engineering databases. You can host and review designs, manage projects, and build engineering systems alongside millions of other developers.
-        </h3>  
-        <div style="padding-top: 35px" style="text-align:center;">
-        <p></p>
-         <!-- Place this tag where you want the button to render. -->
-<!-- Place this tag where you want the button to render. -->
-<a class="github-button" href="https://github.com/Isithelo/heavy-lifting" data-size="large" data-show-count="true" aria-label="Star Isithelo/Fraternate on GitHub">Star</a>
-       </div>
-       </div>
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <script async defer src="https://buttons.github.io/buttons.js"></script>
+        {{> javascript}}
+      </head>
+      <div id="fb-root"></div>
+      <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.9";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));</script>
+      <body id="page-top">
+        {{> header}}
+        <header>
+          <div class="container" >
+            <div class="row">
+              <div class="col-sm-7">
+                <div class="header-content" >
+                  <div class="header-content-inner">
+                    <div class="well outer"  >
+                     <h1> 
+                       {{sitename}} is an <strong>open source</strong> catalogue system. 
+                     </h1>  
+                     <h3 style="color: #c7c7c7">Heavy-lifting is a design platform, focused on the creation of complex component, assembly and report design allowing for the development of complex cataloguing systems, deployable as a boilerplate. It is <strong style="color: white">open-source</strong> and <strong style="color: white">light weight</strong>.  Built with mongodB, NodeJS, expressjs and Handlebars.js and designed for <strong style="color: white">flexibility</strong>.</h3>
          
-     </div>
-     <div class="col-md-5" style="padding-top: 95px">
-      {{> signuphomepage}}
-                   <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-        <ins class="adsbygoogle"
-        style="display:block"
-        data-ad-client="ca-pub-4051238795083187"
-        data-ad-slot="6384881635"
-        data-ad-format="auto"></ins>
-        <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+                  <div style="text-align: center;padding-top: 15px">
+                    <h4 class="media-heading">Don’t forget to star on GitHub!</h4>
+                     <a class="github-button" href="https://github.com/Isithelo/{{sitename}}" data-size="large" data-show-count="true" aria-label="Star Isithelo/{{sitename}} on GitHub">Star</a> 
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-5">
+          <div class="header-content">
+            <div class="header-content-inner">
+              {{> signuphomepage}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> 
+  </header>
+  <section style="text-align: center;"> 
+    <h1 style="padding-top: 100px">The Platform</h1>
+    <h1><small>Fraternate is the first phase of a user project management system for NodeJS. Modeled on the GitHub project management system and aimed to be modular for allowing as may application scenarios as possible.</small></h1>
+    <div style="padding-bottom: 100px"></div>
+    <div class="container" >
+      <div class="row">
+        <div class="col-md-4" style="text-align: center;">
+          <div class="panel panel-default" style="min-height: 250px">
+            <div class="panel-body"><h5>Phase 1</h5>
+              <a href="https://fraternate.herokuapp.com/" target="_blank" style="text-decoration: none;">
+                <img  style="max-width: 65px" src="/img/logo/fraternate.png" alt="..." >
+                <p></p>
+                <h3>Fraternate  <small>Team and User Management System.</small></h3>
+                <p><a href="https://github.com/Isithelo/Fraternate" target="_blank">Fraternate Repo</a></p>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4" style="text-align: center; ">
+          <div class="panel panel-default" style="min-height: 250px">
+            <div class="panel-body">
+              <h5>Phase 2</h5>
+              <a href="https://wrasse.herokuapp.com/" target="_blank"  style="text-decoration: none;">
+                <img  style="max-width: 65px" src="/img/logo/wrasse.png" alt="...">
+                <p></p>
+                <h3>Wrasse  <small>Issue Tracking.</small></h3>
+                <p><a href="https://github.com/Isithelo/Wrasse" target="_blank">Wrasse Repo</a></p>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4" style="text-align: center;  ">
+          <div class="panel panel-default" style="min-height: 250px">
+            <div class="panel-body">
+              <h5>Phase 3</h5>
+              <a href="https://heavy-lifting.herokuapp.com/" target="_blank"  style="text-decoration: none;">
+                <img  style="max-width: 65px" src="/img/logo/heavy-lifting.png" alt="...">
+                <p></p>
+                <h3>Heavy-lifting  <small>Bulk cataloging and design.</small></h3>
+                <p><a href="https://github.com/Isithelo/Heavy-lifting" target="_blank">Heavy-lifting Repo</a></p>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center;padding: 100px" >
+        <a href="/signin" class="btn btn-default btn-lg" >Give it a try !</a>  
+      </div>
     </div>
-  </div>
-</div>
-</div>
-{{> analytics}}
+  </section>
+  {{> analytics}}
 </body>
 </html>

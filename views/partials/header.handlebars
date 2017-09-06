@@ -1,4 +1,5 @@
-<nav id="mainNav" class="navbar navbar-inverse ">
+<nav id="mainNav" class="navbar navbar-inverse navbar-fixed-top ">
+  <div id="headerload"></div>
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -6,7 +7,7 @@
         <span class="sr-only">Toggle navigation</span><i class="fa fa-bars"></i>
       </button>
       <a class="navbar-brand" href="/" style="padding: 8px 0px 5px 11px">
-        <img alt="{{sitename}}" src="/img/Logo square inverse 50x50.png" style="height: 35px;padding: 5px"> 
+        <img alt="{{sitename}}" src="/img/Logo square inverse 50x50.png" style="height: 35px;width:35px;padding: 5px"> 
       </a> 
       <a class="navbar-brand" href="/">{{sitename}}</a>
     </div>
@@ -15,31 +16,46 @@
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <!-- Main navigation -->
-        <ul class="nav navbar-nav">
-          <li >
-            <a href="/database">Database</a>
-          </li>
+        <ul class="nav navbar-nav"  style="overflow:auto;">
+          <!-- Custom Content goes here. -->
           <li>
-            <a href="/store">Store</a>
-          </li>
+            <a href="/database" >Database</a>
+          </li> 
           <li>
             <a href="/components">Components</a>
-          </li>
+          </li> 
+          <li>
+            <a href="/shop">Shop</a>
+          </li> 
+          <!-- Custom Content goes here. -->
         </ul>
         <ul class="nav navbar-nav navbar-right" id="deploy">
+          <!-- Custom Content goes here. -->
+          {{#unless user}}
+          <!-- Custom Content goes here. -->
           <li>
-            <a href="/help" style="color: rgba(255,255,255,0.75)">Help</a>
+            <a href="/introduction">Introduction</a>
           </li> 
+          <!-- Custom Content goes here. -->
+          {{/unless}}
+          <!-- Custom Content goes here. -->
+          <!-- Custom Content goes here. -->
           {{#if user}}
+          <li>
+            <a href="/assemblies">Assemblies</a>
+          </li> 
+          <li>
+            <a href="/reports">Reporting</a>
+          </li> 
           <li class="dropdown" data-toggle="tooltip" data-placement="right" title="Create new.">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-plus" aria-hidden="true"></i> <span class="caret"></span></a>
             <ul class="dropdown-menu" id="component">  
               <li><a href="/organizations/new">New Organization</a></li>
-              <li><a href="/component/new">New Component</a></li>
-              <li><a href="/assembly/new">New Assembly</a></li>
             </ul>
           </li>
           {{/if}}
+          <!-- Custom Content goes here. -->
+          <!-- Custom Content goes here. -->
           {{#if user}}
           <li class="dropdown" data-toggle="tooltip" data-placement="right" title="View profile and more.">
             <a href="#" data-toggle="dropdown" class="navbar-avatar dropdown-toggle" >
@@ -55,7 +71,7 @@
               <li class="divider"></li>    
               <li><a href="/users/{{user.username}}">Your Profile</a></li>
               <li><a href="/users/{{user.username}}/settings/profile">Settings</a></li>
-              <li><a href="/help">Help</a></li>
+              <li><a href="/documentation">Documentation</a></li>
               <li class="divider"></li>  
               <li><a href="/signout">Sign out</a></li>
             </ul>
@@ -64,14 +80,49 @@
           <li class=""><a href="/signin">Sign in</a></li>
           <li class=""><a href="/signup">Sign up</a></li>
           {{/if}}
+          <!-- Custom Content goes here. -->
         </ul>
       </div>
     </div>
     <!-- /.navbar-collapse -->
+    
   </div>
+
   <!-- /.container-fluid -->
 </nav>
+<style type="text/css">
+  #headerload {
+    width: 100%;
+    height: 1px;
+    padding: 0px;
+  }
+
+  #headerload > svg {
+    width: 100%;
+    display: block; height: 4px;
+  }
+</style>
+
+<script type="text/javascript">
+  var progressBar = new ProgressBar.Line('#headerload', {
+    easing: 'easeInOut',
+    from: {color: '#ef4e7b'},
+    to: {color: '#337ab7'},
+    duration: 1400,fill: 'rgba(0, 0, 0, 0.5)',
+    step: (state, bar) => {
+      bar.path.setAttribute('stroke', state.color);
+    }
+  });
+progressBar.animate(1.0, {
+    duration: 800
+}, function() {
+    $('#headerload').html('')
+});
+</script>
 {{#if user}}
+
+
+
 <script type="text/javascript">
  var user = JSON.parse(JSON.stringify('{{user.permission}}'))
 ///////////////////////////// 
@@ -79,7 +130,7 @@
 /////////////////////////// 
 $( document ).ready(function() {
   if (user=='superadmin') {
-    $("#usermenu").append('<li class="divider"></li> <li><a href="/configuration"><i class="fa fa-cog" aria-hidden="true"></i> Configuration</a></li><li><a href="/forms"><i class="fa fa-cog" aria-hidden="true"></i> Forms</a></li><li><a href="/admin"><i class="fa fa-cog" aria-hidden="true"></i> Admin Panel</a></li><li><a href="/users"><i class="fa fa-cog" aria-hidden="true"></i> Users</a></li><li><a href="/organizations"><i class="fa fa-cog" aria-hidden="true"></i> Organizations</a></li><li><a href="/componentssuperadmin"><i class="fa fa-cog" aria-hidden="true"></i> Components</a></li>')
+    $("#usermenu").append('<li class="divider"></li> <li><a href="/configuration"><i class="fa fa-cog" aria-hidden="true"></i> Configuration</a></li><li><a href="/forms"><i class="fa fa-cog" aria-hidden="true"></i> Forms</a></li>')
   }
 });
 </script>

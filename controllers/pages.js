@@ -67,7 +67,7 @@ if (req.user) {
 /////////////////////////
 /////     STORE    ///// 
 ///////////////////////
-exports.store = function(req, res) {
+exports.shop = function(req, res) {
 //Which id data to use.
 var ids = '58d222d18d9bfd28846eb792'
    heavyliftingModel.find().limit(5).exec(function (err, init) {
