@@ -368,10 +368,35 @@ app.get('/auth/github', passport.authenticate('github', { scope: [ 'user:email p
 app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/', failureRedirect: '/signin' }));
 
 /////////////////////////////
+////       500          //// 
+/////////////////////////// 
+app.use(function(err, req, res, next) {
+  // log the error, treat it like a 500 internal server error
+  // maybe also log the request so you have more debug information
+  //log.error(err, req);
+
+  // during development you may want to print the errors to your console
+  //console.log(err.stack);
+req.flash('error', { msg: JSON.stringify(err)});
+  // send back a 500 with a generic message
+  res.status(500);
+  res.redirect('/500');
+});
+
+/////////////////////////////
+////       404          //// 
+///////////////////////////
+app.get('/500', function(req, res){
+  res.render('../../../views/500',{
+    layout:false
+  });
+});
+
+/////////////////////////////
 ////       404          //// 
 ///////////////////////////
 app.get('*', function(req, res){
-  res.render('404',{layout:false});
+  res.render('../../../views/404',{layout:false});
 });
 
 // Production error handler
