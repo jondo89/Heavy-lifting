@@ -1,0 +1,472 @@
+     <div role="tabpanel" class="tab-pane active" id="table">
+       <p></p>
+       <div id='formDelivery'></div>
+     </div>
+     <script type="text/javascript">
+
+/////////////////////////////
+////     DEBUG AREA     //// 
+///////////////////////////
+console.log( 'table loading' )
+console.log( '-------------------------' )
+console.log( '-------------------------' )
+console.log( 'table loading' )
+
+
+var modifiedTableListData
+
+tablelistdata.sort(function(a, b) {
+  if (a.entry.order && b.entry.order) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+  }
+});
+query3.sort(function(a, b) {
+  return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+});
+query2.sort(function(a, b) {
+  return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+});
+
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+$('document').ready(function(){
+ uniqueIdforcformButton()
+ dataFormat()
+ datableload(modifiedTableListData)
+})
+
+
+
+
+///////////////////////////////////////////////////
+////        REQUIRED FORMATING OF DATA        //// 
+/////////////////////////////////////////////////
+function dataFormat(){
+  var temp = []
+  //This is where the id is injected into the menu item . Crude hacky work around , not sure how to improve.
+  for (var i = 0; i < tablelistdata.length; i++) {
+      //the add the id to the array going into the menu .
+      if (tablelistdata[i]['elementID'] == "") {
+        tablelistdata[i].entry._id = tablelistdata[i]['_id']
+      }else{
+        tablelistdata[i].entry._id = tablelistdata[i]['elementID']
+      }
+      tablelistdata[i].entry.name = tablelistdata[i]['name']
+      tablelistdata[i].entry.childType = tablelistdata[i]['childType']
+      tablelistdata[i].entry.name = tablelistdata[i]['name']
+   // tablelistdata[i].entry.detail1 = tablelistdata[i]['detail']
+   tablelistdata[i].entry.userID = tablelistdata[i]['userID']
+   tablelistdata[i].entry.parentid = tablelistdata[i]['parentid']
+   temp.push(tablelistdata[i].entry)
+ }
+ modifiedTableListData = temp
+}
+
+//////////////////////////////////////////
+//////  CAPATILIZE FIRST LETTER    //////
+////////////////////////////////////////
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+//////////////////////////////////////////////
+//////  CHECK IF AN OBJECT IS AN ARRAY //////
+//////////////////////////////////////////////
+function isArray(obj){
+  return !!obj && obj.constructor === Array;
+}
+
+///////////////////////////////
+//////  LOAD THE TABLE  //////
+/////////////////////////////
+function datableload(tableData) {
+//General Heading error trap.  
+//When the heading is only 1 item , the printing of the headings loops throguh each character . THis checks if it is an array .
+if (items.entry.headings) {
+  var tableHeadings = JSON.parse(JSON.stringify(items.entry.headings))
+  if (!isArray(tableHeadings)) {
+    tableHeadings = [tableHeadings]
+  }  
+} else {
+  var tableHeadings = ['name','detail','userID','id','parentid','childType','description']
+}
+var tempVarIDs = formids+'tableloadID'
+    //inject the ID html table into the page.
+    $('#'+formids).html('<table id="'+tempVarIDs+'" class="table table-bordered table-compressed table-hover" cellspacing="0" width="100%"></table>')
+    //error message text
+    var html = ''
+    html += '<div class="alert alert-danger" role="alert"> '
+    html += '<strong>'
+    html += 'Oh snap!'
+    html += '</strong> '
+    html += 'No data found , Please let us know about this.'
+    html += '</div>'
+//client side error check for the tables.
+if (tableData !== null) {
+  if (tableData.length !== 0) {
+    dataTableLoad (tableData,tempVarIDs,tableHeadings)
+    loadDataTable(tempVarIDs)
+  } else {
+    $('#'+formids).html(html)
+  }
+} else {
+  $('#'+formids).html(html)
+}
+};
+
+function loadDataTable(id){
+//the use of var here is critical , each instantiate needs to be unique.
+var table = jQuery('#'+id).DataTable({
+  'destroy':true,
+  "pagingType": "numbers",dom: 'Bfrtip',
+  buttons: [
+    { extend: 'csv', text: 'Export to CSV' ,className:'btn btn-default btn-sm' ,filename: 'Data export' ,title: 'Table export'}, 
+    { extend: 'pdf', text: 'Export PDF' ,className:'btn btn-default btn-sm' ,filename: 'Data export' ,title: 'Table export'}
+  ]
+  //  'order': [[ 2, 'asc' ]] ,
+});
+  //Add event listener for opening and closing details
+  jQuery('#'+id +' tbody').on('click', 'td.details-control', function () {
+    var tr = jQuery(this).closest('tr');
+    var row = table.row( tr );
+    if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();//////////////////////////////////////
+            tr.removeClass('shown');
+          }
+          else {
+            // Open this row
+            //it is async , and the canvas is not rendered 
+            row.child(formatDefault(this.id))
+            row.child.show();
+            tr.addClass('shown');
+            // Warning Duplicate IDs
+            $('[id]').each(function(){
+              var ids = $('[id="'+this.id+'"]');
+              if(ids.length>1 && ids[0]==this){
+               $( this ).css( "color", "red" )
+               $( this ).css( "background", "green" )
+               console.warn('Multiple IDs #'+this.id);
+             }
+           });
+          }
+        });
+
+}
+
+////////////////////////////////////////////////////////////////////
+////////////        FORMIDsABLE VIEW EXTRA DETAIL         ///////////
+///////////////////////////////////////////////////////////////////
+function formatDefault ( d ) {
+  // `d` is the original data object for the row
+  var html=''
+  html+='<h4>Options</h4><p>The following options are availble for this item.</p>'
+  html +='<div class="row">'
+  html +='<div class="col-md-7">'
+  html +='<div class="btn-group" role="group" aria-label="...">'
+
+  for (var j = 0; j < items.entry.buttons.length; j++) {
+    switch(true){
+      case (items.entry.buttons[j] == 'delete'):
+      html += '<button type="button" class="btn btn-default" data-_id="'+d+'" id="'+d+'_del" data-toggle="modal" data-target="#myModal" onclick="deleteEntry(this.id)"  data-toggle="tooltip" data-placement="top" title="Delete this item">Remove</button>'
+      break;
+      case (items.entry.buttons[j] == 'modify'):
+      html += '<button type="button" class="btn btn-default" id="'+d+'_read" onclick="modifyItem(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Modify</button>'
+      break;
+      case (items.entry.buttons[j] == 'rawitem'):
+      html += '<button type="button" class="btn btn-default" id="'+d+'raw" onclick="tableraw(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Raw</button>'  
+      break;  
+      case (items.entry.buttons[j] == 'comp'):
+      html += '<button type="button" class="btn btn-default"  id="'+d+'_comp" onclick="createComp(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Create child item.">Create component</button>'
+      break;  
+      case (items.entry.buttons[j] == 'permdelete'):
+      html += '<button type="button" class="btn btn-default" id="'+d+'_perm" onclick="permdelete(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Delete</button>'
+      break;  
+      case (items.entry.buttons[j] == 'Modifynorevraw'):
+      html += '<button type="button" class="btn btn-default" id="'+d+'_1" onclick="useForm(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Modifynorevraw</button>'
+      break;  
+      case (items.entry.buttons[j] == 'norevraw'):
+      html += '<button type="button" class="btn btn-default" id="'+d+'_1" onclick="useForm(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">norevraw</button>'
+      break;  
+      default :
+      html += items.entry.buttons[j]+' '
+      break;
+    }
+  }   
+
+  html +='  </div>'
+  html +='</div>'
+  html +='<div class="col-md-5">'
+  html +='<pre> id : '+d+'</pre>'
+  html += '<div id="'+d+'_loadingArea" ></div>'
+  html +='</div>'
+  html +='</div>'
+ 
+  return html;
+}
+
+/////////////////////////
+//////  DELETE   ///////
+///////////////////////
+function deleteEntry(id){
+  id = id.replace('_del', '');  
+  _id = $( "#"+id ).data( "_id" )  
+  html = ''
+  html +='<div class="row" style="width:100%;text-align:center">'
+  html += '<h3>Are you sure you what to do this ?</h3>'
+  html += '<p>This action can be undone.</p>'
+  html +='<div class="btn-group" role="group" aria-label="..." style="align:center">'
+  html +='  <button type="button" class="btn btn-danger" onclick="deleteEntrys('
+  html +="'"
+  html +=id
+  html +="'"
+  html +=')">Confirm</button>'
+  html +='</div>'
+  $('#formAreaModal').html(html)
+}
+
+//////////////////////////////
+//////  PERM DELETE   ///////
+////////////////////////////
+function permdelete(id){
+  id = id.replace('_perm', '');  
+  _id = $( "#"+id ).data( "_id" )  
+  html = ''
+  html +='<div class="row" style="width:100%;text-align:center">'
+  html += '<h3>Are you sure you what to do this ?</h3>'
+  html += '<p>This action cannot be undone.</p>'
+  html +='<div class="btn-group" role="group" aria-label="..." style="align:center">'
+  html +='  <button type="button" class="btn btn-danger" onclick="deleteEntrysPerm('
+  html +="'"
+  html +=id
+  html +="'"
+  html +=')">Confirm</button>'
+  html +='</div>'
+  $('#formAreaModal').html(html)
+}
+
+/////////////////////////////
+//////  DELETE AJAX  ///////
+///////////////////////////
+function deleteEntrys(_id){
+  jQuery.ajax({
+    'url': '/deleteentry?idItem='+_id,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      window.location.reload()
+    }
+  });
+}
+
+/////////////////////////////
+//////  DELETE AJAX  ///////
+///////////////////////////
+function deleteEntrysPerm(_id){
+  jQuery.ajax({
+    'url': '/deleteentryperm?idItem='+_id,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      window.location.reload()
+    }
+  });
+}
+
+/////////////////////////////////////////////
+//////  LOAD ADDITIONAL ITEM DETAIL  ///////
+///////////////////////////////////////////
+function loadDetail(id){
+  var html = '<div style="text-align:center">'
+  html += '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>'
+  html+='<span class="sr-only">Loading...</span>'
+  html += '</div>'
+  $('#'+id+'_loadingArea').html(html)
+/*
+  jQuery.ajax({
+    'async': true,
+    'global': false,
+    'url': '/getlongdata?data='+id,
+    'success': function (dataSchemaObject) {
+      $('#'+id+'_loadingArea').html(dataSchemaObject)
+    }
+  });
+  */
+}
+
+////////////////////////////
+////////    READ  /////////
+///////////////////////////
+function dataTableLoad (data,id,headings){
+  html = ''
+  if (items.entry.buttons) {
+    html += '<thead><tr><th  style="width:1px"></th>'
+  }else{
+   html += '<thead><tr>'
+ }
+ for (var i = 0; i < headings.length; i++) {
+  html += '<th>'
+  html+=capitalize(headings[i])
+  html += '</th>'
+}
+html += '</tr></thead>'
+html += '<tbody>'
+for (var i = 0; i < data.length; i++) {
+  if (items.entry.buttons) {
+    html += '<tr><td class="details-control" style="text-align:center;vertical-align:middle; " id="'+data[i]['_id']+'" data-parentid="'+data[i]['parentid']+'" data-childType="'+data[i]['childType']+'"><i class="fa fa-plus-square-o" aria-hidden="true" ></i></td>'
+  }else{
+    html += '<tr> '
+  }
+  for (var j = 0; j < headings.length; j++) {
+      if ( data[i][headings[j]] == undefined) {
+        html += '<td style=" vertical-align:middle;background-color:#f5f5f5">'
+        html += "-"
+      }else {
+        html += '<td style=" vertical-align:middle">'
+        html += data[i][headings[j]]
+      }
+  }
+  html += '</tr>'
+}
+html += '<tbody>'
+$('#'+id).html(html)
+} 
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK OPEN FORM  /////////
+////////////////////////////////////////////
+function deployFormComponent(formToUse){
+  //This is hard wired , and likely to cause issues.
+  var headings = ["description","detail","icon","headings"]
+  var entry =''
+  loadformModal(formToUse,'','component',items.elementID,headings,entry)
+}
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK OPEN FORM  /////////
+////////////////////////////////////////////
+function deployFormUse(formToUse){
+  //This is hard wired , and likely to cause issues.
+  var headings = ["description","detail","icon","headings"]
+  var entry =''
+  loadformModal(formToUse,'','use',templateload,headings,entry)
+}
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK MODIFY     /////////
+////////////////////////////////////////////
+function modifybutton(parentid){
+  //Inputs into the form deployment.
+    //formdata,idItem,raw,parentid,headings,entry
+  //Which form to use.
+    //formdata:
+  //idItem:
+    //Which item to edit.
+  //Use the raw function for defining how to edit the data :
+    //raw:['use' , 'self' , 'edit']
+  //parentid:
+    //Inject a parent id.
+  //Inject a default entry.
+    //entry is used to manually add additional information to the form.
+  //Find and inject the group menu id number.
+  if (items.elementID) {
+    var parentIdTemp = items.elementID
+  } else {
+    var parentIdTemp = items._id
+  }
+  var headings = ["description","detail","icon","headings"]
+  var entry = {
+    parent : parentIdTemp,
+  }
+  loadformModal(parentid,parentIdTemp,'self',items.parentid,headings,entry)
+}
+
+//////////////////////////////////////////////////
+////////    BUTTON CLICK OPEN RAW FORM  /////////
+////////////////////////////////////////////////
+function deployparentrawForm(parentid){
+ parentid = parentid.replace('_parentraw', '');
+ loadformModal(parentid,parentid,'raw',parentid)
+}
+
+//////////////////////////////////////////////////
+////////    BUTTON CLICK OPEN RAW FORM  /////////
+////////////////////////////////////////////////
+function copyParentRaw(parentid){
+  parentid = parentid.replace('_copy', '');
+  loadformModal(parentid,parentid,'copyraw',parentid)
+}
+
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+////////////////////////////////////                                                                                                              
+function loadformModal(formdata,idItem,raw,parentid,headings){
+  console.log('Entering here' , parentid)
+  var headings = JSON.stringify(headings)
+  jQuery.ajax({
+    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      $('#formAreaModal').html(dataSchemaObject)
+    }
+  });
+}
+
+//////////////////////////
+//////  USE        //////
+////////////////////////
+function useForm(id){
+  id = id.replace('_use', '');
+  loadformModal(id,'','use',id)
+}
+
+//////////////////////////
+//////  MODIFY     //////
+////////////////////////
+function modifyItem(id){
+  var headings = ["description","detail", "value", "units", "type", "dependencies", "objectType","order"] 
+  id = id.replace('_read', '');
+  childType = $('#'+id+'').data('childtype')
+  //Used for the check self when modifiing.
+  if (!childType) {
+    loadformModal(id,id,'self',id,headings)
+  } else {
+    loadformModal(childType,id,'self',id,headings)
+  }
+}
+
+//////////////////////////
+//////  MODIFY     //////
+////////////////////////
+function tableraw(id){
+  id = id.replace('raw', '');
+  childType = $('#'+id+'').data('childtype')
+  //Used for the check self when modifiing.
+  if (!childType) {
+    loadformModal(id,id,'raw',id)
+  } else {
+    loadformModal(childType,id,'raw',id)
+  }
+}
+
+////////////////////////////////////
+//////  CREATE COMPONENT     //////
+//////////////////////////////////
+function createComp(id){
+  id = id.replace('_comp', '');
+  childType = $('#'+id+'').data('childtype')
+  //there is some kind of wierd lowcase requiremtns.
+  parentid = $('#'+id+'').data('parentid')
+  if (!childType) {
+    loadformModal(childType,'','use',id)
+  } else {
+    loadformModal(parentid,'','use',id)
+  }
+}
+
+
+
+
+</script>

@@ -1,0 +1,407 @@
+ 
+<h1 id="name"></h1>
+<p id="detail"></p>
+
+<p></p>
+ 
+<div style="padding-bottom: 15px">
+  <div id="detail"></div>
+</div>
+<div class="row">
+  <div id= "groups"></div>
+</div>
+
+{{#if user}}
+
+<div class="row">
+  <div class="col-md-7">
+    <div  id="toolbar" class="btn-group" role="group" aria-label="..." style="color: grey">
+</div>
+
+  </div>
+  <div class="col-md-5">
+    <pre style="color: grey" id='formIdHere'></pre>
+  </div>
+</div>
+{{/if}}
+ 
+
+
+<script type="text/javascript">
+ 
+
+//The menu item from JSTREE
+var items = {{{query}}}
+//The applicable form for use ( query.childtype)
+var query1 = {{{query1}}}
+//The form in queston
+var query2 = {{{query2}}}
+//the form elements.
+var query3 = {{{query3}}}
+//the form datasets.
+var query4= {{{query4}}}
+//The query.parentid items.
+var tablelistdata = {{{query3}}};
+
+//Unique if for the forms.
+var formids = create_uid()
+
+var templateload = {{{templateload}}}
+
+
+/////////////////////////////////////
+////     HEADINGS AND STUFF     //// 
+///////////////////////////////////
+$('#name').html(items.name)
+$('#detail').html(items.detail)
+
+tablelistdata.sort(function(a, b) {
+  if (a.entry.order && b.entry.order) {
+return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+}
+    
+});
+query3.sort(function(a, b) {
+    if (a.entry.order && b.entry.order) {
+return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+}
+});
+ query2.sort(function(a, b) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+});
+
+/////////////////////////////
+////     DEBUG AREA     //// 
+///////////////////////////
+console.log( 'Group loading' )
+console.log( '-------------------------' )
+console.log( 'items : ',items )
+console.log( 'query1 : ',query1 )
+console.log( 'query2 : ',query2 )
+console.log( 'query3 : ',query3 )
+console.log( 'query4 : ',query4 )
+console.log( 'tablelistdata : ',tablelistdata )
+console.log( 'formids : ',formids )
+console.log( '-------------------------' )
+console.log( 'Group loading' )
+
+
+if(items.elementID) {
+
+$("#formIdHere").html('id : '+items.elementID)
+}else{
+
+$("#formIdHere").html('id : '+items._id)
+}
+
+
+ 
+
+ 
+
+//////////////////////////////////////////
+////        CREATE UNIQUE ID         //// 
+////////////////////////////////////////
+function create_uid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+  s4() + '-' + s4() + s4() + s4();
+}
+
+  $(document).ready(function() { 
+    var ids
+if (!items.elementID) {
+  ids = items._id
+} else {
+  ids = items.elementID
+}
+
+    ///////////////////////////////// 
+    //////  READ CHILDREN     //////
+    /////////////////////////////// 
+    jQuery.ajax({
+      'async': true,
+      'global': false,
+      'url': '/groups?data='+ids,
+      'success': function (dataSchemaObject) {
+        input = JSON.parse(dataSchemaObject);
+        groupShow(input)
+        layoutView() 
+      }
+    });
+  })
+
+  function groupShow(data) {
+    for (var i = 0; i < data.length; i++) {
+      $('#groups').append(printImageCatagory(data[i]))
+    }
+  }
+
+///////////////////////////////// 
+//////  PRINT IMAGE       //////
+/////////////////////////////// 
+function printImageCatagory (data) {
+ 
+  html=""
+  if ( data.entry.Image ) {
+    html+=  '<div class="col-sm-4 col-md-4" >'
+    html+='<div class="thumbnail" style="min-height:360px">'
+    html+='<img style="max-height:164px;min-height:90px" src="/img/catagories/'
+    html+= data.entry.Image
+    html+='" alt="...">'
+  } else {
+    html+=  '<div class="col-sm-4 col-md-4" >'
+    html+='<div class="thumbnail" style="min-height:250px">'
+  }
+  html+='<div class="caption">'
+  html+='<h3>'
+  html+=data.entry.description
+  html+='</h3>'
+  html+='<p>Click to view site details on <strong>'
+  html+=data.entry.description
+  html+='</strong></p>'
+  html+='<p style="text-align:right">'
+  html+='<div style="text-align:right;position:absolute;bottom:25px">'
+  html+='<button type="button" class="btn btn-primary" id="' + data.elementID + '" onclick="viewCatagory(this.id);">View</button></p>'
+  html+='</div>'
+  html+='</div>'
+  html+='</div>'
+  html+='</div>'
+  return  html
+}
+
+function viewCatagory(id){
+  $('#jstree').jstree(true)
+  .deselect_all(id);
+
+
+  $('#jstree').jstree(true)
+  .select_node(id);
+
+}
+
+/////////////////////////////
+////     LAYOUT VIEW    //// 
+///////////////////////////
+function layoutView() {
+if (items.entry.layout) {
+ for (var i = 0; i < items.entry.layout.length; i++) {
+    templateLoad(items.entry.layout[i],'toolbar')
+ }
+}  else {
+  templateLoad(['parentraw'],'toolbar')
+  templateLoad(['add'],'toolbar')
+}
+}
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK OPEN FORM  /////////
+////////////////////////////////////////////
+function deployForm(parentid){
+  //Inputs into the form deployment.
+    //formdata,idItem,raw,parentid,headings,entry
+  //Which form to use.
+    //formdata:
+  //idItem:
+    //Which item to edit.
+  //Use the raw function for defining how to edit the data :
+    //raw:['use' , 'self' , 'edit']
+  //parentid:
+    //Inject a parent id.
+  //Inject a default entry.
+    //entry is used to manually add additional information to the form.
+  //Find and inject the group menu id number.
+  if (items.elementID) {
+    var parentIdTemp = items.elementID
+  } else {
+    var parentIdTemp = items._id
+  }
+    var headings = ["description","detail","icon","headings"]
+  var entry = {
+                      parent : parentIdTemp,
+                  }
+  loadformModal(parentid,'','use',items.parentid,headings,entry)
+}
+
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+////////////////////////////////////                                                                                                              
+function loadformModal(formdata,idItem,raw,parentid,headings,entry){
+  console.log(formdata,idItem,raw,parentid,headings)
+  var headings = JSON.stringify(headings)
+  var entry = JSON.stringify(entry)
+  jQuery.ajax({
+    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings+'&entry='+entry,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      $('#formAreaModal').html(dataSchemaObject)
+    }
+  });
+}
+
+//////////////////////////////////////////////////
+////////    BUTTON CLICK OPEN RAW FORM  /////////
+////////////////////////////////////////////////
+function deployparentrawForm(parentid){
+  loadformModal(parentid,parentid,'raw',parentid)
+}
+
+///////////////////////////////////
+////////  LOADING OF TOOLS ///////
+/////////////////////////////////
+function templateLoad(template,location){
+//Ensure that the first load error is covered , also any other errors.
+if(template){
+  jQuery.ajax({
+   'async': true,
+   'global': false,
+   'url': '/templatename?template='+template,
+   'success': function (dataSchemaObject) {
+     jQuery('#'+location).append(dataSchemaObject)
+   }
+ });
+}
+}
+
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK OPEN FORM  /////////
+////////////////////////////////////////////
+function deployFormComponent(formToUse){
+  //This is hard wired , and likely to cause issues.
+  var headings = ["description","detail","icon","headings"]
+  var entry =''
+   loadformModal(formToUse,'','component',items.elementID,headings,entry)
+}
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK OPEN FORM  /////////
+////////////////////////////////////////////
+function deployFormUse(formToUse){
+  //This is hard wired , and likely to cause issues.
+  var headings = ["description","detail","icon","headings"]
+  var entry =''
+  loadformModal(formToUse,'','use',templateload,headings,entry)
+}
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK MODIFY     /////////
+////////////////////////////////////////////
+function modifybutton(parentid){
+  //Inputs into the form deployment.
+    //formdata,idItem,raw,parentid,headings,entry
+  //Which form to use.
+    //formdata:
+  //idItem:
+    //Which item to edit.
+  //Use the raw function for defining how to edit the data :
+    //raw:['use' , 'self' , 'edit']
+  //parentid:
+    //Inject a parent id.
+  //Inject a default entry.
+    //entry is used to manually add additional information to the form.
+  //Find and inject the group menu id number.
+  if (items.elementID) {
+    var parentIdTemp = items.elementID
+  } else {
+    var parentIdTemp = items._id
+  }
+  var headings = ["description","detail","icon","headings"]
+  var entry = {
+    parent : parentIdTemp,
+  }
+  loadformModal(parentid,parentIdTemp,'self',items.parentid,headings,entry)
+}
+
+//////////////////////////////////////////////////
+////////    BUTTON CLICK OPEN RAW FORM  /////////
+////////////////////////////////////////////////
+function deployparentrawForm(parentid){
+     parentid = parentid.replace('_parentraw', '');
+  loadformModal(parentid,parentid,'raw',parentid)
+}
+
+//////////////////////////////////////////////////
+////////    BUTTON CLICK OPEN RAW FORM  /////////
+////////////////////////////////////////////////
+function copyParentRaw(parentid){
+  parentid = parentid.replace('_copy', '');
+  loadformModal(parentid,parentid,'copyraw',parentid)
+}
+
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+////////////////////////////////////                                                                                                              
+function loadformModal(formdata,idItem,raw,parentid,headings){
+  var headings = JSON.stringify(headings)
+  jQuery.ajax({
+    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      $('#formAreaModal').html(dataSchemaObject)
+    }
+  });
+}
+
+//////////////////////////
+//////  USE        //////
+////////////////////////
+function useForm(id){
+  id = id.replace('_use', '');
+  loadformModal(id,'','use',id)
+}
+
+//////////////////////////
+//////  MODIFY     //////
+////////////////////////
+function modifyItem(id){
+  var headings = ["description","detail", "value", "units", "type", "dependencies", "objectType","order"] 
+  id = id.replace('_read', '');
+  childType = $('#'+id+'').data('childtype')
+  //Used for the check self when modifiing.
+  if (!childType) {
+    loadformModal(id,id,'self',id,headings)
+  } else {
+    loadformModal(childType,id,'self',id,headings)
+  }
+}
+
+//////////////////////////
+//////  MODIFY     //////
+////////////////////////
+function tableraw(id){
+  id = id.replace('raw', '');
+  childType = $('#'+id+'').data('childtype')
+  //Used for the check self when modifiing.
+  if (!childType) {
+    loadformModal(id,id,'raw',id)
+  } else {
+    loadformModal(childType,id,'raw',id)
+  }
+}
+
+////////////////////////////////////
+//////  CREATE COMPONENT     //////
+//////////////////////////////////
+function createComp(id){
+  id = id.replace('_comp', '');
+  childType = $('#'+id+'').data('childtype')
+  //there is some kind of wierd lowcase requiremtns.
+  parentid = $('#'+id+'').data('parentid')
+  if (!childType) {
+    loadformModal(childType,'','use',id)
+  } else {
+    loadformModal(parentid,'','use',id)
+  }
+}
+
+
+ 
+
+</script>

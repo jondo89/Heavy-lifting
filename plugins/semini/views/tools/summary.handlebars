@@ -1,0 +1,160 @@
+     <div role="tabpanel" class="tab-pane active" id="summary">
+       <p></p><!-- Trigger -->
+<div style="text-align: right">
+  <button class="btn btn-success" data-clipboard-target="#summaries">
+   Copy to Clipboard
+</button>
+</div>
+ <div id="summaries" >
+ </div>
+     </div> 
+
+<script type="text/javascript">
+ 
+ new Clipboard('.btn');
+
+/////////////////////////////
+//////  INITIALISE    //////
+/////////////////////////// 
+$('document').ready(function(){
+  for (var i = 0; i < query3.length; i++) {
+    var iditem = query3[i].entry['58ff3cb221acae2b40b09b2c']
+    var divId = query3[i].elementID
+    $('#summaries').append('<div id="'+divId+'_summary">Loading</div>')
+    $('#'+divId+'_summary').html(iditem)
+    singleidcallSummary(iditem,divId)
+  }
+})
+
+//////////////////////////////////// 
+//////  PRIMARY AJAX CALL    //////
+//////////////////////////////////
+function singleidcallSummary(elementid,divId) {
+  console.log('///////////////////////////')
+  console.log('id to aquire: ',elementid)
+  console.log('///////////////////////////')
+  var searchVar = JSON.parse(JSON.stringify(elementid))
+  //AJAX REQUEST TO SERVER
+  jQuery.ajax({
+    'async': true,
+    'global': false,
+    'url': '/singleidcall?ids='+searchVar,
+    'success': function (dataSchemaObject) {
+      formatTheAssemblySummary(dataSchemaObject,searchVar,divId)
+    }
+  });
+}
+
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
+/////////////////////////////////////////////
+function uniqueIdforcomponentformButton(theAreaToChange){
+  jQuery('#singleComponent').attr("id",theAreaToChange);
+}
+
+//////////////////////////////////////////
+////        CREATE UNIQUE ID         //// 
+////////////////////////////////////////
+function create_uid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+  s4() + '-' + s4() + s4() + s4();
+}
+
+///////////////////////////////////////////////////
+////        REQUIRED FORMATING OF DATA        //// 
+/////////////////////////////////////////////////
+function formatTheAssemblySummary(dataset,elementid,divId){
+if (dataset.query) {
+  var tempVar = []
+  var tempVar1 = []
+  var tempVar2 = []
+    tempVar1 = []
+    for(key in dataset.query.entry){
+      for (var j = 0; j < dataset.query2.length; j++) {
+        if (dataset.query2[j].elementID == key) {
+          tempVar = {
+            'description' : dataset.query2[j]['entry']['description'],
+            'value' : dataset.query.entry[dataset.query2[j].elementID],
+            'units' : dataset.query2[j]['entry']['units'],
+            'detail' : dataset.query2[j]['entry']['detail'],
+            'id' : dataset.query2[j]['elementID'] 
+          }
+        }
+      }
+      tempVar1.push(tempVar) 
+    }
+    tempVar2[dataset.query.elementID] = tempVar1
+  compileTheTableForSummary(tempVar2,dataset,elementid,divId)
+  }
+}
+
+///////////////////////////////
+//////  LOAD THE TABLE  //////
+/////////////////////////////
+function compileTheTableForSummary(dataset,originalData,elementid,divId) {
+  var tableHeadings = ['description','value','units','detail','id' ]
+  html = returnTheActualHtmlForSummary  (dataset,originalData,elementid)
+  $('#'+divId+'_summary').html(html)
+};
+
+/////////////////////////////////////////////////////////////////////
+////////    USED FOR THE COMPILATION OF THE DETAILS TABLE  /////////
+/////////////////////////////////////////////////////////////////////
+function returnTheActualHtmlForSummary (data,originalData,id){
+
+if (data.length==0) {
+    var  html = ''
+  html+='<h4>'+originalData.query1['name']+'</h4><p>'+originalData.query1['detail']+'</p>'  
+  html += '<table class="table table-bordered table-condensed">  '
+  html += '<thead><tr><th>Description</th><th>Value</th><th>Units</th><th>Detail</th></tr></thead>'
+  html += '<tbody>'
+  for (key in data) {
+    for (var i = 0; i < data[key].length; i++) {
+      if (key == id) {
+        html += '<tr>'
+        html += '<td>'
+        html += data[key][i]['description']
+        html += '</td>'
+        html += '<td>'
+        if (data[key][i]['description']=='Url') {
+          html += '<a href="'+data[key][i]['value']+'" target="_blank">Link</a>'
+        } else  {
+          html += data[key][i]['value']
+        }
+        html += '</td>'      
+        html += '<td>'
+        html += data[key][i]['units']
+        html += '</td>'
+        html += '<td>'
+        html += data[key][i]['detail']
+        html += '</td>'
+        html += '</tr>'
+      }
+    }
+  }
+  html += '</tbody>'
+  html += '</table>'
+  return html
+} else {
+    html += 'Failed'
+  return html
+}
+
+
+
+
+} 
+
+//////////////////////////////////////////
+//////  CAPATILIZE FIRST LETTER    //////
+////////////////////////////////////////
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+</script>

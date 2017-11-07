@@ -1,0 +1,19 @@
+
+  <a  class="btn btn-primary" id="changeButton" onclick="deployFormComponent(this.id)" data-toggle="modal" data-target="#myModal" title="Create a new entry"><i class="fa fa-plus-circle" aria-hidden="true"></i></a> 
+ 
+
+<script type="text/javascript">
+console.log( '-------------------------' )
+console.log( 'Add loading' )
+console.log( '+++++++++++++++++++++++++' )
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
+/////////////////////////////////////////////
+function uniqueIdforchangeButton(){
+	$('#changeButton').attr('id', items.childType);
+}
+
+$('document').ready(function(){
+	uniqueIdforchangeButton()
+})
+</script>

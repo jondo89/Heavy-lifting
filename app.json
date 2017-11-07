@@ -1,9 +1,9 @@
 {
-  "name": "heavy-lifting",
+  "name": "Heavy-lifting",
   "description": "",
   "sitename" : "Heavy-lifting",
   "website" : "https://heavy-lifting.herokuapp.com/",
-  "repo" : "https://github.com/Isithelo/heavy-lifting",
+  "repo" : "https://github.com/Isithelo/Heavy-lifting",
   "scripts": {
   },
   "env": {

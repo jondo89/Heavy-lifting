@@ -1,0 +1,215 @@
+<div id="name"></div>
+<div id="more"></div>
+<p></p>
+<div>
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist" id="tablist">
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content" id="tab">
+  </div>
+</div>
+<p></p>
+{{#if user}}
+
+<div class="row">
+  <div class="col-md-7">
+    <div  id="toolbar" class="btn-group" role="group" aria-label="..." style="color: grey">
+    </div>
+  </div>
+  <div class="col-md-5">
+    <pre style="color: grey" id='formIdHere'></pre>
+  </div>
+</div>
+{{/if}}
+
+<script type="text/javascript">
+//The menu item from JSTREE
+var items = {{{query}}}
+//The applicable form for use ( query.childtype)
+var query1 = {{{query1}}}
+//The form in queston
+var query2 = {{{query2}}}
+//the form elements.
+var query3 = {{{query3}}}
+//the form datasets.
+var query4= {{{query4}}}
+//The query.parentid items.
+var tablelistdata = {{{query3}}};
+
+//Unique if for the forms.
+var formids = create_uid()
+
+var templateload = {{{templateload}}}
+
+
+/////////////////////////////////////
+////     HEADINGS AND STUFF     //// 
+///////////////////////////////////
+$('#name').html('<h2 >'+items.name +'</h2><p>'+items.detail+'</p>')
+
+tablelistdata.sort(function(a, b) {
+  if (a.entry.order && b.entry.order) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+  }
+});
+query3.sort(function(a, b) {
+  if (a.entry.order && b.entry.order) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+  }
+});
+query2.sort(function(a, b) {
+  if (a.entry.order && b.entry.order) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+  }
+});
+
+/////////////////////////////
+////     DEBUG AREA     //// 
+///////////////////////////
+console.log( 'databasetablelist loading' )
+console.log( '-------------------------' )
+console.log( 'items : ',items )
+console.log( 'query1 : ',query1 )
+console.log( 'query2 : ',query2 )
+console.log( 'query3 : ',query3 )
+console.log( 'query4 : ',query4 )
+console.log( 'tablelistdata : ',tablelistdata )
+console.log( 'formids : ',formids )
+console.log( 'templateload : ',templateload )
+console.log( '-------------------------' )
+console.log( 'databasetablelist loading' )
+
+
+if(items.elementID) {
+  $("#formIdHere").html('id : '+items.elementID)
+}else{
+  $("#formIdHere").html('id : '+items._id)
+}
+
+/////////////////////////////
+////     LAYOUT VIEW    //// 
+///////////////////////////
+function layoutView() {
+  if (items.entry.layout) {
+   for (var i = 0; i < items.entry.layout.length; i++) {
+    templateLoad(items.entry.layout[i],'toolbar')
+  }
+}  else {
+  templateLoad(['parentraw'],'toolbar')
+  templateLoad(['add'],'toolbar')
+}
+}
+
+/////////////////////////////
+////     TABS VIEW      //// 
+///////////////////////////
+function tabview() {
+  if (items.entry.tabs) {
+   for (var i = 0; i < items.entry.tabs.length; i++) {
+    templateLoad(items.entry.tabs[i],'tab')
+  }
+}  else {
+  templateLoad(['table'],'tab')
+}
+}
+
+/////////////////////////////
+////    TABLIST         //// 
+///////////////////////////
+function tablist(){
+  var html = ''
+  if (items.entry.tabs) {
+   for (var i = 0; i < items.entry.tabs.length; i++) {
+//used for 0 length items
+if (i==0) {
+
+switch(true){
+  case (items.entry.tabs=='tablecomponent'):
+   html +='<li role="presentation" class="active"><a href="#'+items.entry.tabs[i]+'" aria-controls="'+items.entry.tabs[i]+'" role="tab" data-toggle="tab">Components</a></li>'
+  break;
+    case (items.entry.tabs=='producttable'):
+   html +='<li role="presentation" class="active"><a href="#'+items.entry.tabs[i]+'" aria-controls="'+items.entry.tabs[i]+'" role="tab" data-toggle="tab">Products</a></li>'
+  break;
+  default:
+    html +='<li role="presentation" class="active"><a href="#'+items.entry.tabs[i]+'" aria-controls="'+items.entry.tabs[i]+'" role="tab" data-toggle="tab">'+capitalize(items.entry.tabs[i])+'</a></li>'
+  break;
+}
+
+
+ 
+} else {
+  if (items.entry.tabs=='tablecomponent') {
+    html +='<li role="presentation"><a href="#'+items.entry.tabs[i]+'" aria-controls="'+items.entry.tabs[i]+'" role="tab" data-toggle="tab">Components</a></li>'
+  } else {
+   html +='<li role="presentation"><a href="#'+items.entry.tabs[i]+'" aria-controls="'+items.entry.tabs[i]+'" role="tab" data-toggle="tab">'+capitalize(items.entry.tabs[i])+'</a></li>'
+ }
+}
+}
+}  else {
+  html +='<li role="presentation" class="active"><a href="#'+'table'+'" aria-controls="'+'table'+'" role="tab" data-toggle="tab">'+'Table'+'</a></li>'
+}
+$('#tablist').html(html)
+}
+
+//////////////////////////////////////////
+//////  CAPATILIZE FIRST LETTER    //////
+////////////////////////////////////////
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+///////////////////////////////////
+////////  LOADING OF TOOLS ///////
+/////////////////////////////////
+function templateLoad(template,location){
+//Ensure that the first load error is covered , also any other errors.
+if(template){
+  jQuery.ajax({
+   'async': true,
+   'global': false,
+   'url': '/templatename?template='+template,
+   'success': function (dataSchemaObject) {
+     jQuery('#'+location).append(dataSchemaObject)
+   }
+ });
+}
+}
+
+//////////////////////////////////////////
+////        CREATE UNIQUE ID         //// 
+////////////////////////////////////////
+function create_uid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+  s4() + '-' + s4() + s4() + s4();
+}
+
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
+/////////////////////////////////////////////
+function uniqueIdforcformButton(){
+  jQuery('#formDelivery').attr("id",formids);
+}
+
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+$('document').ready(function(){
+  if (items.entry.moreinfotemp) { 
+  //more info button.
+  var html = '<a type="button" href="/Components/'+items.entry.moreinfotemp+'/'+templateload+'" class="btn btn-info" style="position: absolute;right: 20px"><i class="fa fa-calculator" aria-hidden="true" ></i></a>'
+  $('#more').html(html)
+}
+
+
+
+layoutView() 
+tabview()
+tablist()
+})
+</script>

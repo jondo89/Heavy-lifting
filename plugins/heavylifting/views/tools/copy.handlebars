@@ -1,0 +1,24 @@
+ 
+  <a  class="btn btn-default" id="copyParentRaw" onclick="copyParentRaw(this.id)" data-toggle="modal" data-target="#myModal" title="Copy this entry"><i class="fa fa-clone" aria-hidden="true"></i></a> 
+ 
+
+<script type="text/javascript">
+console.log( '-------------------------' )
+console.log( 'copyParentRaw loading' )
+console.log( '+++++++++++++++++++++++++' )
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
+/////////////////////////////////////////////
+function uniqueIdforcopyParentRaw(){
+ 
+if (items.elementID) {
+	$('#copyParentRaw').attr('id', items.elementID+'_copy');
+} else {
+	$('#copyParentRaw').attr('id', items._id+'_copy');
+}
+
+}
+$('document').ready(function(){
+	uniqueIdforcopyParentRaw()
+})
+</script>

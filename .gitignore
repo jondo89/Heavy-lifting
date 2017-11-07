@@ -20,7 +20,8 @@ coverage
 # Dependency directory
 node_modules
 bower_components
- 
+
+
 
 # Editors
 .idea
@@ -29,4 +30,3 @@ bower_components
 # OS metadata
 .DS_Store
 Thumbs.db
-*.env

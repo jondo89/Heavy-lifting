@@ -73,6 +73,8 @@
               <li><a href="/users/{{user.username}}/settings/profile">Settings</a></li>
               <li><a href="/documentation">Documentation</a></li>
               <li class="divider"></li>  
+              <li><a href="/issues">Issues</a></li>
+              <li class="divider"></li>  
               <li><a href="/signout">Sign out</a></li>
             </ul>
           </li>
@@ -118,6 +120,9 @@ progressBar.animate(1.0, {
 }, function() {
     $('#headerload').html('')
 });
+
+
+
 </script>
 {{#if user}}
 
@@ -130,7 +135,7 @@ progressBar.animate(1.0, {
 /////////////////////////// 
 $( document ).ready(function() {
   if (user=='superadmin') {
-    $("#usermenu").append('<li class="divider"></li> <li><a href="/configuration"><i class="fa fa-cog" aria-hidden="true"></i> Configuration</a></li><li><a href="/forms"><i class="fa fa-cog" aria-hidden="true"></i> Forms</a></li>')
+    $("#usermenu").append('<li class="divider"></li> <li><a href="/configuration"><i class="fa fa-cog" aria-hidden="true"></i> Configuration</a></li><li><a href="/form"><i class="fa fa-cog" aria-hidden="true"></i> Forms</a></li>')
   }
 });
 </script>

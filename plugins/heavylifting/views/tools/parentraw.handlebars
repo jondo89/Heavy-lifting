@@ -1,0 +1,27 @@
+ 
+  <a  class="btn btn-default" id="parentraw" onclick="deployparentrawForm(this.id)" data-toggle="modal" data-target="#myModal" title="Edit the raw JSON entry"><i class="fa fa-file-code-o" aria-hidden="true"></i></a> 
+ 
+
+<script type="text/javascript">
+console.log( '-------------------------' )
+console.log( 'parentraw loading' )
+console.log( '+++++++++++++++++++++++++' )
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
+/////////////////////////////////////////////
+function uniqueIdforparentraw(){
+
+if (items.elementID) {
+	$('#parentraw').attr('id', items.elementID+'_parentraw');
+} else {
+	$('#parentraw').attr('id', items._id+'_parentraw');
+}
+
+
+
+
+}
+$('document').ready(function(){
+	uniqueIdforparentraw()
+})
+</script>

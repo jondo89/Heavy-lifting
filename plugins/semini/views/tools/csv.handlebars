@@ -1,0 +1,19 @@
+
+  <button type="button" class="btn btn-xs btn-default" id="downloadCSV" onclick="deployFormComponent(this.id)" data-toggle="modal" data-target="#myModal" title="Add this item"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Download CSV</button> 
+ 
+
+<script type="text/javascript">
+console.log( '-------------------------' )
+console.log( 'Add loading' )
+console.log( '+++++++++++++++++++++++++' )
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
+/////////////////////////////////////////////
+function uniqueIdfordownloadCSV(){
+	$('#downloadCSV').attr('id', items.childType+"_csv");
+}
+
+$('document').ready(function(){
+	uniqueIdforchangeButton()
+})
+</script>

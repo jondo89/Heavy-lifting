@@ -1,0 +1,371 @@
+<h1>Create</h1>
+<p>The Semini boilerplate is used to create a series of staged form deployments, with each deployment allowing for the deployment of more complex forms.
+  There are 2 primary forms namely the Primer and Raw forms.
+</p>
+<div class="row">
+  <div class="col-md-6">
+    <h3>Primer</h3>
+    <p>The primer creates a single database entry designed to capture schema and options for the creation of alpaca forms.</p>
+  </div>
+  <div class="col-md-6">
+    <h3>Raw</h3>
+    <p>The raw form creates a single database entry , using the primer to create a generic entry system used to compile complex form groups.</p>
+  </div>
+</div>
+<p>Refer to <a href="http://www.alpacajs.org/" target="_blank">Alpaca.js</a> for details on the schema and options layout.</p>
+<hr>
+<div class="row">
+  <div class="col-md-6">
+    <div>
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" {{#unless forms}}class="active"{{/unless}}><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Stage 1</a></li>
+        <li role="presentation" {{#if forms}}class="active"{{/if}}> <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Stage 2</a></li>
+        <li role="presentation"> <a href="#nav" aria-controls="profile" role="tab" data-toggle="tab">Stage 3</a></li>
+        <li role="presentation"> <a href="#nav1" aria-controls="profile" role="tab" data-toggle="tab">Stage 4</a></li>
+        <li role="presentation"> <a href="#nav2" aria-controls="profile" role="tab" data-toggle="tab">Stage 5</a></li>
+        <li role="presentation"> <a href="#nav3" aria-controls="profile" role="tab" data-toggle="tab">Stage 6</a></li>
+      </ul>
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <div role="tabpanel" class="tab-pane {{#unless forms}}active{{/unless}}" id="home">
+         {{#if forms}}
+         <p></p> 
+         <div class="alert alert-success" role="alert"><strong>Heads up!</strong>  Stage 1 is complete.</div>
+         {{else}}
+         <div id="stage1" class="row">
+          <div class="col-md-12">
+           <h3>Stage 1 - Create a simple Form on the client side.</h3>
+           <p>The 2 text blocks below when combined with Alpaca.js form structure create a simple Form. Push the button below to create the client side form.</p>
+         </div>
+         <div class="col-md-6">
+          <h3>Schema</h3> 
+          <textarea class="form-control"  id="schema" name="schema"  style="height: 250px">{{>stage1-schema}}</textarea>
+        </div>
+        <div class="col-md-6">
+          <h3>Options</h3>
+          <textarea class="form-control" id="options" name="options"  style="height: 250px">{{>stage1-options}}</textarea>
+        </div>
+        <div class="col-md-12">
+          <p></p>
+          <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-primary" id="updateForm">Create a form</button>
+          </div>
+          <p></p>
+        </div>
+      </div>  
+      {{/if}}
+    </div>
+    <div role="tabpanel" class="tab-pane {{#if forms}}active{{/if}}" id="profile">
+      <div id="stage2" >
+        <div class="row">
+          <div class="col-md-12">
+            <h3>Stage 2 - Push the "raw" form.</h3>
+            <p>Use the new primer form ( from the database ) to create the server side "raw" form.</p>
+          </div>
+          <div class="col-md-6">
+            <h3>Schema</h3>
+            <textarea class="form-control" class="language-json " id="schema2" name="schema"  style="height: 250px">{{>stage2-schema}}</textarea>
+          </div>
+          <div class="col-md-6">
+            <h3>Options</h3>
+            <textarea class="form-control"   id="options2" name="options"  style="height: 250px">{{>stage2-options}}</textarea>
+          </div>
+        </div>
+        <p></p>
+      </div>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="nav">
+      {{>stage3}}
+    </div>
+    <div role="tabpanel" class="tab-pane" id="nav1">
+      {{>stage4}}
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="nav2">
+      {{>stage5}}
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="nav3">
+      {{>stage6}}
+    </div>
+
+  </div>
+</div>
+</div>
+<div class="col-md-6">
+ <div class="col-md-12"  >
+ </div>
+ <div class="well col-md-12">
+   <div id="form1"></div>
+ </div>
+</div>
+</div>
+
+
+<script type="text/javascript">
+  //first run used the primer as the name.
+  var names = ''
+  var description = ''
+  var childType = ''
+  var primer
+  {{#if forms}}
+  var forms = {{{formsparse}}}  
+  {{else}}
+  var forms   
+  {{/if}}
+
+
+/////////////////////////////
+////     DEBUG AREA     //// 
+///////////////////////////
+console.log( 'Tempalte Name : plugins/semini/views/create' )
+
+
+  function textBoxSelect(ids){
+    var textBox = document.getElementById(ids);
+    if (textBox) {
+      textBox.onfocus = function() {
+        textBox.select();
+
+        // Work around Chrome's little problem
+        textBox.onmouseup = function() {
+            // Prevent further mouseup intervention
+            textBox.onmouseup = null;
+            return false;
+          };
+        };
+      }
+    }
+
+////////////////////////////////////
+////        LIST FORMS         //// 
+//////////////////////////////////
+function formList(){
+  if (forms) {
+    switch (true) {
+      case(forms.length == 1):
+      getprimer()
+      break;
+      case(forms.length == 2):
+      getraw()
+      $('#stage2').html('<p></p><div class="alert alert-success" role="alert"><strong>Heads up!</strong>  Stage 2 is complete.</div>')
+      $('a[href="#nav"]').tab('show') // Select tab by name
+      break;
+      case(forms.length == 3):
+      getraw()
+      $('#stage2').html('<p></p><div class="alert alert-success" role="alert"><strong>Heads up!</strong>  Stage 2 is complete.</div>')
+      $('#stage3').html('<p></p><div class="alert alert-success" role="alert"><strong>Heads up!</strong>  Stage 3 is complete.</div>')
+      $('a[href="#nav1"]').tab('show') // Select tab by name
+      break;
+      case(forms.length == 4):
+      getraw()
+      $('#stage2').html('<p></p><div class="alert alert-success" role="alert"><strong>Heads up!</strong>  Stage 2 is complete.</div>')
+      $('#stage3').html('<p></p><div class="alert alert-success" role="alert"><strong>Heads up!</strong>  Stage 3 is complete.</div>')
+      $('#stage4').html('<p></p><div class="alert alert-success" role="alert"><strong>Heads up!</strong>  Stage 4 is complete.</div>')
+      $('a[href="#nav2"]').tab('show') // Select tab by name
+      break;
+      case(forms.length >= 5):
+      getraw()
+      $('#stage2').html('<p></p><div class="alert alert-success" role="alert"><strong>Heads up!</strong>  Stage 2 is complete.</div>')
+      $('#stage3').html('<p></p><div class="alert alert-success" role="alert"><strong>Heads up!</strong>  Stage 3 is complete.</div>')
+      $('#stage4').html('<p></p><div class="alert alert-success" role="alert"><strong>Heads up!</strong>  Stage 4 is complete.</div>')
+      $('#stage5').html('<p></p><div class="alert alert-success" role="alert"><strong>Heads up!</strong>  Stage 5 is complete.</div>')
+      $('a[href="#nav3"]').tab('show') // Select tab by name
+      break;
+      case(forms.length == 6):
+      getraw()
+      $('#stage2').html('<p></p><div class="alert alert-success" role="alert"><strong>Heads up!</strong>  Stage 2 is complete.</div>')
+      $('#stage3').html('<p></p><div class="alert alert-success" role="alert"><strong>Heads up!</strong>  Stage 3 is complete.</div>')
+      $('#stage4').html('<p></p><div class="alert alert-success" role="alert"><strong>Heads up!</strong>  Stage 4 is complete.</div>')
+      $('a[href="#nav2"]').tab('show') // Select tab by name
+      break;
+
+    }
+  }
+}
+
+//////////////////////////////////////////////
+////        GET THE PRIMER FORM          //// 
+////////////////////////////////////////////
+function getprimer(idItem){
+  jQuery.ajax({
+    'url': '/getprimer?idItem='+idItem,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      $('#form1').html(dataSchemaObject)
+    }
+  });
+}
+
+///////////////////////////////////////////
+////        GET THE RAW FORM          //// 
+/////////////////////////////////////////
+function getraw(idItem){
+  jQuery.ajax({
+    'url': '/getraw?idItem='+idItem,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      $('#form1').html(dataSchemaObject)
+    }
+  });
+}
+
+////////////////////////////////////
+////        INITIALIZE         //// 
+//////////////////////////////////
+$(document).ready(function(){
+ textBoxSelect('schema')
+ textBoxSelect('options')
+ textBoxSelect('schema2')
+ textBoxSelect('options2')
+ formList()
+// Warning Duplicate IDs
+$('[id]').each(function(){
+  var ids = $('[id="'+this.id+'"]');
+  if(ids.length>1 && ids[0]==this){
+   $( this ).css( "color", "red" )
+   $( this ).css( "background", "green" )
+   console.warn('Multiple IDs #'+this.id);
+ }
+});
+});
+
+////////////////////////////////////////////
+////        UPDATE FORM BUTTON         //// 
+//////////////////////////////////////////
+$('#updateForm').click(function(){
+  $('#updateForm').prop('disabled', true);
+  var form = {
+    schema : JSON.parse($('#schema').val()) ,
+    options : JSON.parse($('#options').val())
+  }
+  //Test alpaca form for true , i.e if it exists , then destroy it.
+  control = $("#form1").alpaca("destroy");
+  if (control) {
+    formInit(form.schema,form.options)
+  } else { 
+    formInit(form.schema,form.options)
+  }
+})
+
+//////////////////////////////////////
+////        CREATE FORM          //// 
+////////////////////////////////////
+function formInit(schema,options){
+  //work areound for the special requirments on the submit button.
+  options.form.buttons.submit.click = function(e){
+    e.preventDefault()
+    var value = this.getValue();
+    clickSubmit1(value)
+  }
+  $("#form1").alpaca({
+    "schema": schema,
+    "options": options,
+  });
+}
+
+//////////////////////////////////////////////
+////        SUBMIT BUTTON CLICK          //// 
+////////////////////////////////////////////
+function clickSubmit1(dataset){
+  var str = JSON.stringify(primer, null, 2);
+  $('#jsonArea').html(str)
+  primer = {
+    'name' :names,
+    'detail' : description,
+    'entry': dataset,
+    'parentid' :'',
+    'elementID' :'', 
+    'userID' :'',
+    'childType' : childType ,
+    'objectType':'primer',
+    'revision' :'created',
+    'active' : "true",
+  }
+  jQuery.ajax({
+    'url': '/createform',
+    'type': 'POST', 
+    'dataType': 'json',
+    'contentType': 'application/json', 
+    'data': JSON.stringify(primer),
+    'success': function (dataSchemaObject) {
+     if (dataSchemaObject.redirect =="/signin") {
+      window.location =dataSchemaObject.redirect
+    } else {
+      location.reload()
+    }
+  },
+  'error' :function (dataSchemaObject) {
+    location.reload()
+  },
+});  
+}
+
+///////////////////////////////////////////////
+////////  TABLE LOADING FROM PARENT ID ///////
+/////////////////////////////////////////////
+function loadDataBaseMenu(ids,location){
+//Ensure that the first load error is covered , also any other errors.
+jQuery.ajax({
+ 'async': true,
+ 'global': false,
+ 'url': '/parentid?ids='+ids,
+ 'success': function (dataSchemaObject) {
+   jQuery('#'+location).html("")
+   jQuery('#'+location).html(dataSchemaObject)
+ }
+});
+}
+
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+////////////////////////////////////                                                                                                              
+function starterForms(formdata,idItem,raw,parentid){
+  jQuery.ajax({
+    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      $('#form1').html(dataSchemaObject)
+    }
+  });
+}
+
+//////////////////////////////////////
+////////    SET FORM DATA   /////////
+//////////////////////////////////// 
+$('#setData1').click(function(){
+ var temp = JSON.parse($('#schema3').val())
+ $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(temp)
+})
+
+//////////////////////////////////////
+////////    SET FORM DATA   /////////
+//////////////////////////////////// 
+$('#setData2').click(function(){
+ var temp = JSON.parse($('#schema4').val())
+ $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(temp)
+})
+
+//////////////////////////////////////
+////////    SET FORM DATA   /////////
+//////////////////////////////////// 
+$('#setData3').click(function(){
+ var temp = JSON.parse($('#schema5').val())
+ $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(temp)
+})
+
+$('#setData4').click(function(){
+ var temp = JSON.parse($('#schema6').val())
+ console.log(temp)
+//set the units paretn id to the forms page.
+ 
+temp.childType = forms[3]._id
+temp.parentid = forms[4]._id
+$("#form_"+formdata+idItem+formid1).alpaca('get').setValue(temp)
+})
+</script>
+

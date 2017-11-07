@@ -12,29 +12,12 @@ var exphbs = require('express-handlebars');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var recaptcha = require('express-recaptcha');
+var braintree = require("braintree");
 
 // Load environment variables from .env file
 dotenv.load();
 
-// Controllers
-var initController = require('./controllers/initialize');
-var HomeController = require('./controllers/home');
-var userController = require('./controllers/user');
-var contactController = require('./controllers/contact');
-var adminController = require('./controllers/admin');
-var userInterfaceController = require('./controllers/userinterface');
-var createController = require('./controllers/create');
-var readController = require('./controllers/read');
-var deleteController = require('./controllers/delete');
-var pagesController = require('./controllers/pages');
-var productController = require('./controllers/product');
-var assemblyController = require('./controllers/assembly');
-var componentController = require('./controllers/component');
-var organizationController = require('./controllers/organization');
-var heavyliftingController = require('./controllers/heavy-lifting');
 
-// Passport OAuth strategies
-require('./config/passport');
 
 var app = express();
 
@@ -47,6 +30,7 @@ try {
 } catch (err){
   console.log('Favicon not found in the required directory.')
 }
+
 
 ////////////////////////////////////////////////////
 ///////   HEROKU VS LOCALHOST .ENV SWAP    ////////
@@ -62,6 +46,9 @@ mongoose.connection.on('error', function() {
   process.exit(1);
 });
 
+//////////////////////////////////////////////////
+///////   MONGODB INITIATE CONNECTION    ////////
+////////////////////////////////////////////////
 var db = mongoose.connection;
 db.once('open', function() {
   // we're connected!
@@ -69,6 +56,19 @@ db.once('open', function() {
   //compile the schema for mongoose
 });
 
+////////////////////////////////////////////
+///////   BRAINTREE INTEGRATION    ////////
+//////////////////////////////////////////
+var gateway = braintree.connect({
+  environment: braintree.Environment.Sandbox,
+  merchantId: process.env.MERCHANTID,
+  publicKey: process.env.PUBLICKEY,
+  privateKey: process.env.PRIVATEKEY
+});
+
+/////////////////////////////////////////
+///////   HANDLEBARS HELPERS    ////////
+///////////////////////////////////////
 var hbs = exphbs.create({
   defaultLayout: 'main',
   helpers: {
@@ -103,6 +103,19 @@ var hbs = exphbs.create({
             return str.substring(0,400) + '...';
           return str;
         }
+      },      'dots' : function(str) {
+        if (str) {
+          if (str.length > 150)
+            return str.substring(0,150) + '...';
+          return str;
+        }
+      },
+      'profile' : function(str) {
+        if (str) {
+          if (str.length > 550)
+            return str.substring(0,550) + '...';
+          return str;
+        }
       }
     }
   });
@@ -126,11 +139,17 @@ if (app.get('env') == 'production') {
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
+
+
 /////////////////////////////////////////////
 ///////   LOCALHOST PORT SETTING    ////////
 ///////////////////////////////////////////
 app.set('port', process.env.PORT || 5000);
 
+
+//////////////////////////////////////////
+///////   GENERAL APP SETTINGS   ////////
+////////////////////////////////////////
 app.use(compression());
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -147,7 +166,8 @@ app.use(function(req, res, next) {
 });
 app.use(express.static(path.join(__dirname, 'public')));
 
-///////////////////////////////////////////////
+
+///////////////////////////////////////////////s
 ////     SET YOUR APP.JSON DETAILS        //// 
 /////////////////////////////////////////////
 var myModule = require('./app.json');
@@ -158,214 +178,39 @@ app.locals.sitename = sitename
 app.locals.website = website
 app.locals.repo = repo
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////                                                            ROUTING                                                                     //// 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+///////////////////////////////
+////       ROUTING        //// 
 /////////////////////////////
-////       PAGES        //// 
-///////////////////////////
-app.get('/shop', pagesController.shop);
-app.get('/database', pagesController.database);
-app.get('/help', pagesController.help);
-app.get('/forms', pagesController.forms);
-app.get('/assemblies', pagesController.assemblies);
-app.get('/configuration', pagesController.configuration);
-app.get('/reports', pagesController.reports);
+//FRATERNATE
+//Set Handlebars view directory for plugins
+app.set('views', path.join(__dirname, 'plugins/fraternate/views/'));
+//Fratenate Routing
+var fraternateRouting = require('./plugins/fraternate/routes/routes');
+app.use('/', fraternateRouting);
 
-////////////////////////////////////////////
-////       INITIALIZE DATABASE         //// 
-//////////////////////////////////////////
-app.get('/init', initController.deletedb);
-app.get('/deletedb', initController.deletedb);
-app.get('/getdb', initController.getdb);
+//WRASSE
+//Set Handlebars view directory for plugins
+app.set('views', path.join(__dirname, 'plugins/wrasse/views/'));
+//Wrasse Routing
+var wrasseRouting = require('./plugins/wrasse/routes/routes');
+app.use('/', wrasseRouting);
 
-//////////////////////////////////////////////////////////////////////
-////        PRIMARY ADMINISTRATIVE DATABASE MODIFICATION         //// 
-////////////////////////////////////////////////////////////////////
-app.get('/hl-admin', adminController.hadmin);
-app.get('/admin', adminController.admin);
-app.get('/read',  adminController.read);
-app.get('/update',  adminController.update);
-app.get('/delete',  adminController.delete);
+//SEMINI
+ //Set Handlebars view directory for plugins
+app.set('views', path.join(__dirname, 'plugins/semini/views/'));
+//Fratenate Routing
+var seminiRouting = require('./plugins/semini/routes/routes');
+app.use('/', seminiRouting);
+ 
+//HEAVY-LIFTING
+//Set Handlebars view directory for plugins
+app.set('views', path.join(__dirname, 'plugins/heavylifting/views/'));
+//Fratenate Routing
+var heavyliftingRouting = require('./plugins/heavylifting/routes/routes');
+app.use('/', heavyliftingRouting);
 
-/////////////////////////////////
-////        DATABASE        //// 
-///////////////////////////////
-//Load Template
-app.get('/templateload', readController.templateload);
-
-/////////////////////////////////////////
-////       CREATE CONTROLLERS       //// 
-///////////////////////////////////////
-app.post('/create',  createController.create);
-
-///////////////////////////////////////////
-////       DELETE CONTROLLERS         //// 
-/////////////////////////////////////////
-//get data by array of ids.
-app.get('/deleteentryperm', deleteController.deleteentryperm);
-//get data by array of ids permanently.
-app.get('/deleteentry', deleteController.deleteentry);
-
-/////////////////////////////////////////
-////       READ CONTROLLERS         //// 
-///////////////////////////////////////
-//admin page table view.
-app.get('/getCollectionData', readController.getCollectionData);
-
-//get data by array of ids.
-app.get('/getdata', readController.getdata);
-//get data by array of ids.
-app.get('/getdatacomp', readController.getdatacomp);
-//get data by parentid
-app.get('/parentid', readController.parentid);
-//get data 
-app.get('/getshortdata', readController.getshortdata);
-//get jstree 
-app.get('/jstree', readController.jstree);
-//get the select ddrop down items
-app.get('/getformfield', readController.getformfield);
-//get the select templatename
-app.get('/templatename', readController.templatename);
-//get the select groups
-app.get('/groups', readController.groups);
-//get the navmenu
-app.get('/navmenuload', readController.navmenuload);
-//get the usermenu
-app.get('/loadusermenu', readController.loadusermenu);
-//get the loadcompmenu
-app.get('/loadcompmenu', readController.loadcompmenu);
-//get the single element id
-app.get('/singleidcall', readController.singleidcall);
-//get the single element id
-app.get('/findme', readController.findme);
-//get the get assembly all element id
-app.get('/getassemblyall', readController.getassemblyall);
-//get the get assembly all element id
-app.get('/defaultassy', readController.defaultassy);
-// getformraw
-app.get('/getformraw', readController.getformraw);
-// getformraw
-app.get('/getcompform', readController.getcompform);
-
-/////////////////////////////////////
-////       PRODUCTS             //// 
-///////////////////////////////////
-// getformraw
-app.get('/productload', productController.productload);
-
-/////////////////////////////////////
-////       ASSEMBLY             //// 
-///////////////////////////////////
-app.get('/assembly/new',  assemblyController.newassy);
-
-//search for the form to load.
-app.get('/getform',  componentController.additionaldetails , readController.getform);
-
-//Rebuild routing
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////
-////       TEMPALTES        //// 
-///////////////////////////////
-app.get('/privacy', userInterfaceController.privacy);
-app.get('/terms', userInterfaceController.terms);
-
-///////////////////////////////////////////////////
-////        USER INTERFACE CONTROLLER         //// 
-/////////////////////////////////////////////////
-app.get('/users/', userInterfaceController.users);
-app.get('/users/:username/',componentController.componentforms, componentController.usercomponents,organizationController.userorganizations,componentController.organizationcomponents,heavyliftingController.heavyliftingalluser ,userInterfaceController.profile);
-app.get('/users/:username/settings/',userInterfaceController.settings);
-app.get('/users/:username/settings/:page', componentController.componentforms,componentController.usercomponents,organizationController.userorganizations,componentController.organizationcomponents , userInterfaceController.page);
-app.get('/usersearch', userInterfaceController.usersearch);
-
-/////////////////////////////////////
-////       ORGANIZATION         //// 
-///////////////////////////////////
-//Static
-app.get('/organizations', organizationController.orglist);
-app.get('/organizations/new', organizationController.neworg);
-app.post('/organizations/new', organizationController.createorgstatic);
-app.get('/organizations/:orgname/', organizationController.ajaxorguserread ,organizationController.orgprofile);
-app.get('/organizations/:orgname/settings',organizationController.ajaxorguserread , organizationController.organizationpermission, organizationController.settings);
-app.get('/organizations/:orgname/people', organizationController.ajaxorguserread ,organizationController.people);
-app.get('/organizations/:orgname/settings',organizationController.ajaxorguserread , organizationController.settings);
-app.get('/organizations/:orgname/settings/:page', organizationController.ajaxorguserread , organizationController.page);
-app.put('/organizations/:orgname', userController.ensureAuthenticated, organizationController.orgPut);
-app.get('/leaveorganiztion/:ids',  organizationController.leaveorganiztion);
-
-//Ajax
-app.get('/orguserread', organizationController.orguserread); // Get the active user organizations , owner and member.
-
-app.get('/organizations/:orgname/components', organizationController.ajaxorguserread ,organizationController.components);
-app.get('/organizations/:orgname/assemblies',organizationController.ajaxorguserread , organizationController.assemblies);
-
-
-///////////////////////////////////
-////       COMPONENTS         //// 
-/////////////////////////////////
-app.get('/components/', componentController.components);
-app.get('/componentssuperadmin/', componentController.componentssuperadmin);
-app.get('/component/new', organizationController.ajaxorguserread , componentController.componentforms, componentController.newcomp);
-
-//User Components
-app.get('/components/users/', componentController.usersview);
-app.get('/components/users/:username/', componentController.users);
-app.get('/components/users/:username/:compid', componentController.compiduser);
-//Organization Components
-app.get('/components/organizations/', componentController.organizationsview);
-app.get('/components/organizations/:orgname', componentController.organizations);
-app.get('/components/organizations/:orgname/:compid', componentController.compidorg);
-
-
-//Viewer and calculator
-app.get('/components/:compid', componentController.compmore);
-
-//Viewer and calculator (Group) - Stage 2
-app.get('/components/:template/:compgroupid',readController.query,readController.query1,readController.query2,readController.query3,readController.query4 , componentController.compmore);
-
-
-/////////////////////////////////////
-////       EMAILING             //// 
-///////////////////////////////////
-//Testing of the smtp mail , work great.
-app.get('/testmail', userInterfaceController.testmail);
-
-
-
-/////////////////////////////////
-////       HOME             //// 
-///////////////////////////////
-
-app.get('/',componentController.componentforms, componentController.usercomponents,organizationController.userorganizations,componentController.organizationcomponents ,heavyliftingController.heavyliftingalluser, HomeController.index);
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////                                                            USER                                                                        //// 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-app.get('/contact', contactController.contactGet);
-app.post('/contact', contactController.contactPost);
-app.get('/account', userController.ensureAuthenticated, userController.accountGet);
-app.put('/account', userController.ensureAuthenticated, userController.accountPut);
-app.delete('/account', userController.ensureAuthenticated, userController.accountDelete);
-app.get('/signup', userController.signupGet);
-app.post('/signup', userController.signupPost);
-app.get('/signin', userController.loginGet);
-app.post('/signin', userController.loginPost);
-app.get('/forgot', userController.forgotGet);
-app.post('/forgot', userController.forgotPost);
-app.get('/reset/:token', userController.resetGet);
-app.post('/reset/:token', userController.resetPost);
-app.get('/signout', userController.signout);
-app.get('/unlink/:provider', userController.ensureAuthenticated, userController.unlink);
-app.get('/auth/google', passport.authenticate('google', { scope: 'profile email' }));
-app.get('/auth/google/callback', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/signin' }));
-app.get('/auth/github', passport.authenticate('github', { scope: [ 'user:email profile repo' ] }));
-app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/', failureRedirect: '/signin' }));
+ 
 
 /////////////////////////////
 ////       500          //// 
@@ -376,8 +221,8 @@ app.use(function(err, req, res, next) {
   //log.error(err, req);
 
   // during development you may want to print the errors to your console
-  //console.log(err.stack);
-req.flash('error', { msg: JSON.stringify(err)});
+  console.log(err.stack);
+  req.flash('error', { msg: JSON.stringify(err.stack)});
   // send back a 500 with a generic message
   res.status(500);
   res.redirect('/500');

@@ -1,0 +1,17 @@
+<div id="froala-editor-update">
+  <p>The buttons below will destroy and init the rich text editor again.</p>
+</div>
+<p>
+  <a id="btn-destroy" href="#" class="btn r-btn highlight text-small">Destroy</a>
+  <a id="btn-init" href="#" class="btn r-btn text-small">Init</a>
+</p>
+  <script>
+  $(function() {
+    $('div#froala-editor-update').froalaEditor({
+      // Add the custom buttons in the toolbarButtons list, after the separator.
+      toolbarButtons: [ 'fontSize',  '|' ,'bold',  'italic', '|','html'],
+        heightMin: 200,
+      heightMax: 200
+    })
+  });
+</script>
