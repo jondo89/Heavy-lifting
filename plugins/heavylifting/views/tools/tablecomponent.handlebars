@@ -1,4 +1,4 @@
-     <div role="tabpanel" class="tab-pane active" id="tableComponent">
+     <div role="tabpanel" class="tab-pane active" id="Tablecomponent">
        <div class="row">
         <div class="col-md-3">
         </div>
@@ -10,17 +10,18 @@
       </div>
     </div>
     <style type="text/css">
-      .dt-buttons{
-        padding-bottom: 15px;
-      }
-    </style>
-    <script type="text/javascript">
-      $('#searchArea').append('<p></p><div style="padding-top:15px" class="collapse" id="collapseExample"> <div style="text-align:center">   <div id="AdvancedSearch"></div> </div> </div>')
-
+    .dt-buttons{
+      padding-bottom: 15px;
+    }
+  </style>
+  <script type="text/javascript">
+  //The route defines the plugin to use when posting , getting and loading.
+  var route = 'heavylifting'
+  $('#searchArea').append('<p></p><div style="padding-top:15px" class="collapse" id="collapseExample"> <div style="text-align:center"><div id="AdvancedSearch"></div> </div> </div>')
 /////////////////////////////
 ////     DEBUG AREA     //// 
 ///////////////////////////
-console.log( 'tableComponent loading' )
+console.log( 'Tempalte Name : plugin/'+route+'/views/tools/tablecomponent' )
 console.log( '-------------------------' )
 console.log( 'items : ',items )
 console.log( 'query1 : ',query1 )
@@ -30,7 +31,7 @@ console.log( 'query4 : ',query4 )
 console.log( 'tablelistdata : ',tablelistdata )
 console.log( 'formids : ',formids )
 console.log( '-------------------------' )
-console.log( 'tableComponent loading' )
+console.log( 'Tempalte Name : plugin/'+route+'/views/tools/tablecomponent' )
 
 var modifiedTableListData
 var modifiedListData
@@ -234,9 +235,9 @@ function detailTableLoad (data,id){
 
   html+='<h4>Item Detail</h4> '  
 
-html+='<div class="component-detail-img"><img src="uploads/'+id+'.jpg"></div>'
+  html+='<div class="component-detail-img"><img src="uploads/'+id+'.jpg"></div>'
 
- 
+
 //pull in the element id of query 2 for the correct mofiy form
 var componentFom = query1[0].elementID
 html += '<table class="table table-bordered table-condensed">  '
@@ -271,7 +272,7 @@ for (key in data) {
         break;
       }
       html += '</td>'      
-       
+
 
 
       if ( data[key][i]['units'] == undefined) {
@@ -401,7 +402,7 @@ function formatDefault ( d ) {
   for (var j = 0; j < items.entry.buttons.length; j++) {
     switch(true){
       case (items.entry.buttons[j] == 'modify'):
-      html += '<button type="button" class="btn btn-default" id="'+d+'_read" onclick="modifyItemComp(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Modify</button>'
+      html += '<button type="button" class="btn btn-default" id="'+d+'_read" onclick="modifyItemComp(this.id)"    data-toggle="tooltip" data-placement="top" title="Edit ths item.">Modify</button>'
       break;
       case (items.entry.buttons[j] == 'rawitem'):
       html += '<button type="button" class="btn btn-default" id="'+d+'_raw" onclick="EditWithraw(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Raw</button>'  
@@ -467,7 +468,7 @@ function deleteEntry(id){
   html +="'"
   html +=')">Confirm</button>'
   html +='</div>'
-  $('#formAreaModal').html(html)
+  $('#formAreaModals').html(html)
 }
 
 //////////////////////////////
@@ -487,7 +488,7 @@ function permdelete(id){
   html +="'"
   html +=')">Confirm</button>'
   html +='</div>'
-  $('#formAreaModal').html(html)
+  $('#formAreaModals').html(html)
 }
 
 /////////////////////////////
@@ -495,7 +496,7 @@ function permdelete(id){
 ///////////////////////////
 function deleteEntrys(_id){
   jQuery.ajax({
-    'url': '/deleteentry?idItem='+_id,
+    'url': '/'+route+'/deleteentry?idItem='+_id,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
@@ -509,7 +510,7 @@ function deleteEntrys(_id){
 ///////////////////////////
 function deleteEntrysPerm(_id){
   jQuery.ajax({
-    'url': '/deleteentryperm?idItem='+_id,
+    'url': '/'+route+'/deleteentryperm?idItem='+_id,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
@@ -536,7 +537,7 @@ function deployFormComponent(formToUse){
   //This is hard wired , and likely to cause issues.
   var headings = ["description","detail","icon","headings"]
   var entry =''
-  loadformModal(formToUse,'','component',items.elementID,headings,entry)
+  loadformModal(formToUse,'','component',items.elementID,headings,entry,'formAreaModals')
 }
 
 //////////////////////////////////////////////
@@ -588,9 +589,10 @@ function modifyItemComp(id){
     var entry = {
       elementID : id
     } 
-    console.log('Tracing here',childType,id,'componentedit',parentIdTemp,headings, entry)
+    //console.log('Tracing here',childType,id,'componentedit',parentIdTemp,headings, entry,'formAreaModals')
   //The id of the emement needs to be injected into the form , as it does not have that data.
-  loadformModal(childType,id,'componentedit',parentIdTemp,headings, entry)
+  $('#tablist a:last').tab('show')
+  loadformModal(childType,id,'componentedit',parentIdTemp,headings, entry,'formAreaModals')
 }
 }
 
@@ -643,7 +645,7 @@ function copthisitem(id){
 ////////////////////////////////////////////////
 function deployparentrawForm(parentid){
   parentid = parentid.replace('_parentraw', '');
-  loadformModal(parentid,parentid,'raw',parentid)
+  loadformModal(parentid,parentid,'raw',parentid,'','','formAreaModal')
 }
 
 //////////////////////////////////////////////////
@@ -657,15 +659,15 @@ function copyParentRaw(parentid){
 //////////////////////////////////////
 ////////    GET FORM BY ID  /////////
 ////////////////////////////////////                                                                                                              
-function loadformModal(formdata,idItem,raw,parentid,headings,entry){
+function loadformModal(formdata,idItem,raw,parentid,headings,entry,location){
   var headings = JSON.stringify(headings)
   var entry = JSON.stringify(entry)
   jQuery.ajax({
-    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings+'&entry='+entry,
+    'url': '/'+route+'/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings+'&entry='+entry,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
-      $('#formAreaModal').html(dataSchemaObject)
+      $('#'+location).html(dataSchemaObject)
     }
   });
 }
@@ -720,5 +722,8 @@ function createComp(id){
     loadformModal(parentid,'','use',id)
   }
 }
+
+
+
 
 </script>

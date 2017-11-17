@@ -1,19 +1,14 @@
-
-  <a   class="btn btn-default" id="changeButton" onclick="deployFormUse(this.id)" data-toggle="modal" data-target="#myModal" title="Add this item"><i class="fa fa-plus" aria-hidden="true"></i> Add</a> 
- 
-
+<a class="btn btn-default"  data-toggle="modal" data-target="#myModal" title="Add this item"><i class="fa fa-plus" aria-hidden="true"></i> Add</a> 
 <script type="text/javascript">
-console.log( '-------------------------' )
 console.log( 'Add loading' )
-console.log( '+++++++++++++++++++++++++' )
+console.log( '-------------------------' ) 
 ///////////////////////////////////////////////
 ////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
 /////////////////////////////////////////////
 function uniqueIdforchangeButton(){
-	$('#changeButton').attr('id', items.childType);
+      $('#changeButton').attr('id', items.childType);
 }
-
 $('document').ready(function(){
-	uniqueIdforchangeButton()
+      uniqueIdforchangeButton()
 })
 </script>

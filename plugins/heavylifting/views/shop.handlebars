@@ -1,47 +1,50 @@
     <div class="row">
-      <div class="col-md-12">
-     
-        <h1>Store </h1>
-      <p>Incorporate O.E.M gear into your system design using equipment components.</p>
+      <div class="col-md-10">
+        <h1>Store</h1>
+        <p>Incorporate O.E.M gear into your system design using equipment components.</p>
       </div>
+      {{>tools}}
     </div> 
     <hr>
-    <div class="row">
-      <div class="col-md-4" id="navMenuPanel" style="min-height: 450px">
-        <div id="myProgress">
-          <div id="myBar"> </div>
-        </div>
-        <h5><strong>Navigation</strong> <small>  Use the navigation tree to interact with the database.</small></h5>
-        <div class=" ">
-         <div style="padding-bottom:15px;padding-bottom:15px">
-          <input id="search_field" name="searchinput" type="search" placeholder="Search Navigation" class="form-control input-md">      
-        </div>
-        <div id="jstree"></div> 
+<div class="row">
+<div class="col-md-4" id="navMenuPanel" style="min-height: 450px">       
+    <div id="myProgress">
+      <div id="myBar">
       </div>
-      <div id="menuItems"></div>
     </div>
-    <div class="col-md-8" id="browserArea">
-      <div id="panel">  
-<div class="awesome"><div style="background-color: #fff !important;padding: 5px"><div style="padding:25px"><h3>Heads up! <small>Click on the nodes of the navigation tree to interact with the site.</small></h3><div style="text-align: center"><p>To get started view the <a href="/documentation">Documentation section</a> on this site or sign in / sign up.</p></div> </div></div></div>
-      </div>
+    <h5><strong>Navigation</strong> <small>  Use the navigation tree to interact with the database.</small><div style="text-align: right;position: absolute;right: 14px;top:0px" id="treeNavEdit" ></div> </h5>
+    <div class=" ">
+     <div style="padding-bottom:15px;padding-bottom:15px">
+      <input id="search_field" name="searchinput" type="search" placeholder="Search Navigation" class="form-control input-md">      
+    </div>
+    <div id="jstree"><pre><i class="fa fa-spinner fa-spin fa-fw"></i><span class=" ">Loading...</span></pre></div> 
+        <div style="text-align: center">
+      <p><small id="jstreecount"></small> Navigation Items</p>  
     </div>
   </div>
- 
+  <div id="menuItems"></div>
+</div>  
+<div class="col-md-8" id="browserArea">
+  <div id="panel">  
+<div class="awesome"><div style="background-color: #fff !important;padding: 5px"><div style="padding:25px"><h3>Heads up! <small>Click on the nodes of the navigation tree to interact with the site.</small></h3><div style="text-align: center"><p>To get started view the <a href="/documentation">Documentation section</a> on this site or sign in / sign up.</p></div> </div></div></div>
+  </div>
+</div>
+</div>
+  
 
   <script type="text/javascript">
-
-
-
-    var databaseid = {{{items}}};
-    var Formids = {{{Formids}}};
-    var navmenuHeadings = ['detail','description','icon','buttons','tabs','parent','template']
-    var databaseMenu = []
-    var temp =[]
+  //The route defines the plugin to use when posting , getting and loading.
+  var route = 'heavylifting'
+  var databaseid = {{{items}}};
+  var Formids = {{{Formids}}};
+  var navmenuHeadings = ['detail','description','icon','buttons','tabs','parent','template']
+  var databaseMenu = []
+  var temp =[]
 
 /////////////////////////////
 ////     DEBUG AREA     //// 
 ///////////////////////////
-console.log( 'Store loading' )
+console.log( 'Tempalte Name : plugin/'+route+'/views/shop' )
 console.log( '-------------------------' )
 console.log( 'databaseid : ',databaseid )
 console.log( 'Formids : ',Formids )
@@ -49,7 +52,7 @@ console.log( 'navmenuHeadings : ',navmenuHeadings )
 console.log( 'databaseMenu : ',databaseMenu )
 console.log( 'temp : ',temp )
 console.log( '-------------------------' )
-console.log( 'Store loading' )
+console.log( 'Tempalte Name : plugin/'+route+'/views/shop' )
 
 
 
@@ -59,7 +62,7 @@ console.log( 'Store loading' )
 ///////////////////////////////// 
 function jstreeGet(ids){
   jQuery.ajax({
-    'url': '/jstree?ids='+ids,
+    'url': '/heavylifting/jstree?ids='+ids,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
@@ -72,7 +75,7 @@ function jstreeGet(ids){
       //manipulate data to work with the jstree
       var jsTreeData = dataJStreeConvert (dataSchemaObject1)
       var location = 'jstree'
-      $('#panel').html('<div class="awesome"><div style="background-color: #fff !important;padding: 5px"><div style="padding:25px"><h3>Heads up! <small>Click on the nodes of the navigation tree to interact with the site.</small></h3><div style="text-align: center"><p>To get started view the <a href="/documentation">Documentation section</a> on this site or sign in / sign up.</p></div> </div></div></div>')      //load the jstree
+      $('#panel').html('<div class="awesome"><div style="background-color: #fff !important;padding: 5px"><div style="padding:25px"><h3>Heads up! <small>Click on the nodes of the navigation tree to interact with the site.</small></h3><div style="text-align: center"><p>To get started view the <a href="/documentation">Documentation section</a> on this site or sign in / sign up.</p></div> </div></div></div>')
       //change the primary page id variable , used for the parent
       databaseid = ids
       loadNavMenu(location,jsTreeData)
@@ -100,6 +103,7 @@ function fitstFormat(databaseMenu){
 //////  INITIALISE    //////
 /////////////////////////// 
 $( document ).ready(function() {
+  pageNavEdit(databaseid)
   jstreeGet(databaseid)
 });
 
@@ -195,6 +199,8 @@ function loadNavMenu(location,dataNav){
     "plugins" : [   "search" , "state"]
   });
 
+  $('#jstreecount').html(dataNav.length)
+
 /////////////////////////////////
 ////////  SEARCH NAV MENU ///////
 /////////////////////////////////
@@ -266,10 +272,11 @@ if(ids){
   jQuery.ajax({
    'async': true,
    'global': false,
-   'url': '/productload?ids='+ids,
+   'url': '/heavylifting/productload?ids='+ids,
    'success': function (dataSchemaObject) {
-     jQuery('#panel').html("")
-     jQuery('#panel').html(dataSchemaObject)
+      jQuery('#panel').html("")
+      jQuery('#panel').html(dataSchemaObject)
+      treeNavEdit("treeNavEdit")
    }
  });
 }
@@ -307,7 +314,7 @@ function newMenuItems(formdata,idItem,raw,parentid,injectParentid,headings){
   console.log(formdata,idItem,raw,parentid,injectParentid,headings)
   var headings = JSON.stringify(headings)
   jQuery.ajax({
-    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
+    'url': '/heavylifting/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {

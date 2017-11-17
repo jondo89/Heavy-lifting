@@ -359,7 +359,7 @@ $( '#'+id+' thead th' ).each(function(){
     counter+=1
   }  else {
     html+='<div class="col-md-4" id="filter_col'+counter+1+'" data-column="'+counter+'" style="padding-bottom:5px">'
-    html+='  <input  name="textinput" type="text" placeholder="Search '+$( this ).text()+'" class="form-control AdvancedSearch input-md" id="col'+counter+'_filter">'
+    html+='  <input  name="textinput" type="text" placeholder="Search '+$( this ).text()+'" class="form-control input-md" id="col'+counter+'_filter">'
     html+='  </div>'
     counter+=1
   }
@@ -367,22 +367,17 @@ $( '#'+id+' thead th' ).each(function(){
 html+='</div>'
 html+='</fieldset>'
 html+='</form>'
-
 $('#AdvancedSearch').html(html)
-
 function filterColumn ( i ) {
   table.column( i ).search(
     $('#col'+i+'_filter').val()
     ).draw();
 }
-
-$('input.AdvancedSearch').on( 'keyup click', function () {
+$('input.form-control').on( 'keyup click', function () {
   filterColumn( $(this).parents('div').attr('data-column') );
 } );
-
 $('.dt-buttons').prepend('<a class="btn btn-default btn-xs" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-search" aria-hidden="true"></i></a>')
 //end of advanced filter option.
-
 }
 
 ////////////////////////////////////////////////////////////////////

@@ -37,7 +37,7 @@ $('document').ready(function(){
 ////////////////////////////////////                                                                                                              
 function loadformModal1(formdata,idItem,raw,parentid){
   jQuery.ajax({
-    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid,
+    'url': '/heavylifting/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {

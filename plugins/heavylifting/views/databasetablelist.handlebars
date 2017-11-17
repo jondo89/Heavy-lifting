@@ -10,20 +10,24 @@
   </div>
 </div>
 <p></p>
-{{#if user}}
-
-<div class="row">
-  <div class="col-md-7">
-    <div  id="toolbar" class="btn-group" role="group" aria-label="..." style="color: grey">
-    </div>
-  </div>
-  <div class="col-md-5">
-    <pre style="color: grey" id='formIdHere'></pre>
-  </div>
-</div>
-{{/if}}
+       {{#if messages.info}}
+        <div role="alert" class="alert alert-info">
+          {{#each messages.info}}
+            <div>{{msg}}</div>
+          {{/each}}
+        </div>
+      {{/if}}
+      {{#if messages.error}}
+        <div role="alert" class="alert alert-danger">
+          {{#each messages.error}}
+            <div>{{msg}}</div>
+          {{/each}}
+        </div>
+      {{/if}}
 
 <script type="text/javascript">
+//The route defines the plugin to use when posting , getting and loading.
+var route = 'heavylifting'
 //The menu item from JSTREE
 var items = {{{query}}}
 //The applicable form for use ( query.childtype)
@@ -67,7 +71,8 @@ query2.sort(function(a, b) {
 /////////////////////////////
 ////     DEBUG AREA     //// 
 ///////////////////////////
-console.log( 'databasetablelist loading' )
+
+console.log( 'Tempalte Name : plugin/'+route+'/views/databasetablelist' )
 console.log( '-------------------------' )
 console.log( 'items : ',items )
 console.log( 'query1 : ',query1 )
@@ -78,14 +83,10 @@ console.log( 'tablelistdata : ',tablelistdata )
 console.log( 'formids : ',formids )
 console.log( 'templateload : ',templateload )
 console.log( '-------------------------' )
-console.log( 'databasetablelist loading' )
+console.log( 'Tempalte Name : plugin/'+route+'/views/databasetablelist' )
 
 
-if(items.elementID) {
-  $("#formIdHere").html('id : '+items.elementID)
-}else{
-  $("#formIdHere").html('id : '+items._id)
-}
+
 
 /////////////////////////////
 ////     LAYOUT VIEW    //// 
@@ -168,7 +169,7 @@ if(template){
   jQuery.ajax({
    'async': true,
    'global': false,
-   'url': '/templatename?template='+template,
+   'url': '/heavylifting/templatename?template='+template,
    'success': function (dataSchemaObject) {
      jQuery('#'+location).append(dataSchemaObject)
    }
@@ -205,11 +206,77 @@ $('document').ready(function(){
   var html = '<a type="button" href="/Components/'+items.entry.moreinfotemp+'/'+templateload+'" class="btn btn-info" style="position: absolute;right: 20px"><i class="fa fa-calculator" aria-hidden="true" ></i></a>'
   $('#more').html(html)
 }
-
-
-
-layoutView() 
+//layoutView() 
 tabview()
 tablist()
 })
+
+
+/////////////////////////////////
+////////    UNIQUE ID  /////////
+///////////////////////////////
+function uniqueIdforparentraw(){
+if (items.elementID) {
+  $('#parentraw').attr('id', items.elementID+'_parentraw');
+} else {
+  $('#parentraw').attr('id', items._id+'_parentraw');
+}
+}
+
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
+/////////////////////////////////////////////
+function uniqueIdforchangeButton(){
+  $('#changeButtonComp').attr('id', items.childType);
+}
+
+{{#if user}}
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+$( document ).ready(function() {
+
+  uniqueIdforparentraw()
+uniqueIdforchangeButton()
+if(items.elementID) {
+  $("#formIdHere").html('id : '+items.elementID)
+}else{
+  $("#formIdHere").html('id : '+items._id)
+}
+
+});
+
+{{/if}}
+
+ 
+
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+////////////////////////////////////
+function newMenuItems(formdata,idItem,raw,parentid,injectParentid,headings){
+  var headings = JSON.stringify(headings)
+  jQuery.ajax({
+    'url': '/heavylifting/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      $('#formAreaModal').html(dataSchemaObject)
+    }
+  });
+}
+
+////////////////////////////////////////////////////
+////////    BUTTON CLICK ADD NEW DB ITEM  /////////
+//////////////////////////////////////////////////
+function newMenuItem(parentid){
+  newMenuItems(Formids,'','use',databaseid,'',navmenuHeadings)
+}
+
+///////////////////////////////////////////////////
+////////    BUTTON CLICK EDIT RAW DB ITEM  ///////
+/////////////////////////////////////////////////
+function editRaw(parentid){
+  newMenuItems(Formids,databaseid,'raw',databaseid,'',navmenuHeadings)
+}
+
 </script>

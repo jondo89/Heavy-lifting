@@ -4,13 +4,20 @@
      </div>
      <script type="text/javascript">
 
+  //The route defines the plugin to use when posting , getting and loading.
+  var route = 'heavylifting'
 /////////////////////////////
 ////     DEBUG AREA     //// 
 ///////////////////////////
-console.log( 'table loading' )
+console.log( 'Tempalte Name : plugin/'+route+'/views/tools/table' )
 console.log( '-------------------------' )
+console.log( 'databaseid : ',databaseid )
+console.log( 'Formids : ',Formids )
+console.log( 'navmenuHeadings : ',navmenuHeadings )
+console.log( 'databaseMenu : ',databaseMenu )
+console.log( 'temp : ',temp )
 console.log( '-------------------------' )
-console.log( 'table loading' )
+console.log( 'Tempalte Name : plugin/'+route+'/views/tools/table' )
 
 
 var modifiedTableListData
@@ -251,7 +258,7 @@ function permdelete(id){
 ///////////////////////////
 function deleteEntrys(_id){
   jQuery.ajax({
-    'url': '/deleteentry?idItem='+_id,
+    'url': '/'+route+'/deleteentry?idItem='+_id,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
@@ -265,7 +272,7 @@ function deleteEntrys(_id){
 ///////////////////////////
 function deleteEntrysPerm(_id){
   jQuery.ajax({
-    'url': '/deleteentryperm?idItem='+_id,
+    'url': '/'+route+'/deleteentryperm?idItem='+_id,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
@@ -287,7 +294,7 @@ function loadDetail(id){
   jQuery.ajax({
     'async': true,
     'global': false,
-    'url': '/getlongdata?data='+id,
+    'url': '/'+route+'/getlongdata?data='+id,
     'success': function (dataSchemaObject) {
       $('#'+id+'_loadingArea').html(dataSchemaObject)
     }
@@ -405,7 +412,7 @@ function loadformModal(formdata,idItem,raw,parentid,headings){
   console.log('Entering here' , parentid)
   var headings = JSON.stringify(headings)
   jQuery.ajax({
-    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
+    'url': '/'+route+'/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {

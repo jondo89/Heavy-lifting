@@ -926,9 +926,19 @@ heavyliftingModel.find({
   'active' : 'true'
 }).exec(function (err, form) {
   if(err){console.log('Error Here'); return;} 
-  query1.exec(function (err, docs2) {
-    if(err){console.log('Error Here'); return;}
-    var temp = docs2[0] 
+
+
+
+
+
+
+query1.exec(function (err, docs2) {
+  if(err){console.log('Error Here'); return;}
+  var temp = docs2[0] 
+  
+
+if (docs2[0]) {
+
       //if the entry id is blank then autopopulate the entry ID with the current ID.
       if (docs2[0].elementID == '' ) {
         docs2[0].elementID = docs2[0]._id
@@ -943,17 +953,18 @@ heavyliftingModel.find({
         form[i].elementID=form[i]._id
       }
     }
-//turn into something that alpaca understands.
-/*
-console.log('-----------getdatacomp------------')
-console.log('form : ',JSON.stringify(form))
-console.log('-----------getdatacomp------------')
-*/
-res.send({
-  formdata : form , 
-  idItem : temp
-});
-})
+    res.send({
+      formdata : form , 
+      idItem : temp
+    });
+ } else { 
+        res.send({
+        formdata : '', 
+        idItem : '',
+        error : '<div class="alert alert-danger" role="alert">Something went wrong with the query : '+idItem + ' ' +formdata+'</div>'
+    });
+}
+ })
 })
 }
 

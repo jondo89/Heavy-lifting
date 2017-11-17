@@ -134,8 +134,16 @@ var seminiController = require(directory+'controllers/seminipages');
 ////       TEMPALTES        //// 
 ///////////////////////////////
 app.get('/forms', seminiController.forms);
- 
- 
+app.get('/privacy', seminiController.privacy);
+app.get('/terms', seminiController.terms);
+app.get('/introduction', seminiController.introduction);
+app.get('/troubleshooting', seminiController.troubleshooting);
+app.get('/installation', seminiController.installation);
+app.get('/payments', seminiController.payments);
+app.get('/integration', seminiController.integration);
+app.get('/licence', seminiController.licence);
+app.get('/specifications', seminiController.specifications);
+app.get('/css', seminiController.css);
 ///////////////////////////   THESE ROUTES CAN BE REMOVED FOR CUSTOM SITES   ///////////////////////////
  
 /////////////////////////////////////////

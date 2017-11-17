@@ -1,38 +1,43 @@
- 
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-10">
     <h1>Forms</h1>
     <p>Use the interface below to modify all site forms.</p> <hr>
   </div>
+  {{>tools}}
 </div>  
 <div class="row">
-  <div class="col-md-4" id="navMenuPanel">
+  <div class="col-md-4" id="navMenuPanel" style="min-height: 450px">       
     <div id="myProgress">
-      <div id="myBar"> </div>
+      <div id="myBar">
+      </div>
     </div>
-    <h5><strong>Navigation</strong> <small>  Use the navigation tree to interact with the database.</small></h5>
+    <h5><strong>Navigation</strong> <small>  Use the navigation tree to interact with the database.</small><div style="text-align: right;position: absolute;right: 14px;top:0px" id="treeNavEdit" ></div></h5>
     <div class=" ">
      <div style="padding-bottom:15px;padding-bottom:15px">
       <input id="search_field" name="searchinput" type="search" placeholder="Search Navigation" class="form-control input-md">      
     </div>
-    <div id="jstree"></div> 
+    <div id="jstree"><pre><i class="fa fa-spinner fa-spin fa-fw"></i><span class=" ">Loading...</span></pre></div> 
+    <div style="text-align: center">
+      <p><small id="jstreecount"></small> Navigation Items</p>  
+    </div>
   </div>
-  <div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
-  </div>
+  <div id="menuItems"></div>
 </div>  
 <div class="col-md-8" id="browserArea">
   <div id="panel">  
-<div class="awesome"><div style="background-color: #fff !important;padding: 5px"><h3>Heads up! <small>Click on the nodes of the navigation tree to interact with the site.</small></h3><div style="text-align: center"><p>To get started view the <a href="/documentation">Documentation section</a> on this site or sign in / sign up.</p> </div></div></div>
+    <div class="awesome"><div style="background-color: #fff !important;padding: 5px"><div style="padding:25px"><h3>Heads up! <small>Click on the nodes of the navigation tree to interact with the site.</small></h3><div style="text-align: center"><p>To get started view the <a href="/documentation">Documentation section</a> on this site or sign in / sign up.</p></div> </div></div></div>
   </div>
 </div>
 </div>
- 
+
 <script type="text/javascript">
-  var databaseid = {{{items}}};
-  var Formids = {{{Formids}}};
-  var navmenuHeadings = ['detail','description','icon','buttons','tabs','parent','template','value']
-  var databaseMenu = []
-  var temp =[]
+    //The route defines the plugin to use when posting , getting and loading.
+    var route = 'heavylifting'
+    var databaseid = {{{items}}};
+    var Formids = {{{Formids}}};
+    var navmenuHeadings = ['detail','description','icon','buttons','tabs','parent','template','value']
+    var databaseMenu = []
+    var temp =[]
 
 /////////////////////////////
 ////     DEBUG AREA     //// 
@@ -53,7 +58,7 @@ console.log( 'forms loading' )
 ///////////////////////////////// 
 function jstreeGet(ids){
   jQuery.ajax({
-    'url': '/jstree?ids='+ids,
+    'url': '/'+route+'/jstree?ids='+ids,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
@@ -61,7 +66,7 @@ function jstreeGet(ids){
       //Add the headings to the page.
       $('#descriptions').html(dataSchemaObject.thisitem[0].name)
       $('#details').html(dataSchemaObject.thisitem[0].detail)
-      $('#panel').html('<div class="awesome"><div style="background-color: #fff !important;padding: 5px"><h3>Heads up! <small>Click on the nodes of the navigation tree to interact with the site.</small></h3><div style="text-align: center"><p>To get started view the <a href="/documentation">Documentation section</a> on this site or sign in / sign up.</p> </div></div></div>')
+      $('#panel').html('<div class="awesome"><div style="background-color: #fff !important;padding: 5px"><div style="padding:25px"><h3>Heads up! <small>Click on the nodes of the navigation tree to interact with the site.</small></h3><div style="text-align: center"><p>To get started view the <a href="/documentation">Documentation section</a> on this site or sign in / sign up.</p></div> </div></div></div>')
 
       var dataSchemaObject1 = fitstFormat(dataSchemaObject.children)
       //manipulate data to work with the jstree
@@ -91,11 +96,12 @@ function fitstFormat(databaseMenu){
     databaseMenu = temp
     return databaseMenu
   }
- 
+  
 ///////////////////////////// 
 //////  INITIALISE    //////
 /////////////////////////// 
 $( document ).ready(function() {
+  pageNavEdit(databaseid)
   jstreeGet(databaseid)
 });
 
@@ -191,6 +197,9 @@ function loadNavMenu(location,dataNav){
     "plugins" : [   "search" , "state"]
   });
 
+  $('#jstreecount').html(dataNav.length)
+
+
 /////////////////////////////////
 ////////  SEARCH NAV MENU ///////
 /////////////////////////////////
@@ -231,18 +240,31 @@ $('#newMenuItem').click(function(){
   //var temp = jQuery('#'+location).jstree("get_selected",true)
   //console.log(temp[0].id)
   newMenuItems(Formids,'','use',databaseid,'',navmenuHeadings)
-  })
+})
 
 
-  console.log('Admin Page')
-  console.log('---------------------------')
-  console.log(' databaseid :', databaseid )
-  console.log(' Formids :', Formids )
-  console.log(' navmenuHeadings :', navmenuHeadings )
-  console.log(' databaseMenu :', databaseMenu )
-  console.log(' temp :', temp )
-  console.log('---------------------------')
-  console.log('Admin Page')
+console.log('Admin Page')
+console.log('---------------------------')
+console.log(' databaseid :', databaseid )
+console.log(' Formids :', Formids )
+console.log(' navmenuHeadings :', navmenuHeadings )
+console.log(' databaseMenu :', databaseMenu )
+console.log(' temp :', temp )
+console.log('---------------------------')
+console.log('Admin Page')
+
+
+///////////////////////////////////////////
+////////    EXPAND AND COLLAPSE  /////////
+/////////////////////////////////////////
+var html = '<p></p><div style="text-align:center;position:absolute;top:75px;right:15px"><button id="expandBtn" class="btn btn-default btn-xs"><i class="fa fa-plus-square-o" aria-hidden="true"></i></button><button id="collapseBtn" class="btn btn-default btn-xs"><i class="fa fa-minus-square-o" aria-hidden="true"></i></button></div>'
+$('#menuItems').append(html)
+jQuery('#expandBtn').click(function () {
+ jQuery('#'+location).jstree('open_all');
+});
+jQuery('#collapseBtn').click(function () {
+ jQuery('#'+location).jstree('close_all');
+});
 
 }
 
@@ -255,10 +277,11 @@ if(ids){
   jQuery.ajax({
    'async': true,
    'global': false,
-   'url': '/templateload?ids='+ids,
+   'url': '/'+route+'/templateload?ids='+ids,
    'success': function (dataSchemaObject) {
-     jQuery('#panel').html("")
-     jQuery('#panel').html(dataSchemaObject)
+      jQuery('#panel').html("")
+      jQuery('#panel').html(dataSchemaObject)
+      treeNavEdit("treeNavEdit")
    }
  });
 }
@@ -296,7 +319,7 @@ function newMenuItems(formdata,idItem,raw,parentid,injectParentid,headings){
   console.log(formdata,idItem,raw,parentid,injectParentid,headings)
   var headings = JSON.stringify(headings)
   jQuery.ajax({
-    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
+    'url': '/'+route+'/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
@@ -304,6 +327,7 @@ function newMenuItems(formdata,idItem,raw,parentid,injectParentid,headings){
     }
   });
 }
+
+
 </script>
 
- 

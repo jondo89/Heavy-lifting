@@ -155,7 +155,7 @@ app.get('/getuserdetails/:userid/',
 app.get('/database', pagesController.database);
 app.get('/shop', pagesController.shop);
 app.get('/documentation', pagesController.documentation);
-app.get('/forms', pagesController.forms);
+app.get('/heavylifting/forms', pagesController.forms);
 app.get('/configuration', pagesController.configuration);
 app.get('/assemblies', pagesController.assemblies);
 app.get('/reports', pagesController.reports); 
@@ -184,39 +184,39 @@ app.get('/delete',  adminController.delete);
 /////////////////////////////////
 ////        DATABASE        //// 
 ///////////////////////////////
-app.get('/templateload', readController.templateload);//Load Template
+app.get('/heavylifting/templateload', readController.templateload);//Load Template
 
 
 /////////////////////////////////////////
 ////       CREATE CONTROLLERS       //// 
 ///////////////////////////////////////
-app.post('/create',  createController.create);
+app.post('/heavylifting/create',  createController.create);
 
 
 ///////////////////////////////////////////
 ////       DELETE CONTROLLERS         //// 
 /////////////////////////////////////////
-app.get('/deleteentryperm', deleteController.deleteentryperm);//get data by array of ids.
-app.get('/deleteentry', deleteController.deleteentry);//get data by array of ids permanently.
+app.get('/heavylifting/deleteentryperm', deleteController.deleteentryperm);//get data by array of ids.
+app.get('/heavylifting/deleteentry', deleteController.deleteentry);//get data by array of ids permanently.
 
 
 /////////////////////////////////////////
 ////       READ CONTROLLERS         //// 
 ///////////////////////////////////////
 app.get('/getCollectionData', readController.getCollectionData);//admin page table view.
-app.get('/getdata', readController.getdata);//get data by array of ids.
-app.get('/getdatacomp', readController.getdatacomp);//get data by array of ids.
+app.get('/heavylifting/getdata', readController.getdata);//get data by array of ids.
+app.get('/heavylifting/getdatacomp', readController.getdatacomp);//get data by array of ids.
 app.get('/parentid', readController.parentid);//get data by parentid
 app.get('/getshortdata', readController.getshortdata);//get data 
-app.get('/jstree', readController.jstree);//get jstree 
-app.get('/getformfield', readController.getformfield);//get the select ddrop down items
-app.get('/templatename', readController.templatename);//get the select templatename
-app.get('/groups', readController.groups);//get the select groups
+app.get('/heavylifting/jstree', readController.jstree);//get jstree 
+app.get('/heavylifting/getformfield', readController.getformfield);//get the select ddrop down items
+app.get('/heavylifting/templatename', readController.templatename);//get the select templatename
+app.get('/heavylifting/groups', readController.groups);//get the select groups
 app.get('/navmenuload', readController.navmenuload);//get the navmenu
 app.get('/loadusermenu', readController.loadusermenu);//get the usermenu
 app.get('/loadcompmenu', readController.loadcompmenu);//get the loadcompmenu
 app.get('/singleidcall', readController.singleidcall);//get the single element id
-app.get('/findme', readController.findme);//get the single element id
+app.get('/heavylifting/findme', readController.findme);//get the single element id
 app.get('/getassemblyall', readController.getassemblyall);//get the get assembly all element id
 app.get('/defaultassy', readController.defaultassy);//get the get assembly all element id
 app.get('/getformraw', readController.getformraw);// getformraw
@@ -226,14 +226,14 @@ app.get('/getcompform', readController.getcompform);// getformraw
 /////////////////////////////////////
 ////       PRODUCTS             //// 
 ///////////////////////////////////
-app.get('/productload', productController.productload);// getformraw
+app.get('/heavylifting/productload', productController.productload);// getformraw
 
 
 /////////////////////////////////////
 ////       ASSEMBLY             //// 
 ///////////////////////////////////
 app.get('/assembly/new',  assemblyController.newassy);
-app.get('/getform',  componentController.additionaldetails , readController.getform);//search for the form to load.
+app.get('/heavylifting/getform',  componentController.additionaldetails , readController.getform);//search for the form to load.
 
 
 

@@ -1,57 +1,10 @@
 <div class="row">
-  <div class="col-md-11">
+  <div class="col-md-10">
     <h1>Forms</h1>
     <p>Create and modify site forms using the Semini Primer and Raw forms. A structured form creation system allows for the development of structured site data.</p>
   </div>
-
-  {{#if user}}
-  <div class="col-md-1" style="text-align: right">
-    <div class="btn-group">
-      <button type="button" class="btn btn-default btn-xs dropdown-toggle " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fa fa-cogs" aria-hidden="true"></i>
-      </button>
-      <ul class="dropdown-menu dropdown-menu-right">
-       <li><a href="#" data-toggle="modal" data-target="#myModal" onclick="newMenuItem()" title="Add items"><i class="fa fa-plus" aria-hidden="true"></i>  Add Item</a></li>
-       <li> <a href="#" data-toggle="modal" data-target="#myModal" onclick="editRaw()" title="Edit this item raw"><i class="fa fa-file-code-o" aria-hidden="true"></i>  Edit Raw</a></li>
-     </ul>
-   </div>
-   <div class="btn-group" role="group" aria-label="...">
-    <!-- Split button -->
-    <button type="button" class="btn btn-default  btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-      <span class="sr-only">Toggle Dropdown</span>
-    </button>
-    <ul class="dropdown-menu dropdown-menu-right">
-      <li><a  href="" data-toggle="modal" data-target="#myModal" onclick="addIssue('59e837ba9399ad427c493d4f','59ea2a21f7d5bc22d8dafa0b')" title="Add items"><i class="fa fa-plus" aria-hidden="true"></i>  Add a new issue.</a></li>
-      <li><a href="/issues/#59ea2a21f7d5bc22d8dafa0b_anchor"><i class="fa fa-list" aria-hidden="true"></i>  View associated issues.</a></li>
-    </ul>
-    <script type="text/javascript">
-////////////////////////////////////////////////////
-////////    BUTTON CLICK ADD NEW DB ITEM  /////////
-//////////////////////////////////////////////////
-function addIssue(form,grouping){
-  loadformModalSemini(form,'','component',grouping,'','')
-}
-//////////////////////////////////////
-////////    GET FORM BY ID  /////////
-//////////////////////////////////                                                                                                              
-function loadformModalSemini(formdata,idItem,raw,parentid,headings,entry){
-  console.log( 'Button click : plugins/semini/views/monitoring' )
-  var headings = JSON.stringify(headings)
-  var entry = JSON.stringify(entry)
-  jQuery.ajax({
-    'url': '/semini/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings+'&entry='+entry,
-    'async': true,
-    'global': false,
-    'success': function (dataSchemaObject) {
-      $('#formAreaModal').html(dataSchemaObject)
-    }
-  });
-}
-</script>
-</div>
-</div>  
-{{/if}}
+{{>tools}}  
+ 
 
 
 </div>  <hr>
@@ -60,7 +13,7 @@ function loadformModalSemini(formdata,idItem,raw,parentid,headings,entry){
     <div id="myProgress">
       <div id="myBar"> </div>
     </div>
-    <h5><strong>Navigation</strong><small>  Use the navigation tree to interact with the database.</small></h5>
+    <h5><strong>Navigation</strong> <small>  Use the navigation tree to interact with the database.</small><div style="text-align: right;position: absolute;right: 14px;top:0px" id="treeNavEdit" ></div> </h5>
     <div class=" ">
      <div style="padding-bottom:15px;padding-bottom:15px">
       <input id="search_field" name="searchinput" type="search" placeholder="Search Navigation" class="form-control input-md">      
@@ -72,11 +25,11 @@ function loadformModalSemini(formdata,idItem,raw,parentid,headings,entry){
 </div>  
 <div class="col-md-8" id="browserArea">
   <div id="panel">  
-<div class="awesome"><div style="background-color: #fff !important;padding: 5px"><div style="padding:25px"><h3>Heads up! <small>Click on the nodes of the navigation tree to interact with the site.</small></h3><div style="text-align: center"><p>To get started view the <a href="/documentation">Documentation section</a> on this site or sign in / sign up.</p></div> </div></div></div>
+    <div style="border-width: 2px; border-style: dashed; border-color: grey;padding:55px;text-align: center;border-radius: 5px;"><strong> Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>
   </div>
 </div>
 </div>
-
+ 
 <script type="text/javascript">
 
   var databaseid = {{{items}}};
@@ -84,6 +37,8 @@ function loadformModalSemini(formdata,idItem,raw,parentid,headings,entry){
   var navmenuHeadings = ['detail','description','icon','buttons','tabs','parent','template','value']
   var databaseMenu = []
   var temp =[]
+
+
 
 /////////////////////////////
 ////     DEBUG AREA     //// 
@@ -112,7 +67,7 @@ function jstreeGet(ids){
       //Add the headings to the page.
       $('#descriptions').html(dataSchemaObject.thisitem[0].name)
       $('#details').html(dataSchemaObject.thisitem[0].detail)
-      $('#panel').html('<div class="awesome"><div style="background-color: #fff !important;padding: 5px"><div style="padding:25px"><h3>Heads up! <small>Click on the nodes of the navigation tree to interact with the site.</small></h3><div style="text-align: center"><p>To get started view the <a href="/documentation">Documentation section</a> on this site or sign in / sign up.</p></div> </div></div></div>')
+      $('#panel').html('<div style="border-width: 2px; border-style: dashed; border-color: grey;padding:55px;text-align: center;border-radius: 5px;"><strong> Heads up!</strong> Click on the nodes of the navigation tree to interact with the site.</div>')
       var dataSchemaObject1 = fitstFormat(dataSchemaObject.children)
       //manipulate data to work with the jstree
       var jsTreeData = dataJStreeConvert (dataSchemaObject1)
@@ -146,6 +101,7 @@ function fitstFormat(databaseMenu){
 //////  INITIALISE    //////
 /////////////////////////// 
 $( document ).ready(function() {
+  pageNavEdit(databaseid)
   jstreeGet(databaseid)
 });
 
@@ -300,6 +256,7 @@ if(ids){
    'success': function (dataSchemaObject) {
      jQuery('#panel').html("")
      jQuery('#panel').html(dataSchemaObject)
+     treeNavEdit("treeNavEdit")
    }
  });
 }

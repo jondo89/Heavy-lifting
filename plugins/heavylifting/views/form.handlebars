@@ -1,35 +1,20 @@
-
-         
-
-<div class="row">
-  <div class="col-md-2">
-     {{#if user.picture}}
-     <a href="/users/{{user.username}}">
-              <img src="{{user.picture}}" class="navbar-avatar-pic" style="border-radius: 5px;width: 100%">
-              {{else}}
-              <img src="{{user.gravatar}}" class="navbar-avatar-pic" style="border-radius: 5px;width: 100%">
-              {{/if}}
-</a>
-     <h5>{{user.name}}  <small>{{user.username}}</small></h5>
- 
-  </div>
-  <div class="col-md-10">
-      
-<div id="formDelivery">
-  <div style="text-align: center;">
-    <i class="fa fa-circle-o-notch fa-spin fa-1x fa-fw"></i>
-    <span>Loading...</span>  
+<div id="error">
+ <div id="mapLoad"></div>
+ <div id="formDelivery">
+  <div class="col-md-12" >
+    <div class="row">    
+      <div style="text-align: center;">
+        <i class="fa fa-circle-o-notch fa-spin fa-1x fa-fw"></i>
+        <span>Loading...</span>  
+      </div>
+    </div>
   </div>
 </div>
-  </div>
-</div>
-
-
-
-
-
 
 <script type="text/javascript">
+  //The route defines the plugin to use when posting , getting and loading.
+  var route = 'heavylifting'
+
   var username = "{{user.username}}"
   var formdata = {{{formdata}}}
   var owner
@@ -65,7 +50,7 @@
 ////////////////////////////////////
 ////        DEBUG AREA         //// 
 //////////////////////////////////
-console.log( 'Tempalte Name : plugins/heavylifting/views/form' )
+console.log( 'Tempalte Name : plugin/'+route+'/views/form' )
 console.log( '-------------------------' )
 console.log( 'formdata :',formdata )
 console.log( 'idItem :',idItem )
@@ -81,7 +66,7 @@ console.log( 'entry :',entry )
 var entry
 {{/if}}
 console.log( '-------------------------' )
-console.log( 'Tempalte Name : plugins/heavylifting/views/form' )
+console.log( 'Tempalte Name : plugin/'+route+'/views/form' )
 ////////////////////////////////////
 ////        DEBUG AREA         //// 
 //////////////////////////////////
@@ -121,14 +106,23 @@ $(document).ready(function(){
 ///////////////////////////////////////////////////////
 function getdatacomp(formdata,idItem,raw){
   jQuery.ajax({
-    'url': '/getdatacomp?formdata='+formdata+'&idItem='+idItem+'&raw='+raw,
+    'url': '/'+route+'/getdatacomp?formdata='+formdata+'&idItem='+idItem+'&raw='+raw,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
-      dataSchemaObject['formdata'].sort(function(a, b) {
-        return parseFloat(a.entry.order) - parseFloat(b.entry.order);
-      });
-      formatAlpaca(dataSchemaObject)
+
+
+      if (dataSchemaObject.error) {
+        $('#error').html(dataSchemaObject.error)
+      } else {
+        dataSchemaObject['formdata'].sort(function(a, b) {
+          return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+        });
+        formatAlpaca(dataSchemaObject)
+      }
+
+      
+
     }
   });
 }
@@ -138,7 +132,7 @@ function getdatacomp(formdata,idItem,raw){
 ///////////////////////////////////////
 function getdata(formdata,idItem,raw){
   jQuery.ajax({
-    'url': '/getdata?formdata='+formdata+'&idItem='+idItem+'&raw='+raw,
+    'url': '/'+route+'/getdata?formdata='+formdata+'&idItem='+idItem+'&raw='+raw,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
@@ -191,16 +185,16 @@ switch (true){
   break;
   case(objectOld.formdata[i].entry.type =='checkbox'):
   tempSchema.properties[objectOld.formdata[i]['elementID']] = {
-    
+
     "dependencies": tempDepend,
   }
   tempoptions.fields[objectOld.formdata[i]['elementID']] = {
     'type' : objectOld.formdata[i].entry.type,
     "rightLabel":[objectOld.formdata[i].entry.detail],  
-        "data": {
-        "toggle":1   ,
-        "value" : "value"
-         },
+    "data": {
+      "toggle":1   ,
+      "value" : "value"
+    },
 
   }   
   break;
@@ -248,8 +242,8 @@ switch (true){
     "type": "textarea",
     "rightLabel":[objectOld.formdata[i].entry.detail]
   }   
-   
-WYSIWYG.push(objectOld.formdata[i]['elementID'])    
+
+  WYSIWYG.push(objectOld.formdata[i]['elementID'])    
 
 
   break;
@@ -415,15 +409,15 @@ initiateForm(data)
 function initiateForm(data){
 
 
-if (!data.formdata) {
-  $('#'+formid1).html('<div class="alert alert-danger" role="alert"><strong>Heads Up!</strong> Try adding a childType to the raw json entry for this element or just copy one of the existing elements.</div>')
-  return
-}
+  if (!data.formdata) {
+    $('#'+formid1).html('<div class="alert alert-danger" role="alert"><strong>Heads Up!</strong> Try adding a childType to the raw json entry for this element or just copy one of the existing elements.</div>')
+    return
+  }
 
- var form = {
-  schema : data.formdata.entry['schema'],
-  options : data.formdata.entry['options']
-}
+  var form = {
+    schema : data.formdata.entry['schema'],
+    options : data.formdata.entry['options']
+  }
  //----------------------------------------------------------------------------------------------
  if (raw!='component' && raw!='componentedit' && raw!='componentcopy') {
   if (raw!='raw' && raw!='copyraw' && raw!='edit' && raw!='self' && raw!='use') {
@@ -479,6 +473,7 @@ $("#form_"+formdata+idItem+formid1).html("")
 ////        CREATE FORM          //// 
 ////////////////////////////////////
 function formInit(schema,options,data){
+
   //work areound for the special requirments on the submit button.
   if (options) {
     options.form.buttons.submit.click = function(e){
@@ -490,8 +485,10 @@ function formInit(schema,options,data){
     }
 //Special case varible use to ensure timing issue the index variable passing into the form dropdown.
 var arr = options.fields
+
 $.each(arr, function(index, value) { 
   if (arr[index]['type'] == 'select' ) {
+
    var temp = ''
 //Drop down call for the active 
 switch (true) {
@@ -505,14 +502,13 @@ switch (true) {
   temp = arr[index]['field']
   break;
 }
-if (!temp == undefined) {
 
+if (temp != undefined) {
   arr[index]["dataSource"] = function(callback) {
-
     jQuery.ajax({
       'async': true,
       'global': false,
-      'url': '/getformfield?data='+temp ,
+      'url': '/'+route+'/getformfield?data='+temp ,
       'success': function (dataSchemaObject) {
         if (dataSchemaObject) {
           var dataSchemaObject = JSON.parse(dataSchemaObject);
@@ -536,25 +532,25 @@ if (!temp == undefined) {
 /////////////////////////////////////////////////////////
 function wysiwyg(){
   for (var i = 0; i < WYSIWYG.length; i++) {
-  $('[name="'+WYSIWYG[i]+'"]').froalaEditor({ 
-    toolbarButtons: ['undo', 'redo' , 'bold', '|', 'alert', 'clear', 'insert'],
-    heightMin: 250,
+    $('[name="'+WYSIWYG[i]+'"]').froalaEditor({ 
+      toolbarButtons: ['undo', 'redo' , 'bold', '|', 'alert', 'clear', 'insert'],
+      heightMin: 250,
       heightMax: 250,
+    })
+
+
+
+
+
+  } 
+  $( "input[type=checkbox]" ).bootstrapToggle({
+    on: 'Closed',
+    off: 'Open',
+    width : "120",
+    onstyle:"danger"
   })
 
 
-
- 
-
-} 
-$( "input[type=checkbox]" ).bootstrapToggle({
-        on: 'Closed',
-      off: 'Open',
-      width : "120",
-      onstyle:"danger"
-})
- 
- 
 }
 
 
@@ -575,7 +571,7 @@ switch(true){
       if (idItem !='') {
         $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(data.idItem.entry)
       }
-  wysiwyg()
+      wysiwyg()
     }    
   });
   break;
@@ -601,7 +597,7 @@ switch(true){
       if (idItem !='') {
         $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(data.idItem.entry)
       }
- wysiwyg()
+      wysiwyg()
     }    
   });
   break;
@@ -820,7 +816,7 @@ switch(true){
 
 //Jquery send to server
 jQuery.ajax({
-  'url': '/create',
+  'url': '/'+route+'/create',
   'type': 'POST', 
   'dataType': 'json',
   'contentType': 'application/json', 
@@ -947,7 +943,7 @@ function findandappendSelect(){
       //console.log(query2[i].elementID)
       //console.log('//////////////////////////////////')
       html=''
-      html+='<button type="button" id="'+query2[i].entry.objectType+'_findme" onclick="findme(this.id)" class="btn btn-primary btn-xs">List Pick</button>'
+      html+='<button type="button" id="'+query2[i].entry.objectType+'_findme" onclick="findme(this.id)" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal"><i class="fa fa-hand-pointer-o" aria-hidden="true"></i></button>'
       html+=$('[name="'+query2[i].elementID+'"]').before(html)
     }
   }
@@ -959,13 +955,14 @@ function findandappendSelect(){
 //////////////////////////////////////////////////////////
 function findme(ids){
   ids = ids.replace('_findme', '');
-  $('#colRight').addClass('col-md-6').removeClass('col-md-12');
-  $('#colLeft').addClass('col-md-6').removeClass('col-md-0');
+
   var html = ''
-  html += htmlcompile[ids].html
+  if (htmlcompile[ids]) {
+    html += htmlcompile[ids].html
+  } else {
+    html = 'Error getting extra detail on table.'
+  }
   $('#pickerArea').html(html)
-
-
 //create the datatable
 table = $('#pickertable').DataTable({
   'destroy':true,
@@ -1007,12 +1004,12 @@ $('input.column-visible').on( 'keyup click', function (e) {
       });
 }
 
-function showhidefilter(){
 ////////////////////////////////////////////////////////////////////
 ////////////        Show Hide Column filter.             ///////////
 ///////////////////////////////////////////////////////////////////
+function showhidefilter(){
 var html=''
-html += '<table class="table" style="width:100%">' 
+html += '<table class="table table-bordered" style="width:100%">' 
 html += '<tbody> '
 html += '<tr id="filter_global"> '
 html += '<td align="center">'
@@ -1043,7 +1040,7 @@ function htmlPicker(htmldata,index){
     jQuery.ajax({
       'async': true,
       'global': false,
-      'url': '/findme?ids='+htmldata[0].parentid ,
+      'url': '/'+route+'/findme?ids='+htmldata[0].parentid ,
       'success': function (dataSchemaObject) {
         if (dataSchemaObject) {
           var temp =   dataFormatAddedDetail(htmldata,dataSchemaObject.query1) 
@@ -1077,8 +1074,26 @@ for (var j = 0; j < temp.length; j++) {
       html += '<td style=" vertical-align:middle;background-color:#f5f5f5">'
       html += "-"
     }else {
-      html += '<td style=" vertical-align:middle">'
-      html += temp[j][dataSchemaObject.query.entry.headings[i]]
+
+
+
+
+      
+ 
+if (  dataSchemaObject.query.entry.headings[i]  == 'image') { 
+html += '<td style="text-align:center; vertical-align:middle">'
+html += '<img style="max-width:150px" src="'+temp[j][dataSchemaObject.query.entry.headings[i]]+'" alt="..." class="img-rounded">'
+
+} else {
+  html += '<td style="vertical-align:middle">'
+  html += temp[j][dataSchemaObject.query.entry.headings[i]]
+}
+
+      
+
+
+
+
     }
   }
   html += '</td>'
@@ -1087,10 +1102,21 @@ html += '</tr>'
 }
 html += '</tbody>'
 html += '</table>'
+
+
+html +='<div class="row">'
+html +='<div class="col-md-6">'
 html += '<div id="searchtable">'
 html += '</div>'
-html += '</div>  '
+html += '</div>'
+html += '<div class="col-md-6">'
 html+='<div class="awesome" role="alert"><div style="background-color: #fff !important;padding: 5px"> <strong>Click on the Table!</strong> Selected items will populate the form. </div></div>'
+html += '</div>'
+html += '</div>'
+
+html += '</div>'
+html += '</div>  '
+
 htmlcompile[indexOverwrite] = {
   'html' : html,
   'data' : temp, 
@@ -1141,6 +1167,7 @@ function dataFormatAddedDetail(tableData,formData){
 //////////////////////////////////////////////////////////////////
 function rowClickComp(ids){
   ids = ids.replace('_rowidmpre', '');
+  $('#myModal').modal('toggle')
   for(key in htmlcompile){
     for (var i = 0; i < htmlcompile[key]['rawData'].length; i++) {
     //console.log('loop throuh and replace alpaca data with this!',htmlcompile[key]['rawData'][i],ids)

@@ -10,18 +10,7 @@
   </div>
 </div>
 <p></p>
-{{#if user}}
-
-<div class="row">
-  <div class="col-md-7">
-    <div  id="toolbar" class="btn-group" role="group" aria-label="..." style="color: grey">
-    </div>
-  </div>
-  <div class="col-md-5">
-    <pre style="color: grey" id='formIdHere'></pre>
-  </div>
-</div>
-{{/if}}
+ 
 
 <script type="text/javascript">
 //The menu item from JSTREE
@@ -81,25 +70,8 @@ console.log( '-------------------------' )
 console.log( 'Tempalte Name : plugins/semini/views/formtable' )
 
 
-if(items.elementID) {
-  $("#formIdHere").html('id : '+items.elementID)
-}else{
-  $("#formIdHere").html('id : '+items._id)
-}
-
-/////////////////////////////
-////     LAYOUT VIEW    //// 
-///////////////////////////
-function layoutView() {
-  if (items.entry.layout) {
-   for (var i = 0; i < items.entry.layout.length; i++) {
-    templateLoad(items.entry.layout[i],'toolbar')
-  }
-}  else {
-  templateLoad(['parentraw'],'toolbar')
-  templateLoad(['add'],'toolbar')
-}
-}
+ 
+ 
 
 /////////////////////////////
 ////     TABS VIEW      //// 
@@ -205,10 +177,7 @@ $('document').ready(function(){
   var html = '<a type="button" href="/Components/'+items.entry.moreinfotemp+'/'+templateload+'" class="btn btn-info" style="position: absolute;right: 20px"><i class="fa fa-calculator" aria-hidden="true" ></i></a>'
   $('#more').html(html)
 }
-
-
-
-layoutView() 
+ 
 tabview()
 tablist()
 })

@@ -1,65 +1,26 @@
 <div class="row">
   <div class="col-md-10">
     <h1>Database</h1>
-    <p>The database stores common information sets for your design. Each item is effectively a unique discrete element of your system, from a glossary terms to a equipment specifications.</p>
-  </div>
-
-
-  {{#if user}}
-  <div class="col-md-2" style="text-align: right">
-  <div class="btn-group" role="group" aria-label="...">
-<!-- Split button -->
- 
-  <button type="button" class="btn btn-default  btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-    <span class="sr-only">Toggle Dropdown</span>
-  </button>
-  <ul class="dropdown-menu dropdown-menu-right">
-    <li><a  href="" data-toggle="modal" data-target="#myModal" onclick="addIssue('59e837ba9399ad427c493d4f','59ea2a21f7d5bc22d8dafa0b')" title="Add items"><i class="fa fa-plus" aria-hidden="true"></i>  Add a new issue.</a></li>
-    <li><a href="/issues/#59f4ad70b06ad944ac043794_anchor"><i class="fa fa-list" aria-hidden="true"></i>  View associated issues.</a></li>
-  </ul>
- 
-<script type="text/javascript">
-  ////////////////////////////////////////////////////
-////////    BUTTON CLICK ADD NEW DB ITEM  /////////
-//////////////////////////////////////////////////
-function addIssue(form,grouping){
-  loadformModalwrasse(form,'','component',grouping,'','')
-}
-//////////////////////////////////////
-////////    GET FORM BY ID  /////////
-//////////////////////////////////                                                                                                              
-function loadformModalwrasse(formdata,idItem,raw,parentid,headings,entry){
-  console.log( 'Button click : plugins/wrasse/views/issues' )
-  var headings = JSON.stringify(headings)
-  var entry = JSON.stringify(entry)
-  jQuery.ajax({
-    'url': '/issues/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings+'&entry='+entry,
-    'async': true,
-    'global': false,
-    'success': function (dataSchemaObject) {
-      $('#formAreaModal').html(dataSchemaObject)
-    }
-  });
-}
-</script>
-</div>
-  </div>  
-{{/if}}
-
-</div>   <hr>
+    <p>The database stores common information sets for your design. Each item is effectively a unique discrete element of your system, from a glossary terms to an equipment specification.</p>
+  </div> 
+  {{>tools}}  
+</div>   
+<hr>
 <div class="row">
 <div class="col-md-4" id="navMenuPanel" style="min-height: 450px">       
     <div id="myProgress">
       <div id="myBar">
       </div>
     </div>
-    <h5><strong>Navigation</strong> <small>  Use the navigation tree to interact with the database.</small></h5>
+    <h5><strong>Navigation</strong> <small>  Use the navigation tree to interact with the database.</small><div style="text-align: right;position: absolute;right: 14px;top:0px" id="treeNavEdit" ></div> </h5>
     <div class=" ">
      <div style="padding-bottom:15px;padding-bottom:15px">
       <input id="search_field" name="searchinput" type="search" placeholder="Search Navigation" class="form-control input-md">      
     </div>
     <div id="jstree"><pre><i class="fa fa-spinner fa-spin fa-fw"></i><span class=" ">Loading...</span></pre></div> 
+        <div style="text-align: center">
+      <p><small id="jstreecount"></small> Navigation Items</p>  
+    </div>
   </div>
   <div id="menuItems"></div>
 </div>  
@@ -90,27 +51,20 @@ console.log( 'temp : ',temp )
 console.log( '-------------------------' )
 console.log( 'admin loading' )
 
-
-
-
 /////////////////////////////////// 
 //////  GET JSTREE BY ID    //////
 ///////////////////////////////// 
 function jstreeGet(ids){
   jQuery.ajax({
-    'url': '/jstree?ids='+ids,
+    'url': '/heavylifting/jstree?ids='+ids,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
       var dataSchemaObject = JSON.parse(dataSchemaObject)
-
-      
       //Add the headings to the page.
       $('#descriptions').html(dataSchemaObject.thisitem[0].name)
       $('#details').html(dataSchemaObject.thisitem[0].detail)
-
       $('#panel').html('<div class="awesome"><div style="background-color: #fff !important;padding: 5px"><div style="padding:25px"><h3>Heads up! <small>Click on the nodes of the navigation tree to interact with the site.</small></h3><div style="text-align: center"><p>To get started view the <a href="/documentation">Documentation section</a> on this site or sign in / sign up.</p></div> </div></div></div>')
-
       var dataSchemaObject1 = fitstFormat(dataSchemaObject.children)
       //manipulate data to work with the jstree
       var jsTreeData = dataJStreeConvert (dataSchemaObject1)
@@ -144,6 +98,7 @@ function fitstFormat(databaseMenu){
 //////  INITIALISE    //////
 /////////////////////////// 
 $( document ).ready(function() {
+  pageNavEdit(databaseid)
   jstreeGet(databaseid)
 });
 
@@ -239,6 +194,10 @@ function loadNavMenu(location,dataNav){
     "plugins" : [  "search" , "state"]
   });
 
+
+//Add the item count
+ $('#jstreecount').html(dataNav.length)
+
 /////////////////////////////////
 ////////  SEARCH NAV MENU ///////
 /////////////////////////////////
@@ -250,6 +209,9 @@ jQuery('#search_field').keyup(function () {
     jQuery('#'+location).jstree(true).search(v);
   }, 250);
 });
+
+
+
 
 //////////////////////////////////////////////////
 ////////  EVENT LISTNER ON THE TREE VIEW  ///////
@@ -266,6 +228,9 @@ jQuery('#'+location)
         r.push(dataTree.instance.get_node(dataTree.selected[i]).template);
       }
       if (field) {
+        console.log('THISIS IS S S SLEGAGALGLAGLAGLALGAACCCCYYYYY SSSTTUTUTTGGTTTFFF')
+        console.log('THISIS IS S S SLEGAGALGLAGLAGLALGAACCCCYYYYY SSSTTUTUTTGGTTTFFF')
+        console.log('THISIS IS S S SLEGAGALGLAGLAGLALGAACCCCYYYYY SSSTTUTUTTGGTTTFFF')
         templateloading(field)
       }else{
         templateloading(ids)
@@ -280,7 +245,6 @@ $('#newMenuItem').click(function(){
   //console.log(temp[0].id)
   newMenuItems(Formids,'','use',databaseid,'',navmenuHeadings)
 })
-
 
 console.log('Admin Page')
 console.log('---------------------------')
@@ -297,7 +261,6 @@ var html = '<p></p><div style="text-align:center;position:absolute;top:75px;righ
 $('#menuItems').append(html)
 
 
-
 jQuery('#expandBtn').click(function () {
  jQuery('#'+location).jstree('open_all');
 });
@@ -305,7 +268,6 @@ jQuery('#collapseBtn').click(function () {
  jQuery('#'+location).jstree('close_all');
 });
 //Expand and Collapse all buttons.
-
 }
 
 ///////////////////////////////////////////////////////
@@ -317,10 +279,11 @@ if(ids){
   jQuery.ajax({
    'async': true,
    'global': false,
-   'url': '/templateload?ids='+ids,
+   'url': '/heavylifting/templateload?ids='+ids,
    'success': function (dataSchemaObject) {
      jQuery('#panel').html("")
      jQuery('#panel').html(dataSchemaObject)
+     treeNavEdit("treeNavEdit")
    }
  });
 }
@@ -358,7 +321,7 @@ function newMenuItems(formdata,idItem,raw,parentid,injectParentid,headings){
   console.log(formdata,idItem,raw,parentid,injectParentid,headings)
   var headings = JSON.stringify(headings)
   jQuery.ajax({
-    'url': '/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
+    'url': '/heavylifting/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
     'async': true,
     'global': false,
     'success': function (dataSchemaObject) {
