@@ -7,9 +7,9 @@
         <span class="sr-only">Toggle navigation</span><i class="fa fa-bars"></i>
       </button>
       <a class="navbar-brand" href="/" style="padding: 8px 0px 5px 11px">
-        <img alt="{{sitename}}" src="/img/Logo square inverse 50x50.png" style="height: 35px;width:35px;padding: 5px"> 
+        <img alt="{{siteName}}" src="/img/Logo square inverse 50x50.png" style="height: 35px;width:35px;padding: 5px"> 
       </a> 
-      <a class="navbar-brand" href="/">{{sitename}}</a>
+      <a class="navbar-brand" href="/">{{siteName}}</a>
     </div>
     <!-- Expanded navigation -->
     <div class="navbar-collapse collapse in" aria-expanded="true">
@@ -19,13 +19,22 @@
         <ul class="nav navbar-nav"  style="overflow:auto;">
           <!-- Custom Content goes here. -->
           <li>
-            <a href="/database" >Database</a>
+            <a href="/database/view" >Database</a>
           </li> 
           <li>
-            <a href="/components">Components</a>
+            <a href="/components/view">Components</a>
           </li> 
           <li>
-            <a href="/shop">Shop</a>
+            <a href="/shop/view">Shop</a>
+          </li> 
+                    <li>
+            <a href="/forms/view">Forms</a>
+          </li> 
+                             <li>
+            <a href="/issues/view">Issues</a>
+          </li> 
+              <li>
+            <a href="/assemblies/view">Assemblies</a>
           </li> 
           <!-- Custom Content goes here. -->
         </ul>
@@ -41,9 +50,7 @@
           <!-- Custom Content goes here. -->
           <!-- Custom Content goes here. -->
           {{#if user}}
-          <li>
-            <a href="/assemblies">Assemblies</a>
-          </li> 
+      
           <li>
             <a href="/reports">Reporting</a>
           </li> 
@@ -135,7 +142,7 @@ progressBar.animate(1.0, {
 /////////////////////////// 
 $( document ).ready(function() {
   if (user=='superadmin') {
-    $("#usermenu").append('<li class="divider"></li> <li><a href="/configuration"><i class="fa fa-cog" aria-hidden="true"></i> Configuration</a></li><li><a href="/form"><i class="fa fa-cog" aria-hidden="true"></i> Forms</a></li>')
+    $("#usermenu").append('<li class="divider"></li> <li><a href="/configuration"><i class="fa fa-cog" aria-hidden="true"></i> Configuration</a></li><li><a href="heavylifting/forms"><i class="fa fa-cog" aria-hidden="true"></i> Forms</a></li>')
   }
 });
 </script>

@@ -1,6 +1,6 @@
 var User = require('../models/User');
 //set the plugin controller directory
-var directory = '../../../plugins/fraternate/'
+
 ///////////////////////////////////////////////
 ////     SET YOUR APP.JSON DETAILS        //// 
 /////////////////////////////////////////////

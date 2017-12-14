@@ -1,0 +1,159 @@
+  {{#if user}}
+  <div class="col-md-2" style="text-align: right">
+    <div class="btn-group" role="group" aria-label="..."  >
+      <!-- Split button -->
+      <button type="button" class="btn btn-info  btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-right" id="toolsList">
+        <li><a  href="" data-toggle="modal" data-target="#myModal" onclick="addIssue('59e837ba9399ad427c493d4f','59ea2a21f7d5bc22d8dafa0b')" title="Add items"><i class="fa fa-plus" aria-hidden="true"></i>  Add a new issue.</a></li>
+        <li><a href="/issues/#59f4ad70b06ad944ac043794_anchor"><i class="fa fa-list" aria-hidden="true"></i>  View associated issues.</a></li>
+      </ul>
+    </div>
+  </div>  
+
+
+
+  <script type="text/javascript">
+/////////////////////////////////
+////////    UNIQUE ID  /////////
+///////////////////////////////
+function uniqueIdforparentraw(){
+  if (items.elementID) {
+    $('#parentraw').attr('id', items.elementID+'_parentraw');
+  } else {
+    $('#parentraw').attr('id', items._id+'_parentraw');
+  }
+}
+
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
+/////////////////////////////////////////////
+function uniqueIdforchangeButton(){
+  $('#changeButtonComp').attr('id', items.childType);
+}
+
+//////////////////////////////// 
+//////  PAGE NAV EDIT    //////
+//////////////////////////////
+function pageNavEdit(ids){
+  if (user=='superadmin') {
+    var html =''
+    console.log( 'Tempalte Name : views/partials/tools' )
+    html+='<li role="separator" class="divider"></li>'
+    html +='<li> <a href="#" data-toggle="modal" data-target="#myModal" onclick="editRaw()" title="Edit this item raw"><i class="fa fa-file-code-o" aria-hidden="true"></i>  Edit this Nav item</a></li>'
+    //html +='<li><a href="#" data-toggle="modal" data-target="#myModal" onclick="newMenuItem()" title="Add items"><i class="fa fa-plus" aria-hidden="true"></i>  Add Nav Menu Item</a></li>'
+    $("#toolsList").append(html)
+  }
+}
+
+/////////////////////////////////// 
+//////  JSTREE ITEM EDIT    //////
+/////////////////////////////////
+function treeNavEdit(location){
+  if (user=='superadmin') {
+    var html =''
+    console.log( 'Tempalte Name : views/partials/tools' )
+    html +='<button type="button" class="btn btn-default btn-xs dropdown-toggle " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >'
+    html +='<i class="fa fa-cogs" aria-hidden="true"></i>'
+    html +='</button>'
+    html +='<ul class="dropdown-menu dropdown-menu-right">'
+    html +='<li> <a href="#" id="parentraw" onclick="deployparentrawForm(this.id)" data-toggle="modal" data-target="#myModal" title="Edit the raw JSON entry"><i class="fa fa-file-code-o" aria-hidden="true"></i>  Edit current item</a></li>'
+    html +='<li> <a href="#" id="copyParentRaw" onclick="copyParentRaw(this.id)" data-toggle="modal" data-target="#myModal" title="Copy this entry"><i class="fa fa-clone" aria-hidden="true"></i>  Copy current item</a></li>'
+    html+='<li role="separator" class="divider"></li>'
+    html +='<li style="padding-right:15px;padding-left:15px"><pre id="formIdHeres" style="color: grey" ></pre></li>'
+    html +='</ul>'
+    $("#"+location).html(html)
+  }
+  uniqueIdforparentraw(items)
+  uniqueIdforchangeButton(items)
+  if(items.elementID) {
+    $("#formIdHeres").html('id : '+items.elementID)
+  }else{
+    $("#formIdHeres").html('id : '+items._id)
+  }
+}
+
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+////////////////////////////////////
+function newMenuItems(formdata,idItem,raw,parentid,injectParentid,headings){
+  var headings = JSON.stringify(headings)
+  jQuery.ajax({
+    'url': '/heavylifting/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      $('#formAreaModal').html(dataSchemaObject)
+    }
+  });
+}
+
+////////////////////////////////////////////////////
+////////    BUTTON CLICK ADD NEW DB ITEM  /////////
+//////////////////////////////////////////////////
+function newMenuItem(parentid){
+  newMenuItems(Formids,'','use',databaseid,'',navmenuHeadings)
+}
+
+///////////////////////////////////////////////////
+////////    BUTTON CLICK EDIT RAW DB ITEM  ///////
+/////////////////////////////////////////////////
+function editRaw(parentid){
+  newMenuItems(Formids,databaseid,'raw',databaseid,'',navmenuHeadings)
+}
+
+//////////////////////////////////////////////////
+////////    BUTTON CLICK OPEN RAW FORM  /////////
+////////////////////////////////////////////////
+function deployparentrawForm(parentid){
+ parentid = parentid.replace('_parentraw', '');
+ loadformModal(parentid,parentid,'raw',parentid)
+}
+
+////////////////////////////////////////////////////
+////////    BUTTON CLICK ADD NEW DB ITEM  /////////
+//////////////////////////////////////////////////
+function addIssue(form,grouping){
+  loadformModalwrasse(form,'','component',grouping,'','')
+}
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+//////////////////////////////////                                                                                                              
+function loadformModalwrasse(formdata,idItem,raw,parentid,headings,entry){
+  console.log( 'Button click : plugins/wrasse/views/issues' )
+  var headings = JSON.stringify(headings)
+  var entry = JSON.stringify(entry)
+  jQuery.ajax({
+    'url': '/heavylifting/issues/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings+'&entry='+entry,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      $('#formAreaModal').html(dataSchemaObject)
+    }
+  });
+}
+
+</script>
+
+
+{{/if}}
+
+
+{{#unless user}}
+<script type="text/javascript">
+/////////////////////////////////// 
+//////  JSTREE ITEM EDIT    //////
+/////////////////////////////////
+function treeNavEdit(location){
+}
+
+//////////////////////////////// 
+//////  PAGE NAV EDIT    //////
+//////////////////////////////
+function pageNavEdit(ids){
+ 
+}
+</script>
+{{/unless}}

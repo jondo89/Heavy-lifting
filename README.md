@@ -1,2 +1,2 @@
-# Entanglement
-CSV SCADA Processing
+    <h3 style="color: #c7c7c7">Heavy-lifting is a design platform, focused on the creation of complex component, assembly and report design. Heavy-lifting is designed to develop complex cataloguing systems. </h3>
+                 <h3 style="color: #c7c7c7">Deploy as a boilerplate directly off GitHub. It is <strong style="color: white">open-source</strong> and <strong style="color: white">light weight</strong>.  Built with mongodB, NodeJS, expressjs and Handlebars.js and designed for <strong style="color: white">flexibility</strong>.</h3>
