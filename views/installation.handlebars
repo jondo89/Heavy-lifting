@@ -109,6 +109,20 @@ MAIL_PASSWORD='--- add your details here ---'
 
 
 
+<h3>Getting data for your localhost server</h3>
+<p>This will delete your current local host database , Be careful!</p>
+<pre>
+/////////////////////////////DANGER/////////////////////////////
+mongodump -h ds163156.mlab.com:63156 -d heroku_g6k9j63s -u heroku_g6k9j63s -p t6e1adq1dsmn5p25klnl60dcbb -o ~/tmp/mongodump/test/test
+/////////////////////////////DANGER/////////////////////////////	
+</pre>
+<pre>
+/////////////////////////////DANGER/////////////////////////////
+mongorestore -d databasename -c test.bson ~/tmp/mongodump/test/test
+/////////////////////////////DANGER/////////////////////////////	
+</pre>
+
+
 	</div>
 </div>
 </div>

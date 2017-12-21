@@ -66,60 +66,7 @@ var gateway = braintree.connect({
   privateKey: process.env.PRIVATEKEY
 });
 
-/////////////////////////////////////////
-///////   HANDLEBARS HELPERS    ////////
-///////////////////////////////////////
-var hbs = exphbs.create({
-  defaultLayout: 'main',
-  helpers: {
-    ifeq: function(a, b, options) {
-      if (a === b) {
-        return options.fn(this);
-      }
-      return options.inverse(this);
-    },
-    toJSON : function(object) {
-      return JSON.stringify(object);
-    },
-    partial: function (name) {
-      return name;
-    },
-    'dotdotdot' : function(str) {
-      if (str) {
-        if (str.length > 16)
-          return str.substring(0,16) + '...';
-        return str;}
-      },
-      'dotdotdotdot' : function(str) {
-        if (str) {
-          if (str.length > 200)
-            return str.substring(0,200) + '...';
-          return str;
-        }
-      },
-      'dotdotdotdotdot' : function(str) {
-        if (str) {
-          if (str.length > 400)
-            return str.substring(0,400) + '...';
-          return str;
-        }
-      },      'dots' : function(str) {
-        if (str) {
-          if (str.length > 150)
-            return str.substring(0,150) + '...';
-          return str;
-        }
-      },
-      'profile' : function(str) {
-        if (str) {
-          if (str.length > 550)
-            return str.substring(0,550) + '...';
-          return str;
-        }
-      }
-    }
-  });
-
+ 
 /////////////////////////////////////////////
 ///////   HTTPS TRAFFIC REDIRECT    ////////
 ///////////////////////////////////////////
@@ -136,8 +83,7 @@ if (app.get('env') == 'production') {
   app.all('*', ensureSecure);
 }
 
-app.engine('handlebars', hbs.engine);
-app.set('view engine', 'handlebars');
+
 
 
 
@@ -177,6 +123,7 @@ var repo = myModule.repo
 app.locals.sitename = sitename
 app.locals.website = website
 app.locals.repo = repo
+var partialsDir = ['views/partials']
 
 
 ///////////////////////////////
@@ -188,18 +135,70 @@ app.locals.repo = repo
 /////////////////////////////////////////////
 var fraternate = require("fraternate");
 app.use('/', fraternate);
-
+ 
 /////////////////////////////////////////////////
 ////       HEAVYLIFTING NPM MODULE          //// 
 ///////////////////////////////////////////////
 var heavylifting = require("heavylifting");
+//Append the partial directory inside the NPM module.
+partialsDir.push('node_modules/heavylifting/views/partials')
 app.use('/', heavylifting);
 
 
- 
+
+
+/////////////////////////////////////////
+///////   HANDLEBARS HELPERS    ////////
+///////////////////////////////////////
+var hbs = exphbs.create({
+  defaultLayout: 'main',
+  partialsDir:partialsDir,
+  helpers: {
+    ifeq: function(a, b, options) {
+      if (a === b) {
+        return options.fn(this);
+      }
+      return options.inverse(this);
+    },
+    toJSON : function(object) {
+      return JSON.stringify(object);
+    },
+    partial: function (name) {
+      return name;
+    },
+    'dotdotdot' : function(str) {
+      if (str) {
+        if (str.length > 16)
+          return str.substring(0,16) + '...';
+        return str;}
+      },
+      'dotdotdotdot' : function(str) {
+        if (str) {
+          if (str.length > 200)
+            return str.substring(0,200) + '...';
+          return str;
+        }
+      },
+      'dotdotdotdotdot' : function(str) {
+        if (str) {
+          if (str.length > 400)
+            return str.substring(0,400) + '...';
+          return str;
+        }
+      },
+      'profile' : function(str) {
+        if (str) {
+          if (str.length > 550)
+            return str.substring(0,550) + '...';
+          return str;
+        }
+      }
+    }
+  });
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
 
  
-
 /////////////////////////////
 ////       500          //// 
 /////////////////////////// 
@@ -210,7 +209,7 @@ app.use(function(err, req, res, next) {
 
   // during development you may want to print the errors to your console
   console.log(err.stack);
-  req.flash('error', { msg: JSON.stringify(err.stack)});
+req.flash('error', { msg: JSON.stringify(err)});
   // send back a 500 with a generic message
   res.status(500);
   res.redirect('/500');
@@ -223,7 +222,7 @@ app.get('/500', function(req, res){
   res.render('../../../views/500',{
     layout:false
   });
-});
+}); 
 
 /////////////////////////////
 ////       404          //// 

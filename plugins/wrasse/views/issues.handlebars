@@ -1,0 +1,369 @@
+<div class="row">
+  <div class="col-md-11">
+    <h1>Issues</h1>
+    <p>Use the interface below to modify all site issues and logging.</p>
+  </div> 
+
+aaaaaaaaaaaaaaaaaa
+
+  {{#if user}}
+  <div class="col-md-1" style="text-align: right">
+    <div class="btn-group">
+      <button type="button" class="btn btn-default btn-xs dropdown-toggle " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-cogs" aria-hidden="true"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-right">
+       <li><a href="#" data-toggle="modal" data-target="#myModal" onclick="newMenuItem()" title="Add items"><i class="fa fa-plus" aria-hidden="true"></i>  Add Item</a></li>
+       <li> <a href="#" data-toggle="modal" data-target="#myModal" onclick="editRaw()" title="Edit this item raw"><i class="fa fa-file-code-o" aria-hidden="true"></i>  Edit Raw</a></li>
+     </ul>
+   </div>
+   <div class="btn-group" role="group" aria-label="...">
+    <!-- Split button -->
+    <button type="button" class="btn btn-default  btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+      <span class="sr-only">Toggle Dropdown</span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-right">
+      <li><a  href="" data-toggle="modal" data-target="#myModal" onclick="addIssue('59e837ba9399ad427c493d4f','59ea2a21f7d5bc22d8dafa0b')" title="Add items"><i class="fa fa-plus" aria-hidden="true"></i>  Add a new issue.</a></li>
+      <li><a href="/issues/#59ea2a21f7d5bc22d8dafa0b_anchor"><i class="fa fa-list" aria-hidden="true"></i>  View associated issues.</a></li>
+    </ul>
+    <script type="text/javascript">
+////////////////////////////////////////////////////
+////////    BUTTON CLICK ADD NEW DB ITEM  /////////
+//////////////////////////////////////////////////
+function addIssue(form,grouping){
+  loadformWrasse(form,'','component',grouping,'','')
+}
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+//////////////////////////////////                                                                                                              
+function loadformWrasse(formdata,idItem,raw,parentid,headings,entry){
+  console.log( 'Button click : plugins/wrasse/views/monitoring' )
+  var headings = JSON.stringify(headings)
+  var entry = JSON.stringify(entry)
+  jQuery.ajax({
+    'url': '/wrasse/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings+'&entry='+entry,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      $('#formAreaModal').html(dataSchemaObject)
+    }
+  });
+}
+</script>
+</div>
+</div>  
+{{/if}}
+
+
+</div>  
+<hr>
+<div class="row" id="page">
+  <div class="col-md-4" id="navMenuPanel" style="min-height: 450px">
+    <div id="myProgress">
+      <div id="myBar"> </div>
+    </div>
+    <h5><strong>Navigation</strong> <small>  Use the navigation tree to interact with the database.</small></h5>
+    <div class=" ">
+     <div style="padding-bottom:15px;padding-bottom:15px">
+      <input id="search_field" name="searchinput" type="search" placeholder="Search Navigation" class="form-control input-md">      
+    </div>
+    <div id="jstree"></div> 
+  </div>
+  <div class="btn-group" role="group" aria-label="..." style="padding-bottom: 15px">
+  </div>
+</div>  
+<div class="col-md-8" id="browserArea">
+  <div id="panel">  
+<div class="awesome"><div style="background-color: #fff !important;padding: 5px"><div style="padding:25px"><h3>Heads up! <small>Click on the nodes of the navigation tree to interact with the site.</small></h3><div style="text-align: center"><p>To get started view the <a href="/documentation">Documentation section</a> on this site or sign in / sign up.</p></div> </div></div></div>
+  </div>
+</div>
+</div>
+
+<script type="text/javascript">
+
+  var databaseid = {{{items}}};
+  var Formids = {{{Formids}}};
+  var navmenuHeadings = ['detail','description','icon','buttons','tabs','parent','template','value']
+  var databaseMenu = []
+  var temp =[]
+
+/////////////////////////////
+////     DEBUG AREA     //// 
+///////////////////////////
+console.log( 'Template Loading : plugins/wrasse/views/issues' )
+console.log( '-------------------------' )
+console.log( 'databaseid : ',databaseid )
+console.log( 'Formids : ',Formids )
+console.log( 'navmenuHeadings : ',navmenuHeadings )
+console.log( 'databaseMenu : ',databaseMenu )
+console.log( 'temp : ',temp )
+console.log( '-------------------------' )
+console.log( 'Template Loading : plugins/wrasse/views/issues' )
+
+/////////////////////////////////// 
+//////  GET JSTREE BY ID    //////
+///////////////////////////////// 
+function jstreeGet(ids){
+  jQuery.ajax({
+    'url': '/issues/jstree?ids='+ids,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+     var dataSchemaObject = JSON.parse(dataSchemaObject)
+      //Add the headings to the page.
+      $('#descriptions').html(dataSchemaObject.thisitem[0].name)
+      $('#details').html(dataSchemaObject.thisitem[0].detail)
+$('#panel').html('<div class="awesome"><div style="background-color: #fff !important;padding: 5px"><div style="padding:25px"><h3>Heads up! <small>Click on the nodes of the navigation tree to interact with the site.</small></h3><div style="text-align: center"><p>To get started view the <a href="/documentation">Documentation section</a> on this site or sign in / sign up.</p></div> </div></div></div>')
+      var dataSchemaObject1 = fitstFormat(dataSchemaObject.children)
+      //manipulate data to work with the jstree
+      var jsTreeData = dataJStreeConvert (dataSchemaObject1)
+      var locations = 'jstree'
+      $('#'+locations).html('')
+      //load the jstree
+      //change the primary page id variable , used for the parent
+      databaseid = ids
+      loadNavMenu(locations,jsTreeData)
+    }
+  });
+}
+
+function fitstFormat(databaseMenu){
+  var temp =[]
+    //This is where the id is injected into the menu item . Crude hacky work around , not sure how to improve.
+    for (var i = 0; i < databaseMenu.length; i++) {
+      //the add the id to the array going into the menu .
+      if (databaseMenu[i]['elementID'] == "") {
+        databaseMenu[i].entry.id = databaseMenu[i]['_id']
+      }else{
+        databaseMenu[i].entry.id = databaseMenu[i]['elementID']
+      }
+      temp.push(databaseMenu[i].entry)
+    }
+    databaseMenu = temp
+    return databaseMenu
+  }
+  
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+$( document ).ready(function() {
+  jstreeGet(databaseid)
+});
+
+/////////////////////////////////////////
+//////  DATACONVERT FOR JSTREE    //////
+/////////////////////////////////////// 
+function dataJStreeConvert (databaseMenu){
+  var newData = []
+  for (var i = 0; i < databaseMenu.length; i++) {
+    var temp = {}
+    for (key in databaseMenu[i]){
+      switch (true){
+        case (key == 'id'):
+        temp['id'] =  databaseMenu[i][key]
+        if (databaseMenu[i][key]=='5848fc75b622bb53eca6ffd7') {
+          state = {
+              "opened" : true,  // is the node open
+            }
+            temp['state'] = state
+          }
+          break;
+          case (key == 'parent'):
+          temp['parent'] = databaseMenu[i][key]
+          break;
+          case (key == 'description'):
+          temp['text'] = databaseMenu[i][key]
+          break;
+          case (key == 'icon'):
+          temp['icon'] = databaseMenu[i][key]
+          break;
+          case (key == 'template'):
+          aclass = { 
+            "data-template" : databaseMenu[i][key],
+          }
+          temp['a_attr'] =  aclass
+          break;
+          case (key == 'field'):
+          aclass = { 
+            "data-field" : databaseMenu[i][key],
+          }
+          temp['a_attr'] =  aclass
+          break;          
+        }
+      }
+      newData.push(temp)
+    }
+//error trap the menu.
+for (var i = 0; i < newData.length; i++) {
+  if (!newData[i].parent) {
+    newData[i].parent = '#'
+  }
+}
+sortResults(newData,'text', true);
+return newData
+}
+
+////////////////////////////////////////////////
+////////   CUSTOM JSON SORTING FUNCTION ///////
+//////////////////////////////////////////////
+function sortResults(json , prop, asc) {
+  json = json.sort(function(a, b) {
+    if (asc) {
+      return (a[prop] > b[prop]) ? 1 : ((a[prop] < b[prop]) ? -1 : 0);
+    } else {
+      return (b[prop] > a[prop]) ? 1 : ((b[prop] < a[prop]) ? -1 : 0);
+    }
+  });
+  return json;
+}
+
+////////////////////////////////////////////////
+////////    LOAD NAV TREE INTO MEMORY   ///////
+//////////////////////////////////////////////
+function loadNavMenu(locations,dataNav){
+  //console.log(dataNav)
+  //Destory the tree if it exists
+  if (jQuery('#'+locations).jstree("destroy")) {
+    jQuery('#'+locations).jstree("destroy");
+  }
+  var $root =jQuery('#'+locations).jstree({ 
+    'core' : {
+      'data' : dataNav,        
+      'themes': {
+        'name': 'proton',
+        'responsive': true,
+        'stripes' : false,
+      },
+    } ,
+    "checkbox" : {
+      "keep_selected_style" : false
+    },
+    "multiple": false,
+    "plugins" : [   "search" , "state"]
+  }).on('ready.jstree', function(e, data) {
+      $('#jstree').jstree(true).deselect_all();
+      $('#jstree').jstree(true).select_node(location.hash.slice(1)); 
+});
+
+/////////////////////////////////
+////////  SEARCH NAV MENU ///////
+/////////////////////////////////
+var to = false;
+jQuery('#search_field').keyup(function () {
+  if(to) { clearTimeout(to); }
+  to = setTimeout(function () {
+    var v = jQuery('#search_field').val();
+    jQuery('#'+locations).jstree(true).search(v);
+  }, 250);
+});
+
+//////////////////////////////////////////////////
+////////  EVENT LISTNER ON THE TREE VIEW  ///////
+////////////////////////////////////////////////
+jQuery('#'+locations)
+    // listen for event
+    .on('changed.jstree', function (e, dataTree) {
+      var i, j, r = []
+      for(i = 0, j = dataTree.selected.length; i < j; i++) {
+        var ids=(dataTree.instance.get_node(dataTree.selected[0]).id);
+        //keep useful code snippet , however no longer required.
+        var template=(dataTree.instance.get_node(dataTree.selected[0]).a_attr['data-template']);
+        var field=(dataTree.instance.get_node(dataTree.selected[0]).a_attr['data-field']);
+        r.push(dataTree.instance.get_node(dataTree.selected[i]).template);
+      }
+      if (field) {
+        templateloading(field)
+      }else{
+        templateloading(ids)
+      }
+    })
+    console.log( 'Template Loading : plugins/wrasse/views/issues' )
+    console.log('---------------------------')
+    console.log(' databaseid :', databaseid )
+    console.log(' Formids :', Formids )
+    console.log(' navmenuHeadings :', navmenuHeadings )
+    console.log(' databaseMenu :', databaseMenu )
+    console.log(' temp :', temp )
+    console.log('---------------------------')
+    console.log( 'Template Loading : plugins/wrasse/views/issues' )
+
+  }
+
+///////////////////////////////////////////////////////
+////////  EVENT LISTNER FUNCTION AREA DATABASE ///////
+/////////////////////////////////////////////////////
+function templateloading(ids){
+ 
+//Ensure that the first load error is covered , also any other errors.
+if(ids){
+  jQuery.ajax({
+   'async': true,
+   'global': false,
+   'url': '/issues/templateload?ids='+ids,
+   'success': function (dataSchemaObject) {
+     jQuery('#panel').html("")
+     jQuery('#panel').html(dataSchemaObject)
+   }
+ });
+}
+}
+
+//////////////////////////////////////
+////////    PROGRESS BAR    /////////
+////////////////////////////////////
+function move() {
+  var elem = document.getElementById("myBar");   
+  elem.style.height = '5px'; 
+  elem.style.background = '#4c8ffd'; 
+  var width = 10;
+  var id = setInterval(frame, 1);
+  function frame() {
+    if (width >= 100) {
+      clearInterval(id);
+      collapse()
+    } else {
+      width++; 
+      elem.style.width = width + '%'; 
+    }
+  }
+}
+
+function collapse() {
+  var elem = document.getElementById("myBar");   
+  elem.style.background = 'white'; 
+}
+
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+////////////////////////////////////
+function newMenuItems(formdata,idItem,raw,parentid,injectParentid,headings){
+  var headings = JSON.stringify(headings)
+  jQuery.ajax({
+    'url': '/forms/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      $('#formAreaModal').html(dataSchemaObject)
+    }
+  });
+}
+
+////////////////////////////////////////////////////
+////////    BUTTON CLICK ADD NEW DB ITEM  /////////
+//////////////////////////////////////////////////
+function newMenuItem(parentid){
+  newMenuItems(Formids,'','use',databaseid,'',navmenuHeadings)
+}
+
+///////////////////////////////////////////////////
+////////    BUTTON CLICK EDIT RAW DB ITEM  ///////
+//////////////////////////////////////////////////
+function editRaw(parentid){
+  newMenuItems(Formids,databaseid,'raw',databaseid,'',navmenuHeadings)
+}
+
+
+
+</script>
+
