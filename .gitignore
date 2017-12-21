@@ -15,7 +15,7 @@ tmp
 coverage
 
 # API keys
-*.env
+.env
 
 # Dependency directory
 node_modules
