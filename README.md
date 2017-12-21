@@ -109,17 +109,18 @@ MAIL_PASSWORD='--- add your details here ---'
 
 
 
+
 <h3>Getting data for your localhost server</h3>
-<p>This will delete your current local host database , Be careful!</p>
+
+<p>Run mongorestore from the system command line, not the mongo shell.</p>
+
+<p>The details below will allow the cmd prompt to extract the database off the server to use as as a starting point. You will need to create a new mongo database on your local machine. This can be done through the Robomongo client (RIGHT CLICK ON THE SERVER AND CREATE DATABASE "TEST"). This will delete your current local host database, Be careful!
+</p>
 <pre>
-/////////////////////////////DANGER/////////////////////////////
-mongodump -h ds163156.mlab.com:63156 -d heroku_g6k9j63s -u heroku_g6k9j63s -p t6e1adq1dsmn5p25klnl60dcbb -o ~/tmp/mongodump/test/test
-/////////////////////////////DANGER/////////////////////////////	
+mongodump -h ds163156.mlab.com:63156 -d heroku_g6k9j63s -u heroku_g6k9j63s -p t6e1adq1dsmn5p25klnl60dcbb -o ~/test
 </pre>
 <pre>
-/////////////////////////////DANGER/////////////////////////////
-mongorestore -d databasename -c test.bson ~/tmp/mongodump/test/test
-/////////////////////////////DANGER/////////////////////////////	
+mongorestore -h localhost:27017 -d test ~/test/heroku_g6k9j63s
 </pre>
 
 
