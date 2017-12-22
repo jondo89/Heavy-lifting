@@ -1,27 +1,11 @@
-<h1>Installating Heavy-lifting.</h1>
-<hr>
-<div class="row">
-	<div class="col-md-3">
-		<ul class="nav nav-pills nav-stacked">
-			<li role="presentation"><a href="/introduction">Introduction</a></li>
-			<li role="presentation"><a href="/specifications">Specifications</a></li>			
-			<li role="presentation" class="active"><a href="/installation">Installation Instructions</a></li>
-			<li role="presentation"><a href="/integration">Third Party Integration</a></li>
-			<li role="presentation"><a href="/payments">Payment Integration</a></li>
-			<li role="presentation"><a href="/css">CSS Management</a></li>
-			<li role="presentation"><a href="/troubleshooting">Troubleshooting</a></li>
-			<li role="presentation"><a href="/licence">Licence</a></li>
-		</ul>
-	</div>
-	<div class="col-md-9">
 
 <h3>Installation Instructions</h3>
-<p>If you would like to install Fraternate on your local development machine Fraternate requires the following components:</p>
+<p>If you would like to install heavylifting on your local development machine heavylifting requires the following components:</p>
 
 <pre>
 Node.js
 MongodB
-The GitHub Fraternate repo
+The GitHub heavylifting repo
 expressjs
 </pre>
 <h3>In more detail.</h3>
@@ -34,16 +18,16 @@ expressjs
 
 <pre><a href="https://www.mongodb.com/">https://www.mongodb.com/</a>&nbsp;</pre>
 
-<p>Sign up for GitHub, install the windows GitHub client then clone the Fraternate repository.</p>
-<p>Clone the repository on your hard drive, using the "clone or download" button on the GitHub front page for Fraternate.</p>
-<pre>https://github.com/Isithelo/Fraternate.git</pre>
+<p>Sign up for GitHub, install the windows GitHub client then clone the heavylifting repository.</p>
+<p>Clone the repository on your hard drive, using the "clone or download" button on the GitHub front page for heavylifting.</p>
+<pre>https://github.com/Isithelo/heavylifting.git</pre>
 <p>Once downloaded, extract to the directory of your choice. For example:</p>
 
-<pre>C:\Fraternate</pre>
+<pre>C:\heavylifting</pre>
 
-<p>With node.js installed, the use of the NPM (Node Package Manager) service is now available from your command prompt, go into the directory where Fraternate was cloned using your preferred command prompt (DOS interface). For example:</p>
+<p>With node.js installed, the use of the NPM (Node Package Manager) service is now available from your command prompt, go into the directory where heavylifting was cloned using your preferred command prompt (DOS interface). For example:</p>
 
-<pre>cd\Fraternate</pre>
+<pre>cd\heavylifting</pre>
 
 <p>When you are at the command prompt in the correct directory, type in the following:</p>
 
@@ -52,37 +36,17 @@ expressjs
 <p>The NPM service will now download and install into the cloned directory. The NPM service will now download and install into the cloned directory. When completed, enter the following:</p>
 
 <pre>npm install</pre>
-
-<p>To bring in the favicon (tab icons) server, use the following at the command prompt to install the favicon module.</p>
-
-<pre>npm install serve-favicon</pre>
+ 
 
 <p>To make life much easier, install nodemon. Nodemon provides some welcome server management for troublesome server crashes, type into the cmd(command) prompt:</p>
 
 <pre>npm install -g nodemon</pre>
-
-<p>To communicate between the mongo server and the client side, expressjs needs to be installed. type into the cmd prompt</p>
-
-<pre>npm install express</pre>
-
-<p>To send mails from the signup and contact page, nodemailer needs to be installed. type into the cmd prompt</p>
-
-<pre>npm install nodemailer</pre>
-
 
 <p>Robomongo is a very useful tool for viewing the mongodb database structure. Install from their website.</p>
 
 <p>Download and install from the mongodb homepage.</p>
 
 <pre><a href="https://robomongo.org/">https://robomongo.org/</a></pre>
-
-<p>To ensure non-robotic users sign in and signup, install the express recaptcha package.</p>
-
-<pre>npm install express-recaptcha -save</pre>
-
-<p>To add commercialization aspects for client and server side handling of credit card payments.</p>
-
-<pre>npm install braintree</pre>
 
 
 <h3>The .ENV File.</h3>
@@ -106,7 +70,6 @@ MAIL_PORT='451'
 MAIL_USERNAME='bla@bla.com'
 MAIL_PASSWORD='--- add your details here ---'
 </pre>
-
 
 
 
