@@ -1,39 +1,77 @@
-<div class="awesome">
-	<div style="background-color: #fff !important;padding: 40px">
-		<h3>Don't Forget! <small>Star the GitHub Repo to help speed up development.</small></h3> 
-		<div class="row">
-			<div class="col-md-6" style="text-align: center;min-height: 250px">
-				<a href="https://semini.herokuapp.com/" target="_blank" style="text-decoration: none;">
-					<img  style="max-width: 50px" src="/img/logo/semini.png" alt="..." >
-					<h3>Semini  <small>Form creator.</small></h3>
-					<p><a href="https://github.com/Isithelo/Semini" target="_blank">Semini Repo</a></p>
-					<a class="github-button" href="https://github.com/Isithelo/semini" data-size="large" data-show-count="true" aria-label="Star Isithelo/semini on GitHub">Star</a> 
-				</a>
-			</div>
-			<div class="col-md-6" style="text-align: center;min-height: 250px">
-				<a href="https://fraternate.herokuapp.com/" target="_blank" style="text-decoration: none;">
-					<img  style="max-width: 50px" src="/img/logo/fraternate.png" alt="..." >
-					<h3>Fraternate  <small>Team and User Management System.</small></h3>
-					<p><a href="https://github.com/Isithelo/Fraternate" target="_blank">Fraternate Repo</a></p>
-					<a class="github-button" href="https://github.com/Isithelo/Fraternate" data-size="large" data-show-count="true" aria-label="Star Isithelo/Fraternate on GitHub">Star</a> 
-				</a>
-			</div>
-			<div class="col-md-6" style="text-align: center;min-height: 250px ">
-				<a href="https://wrasse.herokuapp.com/" target="_blank"  style="text-decoration: none;">
-					<img  style="max-width: 50px" src="/img/logo/wrasse.png" alt="...">
-					<h3>Wrasse  <small>Issue Tracking.</small></h3>
-					<p><a href="https://github.com/Isithelo/Wrasse" target="_blank">Wrasse Repo</a></p>
-					<a class="github-button" href="https://github.com/Isithelo/wrasse" data-size="large" data-show-count="true" aria-label="Star Isithelo/Fraternate on GitHub">Star</a> 
-				</a>
-			</div>
-			<div class="col-md-6" style="text-align: center;min-height: 250px  ">
-				<a href="https://heavy-lifting.herokuapp.com/" target="_blank"  style="text-decoration: none;">
-					<img  style="max-width: 50px" src="/img/logo/heavy-lifting.png" alt="...">
-					<h3>Heavy-lifting  <small>Bulk cataloging and design.</small></h3>
-					<p><a href="https://github.com/Isithelo/Heavy-lifting" target="_blank">Heavy-lifting Repo</a></p>
-					<a class="github-button" href="https://github.com/Isithelo/heavy-lifting" data-size="large" data-show-count="true" aria-label="Star Isithelo/Fraternate on GitHub">Star</a> 
-				</a>
-			</div>
-		</div>
-	</div>
+
+<div class="row" style="padding-top: 35px">
+<div class="col-md-8" style="text-align: right;">
+  
+    <h1>{{user.name}}  <small>{{user.username}}</small></h1>
 </div>
+
+<div class="col-md-4">
+<a href="/users/{{user.username}}">
+    {{#if user.picture}}
+    <div onerror="this.src='{{user.gravatar}}'"" id="googlepic" style="border-radius:15px!important;width: 100%;border-radius: 5px;border: 1px;border-color: #d8d8d8;border-style: solid;"></div>
+    {{else}}
+    <img src="{{user.gravatar}}" style="width: 100%;border-radius:15px;border: 1px;border-color: #d8d8d8;border-style: solid;" class="media-object">
+    {{/if}}
+    </a>
+</div>
+ <p>{{profile user.bio}}</p>
+    {{#if user.company}}
+    <div class="row">
+      <div class="col-sm-2" style="text-align: center;">
+        <i class="fa fa-users" aria-hidden="true"></i>
+      </div>
+      <div class="col-sm-8">
+        {{dotdotdot user.company}}
+      </div>
+    </div>
+    {{/if}}
+    {{#if user.location}}
+    <div class="row">
+      <div class="col-sm-2" style="text-align: center;">
+        <i class="fa fa-map-marker" aria-hidden="true"></i>
+      </div>
+      <div class="col-sm-8">
+        {{user.location}}
+      </div>
+    </div>
+    {{/if}}
+    {{#if user.publicemail}}
+    <div class="row">
+      <div class="col-sm-2" style="text-align: center;">
+        <i class="fa fa-envelope-o" aria-hidden="true"></i>
+      </div>
+      <div class="col-sm-8">
+        <a href="mailto:{{user.publicemail}}">{{user.publicemail}}</a>
+      </div>
+    </div>
+    {{/if}}
+    {{#if user.website}}
+    <div class="row">
+      <div class="col-sm-2" style="text-align: center;">
+        <i class="fa fa-link" aria-hidden="true"></i>
+      </div>
+      <div class="col-sm-8">
+        <a href="http://{{user.website}}" target="_blank">{{user.website}}</a>
+      </div>
+    </div>
+    {{/if}}
+    {{#if user.permission}}
+    <div class="row">
+      <div class="col-sm-2" style="text-align: center;">
+        <i class="fa fa-key" aria-hidden="true"></i>
+      </div>
+      <div class="col-sm-8">
+        {{user.permission}}
+      </div>
+    </div>
+    {{/if}}
+  </div>
+
+<script type="text/javascript">
+  var username = JSON.stringify('{{user.username}}')
+  var user = JSON.stringify('{{user.username}}')
+  var text = '{{user.picture}}'
+  text =text.replace("sz&#x3D;50", "sz&#x3D;200");
+  $('#googlepic').html('<img src="'+text+'" style="width: 100%;border-radius:15px;" class="media-object">')
+</script>
+
