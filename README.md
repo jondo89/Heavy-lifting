@@ -86,7 +86,6 @@ mongodump -h ds163156.mlab.com:63156 -d heroku_g6k9j63s -u heroku_g6k9j63s -p t6
 mongorestore -h localhost:27017 -d test ~/test/heroku_g6k9j63s
 </pre>
 
-
-	</div>
+ 
 </div>
 </div>
