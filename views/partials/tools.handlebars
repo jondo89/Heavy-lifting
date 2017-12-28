@@ -2,18 +2,17 @@
   <div class="col-md-2" style="text-align: right">
     <div class="btn-group" role="group" aria-label="..."  >
       <!-- Split button -->         
-
-      <button type="button" class="btn btn-info  btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+      <button type="button" class="btn btn-default btn-xs"><i class="fa fa-plus-square-o" aria-hidden="true" id="plusWindow"></i>    </button>
+        <button type="button" class="btn btn-default btn-xs"><i class="fa fa-minus-square-o" aria-hidden="true" id="minusWindow"></i>   </button>
+      <button type="button" class="btn btn-default  btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fa fa-exclamation" aria-hidden="true"></i>
         <span class="sr-only">Toggle Dropdown</span>
       </button>
       <ul class="dropdown-menu dropdown-menu-right" id="toolsList">
 
-        <li><a  href="" data-toggle="modal" data-target="#myModal" onclick="addIssue('59e837ba9399ad427c493d4f','59ea2a21f7d5bc22d8dafa0b')" title="Add items"><i class="fa fa-plus" aria-hidden="true"></i>  Add a new issue.</a></li>
+        <li><a  href="" data-toggle="modal" data-target="#myModal" onclick="loadformModal('59e837ba9399ad427c493d4f','59ea2a21f7d5bc22d8dafa0b')" title="Add items"><i class="fa fa-plus" aria-hidden="true"></i>  Add a new issue.</a></li>
         <li><a href="/issues/#59f4ad70b06ad944ac043794_anchor"><i class="fa fa-list" aria-hidden="true"></i>  View associated issues.</a></li>
       </ul>
-            <button type="button" class="btn btn-default btn-xs"><i class="fa fa-window-maximize" aria-hidden="true"></i><i class="fa fa-plus-square-o" aria-hidden="true" id="plusWindow"></i>    </button>
-        <button type="button" class="btn btn-default btn-xs"><i class="fa fa-window-minimize" aria-hidden="true"></i><i class="fa fa-minus-square-o" aria-hidden="true" id="minusWindow"></i>   </button>
     </div>
   </div>  
 
