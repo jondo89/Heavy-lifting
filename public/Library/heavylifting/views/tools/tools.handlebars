@@ -1,0 +1,78 @@
+<script type="text/javascript">
+	
+
+ 
+
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
+/////////////////////////////////////////////
+function uniqueIdforchangeButton(){
+  $('#changeButtonComp').attr('id', items.childType);
+}
+
+
+function updateEditButton(){
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+if (user=='superadmin') {
+  var html =''
+  console.log( 'template Name : views/partials/tools' )
+  html +='<button type="button" class="btn btn-default btn-xs dropdown-toggle " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >'
+  html +='<i class="fa fa-cogs" aria-hidden="true"></i>'
+  html +='</button>'
+  html +='<ul class="dropdown-menu dropdown-menu-right">'
+  html +='<li> <a href="#" data-toggle="modal" data-target="#myModal" onclick="editRaw()" title="Edit this item raw"> <i class="far fa-file-code"></i>  Edit this Nav item</a></li>'
+  html +='<li><a href="#" data-toggle="modal" data-target="#myModal" onclick="newMenuItem()" title="Add items"><i class="fa fa-plus" aria-hidden="true"></i>  Add Nav Menu Item</a></li>'
+  html +='<li role="separator" class="divider"></li>'
+  html +='<li style="padding-right:5px;padding-left:5px"><pre id="formIdHere" style="color: grey" ></pre></li>'
+
+  html +='<li> <a href="#" id="parentraw" onclick="deployparentrawForm(this.id)" data-toggle="modal" data-target="#myModal" title="Edit the raw JSON entry"> <i class="far fa-file-code"></i>  Edit current item</a></li>'
+  html +='<li> <a href="#" id="copyParentRaw" onclick="copyParentRaw(this.id)" data-toggle="modal" data-target="#myModal" title="Copy this entry"><i class="fa fa-clone" aria-hidden="true"></i>  Copy current item</a></li>'
+  html +='</ul>'
+  $("#editMenu").html(html)
+}
+uniqueIdforparentraw()
+uniqueIdforchangeButton()
+
+/*
+if(items.elementID) {
+  $("#formIdHere").html('id : '+items.elementID)
+}else{
+  $("#formIdHere").html('id : '+items._id)
+}*/
+$("#formIdHere").html('id : '+ids)
+}
+
+
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+////////////////////////////////////
+function newMenuItems(formdata,idItem,raw,parentid,injectParentid,headings){
+  var headings = JSON.stringify(headings)
+  jQuery.ajax({
+    'url': '/'+assemblyQuery[0].route+'/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      $('#formAreaModal').html(dataSchemaObject)
+    }
+  });
+}
+
+////////////////////////////////////////////////////
+////////    BUTTON CLICK ADD NEW DB ITEM  /////////
+//////////////////////////////////////////////////
+function newMenuItem(parentid){
+  newMenuItems(Formids,'','use',databaseid,'',navmenuHeadings)
+}
+
+///////////////////////////////////////////////////
+////////    BUTTON CLICK EDIT RAW DB ITEM  ///////
+/////////////////////////////////////////////////
+function editRaw(parentid){
+  newMenuItems(Formids,databaseid,'raw',databaseid,'',navmenuHeadings)
+}
+
+ 
+</script>

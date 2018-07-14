@@ -1,0 +1,237 @@
+ 
+    <div role="tabpanel" class="tab-pane" id="filter">
+
+     
+        <div  style="padding-top: 12px"></div>
+        <div id="filterTable" ></div>
+     
+
+    </div>
+
+    <!--
+    <div role="tabpanel" class="tab-pane" id="graph">
+        <div  style="padding-top: 12px"></div>
+    <div id="container"></div>
+        <div id="filterGraphs"></div>
+      </div>-->
+ 
+ 
+ 
+
+  <script type="text/javascript">
+/*var defaults = {{{data.schema}}}
+    var data = {{{data.defaults}}}
+    var option = {{{data.option}}}
+    var defaultHeading = {{{data.headings}}}
+    var arrayFormat = []
+    var table */
+
+var headings = []
+
+////////////////////////////////////
+////        INITIALIZE         //// 
+//////////////////////////////////
+$(document).ready(function(){
+	headingsCompile (items.entry.headings)
+	printFilterTable(headings)
+	// setValues(options)
+});
+
+////////////////////////////////////////////////////
+////        FILTER FOR THE HEADINGS TO SHOW    //// 
+//////////////////////////////////////////////////
+function formatHeadingArray(opt){
+  var tempArray =[]
+  for (var i = 0; i < opt.length; i++) {
+    if (opt[i]['option']['headingsView'] == true) {
+      tempArray.push(opt[i]['Description'])
+    }
+  }
+  return tempArray
+}
+
+//////////////////////////////
+/// POPULATE FILTER TABLE ///
+////////////////////////////
+function printFilterTable(headings){
+  var html = ''
+  html += '<table class="table table-bordered"  style="width:100%; " id=""> <thead> <tr> <th>Target</th> <th>Filter</th> <th  style="text-align:center"> <input type="checkbox" class="column-visible" data-column="1" id="_headingsView"  ></th> </tr> </thead> <tbody>'
+  for (var i = 0; i < headings.length; i++) {
+    html += '<tr   data-column="1">'
+    html += '<td   id="'+headings[i]['id']+'_filtertable">'+headings[i]['Description']+'</td>'
+    html += '<td >'
+    html +=    '<select  id="'+headings[i]['id']+'_selectbasic" data-actions-box="true" name="selectbasic" class="selectpicker" data-live-search="true" multiple data-selected-text-format="count" >'
+    html +='<option value="">Blank</option>'
+    html += getUniques(headings[i])
+    html +=   '</select>'
+    html += '</td><td align="center">'
+    html += '<input type="checkbox" class="column-visible" data-column="1" id="'+headings[i]['id']+'_headingsView" checked="">'
+    html += '</td>'
+    html += '</tr>'
+  }
+  html +='</tbody> </table>'
+  $('#'+'filterTable').html(html)
+  $('.selectpicker').selectpicker({
+    style: 'btn-default',
+    size: 5
+  });
+}
+
+////////////////////////////////////////////
+/// GET THE UNIQUE ITEMS FOR THE FILTER ///
+//////////////////////////////////////////
+function getUniques(id){
+  console.log
+  var tempVar = []
+  html=''
+  for (var i = 0; i < tablelistdata.length; i++) {
+    if (tablelistdata[i][id['Description']]) {
+      tempVar.push(tablelistdata[i][id['Description']])
+    }
+
+  }
+  tempVar = jQuery.unique( tempVar )
+  for (var i = 0; i < tempVar.length; i++) {
+    if (tempVar[i].length > 50) {
+      var string = tempVar[i]
+      var length = 50;
+      var trimmedString = string.substring(0, length);
+      html +=     '<option value="'+tempVar[i]+'">'+trimmedString+'.....'+'</option>'
+    } else {
+      html +=     '<option value="'+tempVar[i]+'">'+tempVar[i]+'</option>'
+    }
+  }
+  return html
+}
+ 
+
+//////////////////////////////////////////////
+/// CREATE ARRAY OF HEADINGS FROM DEFAULTS ///
+/////////////////////////////////////////////
+function headingsCompile (defaults){
+ //error trap for no heading
+if (defaults) {
+
+for (var i = 0; i < defaults.length; i++) {
+    headings.push(
+    {
+      Description : defaults[i],
+      id : create_uid()
+    }
+    )
+  }
+  //Add the user id , to sort by the user.
+  headings.push({
+    Description :"userID",
+    id : create_uid()
+  })
+
+} else {
+    headings.push({
+    Description :"description",
+    id : create_uid()
+  })
+}
+
+
+}
+
+ 
+
+//////////////////////////////////////////////////////
+/////  EVENT LISTNERS FOR THE FILTER AND GRAPH //////
+////////////////////////////////////////////////////
+$('#filterGraphs').change(function(){
+  getValues()
+})
+$('#filterTable').change(function(){
+  getValues()
+})
+
+///////////////////////////////////////////////
+/////  SET THE GRAPH AND FILTER OPTIONS //////
+/////////////////////////////////////////////
+function setValues(optionSet){
+  for (var i = 0; i < optionSet.length; i++) {
+    $('#'+optionSet[i]['id']+'_graphsgroup').prop('checked', optionSet[i]['option']['group']);   
+    $('#'+optionSet[i]['id']+'_xaxis').prop('checked', optionSet[i]['option']['xaxis']);
+    $('#'+optionSet[i]['id']+'_yaxis').prop('checked', optionSet[i]['option']['yaxis']);
+    $('#'+optionSet[i]['id']+'_headingsView').prop('checked', optionSet[i]['option']['headingsView']);
+    $('#'+optionSet[i]['id']+'_selectbasic').selectpicker('selectAll');  
+  }
+}
+
+////////////////////////////////////////////////////////////////
+/////  CREATES THE FILTERED ARRAY FOR THE GRPAH AND TABLE//////
+//////////////////////////////////////////////////////////////
+function filterArrays(dataArray){
+  var tempVar = []
+  for (var i = 0; i < dataArray.length; i++) {
+    var trackr = 1
+    for (var j = 0; j < headings.length; j++) {
+      if ( dataArray[i][headings[j]['Description']] ) {
+        if (jQuery.inArray( String(dataArray[i][headings[j]['Description']]), headings[j]['option']['filters'] ) == -1) {
+          var trackr = 0
+        }
+      }
+    }
+    if (trackr == 1) {
+      tempVar.push(dataArray[i])    
+    }
+  }
+  return tempVar
+}
+
+///////////////////////////////////////////////
+/////  GET THE GRAPH AND FILTER OPTIONS //////
+/////////////////////////////////////////////
+function getValues(){
+  for (var i = 0; i < headings.length; i++) {
+ 
+                    
+ 
+    if($('#'+headings[i]['id']+'_headingsView').is(':checked')) {
+      var headingsView= true 
+    } else {
+      var headingsView= false
+    }
+    var filterArray = $('#'+headings[i]['id']+'_selectbasic').val();
+    headings[i]['option'] =   {
+      headingsView : headingsView,
+      filters : filterArray,
+ 
+ 
+    }     
+  }
+  var temp = filterArrays(data)
+    //Define all of the variables for the graphing
+    var grouping = ''
+    var groupingId = ''
+    var xaxisLabel = ''
+    var xAxisColumn = ''
+    var yaxisLabel = ''
+    var yAxisColumn = ''
+    //run through the json strutrue collectied from the inputs , then turn into the variables to pass into thte highchart grapihing function.
+    for (var i = 0; i < headings.length; i++) {
+      switch(true){
+        case (headings[i]['option']['group'] == true):
+        grouping = headings[i]['Description']
+        groupingId = headings[i]['Description']
+        break ; 
+        case (headings[i]['option']['xaxis'] == true):
+        xaxisLabel = headings[i]['Description']
+        xAxisColumn = headings[i]['Description']
+        break ; 
+        case (headings[i]['option']['yaxis'] == true):
+        yaxisLabel = headings[i]['Description']
+        yAxisColumn = headings[i]['Description']
+        break ; 
+      }
+    }
+   // printCompTable (temp,'tableComponent',formatHeadingArray(headings))
+    
+  }
+ 
+
+ 
+</script>

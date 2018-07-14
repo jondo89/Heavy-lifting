@@ -1,0 +1,279 @@
+<style type="text/css">
+.element-item {
+  position: relative;
+  float: left;
+  width: 30%;
+  min-height:  150px;
+  margin: 5px;
+  padding: 10px;
+  border: 1px solid;
+  border-radius: 3px;
+  border-color: #ddd;
+}
+</style>
+<div class="row">
+    <div class="col-md-12" style="text-align: right;">
+   <a class="btn btn-primary "  onclick="treeClick()" id="backButton" data-treeitem=""  title="Back"><i class="fas fa-arrow-left"></i> Back</a>
+ </div>
+  <div class="col-md-6">
+    <h1 id="name"></h1>
+  </div>
+
+ <div class="col-md-12">
+   <p id="detail"></p>
+ </div>
+</div>
+<div class="row" id="searchArea">
+</div>
+<p></p>
+<div class="row">
+  <div class="col-md-12">
+    <p>Use the buttons below to view a category and the back button to return.</p>
+    <div id= "groups"  >
+      <div class="well">
+        <div style=" padding: 5px">
+          <div style="padding:25px">  
+            <i class="fa fa-spinner fa-pulse"></i>
+            Loading
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  assemblyQuery[0].items =  {{{query}}}
+
+/////////////////////////////
+////     DEBUG AREA     //// 
+///////////////////////////
+console.log( 'Template loading : Group' )
+console.log( 'route : ',assemblyQuery[0].route )
+console.log( 'items : ',assemblyQuery[0].items )
+console.log( '-------------------------------------------' )
+
+/////////////////////////////////////
+////     HEADINGS AND STUFF     //// 
+///////////////////////////////////
+$('#name').html(assemblyQuery[0].items.name)
+$('#detail').html(assemblyQuery[0].items.detail)
+
+//////////////////////////////////
+////     SEARCH VARIABLE     //// 
+////////////////////////////////
+var $quicksearch = ''
+var qsRegex;
+var buttonFilter;
+
+
+//////////////////////////////////////////
+////        CREATE UNIQUE ID         //// 
+////////////////////////////////////////
+function create_uid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+  s4() + '-' + s4() + s4() + s4();
+}
+ 
+//////////////////////////////// 
+//////  CLEAR SEARCH     //////
+////////////////////////////// 
+function clearSearch(){
+  var $quicksearch = ''
+  var qsRegex;
+  var buttonFilter;
+  $('#quicksearch').val('')
+  $('#quicksearch').trigger('keyup')
+}
+ 
+////////////////////////////// 
+//////  INITIALIZE     //////
+//////////////////////////// 
+$(document).ready(function() { 
+  var ids
+  if (!assemblyQuery[0].items.elementID) {
+    ids = assemblyQuery[0].items._id
+  } else {
+    ids = assemblyQuery[0].items.elementID
+  }
+ 
+///////////////////////////////// 
+//////  READ CHILDREN     //////
+/////////////////////////////// 
+jQuery.ajax({
+  'async': true,
+  'global': false,
+  'url': '/'+assemblyQuery[0].route+'/groups?data='+ids,
+  'success': function (dataSchemaObject) {
+    input = JSON.parse(dataSchemaObject);
+    groupShow(input)
+    {{#if user}}
+    templateLoad('tools','tools')
+    {{/if}}
+  }
+});
+})
+
+///////////////////////////// 
+//////  PRINT ALL     //////
+/////////////////////////// 
+function groupShow(data) {
+ html=''
+ html+='<div class="col-lg-6">'
+ html+='<div class="input-group">'
+ html+='<input type="text" id="quicksearch" placeholder="Search" class="form-control" />'
+ html+='<span class="input-group-btn">'
+ html+='<a class="btn btn-default "  onclick="clearSearch()" id="clearSearchid" data-treeitem=""  title="Clear Search"><i class="fas fa-times"></i> Clear</a>'
+ html+='</span>'
+ html+='</div><!-- /input-group -->'
+ html+='</div><!-- /.col-lg-6 -->'
+ $('#searchArea').html(html)
+ if (data.length!=0) {
+  $('#groups').html('')
+  html=""
+  html+='<div class="groupSearchArea list-group">'    
+  for (var i = 0; i < data.length; i++) {
+   html+=printImageCatagory(data[i]) 
+ } 
+ html+='</div >'
+ $('#groups').append(html)
+} else {
+  $('#groups').html('<div class="col-md-12"><div class="well"> <div style=" padding: 5px"> <div style="padding:25px"> <i class="far fa-frown"></i> This node is empty. Would you like something added?<p> <p></p><a href="/contact" target="_blank" class="btn btn-success">Let us know!</a></p></div> </div> </div></div>')
+}
+// init Isotope
+var $grid = $('.groupSearchArea').isotope({
+  itemSelector: '.elemently',
+  layoutMode: 'fitRows',
+  filter: function() {
+    var $this = $(this);
+    var searchResult = qsRegex ? $this.text().match( qsRegex ) : true;
+    var buttonResult = buttonFilter ? $this.is( buttonFilter ) : true;
+    return searchResult && buttonResult;
+  }
+});
+clearSearch()
+activeeSearch()
+}
+
+///////////////////////////////// 
+//////  PRINT IMAGE       //////
+/////////////////////////////// 
+function printImageCatagory (data) {
+  html=''
+  html+='<button type="button" class="elemently list-group-item" id="' + data.elementID + '" onclick="viewCatagory(this.id);"><strong><i class="far fa-folder"></i>  '
+  html+=data.name
+  html+='  </strong>'  
+  html+=data.detail
+  html+='</button>'  
+  return  html
+}
+
+///////////////////////////////
+////     JSTREE FIDDLE    //// 
+/////////////////////////////
+function viewCatagory(id){
+  $('#jstree').jstree(true)
+  .deselect_all(id);
+  $('#jstree').jstree(true)
+  .select_node(id);
+}
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK OPEN FORM  /////////
+////////////////////////////////////////////
+function deployForm(parentid){
+//Inputs into the form deployment.
+  //formdata,idItem,raw,parentid,headings,entry
+//Which form to use.
+  //formdata:
+//idItem:
+  //Which item to edit.
+//Use the raw function for defining how to edit the data :
+  //raw:['use' , 'self' , 'edit']
+//parentid:
+  //Inject a parent id.
+//Inject a default entry.
+  //entry is used to manually add additional information to the form.
+//Find and inject the group menu id number.
+if (assemblyQuery[0].items.elementID) {
+  var parentIdTemp = assemblyQuery[0].items.elementID
+} else {
+  var parentIdTemp = assemblyQuery[0].items._id
+}
+var headings = ["description","detail","icon","headings"]
+var entry = {
+  parent : parentIdTemp,
+}
+loadformModal(parentid,'','use',assemblyQuery[0].items.parentid,headings,entry)
+}
+
+// quick search regex
+
+function activeeSearch(){
+
+
+
+$('#filters').on( 'click', 'button', function() {
+  buttonFilter = $( this ).attr('data-filter');
+  var $grid = $('.groupSearchArea').isotope({
+    itemSelector: '.elemently',
+    layoutMode: 'fitRows',
+    filter: function() {
+      var $this = $(this);
+      var searchResult = qsRegex ? $this.text().match( qsRegex ) : true;
+      var buttonResult = buttonFilter ? $this.is( buttonFilter ) : true;
+      return searchResult && buttonResult;
+    }
+  });
+  $grid.isotope();
+});
+
+// use value of search field to filter
+var $quicksearch = $('#quicksearch').keyup( debounce( function() {
+  qsRegex = new RegExp( $quicksearch.val(), 'gi' );
+  var $grid = $('.groupSearchArea').isotope({
+    itemSelector: '.elemently',
+    layoutMode: 'fitRows',
+    filter: function() {
+      var $this = $(this);
+      var searchResult = qsRegex ? $this.text().match( qsRegex ) : true;
+      var buttonResult = buttonFilter ? $this.is( buttonFilter ) : true;
+      return searchResult && buttonResult;
+    }
+  });
+  $grid.isotope();
+}) );
+
+// change is-checked class on buttons
+$('.button-group').each( function( i, buttonGroup ) {
+  var $buttonGroup = $( buttonGroup );
+  $buttonGroup.on( 'click', 'button', function() {
+    $buttonGroup.find('.is-checked').removeClass('is-checked');
+    $( this ).addClass('is-checked');
+  });
+});
+
+// debounce so filtering doesn't happen every millisecond
+function debounce( fn, threshold ) {
+  var timeout;
+  return function debounced() {
+    if ( timeout ) {
+      clearTimeout( timeout );
+    }
+    function delayed() {
+      fn();
+      timeout = null;
+    }
+    setTimeout( delayed, threshold || 100 );
+  };
+}
+
+
+}
+
+
+</script>

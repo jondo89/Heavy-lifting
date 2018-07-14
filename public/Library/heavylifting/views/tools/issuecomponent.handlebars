@@ -1,0 +1,629 @@
+     <div role="tabpanel" class="tab-pane active" id="issuecomponent">
+      <div id="searchArea"></div>
+      <p></p>  
+      <div id='formDelivery' style="overflow: auto;">
+      </div>
+    </div>
+    <style type="text/css">
+    .shownTr 
+    {
+      background: linear-gradient(to bottom right, white,white,white,white, #e8e8e8); /* Standard syntax (must be last) */
+      ); 
+    </style>
+
+
+    <script type="text/javascript">
+  //The route defines the plugin to use when posting , getting and loading.
+
+$('#searchArea').append('<p></p><div style="padding-top:15px" class="collapse" id="collapseExample"> <div><div id="AdvancedSearch"></div> </div> </div>')
+$('#searchArea').append('<p></p><div style="padding-top:15px" class="collapse" id="collapseExampleHeadings"> <div><div id="AdvancedSearchHead"></div></div></div>')
+
+/////////////////////////////
+////     DEBUG AREA     //// 
+///////////////////////////
+console.log( 'tablecomponent' )
+console.log( 'assemblyQuery[0].items : ',assemblyQuery[0].items )
+console.log( 'assemblyQuery[0].query1 : ',assemblyQuery[0].query1 )
+console.log( 'assemblyQuery[0].query2 : ',assemblyQuery[0].query2 )
+console.log( 'assemblyQuery[0].query3 : ',assemblyQuery[0].query3 )
+console.log( 'assemblyQuery[0].query4 : ',assemblyQuery[0].query4 )
+console.log( 'tablelistdata : ',assemblyQuery[0].tablelistdata )
+console.log( 'assemblyQuery[0].formids : ',assemblyQuery[0].formids )
+console.log( '-------------------------' )
+
+var modifiedTableListsData
+var modifiedListData
+    var headingTemp =[]
+
+
+assemblyQuery[0].tablelistdata.sort(function(a, b) {
+ if (a.entry.order && b.entry.order) {
+  return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+}
+});
+assemblyQuery[0].query3.sort(function(a, b) {
+  if (a.entry.order && b.entry.order) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+  }
+});
+assemblyQuery[0].query2.sort(function(a, b) {
+  return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+});
+
+////////////////////////////////////
+////        INITIALIZE         //// 
+//////////////////////////////////
+$('document').ready(function(){
+  uniqueIdforcformButton()
+  uniqueIdforcformButton(assemblyQuery[0].formids,'formDelivery')//create a unique form id
+  dataFormatComp()
+  datableload(modifiedTableListsData,headingTemp)
+})
+
+///////////////////////////////////////////////////
+////        REQUIRED FORMATING OF DATA        //// 
+/////////////////////////////////////////////////
+function dataFormatComp(){
+  var tempVar = []
+  var tempVar1 = []
+  var tempVar2 = []
+
+  for (var i = 0; i < assemblyQuery[0].tablelistdata.length; i++) {
+    tempVar1 = []
+    for(key in assemblyQuery[0].tablelistdata[i].entry){
+      tempVar = []
+      for (var j = 0; j < assemblyQuery[0].query2.length; j++) {
+        if (assemblyQuery[0].query2[j].elementID == key) {
+          headingTemp.push(assemblyQuery[0].query2[j]['entry']['description'])
+          tempVar = {
+            'description' : assemblyQuery[0].query2[j]['entry']['description'],
+            'value' : assemblyQuery[0].tablelistdata[i].entry[assemblyQuery[0].query2[j].elementID],
+            'units' : assemblyQuery[0].query2[j]['entry']['units'],
+            'detail' : assemblyQuery[0].query2[j]['entry']['detail'],
+            'id' : assemblyQuery[0].query2[j]['elementID'] 
+          }
+        }
+      }
+      if (tempVar != "") {
+        tempVar1.push(tempVar)
+      }
+    }
+    tempVar2[assemblyQuery[0].tablelistdata[i].elementID] = tempVar1
+  }
+    headingTemp = jQuery.unique(headingTemp)
+  var temp = []
+  var temp
+  //This is where the id is injected into the menu item . Crude hacky work around , not sure how to improve.
+  for (var i = 0; i < assemblyQuery[0].tablelistdata.length; i++) {
+    for(key in assemblyQuery[0].tablelistdata[i].entry){
+      for (var j = 0; j < assemblyQuery[0].query2.length; j++) {
+        if (assemblyQuery[0].query2[j].elementID == key) {
+          assemblyQuery[0].tablelistdata[i].entry[assemblyQuery[0].query2[j]['entry']['description']] = assemblyQuery[0].tablelistdata[i].entry[assemblyQuery[0].query2[j].elementID]
+          delete assemblyQuery[0].tablelistdata[i].entry[assemblyQuery[0].query2[j].elementID]
+        }
+      }
+    }
+      //the add the id to the array going into the menu .
+      if (assemblyQuery[0].tablelistdata[i]['elementID'] == "") {
+        assemblyQuery[0].tablelistdata[i].entry._id = assemblyQuery[0].tablelistdata[i]['_id']
+      }else{
+        assemblyQuery[0].tablelistdata[i].entry._id = assemblyQuery[0].tablelistdata[i]['elementID']
+      }
+      assemblyQuery[0].tablelistdata[i].entry.name = assemblyQuery[0].tablelistdata[i]['name']
+      assemblyQuery[0].tablelistdata[i].entry.childType = assemblyQuery[0].tablelistdata[i]['childType']
+      assemblyQuery[0].tablelistdata[i].entry.name = assemblyQuery[0].tablelistdata[i]['name']
+   // assemblyQuery[0].tablelistdata[i].entry.detail1 = assemblyQuery[0].tablelistdata[i]['detail']
+   assemblyQuery[0].tablelistdata[i].entry.userID = assemblyQuery[0].tablelistdata[i]['userID']
+   assemblyQuery[0].tablelistdata[i].entry.parentid = assemblyQuery[0].tablelistdata[i]['parentid']
+   temp.push(assemblyQuery[0].tablelistdata[i].entry)
+ }
+ modifiedListData = tempVar2
+ modifiedTableListsData = temp
+ headingList : headingTemp
+}
+
+///////////////////////////////
+//////  LOAD THE TABLE  //////
+/////////////////////////////
+function datableload(tableData,headings) {
+//General Heading error trap.  
+//When the heading is only 1 item , the printing of the headings loops throguh each character . THis checks if it is an array .
+if (assemblyQuery[0].items.entry.headings) {
+  var tableHeadings = JSON.parse(JSON.stringify(assemblyQuery[0].items.entry.headings))
+  if (!isArray(tableHeadings)) {
+    tableHeadings = [tableHeadings]
+  }  
+} else {
+  var tableHeadings = ['name','detail','userID','id','parentid','childType','description']
+}
+var tempVarIDs = assemblyQuery[0].formids+'_tableloadID'
+    //inject the ID html table into the page.
+    $('#'+assemblyQuery[0].formids).html('<table id="'+tempVarIDs+'" class="table table-bordered table-compressed table-hover " cellspacing="0" width="100%"></table>')
+    //error message text
+    var html1 = ''
+    html1 += '<div class="alert alert-danger" role="alert"> '
+    html1 += '<strong><i class="fa fa-frown-o" aria-hidden="true"></i>  '
+    html1 += 'Oh snap!'
+    html1 += '</strong> '
+    html1 += 'No data found , Please let us know about this.'
+    html1 += '</div>'
+
+
+
+//Filter Headings of tables from here.
+html='<small>Select headings to view on this table.</small>'
+html+='<select class="selectpicker" multiple data-width="100%" data-actions-box="true">'
+for (var i = 0; i < headings.length; i++) {
+  if (jQuery.inArray(headings[i],assemblyQuery[0].items.entry.headings) ==-1) {
+    html+= '<option value="'+headings[i]+'">'+headings[i]+'</option>'
+  } else {
+    html+= '<option value="'+headings[i]+'" selected >'+headings[i]+'</option>'
+  }
+}
+html+='</select> '
+$('#AdvancedSearchHead').html(html)
+$('.selectpicker').selectpicker({
+  style: 'btn-default',
+  size: 4
+});
+$('.selectpicker').on('changed.bs.select', function (e) {
+  var temp = $('.selectpicker').selectpicker('val');
+  if (!temp) {
+    $('#AdvancedSearch').html('<small>Select table headings to view.</small>')  
+    $('#'+tempVarIDs).html('')
+  } else {
+    var table = $('#'+tempVarIDs).DataTable();
+    table.destroy();
+    dataTableLoad (tableData,tempVarIDs,temp)
+    loadDataTable(tempVarIDs,modifiedListData,headings,assemblyQuery[0].items.entry.headings)
+  }
+});
+
+
+
+
+//client side error check for the tables.
+if (tableData !== null) {
+  if (tableData.length !== 0) {
+    dataTableLoad (tableData,tempVarIDs,tableHeadings)
+    loadDataTable(tempVarIDs)
+  } else {
+    $('#'+assemblyQuery[0].formids).html(html1)
+  }
+} else {
+  $('#'+assemblyQuery[0].formids).html(html1)
+}
+};
+
+////////////////////////////
+////////    READ  /////////
+///////////////////////////
+function dataTableLoad (data,id,headings){
+  html = ''
+  if (assemblyQuery[0].items.entry.buttons) {
+    html += '<thead><tr><th  style="width:1px"></th>'
+  }else{
+   html += '<thead><tr>'
+ }
+ for (var i = 0; i < headings.length; i++) {
+  html += '<th>'
+  html+=capitalize(headings[i])
+  html += '</th>'
+}
+html += '</tr></thead>'
+html += '<tbody>'
+//pull in the element id of query 2 for the correct mofiy form
+var componentFom = assemblyQuery[0].query1[0].elementID
+for (var i = 0; i < data.length; i++) {
+  if (assemblyQuery[0].items.entry.buttons) {
+    html += '<tr><td class="details-control" style="text-align:center;vertical-align:middle; " id="'+data[i]['_id']+'" data-parentid="'+data[i]['parentid']+'" data-childType="'+componentFom+'"><i class="far fa-plus-square"></i></td>'
+  }else{
+    html += '<tr>'
+  }
+  for (var j = 0; j < headings.length; j++) {
+    switch(true){
+      case(headings[j]=='Url'):
+      if (data[i][headings[j]] != undefined) {
+        html += '<td style=" vertical-align:middle">'
+        html += '<a href="'+data[i][headings[j]]+'" target="_blank">Link</a>'
+      } else {
+        html += '<td style=" vertical-align:middle">'
+        html += "Blank"
+      }
+      break;
+      case(headings[j]=='Image' || headings[j]=='image'):
+      if (data[i][headings[j]] != undefined) {
+        html += '<td style=" vertical-align:middle">'
+        html+='<div class="component-thumb-img">'
+        html += '<img style="max-width:150px" src="'+data[i][headings[j]]+'" alt="..." class="img-rounded">'
+        html+='</div>'
+      } else {
+        html += '<td style=" vertical-align:middle">'
+        html+='<div class="component-thumb-img">'
+        html += '<img style="max-width:150px" src="/img/defaults/default_product.png" alt="..." class="img-rounded">'
+        html+='</div>'
+      }
+      break;
+      default:
+      if ( data[i][headings[j]] == undefined) {
+        html += '<td style=" vertical-align:middle;background-color:#f5f5f5">'
+        html += "-"
+      }else {
+        html += '<td style=" vertical-align:middle">'
+        html += data[i][headings[j]]
+      }
+      break;
+    }
+    html += '</td>'
+  }
+  html += '</tr>'
+}
+html += '<tbody>'
+$('#'+id).html(html)
+} 
+
+/////////////////////////////////////////////////////////////////////
+////////    USED FOR THE COMPILATION OF THE DETAILS TABLE  /////////
+/////////////////////////////////////////////////////////////////////
+function detailTableLoad (data,id){
+  var  html = ''
+  html+='<div> <!-- Nav tabs --> <ul class="nav nav-tabs" role="tablist">'
+  html+= '<li role="presentation" class="active"><a href="#home_'+id+'" aria-controls="home" role="tab" data-toggle="tab">Detail</a></li>'
+
+  {{#if user}}
+   html+=  '<li role="presentation"><a href="#profile_'+id+'" aria-controls="profile_'+id+'" role="tab" data-toggle="tab">History</a></li>'
+  {{/if}}
+ 
+
+ 
+
+
+  html+= '</ul> <!-- Tab panes --> <div class="tab-content">'
+  html+=  '<div role="tabpanel" class="tab-pane active" id="home_'+id+'">'
+  html+='<p></p>'
+//pull in the element id of query 2 for the correct mofiy form
+var componentFom = assemblyQuery[0].query1[0].elementID
+html += '<table class="table table-bordered table-condensed">  '
+html += '<thead>'
+html += '<tr>'
+for (key in data) {
+  for (var i = 0; i < data[key].length; i++) {
+    if (key == id) {
+      switch(true){
+        case(data[key][i]['description']=='image' ):
+        html += '<tr>'
+        html += '<td colspan="4" style="text-align:right">'
+        if (data[key][i]['value'] != undefined) {
+          html += '<img style="max-width:150px" src="'+data[key][i]['value']+'" alt="..." class="img-rounded">'
+        } else {
+          html += "Blank"
+        }
+        html += '</td>'  
+        html += '</tr>'
+        break;
+      }
+    }
+  }
+}
+html += '<th>Description</th><th>Value</th><th>Units</th><th>Detail</th></tr>'
+html += '</thead>'
+html += '<tbody>'
+for (key in data) {
+  for (var i = 0; i < data[key].length; i++) {
+    if (key == id) {
+      if (data[key][i]['description']!='Image') {
+        html += '<tr>'
+        html += '<td>'
+        html += data[key][i]['description']
+        html += '</td>'
+        html += '<td>'
+        switch(true){
+          case(data[key][i]['description']=='Url'):
+          if (data[key][i]['value'] != undefined) {
+            html += '<a href="'+data[key][i]['value']+'" target="_blank">Link</a>'
+          } else {
+            html += "Blank"
+          }
+          break;
+          default:
+          html += data[key][i]['value']
+          break;
+        }
+        html += '</td>'      
+        if ( data[key][i]['units'] == undefined) {
+          html += '<td style=" vertical-align:middle;background-color:#f5f5f5">'
+          html += "-"
+        }else {
+          html += '<td style=" vertical-align:middle">'
+          html += data[key][i]['units']
+        }
+        html += '</td>'
+        if ( data[key][i]['detail'] == undefined) {
+          html += '<td style=" vertical-align:middle;background-color:#f5f5f5">'
+          html += "-"
+        }else {
+          html += '<td style=" vertical-align:middle">'
+          html += data[key][i]['detail']
+        }
+        html += '</td>'
+        html += '</tr>'
+      }
+    }
+  }
+}
+html += '</tbody>'
+html += '</table>'
+html+= '</div>'
+ {{#if user}}
+   html+= '<div role="tabpanel" class="tab-pane" id="profile_'+id+'">'
+html+= '<h4>Revision History</h4><div class=""><div class="row"><div class="col-md-12" id="'+id+'_histload"><p style="text-align:center"><button id="'+id+'_hist" onclick="loadHistory(this.id)" class="btn btn-primary"><i class="fas fa-cloud-download-alt"></i> Get revision history</button></p></div> </div>'
+html+= '</div> </div> </div></div>'
+  {{/if}}
+html+= '   </div>'
+return html
+} 
+
+
+
+/////////////////////////////////////////////
+//////  CHECK IF AN OBJECT IS AN ARRAY //////
+/////////////////////////////////////////////
+function isArray(obj){
+  return !!obj && obj.constructor === Array;
+}
+
+function loadDataTable(id){
+//the use of var here is critical , each instantiate needs to be unique.
+var table = jQuery('#'+id).DataTable({
+  'destroy':true,
+  "pagingType": "numbers",        
+  "dom": 'Bfrtip',
+  "buttons": [
+  { extend: 'csv', text: ' <i class="far fa-file-excel"></i>' ,className:'btn btn-default btn-xs' ,filename: 'Data export' ,title: 'Table export'}, 
+  { extend: 'pdf', text: ' <i class="far fa-file-pdf"></i>' ,className:'btn btn-default btn-xs' ,filename: 'Data export' ,title: 'Table export'}
+  ]
+  //  'order': [[ 2, 'asc' ]] ,
+});
+  //Add event listener for opening and closing details
+  jQuery('#'+id +' tbody').on('click', 'td.details-control', function () {
+    var tr = jQuery(this).closest('tr');
+    var row = table.row( tr );
+    if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();//////////////////////////////////////
+            tr.removeClass('shown');
+          }
+          else {
+            // Open this row
+            //it is async , and the canvas is not rendered 
+            row.child(formatDefault(this.id))
+
+            row.child.show();
+            tr.addClass('shown');
+            jQuery('#'+this.id).closest('tr').next('tr').addClass('shownTr');
+            // Warning Duplicate IDs
+            $('[id]').each(function(){
+              var ids = $('[id="'+this.id+'"]');
+              if(ids.length>1 && ids[0]==this){
+               $( this ).css( "color", "red" )
+               $( this ).css( "background", "green" )
+               console.warn('Multiple IDs #'+this.id);
+             }
+           });
+          }
+        });
+//Start of advanced filter option.
+ 
+var counter = 0
+html='<small>Search table columns.</small>'
+html+='<form class="form-horizontal">'
+html+='<fieldset>'
+html+='<div class="row">'
+$( '#'+id+' thead th' ).each(function(){
+  if ($( this ).text()=='') {
+    counter+=1
+  }  else {
+    html+='<div class="col-md-4" id="filter_col'+counter+1+'" data-column="'+counter+'" style="padding-bottom:5px">'
+    html+='  <input  name="textinput" type="text" placeholder="Search '+$( this ).text()+'" class="form-control AdvancedSearch input-md" id="col'+counter+'_filter">'
+    html+='  </div>'
+    counter+=1
+  }
+})
+html+='</div>'
+html+='</fieldset>'
+html+='</form>'
+
+$('#AdvancedSearch').html(html)
+
+function filterColumn ( i ) {
+  table.column( i ).search(
+    $('#col'+i+'_filter').val()
+    ).draw();
+}
+
+$('input.AdvancedSearch').on( 'keyup click', function () {
+  filterColumn( $(this).parents('div').attr('data-column') );
+} );
+
+$('.dt-buttons').prepend('<a class="btn btn-default btn-xs" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-search" aria-hidden="true"></i></a>')
+//end of advanced filter option.
+$('.dt-buttons').prepend('<a class="btn btn-default btn-xs" role="button" data-toggle="collapse" href="#collapseExampleHeadings" aria-expanded="false" aria-controls="collapseExampleHeadings"><i class="fa fa-table" aria-hidden="true"></i></a>')
+}
+
+//////////////////////////////////////////////////////////
+////////////        VIEW EXTRA DETAIL         ///////////
+////////////////////////////////////////////////////////
+function formatDefault ( d ) {
+  // `d` is the original data object for the row
+  var html=''
+  html+='<div class="row">'
+  html+='<div class="col-md-6">'
+  html+='<h4>Item Detail'
+  {{#if user}}
+  html +='<small> '+d+'</small>'
+  {{/if}}
+  html+='</h4> ' 
+  html+='</div>'
+  html+='<div class="col-md-6" style="text-align:right">'
+  {{#if user}}
+  html +='<p></p>' 
+  html +='<div class="btn-group" style="" role="group" aria-label="...">'
+  for (var j = 0; j < assemblyQuery[0].items.entry.buttons.length; j++) {
+    switch(true){
+      case (assemblyQuery[0].items.entry.buttons[j] == 'modify'):
+      html += '<button type="button" class="btn btn-default btn-sm" id="'+d+'_read" onclick="modifyItemComp(this.id)"    data-toggle="tooltip" data-placement="top" title="Edit ths item."><i class="far fa-edit"></i></button>'
+      break;
+      case (assemblyQuery[0].items.entry.buttons[j] == 'rawitem'):
+      html += '<button type="button" class="btn btn-default btn-sm" id="'+d+'_raw" onclick="EditWithraw(this.id)"  data-toggle="modal" data-target="#myModal" data-toggle="tooltip" data-placement="top" title="Edit raw item."><i class="fa fa-code" aria-hidden="true"></i></button>'  
+      break;  
+      case (assemblyQuery[0].items.entry.buttons[j] == 'copyitem'):
+      html += '<button type="button" class="btn btn-success" id="'+d+'_copyitem" onclick="copthisitem(this.id)"  data-toggle="modal" data-target="#myModal-sm" data-toggle="tooltip" data-placement="top" title="Copy ths item.">Copy</button>' 
+      break;  
+      case (assemblyQuery[0].items.entry.buttons[j] == 'comp'):
+      html += '<button type="button" class="btn btn-default btn-sm"  id="'+d+'_comp" onclick="createComp(this.id)"  data-toggle="modal" data-target="#myModal-sm" data-toggle="tooltip" data-placement="top" title="Create item.">Create component</button>'
+      break;  
+      case (assemblyQuery[0].items.entry.buttons[j] == 'Modifynorevraw'):
+      html += '<button type="button" class="btn btn-default btn-sm" id="'+d+'_1" onclick="useForm(this.id)"  data-toggle="modal" data-target="#myModal-sm" data-toggle="tooltip" data-placement="top" title="Edit ths item.">Modifynorevraw</button>'
+      break;  
+      case (assemblyQuery[0].items.entry.buttons[j] == 'norevraw'):
+      html += '<button type="button" class="btn btn-default btn-sm" id="'+d+'_1" onclick="useForm(this.id)"  data-toggle="modal" data-target="#myModal-sm" data-toggle="tooltip" data-placement="top" title="Edit ths item.">norevraw</button>'
+      break;  
+      
+    }
+  }  
+  for (var j = 0; j < assemblyQuery[0].items.entry.buttons.length; j++) {
+    switch(true){
+      case (assemblyQuery[0].items.entry.buttons[j] == 'delete'):
+      html += '<button type="button" class="btn btn-default btn-sm" data-_id="'+d+'" id="'+d+'_del" data-toggle="modal" data-target="#myModal-sm" onclick="deleteEntry(this.id)"  data-toggle="tooltip" data-placement="top" title="Remove this item"><i class="fa fa-trash" aria-hidden="true"></i></button>'
+      break;
+    }
+  }  
+  html +='  </div>'
+  html += '<div id="'+d+'_loadingArea" ></div>'
+  html +='</div>'
+  {{/if}}
+  html+='</div>'
+  html+='</div>'
+  html +='<p></p>' 
+  html += detailTableLoad  (modifiedListData,d)
+  return html;
+}
+
+
+
+
+
+/////////////////////////////////////////////
+//////  LOAD ADDITIONAL ITEM DETAIL  ///////
+///////////////////////////////////////////
+function loadDetail(id){
+  var html = '<div style="text-align:center">'
+  html += '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>'
+  html+='<span class="sr-only">Loading...</span>'
+  html += '</div>'
+  $('#'+id+'_loadingArea').html(html)
+}
+
+
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK OPEN FORM  /////////
+////////////////////////////////////////////
+function deployFormUse(formToUse){
+  //This is hard wired , and likely to cause issues.
+  var headings = ["description","detail","icon","headings"]
+  var entry =''
+  loadformModal(formToUse,'','use',templateload,headings,entry)
+}
+
+
+
+//////////////////////////
+//////  COPY       //////
+////////////////////////
+function copthisitem(id){
+  id = id.replace('_copyitem', '');
+  childType = $('#'+id+'').data('childtype')
+  //Used for the check self when modifiing.
+  if (!childType) {
+    loadformModal(id,id,'self',id)
+  } else {
+  //INSTRUCTIONS
+  ////////////////////////////////////////////////////////////////////
+  //Strucuture of the query
+  //formdata,idItem,raw,parentid,headings,entry
+  //formdata:
+  //Which form to use.
+  //idItem:
+  //Which item to edit.
+  //Use the raw function for defining how to edit the data :
+  //raw:['use' , 'self' , 'edit' , 'component']
+  //parentid:
+  //Inject a parent id.
+  //Headings
+  //used for limiting the information shown on each form
+  //Inject a default entry.
+  //entry is used to manually add additional information to the form.
+  //Find and inject the group menu id number.
+  //INSTRUCTIONS
+  ////////////////////////////////////////////////////////////////////  
+  if (assemblyQuery[0].items.elementID) {
+    var parentIdTemp = assemblyQuery[0].items.elementID
+  } else {
+    var parentIdTemp = assemblyQuery[0].items._id
+  }
+  var headings = ["description","parent"]
+  if (true) {}
+    var entry = {
+      elementID : id
+    } 
+  //The id of the emement needs to be injected into the form , as it does not have that data.
+  loadformModal(childType,id,'componentcopy',parentIdTemp,headings, entry)
+}
+}
+
+
+
+//////////////////////////
+//////  USE        //////
+////////////////////////
+function useForm(id){
+  id = id.replace('_use', '');
+  loadformModal(id,'','use',id)
+}
+
+//////////////////////////
+//////  MODIFY     //////
+////////////////////////
+function modifyItem(id){
+  id = id.replace('_read', '');
+  childType = $('#'+id+'').data('childtype')
+  //Used for the check self when modifiing.
+  if (!childType) {
+    loadformModal(id,id,'self',id)
+  } else {
+    loadformModal(childType,id,'self',id)
+  }
+}
+
+
+
+////////////////////////////////////
+//////  CREATE COMPONENT     //////
+//////////////////////////////////
+function createComp(id){
+  id = id.replace('_comp', '');
+  childType = $('#'+id+'').data('childtype')
+  //there is some kind of wierd lowcase requiremtns.
+  parentid = $('#'+id+'').data('parentid')
+  if (!childType) {
+    loadformModal(childType,'','use',id)
+  } else {
+    loadformModal(parentid,'','use',id)
+  }
+}
+
+
+
+
+</script>

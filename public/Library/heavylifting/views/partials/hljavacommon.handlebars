@@ -1,0 +1,790 @@
+<div id='toToppo' style="z-index: 1000;  position:relative"><a href="#" title="Scroll to top of page."><i class="fa fa-arrow-up fa-2x" aria-hidden="true"></i></a></div>
+
+<style type="text/css">
+
+
+#toToppo a {
+  padding: 5px 5px;
+  background: #000;
+  color: #fff;
+  position: fixed;
+  z-index: -15px;
+  bottom: 15px;
+  right: 15px;
+  display: none;
+  text-decoration: none;
+  border-radius: 5px
+}
+</style>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+
+  //Check to see if the window is top if not then display button
+  $(window).scroll(function(){
+    if ($(this).scrollTop() > 100) {
+      $('#toToppo a').fadeIn();
+    } else {
+      $('#toToppo a').fadeOut();
+    }
+  });
+  
+  //Click event to scroll to top
+  $('#toToppo a').click(function(){
+    $('html, body').animate({scrollTop : 0},600);
+    return false;
+  });
+  
+});
+</script>
+
+<script type="text/javascript">
+  console.log('Loading Heavylifting common javascript')
+  var inject
+  var groupitemTemplate = {
+   "template": "group",
+   "icon":"",
+   "default": "", 
+   "tabs": []
+ }
+
+ var assemblyitemTemplate = {
+   "default": "5909c9af545fa738c45954e1",   
+   "template": "",
+   "icon":"glyphicon glyphicon-th",
+   "tabs": [
+   "assembly",
+   "tablecomponent"
+   ]
+ }	
+
+ var databaseitemTemplate = {
+   "icon": "glyphicon glyphicon-cog",
+   "tabs": [
+   "tablecomponent",
+   "New"
+   ],
+   "buttons": [
+   "modify",
+   "delete",
+   "permdelete",
+   "rawitem"
+   ],
+   "layout": [
+   "addcomp",
+   "parentraw",
+   "copy"
+   ]
+ }
+
+
+ var productitemTemplate = {
+
+   "icon": "glyphicon glyphicon-shopping-cart",
+   "tabs": [
+   "tablecomponent",
+   "New"
+   ],
+   "buttons": [
+   "modify",
+   "delete",
+   "permdelete",
+   "rawitem"
+   ],
+   "layout": [
+   "addcomp",
+   "parentraw",
+   "copy"
+   ]
+ }
+
+
+ var formitemTemplate = {
+   "icon": "glyphicon glyphicon-list-alt",
+   "template": "",
+   "headings": [
+   "description",
+   "units",
+   "order",
+   "detail"
+   ],
+   "buttons": [
+   "modify",
+   "delete"
+   ],
+   "tabs": [
+   "tablecomponent",
+   "form",
+   "New"
+   ]
+ }
+
+/////////////////////////////////////////////
+////////   BRING IN ALL PROFILE PICS ///////
+///////////////////////////////////////////
+function profilePics(){
+  $('.profile_pic_small').each(function(index ){
+    var ids = $(this).data('userid')
+    if ($(this).data('loaded')==false) {
+      var location = this
+      jQuery.ajax({
+        'url': '/profilepic?ids='+ids,
+        'async': true,
+        'global': false,
+        'success': function (dataSchemaObject) {
+         var dataSchemaObject = JSON.parse(dataSchemaObject)
+         var html=''
+         if (dataSchemaObject) {
+          if (dataSchemaObject.username) {
+            html+='<div class="row">'
+            html+='<div class="col-xs-3 col-md-4">'
+            html+='<a href="/users/'+dataSchemaObject.username+'" class="thumbnail">'
+            html+='<img src="'+dataSchemaObject.image+'">'
+            html+='</a>'
+            html+='</div>'
+            html+='<div class="col-xs-3 col-md-8">'
+            html+='<h5><strong>Author:</strong> '+dataSchemaObject.username+'</h5>'
+            var day = new Date ( assemblyQuery[0].items.created );
+            var day = moment(day).format("YYYY-MM-DD HH:mm");
+            html+='<h5><strong>Date by :</strong> '+day+'</h5>'
+            html+='<h5><strong>Revision :</strong> '+assemblyQuery[0].items.revision+'</h5>'
+            html+='</div>'
+            html+='</div>'
+          }
+        } else {
+         
+          html+='<h5><strong>Author :</strong> User deleted</h5>'
+          var day = new Date ( assemblyQuery[0].items.created );
+          var day = moment(day).format("YYYY-MM-DD hh:mm");
+          html+='<h5><strong>Date by :</strong> '+day+'</h5>'
+          html+='<h5><strong>Revision :</strong> '+assemblyQuery[0].items.revision+'</h5>'
+          
+
+        }
+        $(location).html(html)
+      },'error' : function(err){
+        console.log(err)
+      }
+    });
+      $(this).data('loaded','true')
+    } else {
+      console.log($(this).data('userid'),' : pic loaded')
+    }
+  })
+}
+
+
+////////////////////////////////////
+////        INITIALIZE         //// 
+//////////////////////////////////
+$('document').ready(function(){
+  windowSizing ()
+})
+
+
+//////////////////////////////////////////////////
+////////    BUTTON CLICK OPEN RAW FORM  /////////
+////////////////////////////////////////////////
+function deployparentrawForm(parentid){
+  //console.log('deploying here',parentid,parentid,'raw',parentid,'','','formAreaModal')
+  parentid = parentid.replace('_parentraw', '');
+  loadformModal(parentid,parentid,'raw',parentid,'','','formAreaModal')
+}
+
+
+//////////////////////////////////////////////////
+////////    BUTTON CLICK OPEN RAW FORM  /////////
+////////////////////////////////////////////////
+function copyParentRaw(parentid){
+  //console.log('activations')
+  parentid = parentid.replace('_copy', '');
+  loadformModal(parentid,parentid,'copyraw',parentid,'','','formAreaModal')
+}
+
+////////////////////////////////////////////////////
+////////    BUTTON CLICK ADD NEW DB ITEM  /////////
+//////////////////////////////////////////////////
+function addIssue(form,grouping){
+  loadformModalwrasse(form,'','component',grouping,'','')
+}
+
+
+
+//////////////////////////////////////
+////////    GET FORM BY ID  /////////
+////////////////////////////////////                                                                                                              
+function loadformModal(formdata,idItem,raw,parentid,headings,entry,locations,routing){
+  
+  var headings = JSON.stringify(headings)
+  var entry = JSON.stringify(entry)
+  if(!routing){
+    if (assemblyQuery[0].route) {
+    routing = assemblyQuery[0].route  
+  } else {
+    routing = 'components'
+  }
+  }
+  console.log(formdata,idItem,raw,parentid,headings,entry,locations,routing)
+  console.log('common javascript functions.')
+  console.log('function : loadformModal')
+  console.log('-----------------------------------------')
+  console.log('formdata : ', formdata , ' | Which form to use for editing.')
+  console.log('idItem : ', idItem , ' | Which data set to edit with this selected form.')
+  console.log('raw : ', raw , ' | overrides for editing data using raw form.')
+  console.log('parentid : ', parentid , ' | Where the item will be stored.')
+  console.log('headings : ', headings)
+  console.log('entry : ', entry)
+  console.log('locations : ', locations)
+  console.log('routing item: ', routing)
+  console.log('-----------------------------------------')
+
+  if (!parentid) {
+    alert('No parentid for this item is defined.')
+  }
+
+
+
+
+  jQuery.ajax({
+   'url': '/'+routing+'/getform?formdata='+formdata+'&idItem='+idItem+'&raw='+raw+'&parentid='+parentid+'&headings='+headings+'&entry='+entry,
+   'async': true,
+   'global': false,
+   'success': function (dataSchemaObject) {
+    if (!locations.length) {
+      $('#formAreaModal').html(dataSchemaObject)
+    } else {
+      $('#'+locations).html(dataSchemaObject)
+    }
+  }
+});
+}
+
+/////////////////////////////////////////// 
+//////  PRIMARY JSTREE ITEM EDIT    //////
+/////////////////////////////////////////
+function treeNavEdit(location,items){
+  if (user=='superadmin') {
+   var html =''
+   var temp =   items.elementID
+
+   console.log( 'Tempalte Name : views/partials/tools' )
+   html +='<button type="button" class="btn btn-default btn-xs dropdown-toggle " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >'
+   html +='<i class="fa fa-cogs" aria-hidden="true"></i>'
+   html +='</button>'
+   html +='<ul class="dropdown-menu dropdown-menu-right">'
+   html +='<li> <a href="#" id="parentraw" onclick="deployparentrawForm(this.id)" data-toggle="modal" data-target="#myModal" title="Edit the raw JSON entry"> <i class="far fa-file-code"></i>  Edit current item</a></li>'
+   html +='<li> <a href="#" id="copyParentRaw" onclick="copyParentRaw(this.id)" data-toggle="modal" data-target="#myModal" title="Copy this entry"><i class="fa fa-clone" aria-hidden="true"></i>  Copy current item</a></li>'
+   html+='<li role="separator" class="divider"></li>'
+   html +='<li> <a href="#" id="groupTemplate" onclick="clicker(this.id)" data-toggle="modal" data-target="#myModal" title="Make this a group"><i class="far fa-folder"></i>  Make item a group</a></li>'
+   html +='<li> <a href="#" id="databaseTempalte" onclick="clicker(this.id)" data-toggle="modal" data-target="#myModal" title="Make this a database"><i class="fa fa-cog" aria-hidden="true"></i>  Make item a database</a></li>'
+   html +='<li> <a href="#" id="assemblyTemplate" onclick="clicker(this.id)" data-toggle="modal" data-target="#myModal" title="Make this an Assembly"><i class="fa fa-sitemap" aria-hidden="true"></i>  Make item an assembly</a></li>'
+   html +='<li> <a href="#" id="formTemplate" onclick="clicker(this.id)" data-toggle="modal" data-target="#myModal" title="Make this a form"><i class="glyphicon glyphicon-list-alt" aria-hidden="true"></i>  Make item a form</a></li>'
+   html +='<li> <a href="#" id="producttemplate" onclick="clicker(this.id)" data-toggle="modal" data-target="#myModal" title="Make this a form"><i class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></i>  Make item a product</a></li>'
+   html+='<li role="separator" class="divider"></li>'
+   html +='<li> <a href="/database/bulkedit/'+items.elementID+'" title="Edit this item in table form."  ><i class="fas fa-list"></i>  Bulk Edit</a></li>'
+      html+='<li role="separator" class="divider"></li>'
+   html +='<li> <a href="/components/default/'+items.childType+'" target="_blank" title="Add new form element."  ><i class="fas fa-list"></i>  Add new form element.</a></li>'
+   html+='<li role="separator" class="divider"></li>'
+   html +='<li > <a style="color:red" href="#" id="deleteEntry" onclick="deleteEntry(this.id)" data-toggle="modal" data-target="#myModal-sm" title="delete this entry"><i class="far fa-trash-alt"></i>  Delete current item</a></li>'
+
+   html +='</ul>'
+   $("#"+location).html(html)
+ }
+ uniqueIdforparentraw(items)
+ uniqueIdforchangeButton(items)
+ uniqueIdforcopyParentRaw(items)
+}
+
+
+//////////////////////////////////////////
+////////   SUPERUSER FUNCTIONS  /////////
+////////////////////////////////////////
+var user = JSON.parse(JSON.stringify('{{user.permission}}'))
+if (user=='superadmin') {
+////////////////////////////////////////////////////////////////
+////////   USED TO SET THE DEFAULT FOR THE MENU ITEM  /////////
+//////////////////////////////////////////////////////////////
+function clicker(ids){
+  console.log('Entering here',ids)
+  inject={}
+  switch (true) {
+    case (ids == 'groupTemplate'):
+    inject = groupitemTemplate
+    break;
+    case (ids == 'databaseTempalte'):
+    inject = databaseitemTemplate
+    break;
+    case (ids == 'assemblyTemplate'):
+    inject = assemblyitemTemplate
+    break;
+    case (ids == 'formTemplate'):
+    inject = formitemTemplate
+    break;
+    case (ids == 'producttemplate'):
+    inject = productitemTemplate
+    break;
+
+
+
+  }
+  if (assemblyQuery[0].items.elementID) {
+    deployparentrawForm(assemblyQuery[0].items.elementID)
+  } else {
+    deployparentrawForm(assemblyQuery[0].items._id)
+  }
+  
+}
+}
+
+///////////////////////////////////////
+////////   DELETE MENU ITEM  /////////
+/////////////////////////////////////
+function deleteEntry(ids){
+  if (ids == 'deleteEntry') {
+  } else {
+    ids = ids.replace('_del', '');  
+    assemblyQuery[0].items.elementID = ids
+  }
+
+
+
+  //console.log('THis is perhaps loadings')
+  var html='<h3>Are you sure you want to delete this?</h3>'
+  jQuery('#modal-heading-sm').html(html)
+  html='<p>Please type in the DELETE to confirm.<p>'
+  html+='<input type="text" class="form-control" id="deleteInput" placeholder="">'
+  html+='<p></p><a   id="deleteButton" onclick="deleteEntrys()" class="btn btn-danger" disabled>Delete this Entry</a> '
+  jQuery('#formAreaModal-sm').html(html)
+  $('#deleteInput').on('keyup',function(){
+    if ($('#deleteInput').val() == "DELETE") {
+      $("#deleteButton").removeAttr("disabled"); 
+    } else {
+      $("#deleteButton").attr('disabled','disabled');
+    }
+  })
+}
+
+
+/////////////////////////////
+//////  DELETE AJAX  ///////
+///////////////////////////
+function deleteEntrys(_id){
+  console.log('---------------------------------------------------------------')
+  console.log('---------------------------------------------------------------')
+  console.log('---------------------------------------------------------------')
+  console.log('---------------------------------------------------------------')
+  console.log('---------------------------------------------------------------')
+  console.log('---------------------------------------------------------------')
+  console.log('---------------------------------------------------------------')
+  console.log('---------------------------------------------------------------')
+  console.log('---------------------------------------------------------------')
+  console.log(assemblyQuery[0].items.elementID)
+  console.log(assemblyQuery[0].route)
+  jQuery.ajax({
+    'url': '/'+assemblyQuery[0].route+'/deleteentry?idItem='+assemblyQuery[0].items.elementID,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      window.location.reload()
+    }
+  });
+}
+
+/////////////////////////////
+//////  DELETE AJAX  ///////
+///////////////////////////
+function deleteEntrysPerm(_id){
+  jQuery.ajax({
+    'url': '/'+route+'/deleteentryperm?idItem='+_id,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      window.location.reload()
+    }
+  });
+}
+
+//////////////////////////////////////////
+////        CREATE UNIQUE ID         //// 
+////////////////////////////////////////
+function create_uid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+  s4() + '-' + s4() + s4() + s4();
+}
+
+function headingsAndStuff(items){
+/////////////////////////////////////
+////     HEADINGS AND STUFF     //// 
+///////////////////////////////////
+$('#name').html('<h1 >'+items.name +'</h1><p>'+items.detail+'</p>')
+}
+
+///////////////////////////////////
+////////  LOADING OF TOOLS ///////
+/////////////////////////////////
+function templateLoad(template,location,route){
+//Ensure that the first load error is covered , also any other errors.
+if(template){
+  jQuery.ajax({
+   'async': true,
+   'global': false,
+   'url': '/'+assemblyQuery[0].route+'/templatename?template='+template,
+   'success': function (dataSchemaObject) {
+     jQuery('#'+location).append(dataSchemaObject)
+   }
+ });
+}
+}
+
+//////////////////////////////////////////
+//////  CAPATILIZE FIRST LETTER    //////
+////////////////////////////////////////
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
+/////////////////////////////////////////////
+function uniqueIdforcformButton(formids,locations){
+  jQuery('#'+locations).attr("id",formids);
+}
+
+
+
+/////////////////////////////////
+////////    UNIQUE ID  /////////
+///////////////////////////////
+function uniqueIdforparentraw(items){
+  if (items.elementID) {
+    $('#parentraw').attr('id', items.elementID+'_parentraw');
+  } else {
+    $('#parentraw').attr('id', items._id+'_parentraw');
+  }
+}
+
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
+/////////////////////////////////////////////
+function uniqueIdforchangeButton(items){
+  $('#changeButtonComp').attr('id', items.childType);
+}
+
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
+/////////////////////////////////////////////
+function uniqueIdforcopyParentRaw(items){
+  if (items.elementID) {
+    $('#copyParentRaw').attr('id', items.elementID+'_copy');
+  } else {
+    $('#copyParentRaw').attr('id', items._id+'_copy');
+  }
+}
+
+/////////////////////////////////////////
+//////  DATACONVERT FOR JSTREE    //////
+/////////////////////////////////////// 
+function dataJStreeConvert (databaseMenu){
+  var newData = []
+  for (var i = 0; i < databaseMenu.length; i++) {
+    var temp = {}
+    for (key in databaseMenu[i]){
+      switch (true){
+        case (key == 'id' || key =='elementID'):
+        temp['id'] =  databaseMenu[i][key]
+        if (databaseMenu[i][key]=='5848fc75b622bb53eca6ffd7') {
+          state = {
+            "opened" : true,  // is the node open
+          }
+          temp['state'] = state
+        }
+        break;        
+        case (key == 'parent'):
+        temp['parent'] = databaseMenu[i][key]
+        break;
+        case (key == 'description'):
+        temp['text'] = databaseMenu[i][key]
+        break;
+        case (key == 'text'):
+        temp['text'] = databaseMenu[i][key]
+        break;          
+        case (key == 'icon'):
+        temp['icon'] = databaseMenu[i][key]
+        break;
+        case (key == 'template' || key == 'a_attr'):
+        aclass = { 
+          "data-template" : databaseMenu[i][key],
+        }
+        temp['a_attr'] =  aclass
+        break;
+        case (key == 'field'):
+        aclass = { 
+          "data-field" : databaseMenu[i][key],
+        }
+        temp['a_attr'] =  aclass
+        break;          
+      }
+    }
+    newData.push(temp)
+  }
+//error trap the menu.
+for (var i = 0; i < newData.length; i++) {
+  if (!newData[i].parent) {
+    newData[i].parent = '#'
+  }
+}
+sortResults(newData,'text', true);
+return newData
+}
+
+function windowSizing (){
+////////////////////////////////////////
+///////  RESIZE THE BROWSING AREA  ////
+//////////////////////////////////////
+$('#plusWindow').click(function(){
+  console.log('here')
+  $('#navMenuPanel').css("display","none")
+  $('#browserArea').removeClass("col-md-8")
+  $('#browserArea').addClass("col-md-12")
+  try {
+    $('#container').highcharts().setSize($('#container').width(),$('#container').height());
+  } catch(err){
+    $('#container').html('<p class="alert alert-danger">No graph settings selected.</p>')
+  }    
+  try {
+   $(window).trigger('resize');
+   $('#container').highcharts().setSize($('#container').width(),$('#container').height());
+ } catch(err){
+ // console.log('Try catch err on the the resize function')
+}
+})
+
+////////////////////////////////////////
+///////  RESIZE THE BROWSING AREA  ////
+//////////////////////////////////////
+$('#minusWindow').click(function(){
+  $('#navMenuPanel').css("display","")
+  $('#browserArea').removeClass("col-md-12")
+  $('#browserArea').addClass("col-md-8")
+  try {
+    $(window).trigger('resize');
+    $('#container').highcharts().setSize($('#container').width(),$('#container').height());
+  } catch(err){
+   // console.log('Try catch err on the the resize function')
+ }   
+})
+}
+
+////////////////////////////////////////////
+///////  CHECK PAGE FOR DUPLICATE IDS  ////
+//////////////////////////////////////////
+function idpageduplicates(){
+  $('[id]').each(function(){
+    var ids = $('[id="'+this.id+'"]');
+    if(ids.length>1 && ids[0]==this){
+     $( this ).css( "color", "red" )
+     $( this ).css( "background", "green" )
+     console.warn('Multiple IDs #'+this.id);
+   }
+ }); 
+}
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK OPEN FORM  /////////
+////////////////////////////////////////////
+function deployFormComponent(formToUse,locations){
+  console.log(formToUse,locations)
+if ( formToUse == "58aa74140b9d3241280ecf17") {//need routing for plain forms and component forms ; if plain then use , if component then component.
+  var headings = ["description","detail","icon","headings"]//This is hard wired , and likely to cause issues.
+  var entry =''
+  //console.log("deployFormComponent" , formToUse,locations)
+  loadformModal(formToUse,'','use',assemblyQuery[0].items.elementID,headings,entry,locations)
+} else {
+  var headings = ["description","detail","icon","headings"]//This is hard wired , and likely to cause issues.
+  var entry =''
+  //console.log("deployFormComponent" , formToUse,locations)
+  loadformModal(formToUse,'','component',assemblyQuery[0].items.elementID,headings,entry,locations)
+}
+}
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK OPEN FORM  /////////
+////////////////////////////////////////////
+function deployFormIssues(ids){
+  var headings = ["description","detail","icon","headings"]//This is hard wired , and likely to cause issues.
+  var entry =''
+  var locations = 'formAreaModal'
+  parent = $('#'+ids+'').data('parent')
+  idform = $('#'+ids+'').data('idform')
+  console.log(parent , idform)
+  //console.log("deployFormComponent" , formToUse,locations)
+  loadformModal(idform,'','component',parent,headings,entry,locations,'issues')
+
+  html="<div class='col-md-12'>"
+
+  html+='<div class="media">'
+  html+=' <div class="media-left media-middle">'
+  html+='    <a href="/users/{{user.username}}">'
+  {{#if user.image}}
+  html+=' <img onerror="user.src={{user.gravatar}}" src="{{user.image}}" class="navbar-avatar-pic" style="width: 65px;border-radius: 5px;border: 1px;border-color: #d8d8d8;border-style: solid;">'
+  {{else}}
+  html+='<img src="{{user.gravatar}}" class="navbar-avatar-pic" style="width: 65px;border-radius: 5px;border: 1px;border-color: #d8d8d8;border-style: solid;">'
+  {{/if}}
+  html+='</a>'
+
+  html+=' </div>'
+  html+='  <div class="media-body">'
+  
+  
+  
+  html+=' <h1>New issue</h1><p>Leave your comment on this item.</p> '
+  html+='</div>'
+  html+='</div>'
+
+  html+='</div>'
+
+
+  $('#pickerArea').html(html)
+}
+
+//////////////////////////
+//////  MODIFY     //////
+////////////////////////
+function modifyItemComp(ids){
+
+  ids = ids.replace('_read', '');
+  childType = $('#'+ids+'').data('childtype')
+  routing = $('#'+ids+'').data('issues')
+  locations =$('#'+ids+'').data('locations')
+  
+  ////////////////////////////////////////////////////////////////////
+  //Strucuture of the query
+  //formdata,idItem,raw,parentid,headings,entry
+  //formdata:
+  //Which form to use.
+  //idItem:
+  //Which item to edit.
+  //Use the raw function for defining how to edit the data :
+  //raw:['use' , 'self' , 'edit' , 'component']
+  //parentid:
+  //Inject a parent id.
+  //Headings
+  //used for limiting the information shown on each form
+  //Inject a default entry.
+  //entry is used to manually add additional information to the form.
+  //Find and inject the group menu id number.
+  //INSTRUCTIONS
+  //////////////////////////////////////////////////////////////////// 
+  if ( childType == "58aa74140b9d3241280ecf17") {
+//need routing for plain forms and component forms ; if plain then use , if component then component.
+  //Used for the check self when modifiing.
+  if (!childType) {
+    loadformModal(ids,ids,'self',ids)
+  } else {
+  //INSTRUCTIONS
+  if (assemblyQuery[0].items.elementID) {
+    var parentIdTemp = assemblyQuery[0].items.elementID
+  } else {
+    var parentIdTemp = assemblyQuery[0].items._id
+  }
+  var headings = ["description","parent"]
+  if (true) {}
+    var entry = {
+      elementID : ids
+    } 
+    //console.log('Tracing here',childType,id,'componentedit',parentIdTemp,headings, entry,'formAreaModals')
+  //The id of the emement needs to be injected into the form , as it does not have that data.
+  $('#tablist a:last').tab('show')
+  loadformModal(childType,ids,'self',parentIdTemp,headings, entry,'formAreaModals')
+}
+
+
+
+} else {
+  //Used for the check self when modifiing.
+  if (!childType) {
+    loadformModal(ids,ids,'self',ids)
+  } else {
+    if (assemblyQuery[0].items.elementID) {
+      var parentIdTemp = assemblyQuery[0].items.elementID
+    } else {
+      var parentIdTemp = assemblyQuery[0].items._id
+    }
+    var headings = ["description","parent"]
+    var entry = {
+      elementID : ids
+    } 
+    //console.log('Tracing here',childType,id,'componentedit',parentIdTemp,headings, entry,'formAreaModals')
+  //The id of the emement needs to be injected into the form , as it does not have that data.
+  $('#tablist a:last').tab('show')
+  loadformModal(childType,ids,'componentedit',parentIdTemp,headings, entry,'formAreaModals' )
+}
+}
+}
+
+//////////////////////////
+//////  MODIFY     //////
+////////////////////////
+function EditWithraw(id){
+  console.log('Working')
+  id = id.replace('_raw', '');
+  childType = $('#'+id+'').data('childtype')
+  var headings = ["description","parent"]
+  //Used for the check self when modifiing.
+  if (!childType) {
+   // loadformModal(parentid,parentid,'raw',parentid,'','','formAreaModal')
+   console.log(id,id,'raw',id,'','','formAreaModal')
+   loadformModal(id,id,'raw',id,'','','formAreaModal')
+ } else {
+  console.log(childType,id,'raw',id,'','','formAreaModal')
+  loadformModal(childType,id,'raw',id,'','','formAreaModal')
+}
+}
+
+/////////////////////////////////////////////////
+//////  GET FULL ITEM HISTORY FROM SERVER //////
+///////////////////////////////////////////////
+function loadHistory(idItem){
+  idItem = idItem.replace('_hist', '');
+  
+  jQuery.ajax({
+    'async': true,
+    'global': false,
+    'url': '/' + assemblyQuery[0].route + '/gethistory?idItem='+idItem,
+    'success': function (dataSchemaObject) {
+      var dataset = JSON.parse(dataSchemaObject)
+      var html=""
+      $('#'+idItem+"_histload").html('')
+      for (var i = 0; i < dataset.length; i++) {
+        html+='<div class="row">'
+        html+='<div class="col-md-6">'
+        html+='<pre id="'+create_uid()+'" style="max-width:430px;max-height:150px" onclick="selected(this.id)">'
+        html+=JSON.stringify(dataset[i],null,' ')
+        html+='</pre> <p></p>'
+        html+='</div>'
+        html+='<div class="col-md-6">'
+        html+='<div class="profile_pic_small" data-userid="'+dataset[i].userID+'" data-loaded="false"></div>'
+        html+='</div>'
+        html+='<div class="col-md-6">'
+        html+='<div class="btn-group" role="group" aria-label="...">'
+        html+='<a class="btn btn-danger"><i class="fas fa-sync"></i> Restore this revision</a>'
+        html+='</div>'
+        html+='</div>'
+        html+='</div>'
+        html+='<p></p>'
+      }
+      $('#'+idItem+"_histload").html(html)
+      profilePics()
+    }
+  });
+}
+
+function selected(ids){
+ console.log("working")
+}
+</script>

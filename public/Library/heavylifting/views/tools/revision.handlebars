@@ -1,0 +1,38 @@
+ 
+  <label class="checkbox-inline">
+    <input type="checkbox" data-size="mini" id="toggle-one" title="Revision History"  data-toggle="toggle" data-on='<span class="glyphicon glyphicon-time" aria-hidden="true"></span> ' data-off='<span class="glyphicon glyphicon-time" aria-hidden="true"></span>'  data-onstyle="default">
+  </label>
+ 
+
+<script type="text/javascript">
+
+console.log( '-------------------------' )
+console.log( 'revision loading' )
+console.log( '+++++++++++++++++++++++++' )
+
+
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT ITEMS    //// 
+/////////////////////////////////////////////
+function uniqueIdfortoggleButton(){
+jQuery('#formDelivery').attr("id",formids);
+jQuery('#toggle-one').attr("id",formids+'_toggle');
+//////////////////////////////////////////
+////        INIT TOGGLE BUTTON       //// 
+////////////////////////////////////////
+$('#'+formids+'_toggle').bootstrapToggle();
+/////////////////////////////////////////////////////////////////////////////
+////////  EVENT LISTNER ON THE TOOGGLE FOR REMOVING THE COMPONETNS   ///////
+///////////////////////////////////////////////////////////////////////////
+$('#'+formids+'_toggle').change(function() {
+  //This function is defined in the component navigation template.
+  getCollectionData(objectType,$(this).prop('checked'))
+})
+}
+
+$('document').ready(function(){
+	uniqueIdfortoggleButton()	
+})
+
+ 
+</script>

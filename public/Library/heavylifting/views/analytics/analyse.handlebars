@@ -1,0 +1,728 @@
+<!--                                                                                                             -->
+<!--             Revision History                                                                                -->
+<!--                1. 20160411 : Added the averaging function                                                   -->
+<!--                2. 20160614 : Added to the shiftbulk monitoring page.                                        -->
+<!--                3. 20160615 : Modified average recording function JSON of datafile.                          -->
+<!--                3. 20160615 : all sample files are required to be in the theme directory for memory reasons. -->
+<!--                4. 20160615 : minor modifcation to instructions area about save directory.                   -->
+<!--                5. 20171105 : Added the analyse csv processor to the Entanglement framework.                 -->
+<h1>CSV processing and uploader</h1>
+<p>CSV files are streamed into memory, processed against preset parameters and summarized as a JSON file. This JSON is uploaded into the MongodB server for analysis.</p>
+
+
+        {{#if user}}
+  
+        <style type="text/css">
+          .day .purple-event : {
+            background: antiquewhite;
+          }
+        </style>
+
+
+<div class="row">
+  <div class="col-md-12"  >
+    <div class="alert alert-info" role="alert" >     
+      <h3>Instructions</h3>       
+      <li>Select the files you would like to process.</li>
+      <li>Once file details are populated, click on the get statistics button to run file processing.</li>
+      <li>When complete browse the data plot folder to view various equipment behaviours.</li>
+    </div>
+  </div>
+  <div class="col-md-6" >
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <h3>1. Select Files</h3>
+        <p>Find the CSV files on your local drive. These will be loaded into memory for processing. Processing can only be done with files on the server side (Cross-origin browser).</p>
+        <!-- File Button --> 
+        <div class="form-group" style="text-align:center;padding-top:25px">
+          <form action="demo_form.asp">
+            <input type="file" name="img" multiple id="multiSelect">
+          </form>
+        </div></div>
+      </div>
+    </div>
+  <div class="col-md-6">
+   <div style="text-align:center" ><div id="my-calendars"></div></div>
+ </div>
+  </div>
+</div>
+
+<p></p>
+<div class="row">
+  <div class="col-md-12">
+      <div class="panel panel-default"  >
+        <div class="panel-body">
+         <h3>2. Start Processing</h3>
+         <p>Click on the get statistics button to stream CSV files into memory, perform data analytics and upload file summaries onto the server.</p>
+         <!-- Button -->
+         <p></p>
+
+         <div style="text-align:center">
+          <button id="singlebutton" name="singlebutton" class="btn btn-lg btn-primary" disabled="disabled">Get Statistics</button>
+        </div>
+      </div>
+    </div>
+ </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <h3>Daily Tonnes Moved</h3>
+    <table class="table table-bordered" id="average">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>tag</th>
+          <th>value</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-6">
+    <h3>File Header Loading Area</h3>
+    <div style="overflow:auto">
+      <table  class="table table-bordered" style="font-size:11px;padding:2px 2px 2px 2px;">
+        <tr>
+          <th>Date</th>
+          <th>LOADED HEADER</th>
+          <th>LOADED STATS</th>
+        </tr>
+        <tbody id="datedetail">
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <h3>JSON Extract</h3>
+    <div><pre id="SummaryJSON" style="height:350px"></pre></div>
+  </div>
+  <div class="col-md-6" style="overflow:auto;max-height:450px">
+    <h3>Stats Loading</h3>
+    <table class="table table-bordered" style="font-size:11px">
+      <tr>
+        <th>Date</th>
+        <th>Tag</th> 
+        <th>Count</th>
+        <th>Average</th>         
+        <th>Max</th> 
+        <th>Min</th> 
+        <th>Sum (k)</th> 
+        <th>Greater Than</th> 
+        <th>Less Than</th> 
+        <th>Between</th> 
+        <th>Not Between</th> 
+      </tr>
+      <tbody id="statSummary">
+      </tbody>
+    </table>
+    <div id="placeholder"></div>
+  </div>
+</div>
+
+<pre id="test"></pre>
+
+<script>
+/////////////////////////////
+////     DEBUG AREA     //// 
+///////////////////////////
+console.log( 'Template Loading : plugins/entanglement/views/analytics/analyse' )
+console.log( '----------------------------------------------------------------')
+var eventData=([])
+var temp=[];
+var CSVstring = [];
+var stats = [];
+counter = 0;
+var fileNumberCounter;
+var fileObjects =[];
+var file;
+var averageArray = [];
+//set operational directory for processing
+var dir = "/samples/";
+var fileextension = ".csv";
+//used for above 100 TPH calculation of average.
+var averageCounttph1=0;
+var averageCounttph1=0;
+var calendarData =[]
+ 
+
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+$('document').ready(function(){
+ getScada()
+})
+
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+function getScada(){
+  jQuery.ajax({
+   'async': true,
+   'global': false,
+   'url': '/entanglement/getscada',
+   'success': function (dataSchemaObject) {
+     var scadadata = JSON.parse(dataSchemaObject)
+     for (var i = 0; i < scadadata.length; i++) {
+      for (var j = 0; j < scadadata[i].entry.length; j++) {
+        var temp = scadadata[i].entry[j]
+        var name = temp.date
+        var b = "-";
+        var position = 4;
+        var output = [name.slice(0, position), b, name.slice(position)].join('');
+        var b = "-";
+        var position = 7;
+        var output = [output.slice(0, position), b, output.slice(position)].join('');
+        calendarData.push({
+          "date":output,
+          "badge":true,
+          "title":"Tonight",
+          "body":"<p class=\"lead\">Party<\/p><p>Like it's 1999.<\/p>",
+          "footer":"At Paisley Park",
+          "classname":"purple-event",
+          "entry": scadadata[i].entry[j]
+        })
+      }
+    }
+    $("#my-calendars").zabuto_calendar({
+      data:   calendarData,
+      cell_border: true,
+      today: true,
+      show_previous: 12,
+      show_next: 12,
+      legend: [
+        {type: "text", label: "Data on server", badge: "00"}
+      ],
+    });
+  }
+});
+}
+
+
+/////////////////////
+/// ADD CALENDER ///
+///////////////////
+function loadCalendar(calendarData) {
+  //console.log(eventData)
+  $("#my-calendars").zabuto_calendar({
+    data:   calendarData,
+    cell_border: true,
+    today: true,
+    show_previous: 12,
+    show_next: 12,
+  });
+}
+
+
+//////////////////////
+/// EVENT LISTNER ///
+////////////////////
+  var input_file = $("#multiSelect");
+  input_file.on("change", function () {
+   var files = input_file.prop("files")
+   var names = $.map(files, function (val) { return val.name; });
+   $.each(names, function (i, name) {
+    var name = name.replace(".csv", "");
+
+var b = "-";
+var position = 4;
+var output = [name.slice(0, position), b, name.slice(position)].join('');
+var b = "-";
+var position = 7;
+var output = [output.slice(0, position), b, output.slice(position)].join('');
+  calendarData.push({
+    "date":output,
+    "badge":true,
+    "title":"Tonight",
+    "body":"<p class=\"lead\">Party<\/p><p>Like it's 1999.<\/p>",
+    "footer":"At Paisley Park",
+    "classname":"purple-event"
+  })
+
+ 
+    eventData.push(
+    {
+      "date":name,
+      "badge":true,
+      "title":"Click to Show Data",
+      "body":null,
+      "footer":null,
+      "classname":null,
+      "loaded":false,
+      "statsloaded":false,
+      "averageTPHboom" : 0,
+      "averageTPHscale" : 0,
+      "coloums":{}
+    }
+    )
+  });
+  loadCalendar(calendarData)
+   printTable()
+   parseAll();
+ });
+
+
+////////////////////////////
+// START PROCESSING STATS //
+////////////////////////////
+$( "#singlebutton" ).click(function() {
+  console.log("Initialize csv_processing.mst line 118")
+  var inp = document.getElementById('multiSelect');
+  //Add True badge for selected elements.
+  for (var i = 0; i < inp.files.length; ++i) {
+    var file = inp.files.item(i).name;
+    var fileObject = inp.files.item(i);
+    var file = file.replace(".csv", "");
+    for (var j = 0; j < eventData.length; j++) {
+      if (eventData[j]["date"]==file) {
+        eventData[j]["badge"]=true;
+      };
+    };
+  }
+  var eventDataNew=[]
+//This is not completly nescassary.
+for (var j = 0; j < eventData.length; j++) {
+  if (eventData[j]["badge"]==true) {
+   eventDataNew.push(eventData[j])
+ };
+};
+eventData=eventDataNew
+for (var i = 0; i < inp.files.length; ++i) {
+  var file = inp.files.item(i).name;
+  fileObjects.push(inp.files.item(i));
+}
+//first run.
+counter = 0;
+parseQue();
+});
+
+
+//////////////////////////////////
+// PARSE FUNCTION QUE FUNCTION //
+////////////////////////////////
+function parseQue(){
+//require string name of file
+//requrie file object array
+try {
+  names = fileObjects[counter].name;
+  names = names.replace(".csv", "");
+  parserStats(names,fileObjects[counter])
+}
+catch (e) {
+   // statements to handle any exceptions
+   console.log("error here or complete",e)
+for (var i = 0; i < eventData.length; i++) {
+  for (key in eventData[i].coloums) {
+    var keys = key.replace('.','-')
+    eventData[i].coloums[keys] = eventData[i].coloums[key]
+    delete eventData[i].coloums[key]
+  }
+} 
+console.log(eventData)
+  var primer ={}
+  //primer.entry = {"eventData"}
+  primer.entry = JSON.parse(JSON.stringify(eventData)) 
+  primer.elementID = ''
+  primer.revision = 'created'
+  primer.active = "true"
+  //Jquery send to server
+  console.log('working',primer)
+  demodata(primer)
+ }
+}
+
+///////////////////////////////
+// PARSE FUNCTION FOR STATS //
+/////////////////////////////
+function parserStats(file,fileObjecto){
+  console.log("Start Processing :",file)  
+  var averageCounttph1 = 0;
+  var averageCounttph2 = 0;
+  var start = new Date().getTime();
+  var config = {
+    worker: true,
+  //download:true,
+  header: true,
+  dynamicTyping: true,
+  //preview: 1,
+  fastMode: true,
+  step:function(results){
+    //carry the file variable through to the complete function
+    //console.log("loading her",file,fileObject)
+    //console.log(results.data[0])
+    files=file
+    //run though and find the relevant file to edit
+    for (var i = 0; i < eventData.length; i++) {
+    //check if the file is relevant
+    if (eventData[i]["date"]==file) {
+
+    //run through each key and conduct work.
+    for (var key in results.data[0]) {
+    ///////////////////////////////
+    // THIS IS THE WORKING AREA //
+    /////////////////////////////
+//Define Variables for Simplicity
+actualData = results.data[0][key]
+compressedData = eventData[i]["coloums"][key]
+//Maximum function
+ 
+ 
+if (actualData>compressedData["Max"]) {
+  compressedData["Max"]=actualData
+};
+//Minimum function
+if (actualData<compressedData["Min"]) {
+  compressedData["Min"]=actualData
+};
+//Counting function
+compressedData["Count"]=compressedData["Count"]+1
+ 
+
+
+
+//Sum function , there are major issues with the length of the number string .
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//kolomela requested average for tonnnages oer 100TPH.
+//201600404
+//E790_WE01_WIT01a.STA_Analog
+//E641_CV01_WIT01A.STA_Analog
+
+if (key !== "DateTime") {
+ switch(true){
+  case(key == "E641_CV01_WIT01A.STA_Analog") :
+    //check if it is greater than 100 
+    if (Number(actualData) >100 ) {
+      compressedData["Sum"]=Number(compressedData["Sum"])+Number(actualData) 
+      averageCounttph1 += 1;
+       // console.log('1 : ',averageCounttph1)
+     }
+     
+     break;
+     case(key == "E790_WE01_WIT01a.STA_Analog") :
+    //check if it is greater than 100 
+    if (Number(actualData) >100 ) {
+      compressedData["Sum"]=Number(compressedData["Sum"])+Number(actualData) 
+      averageCounttph2 += 1;
+       // console.log('2 : ',averageCounttph2)
+     }
+     break;
+     default:
+     compressedData["Sum"]=Number(compressedData["Sum"])+Number(actualData) 
+   }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //compressedData["Sum"]=parseFloat(parseFloat(compressedData["Sum"]).toFixed(2))+parseFloat(parseFloat(actualData).toFixed(2))
+  //console.log(compressedData["Sum"])
+};
+
+//greaterThan function
+//run through the datasetst arry to find the relevant limit
+
+for (var j = 0; j < dataStats.length; j++) {  
+//check if the key and limit are on the same tag
+if (key==dataStats[j]["Tag"]) {
+           //conduct the greater than operation
+           if (actualData>dataStats[j]["greaterThan"]) {
+            compressedData["greaterThan"]=compressedData["greaterThan"]+1
+          };
+          //conduct the less than operation
+          if (actualData<dataStats[j]["lessThan"]) {
+            compressedData["lessThan"]=compressedData["lessThan"]+1
+          };
+          //conduct the between operation
+          if (actualData >= dataStats[j]["betweenlower"] && actualData <= dataStats[j]["betweenHigher"]){
+            compressedData["between"]=compressedData["between"]+1
+          }
+          //conduct the not between operation
+          if (actualData >= dataStats[j]["notBetweenlower"] && actualData <= dataStats[j]["notBetweenHigher"]){
+
+          } else {
+            compressedData["notBetween"]=compressedData["notBetween"]+1
+          }
+        };
+      };
+    ///////////////////////////////
+    // THIS IS THE WORKING AREA //
+    /////////////////////////////
+  }
+};
+};
+
+},
+complete: function(file) {
+  console.log('Papaparse Que item complete',file)
+    /////////////////////
+    // Time Counter    //
+    /////////////////////
+    var end = new Date().getTime();
+    var time = end - start;
+    //run through the event data array
+
+    console.log(eventData)
+    for (var i = 0; i < eventData.length; i++) {
+      //console.log(eventData[i])
+      //if the file name matches the date
+      //console.log(i)
+      if (eventData[i]["date"]==files) {
+
+        //then loop through the coloums
+        for (var key in eventData[i]["coloums"]) {
+            //console.log(key)
+
+            //console.log('Step 1 of compiling data')
+
+    ////////////////////////////////////////
+    // AVERAGEING AREA BULK AVERAGE DATA //
+    //////////////////////////////////////
+    switch(true){
+      case(key == "E641_CV01_WIT01A.STA_Analog") :
+        //console.log(eventData[i]["coloums"][key]["Sum"]/averageCounttph1) 
+        averageArray.push([key,eventData[i]["date"],(eventData[i]["coloums"][key]["Sum"]/averageCounttph1).toFixed(2)])
+        // $("#average").append('<tr><td>',eventData[i]["date"],'</td><td>',(eventData[i]["coloums"][key]["Sum"]/averageCounttph1).toFixed(2)+'</td><td></td></tr>')
+      //add to event data array
+      eventData[i]["averageTPHscale"]=(eventData[i]["coloums"][key]["Sum"]/averageCounttph1).toFixed(2)
+      break;
+      case(key == "E790_WE01_WIT01a.STA_Analog") :
+        //console.log(eventData[i]["coloums"][key]["Sum"]/averageCounttph2) 
+        averageArray.push([key,eventData[i]["date"],(eventData[i]["coloums"][key]["Sum"]/averageCounttph2).toFixed(2)])
+        //  $("#average").append('<tr><td></td><td>',(eventData[i]["coloums"][key]["Sum"]/averageCounttph2).toFixed(2)+'</td></tr>')
+      //add to event data array
+      eventData[i]["averageTPHboom"]=(eventData[i]["coloums"][key]["Sum"]/averageCounttph2).toFixed(2)
+      break;
+    }
+    //console.log('Step 2 of compiling data')                           
+
+    //////////////////////////////////
+    //        Complile data        //
+    ////////////////////////////////
+
+    eventData[i]["coloums"][key] = {
+      "greaterThan" : parseFloat(eventData[i]["coloums"][key]["greaterThan"]),
+      "lessThan" : parseFloat(eventData[i]["coloums"][key]["lessThan"]),
+      "between" : parseFloat(eventData[i]["coloums"][key]["between"]),
+      "notBetween" : parseFloat(eventData[i]["coloums"][key]["notBetween"]),
+      "Min" : parseFloat(eventData[i]["coloums"][key]["Min"]),
+      "Max" : parseFloat(eventData[i]["coloums"][key]["Max"]),
+      "Average" : parseFloat(eventData[i]["coloums"][key]["Sum"])/parseFloat(eventData[i]["coloums"][key]["Count"]),
+      "Count" : parseFloat(eventData[i]["coloums"][key]["Count"]),
+      "Sum" : parseFloat(eventData[i]["coloums"][key]["Sum"]),
+    }
+    
+    //console.log('Step 3 of compiling data')
+
+    /////////////////////////////////
+    // Populate the Stats Table    //
+    ////////////////////////////////
+    $( "#statSummary" ).append(
+      "<tr><td>"+eventData[i]["date"]
+      +"</td><td>"
+      +[key]
+      +"</td><td>"
+      +(eventData[i]["coloums"][key]["Count"]).toFixed(2)
+      +"</td><td>"
+      +(eventData[i]["coloums"][key]["Average"])
+      +"</td><td>"
+      +(eventData[i]["coloums"][key]["Max"]).toFixed(2)
+      +"</td><td>"
+      +(eventData[i]["coloums"][key]["Min"]).toFixed(2)
+      +"</td><td>"
+      +(eventData[i]["coloums"][key]["Sum"]).toFixed(2)
+      +"</td><td>"
+      +(eventData[i]["coloums"][key]["greaterThan"]).toFixed(4)
+      +"</td><td>"
+      +(eventData[i]["coloums"][key]["lessThan"]).toFixed(4)
+      +"</td><td>"
+      +(eventData[i]["coloums"][key]["between"]).toFixed(4)
+      +"</td><td>"
+      +(eventData[i]["coloums"][key]["notBetween"]).toFixed(4)
+      +"</td>"
+      +"</tr>"
+      )
+    //console.log(eventData[i]["coloums"][key])
+  }
+  console.log("Finished Loading :",files)
+        //write the eventData variable to JSON file.
+        eventData[i]["statsloaded"]=true
+        printTable()
+        //This is the table printing area of the averages ( over 100 TPH )
+        $('#average').html('')
+        for (var i = 0; i < averageArray.length; i++) {
+          html=''
+          html+="<tr><td>"
+          html+= averageArray[i][0]
+          html+="</td><td>"
+          html+= averageArray[i][1]
+          html+="</td><td>"
+
+          //for zero there is an undefined printed.
+          if (averageArray[i][2] == "NaN" ) {
+            html+= 0
+          } else {
+            html+= averageArray[i][2]
+          }
+          html+="</td></tr>"
+          $('#average').append(html)
+        }
+        console.log(averageArray)
+        //increment counter.
+        counter = counter + 1; 
+        parseQue()
+      };
+    };
+  }
+}
+Papa.parse(fileObjecto,config)
+}
+
+/////////////////////////////////////////////////
+// PARSE FUNCTION TO POULATE JSON WITH HEADERS //
+/////////////////////////////////////////////////
+function parser(file){
+ //console.log("4.parser(",file,")")
+ var start = new Date().getTime();
+ var config = {
+    //ther is some kind of issue here with the worker creation , another unkown bug...
+    //looks like worker requires local files , included in this is that the memeory is required to get this to work.
+    worker: true,
+    download:true,
+    header: true,
+    dynamicTyping: true,
+    preview: 1,
+    fastMode: true,
+    step:function(results){
+      for (var i = 0; i < eventData.length; i++) {
+        if (eventData[i]["date"]==file) {
+          eventData[i]["loaded"]=true
+          for (var key in results.data[0]) {
+            eventData[i]["coloums"][key] = {
+              "greaterThan" : 0,
+              "lessThan" : 0,
+              "between" : 0,
+              "notBetween" : 0,
+              "Min" : 10000000,
+              "Max" : -10000000,
+              "Average" : 0,
+              "Count" : 0,
+              "Sum" : 0,
+            }
+          }
+          printTable()
+        };
+      };
+    },
+    complete: function(file) {
+    /////////////////////
+    // Time Counter    //
+    /////////////////////
+    var end = new Date().getTime();
+    var time = end - start;
+  }
+}
+//console.log(dir+file+".csv starting Here")
+//console.log("repeat error location , accociated with the replace function below. To fix change the replace directory name .")
+//console.log("http://localhost/github/Heavy-Lifting-Version-1/"+dir+file+".csv")
+Papa.parse(dir+file+".csv",config)
+
+}
+
+////////////////////////////////////////////
+// CHECK THAT ALL SCADA FILES ARE SIMILAR //
+////////////////////////////////////////////
+function parseAll(){
+  console.log("3.parseAll()")
+  for (var i = 0; i < eventData.length; i++) {
+    parser(eventData[i]["date"])
+  };
+}
+
+
+////////////////////////////////
+// POPULATE THE TABLE TO VIEW //
+///////////////////////////////
+function printTable(){
+  console.log("2.printTable()")
+  var firstCounter = 0
+  arrayLength= eventData.length
+  $( "#datedetail" ).html("")
+  for (var i = 0; i < eventData.length; i++) {
+    firstCounter=firstCounter+1;
+    if (eventData[i]["loaded"]==true) {
+      if (eventData[i]["statsloaded"]==true) {
+        $( "#datedetail" ).append("<tr><td>"+eventData[i]["date"]+"</td><td style='background:#337ab7;color:white'>"+eventData[i]["loaded"]+"</td><td style='background:#337ab7;color:white'>"+eventData[i]["statsloaded"]+"</td></tr>")  
+      } else {
+        $( "#datedetail" ).append("<tr><td>"+eventData[i]["date"]+"</td><td style='background:#337ab7;color:white'>"+eventData[i]["loaded"]+"</td><td>"+eventData[i]["statsloaded"]+"</td></tr>")  
+      };
+    };
+    if (eventData[i]["loaded"]==false) {
+      $( "#datedetail" ).append("<tr><td>"+eventData[i]["date"]+"</td><td>"+eventData[i]["loaded"]+"</td><td>"+eventData[i]["statsloaded"]+"</td></tr>")     
+    }
+  };
+  if (firstCounter==arrayLength) {
+    $('#singlebutton').prop('disabled', false);
+    $('#JSONDISK').prop('disabled', false);
+    $('#JSONDISKwrite').prop('disabled', false);
+    $( "#SummaryJSON" ).html( JSON.stringify(eventData,undefined,3));
+  };
+}
+
+
+$(document).on('click', 'pre', function () {
+
+  if (this.select) {
+    this.select();
+  }
+  else if (document.selection) {
+    var range = document.body.createTextRange();
+    range.moveToElementText(this);
+    range.select();
+  } else if (window.getSelection) {
+    var range = document.createRange();
+    range.selectNode(this);
+    window.getSelection().addRange(range);
+  }
+});
+
+
+dataStats = [{"Tag":"DateTime","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E641_CV01_UAC01.STA_Current","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E641_CV01_WIT01A.STA_Analog","greaterThan":5500,"lessThan":0,"betweenlower":5500,"betweenHigher":10000,"notBetweenlower":5500,"notBetweenHigher":10000},
+{"Tag":"E641_CV01_ZT10.STA_PV","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E641_CV01_ZT10.STA_PV1","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E641_HY01_TT04.STA_Analog","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E641_SR01_PT01.STA_Analog","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E641_SR01_PT02.STA_Analog","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E641_SR01_PT03.STA_Analog","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E641_SR01_PT04.STA_Analog","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E641_SR01_ST01.STA_Analog","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E641_SR01_TT03.STA_Analog","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E641_SR01_UAC01.STA_Current","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E641_SR01_UAC04_07.STA_Current","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E641_SR01_UAC04_07.STA_SpeedFB","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E641_SR01_UAC13_19.STA_Current","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E641_SR01_UAC13_19.STA_SpeedFB","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E641_SR01_ZT04.STA_PV","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E641_SR01_ZT04.STA_PV1","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E790_WE01_WIT01a.STA_Analog","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000},
+{"Tag":"E641_SR01_WT01.STA_Analog","greaterThan":1350,"lessThan":-1750,"betweenlower":0,"betweenHigher":1350,"notBetweenlower":1350,"notBetweenHigher":-1750},
+{"Tag":"E641_SR01_WT02.STA_Analog","greaterThan":1350,"lessThan":-1750,"betweenlower":0,"betweenHigher":1350,"notBetweenlower":1350,"notBetweenHigher":-1750},
+{"Tag":"E641_SR01_ZT11.STA_PV","greaterThan":0,"lessThan":0,"betweenlower":0,"betweenHigher":1000,"notBetweenlower":0,"notBetweenHigher":1000}]
+
+function demodata(primer){
+
+jQuery.ajax({
+  'url': '/entanglement/createscada',
+  'type': 'POST', 
+  'dataType': 'json',
+  'contentType': 'application/json', 
+  'data': JSON.stringify(primer),
+ 
+});  
+}
+
+</script>
+{{else}}
+<a class="btn btn-primary" href="/signin">Signin</a>
+
+  {{/if}}

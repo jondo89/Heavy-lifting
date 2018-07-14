@@ -1,0 +1,241 @@
+<div id="name"></div>
+<div id="more"></div>
+<p></p>
+<div>
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist" id="tablist">
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content" id="tab">
+  </div>
+</div>
+<p></p>
+       {{#if messages.info}}
+        <div role="alert" class="alert alert-info">
+          {{#each messages.info}}
+            <div>{{msg}}</div>
+          {{/each}}
+        </div>
+      {{/if}}
+      {{#if messages.error}}
+        <div role="alert" class="alert alert-danger">
+          {{#each messages.error}}
+            <div>{{msg}}</div>
+          {{/each}}
+        </div>
+      {{/if}}
+
+<script type="text/javascript">
+
+
+ 
+
+ //define the first stage of the query
+assemblyQuery[0].items  =   {{{query}}}
+assemblyQuery[0].query1  =   {{{query1}}}
+assemblyQuery[0].query2  =   {{{query2}}}
+assemblyQuery[0].query3  =   {{{query3}}}
+assemblyQuery[0].query4  =   {{{query4}}}
+assemblyQuery[0].tablelistdata  =   {{{query3}}}
+assemblyQuery[0].jstreetemplate  =   {{{jstreetemplate}}}
+assemblyQuery[0].formids  =   create_uid()
+assemblyQuery[0].templateload  =   {{{templateload}}}
+
+
+
+
+/////////////////////////////////////
+////     HEADINGS AND STUFF     //// 
+///////////////////////////////////
+$('#name').html('<h2 >'+assemblyQuery[0].items.name +'</h2><p>'+assemblyQuery[0].items.detail+'</p>')
+
+assemblyQuery[0].tablelistdata.sort(function(a, b) {
+  if (a.entry.order && b.entry.order) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+  }
+});
+assemblyQuery[0].query3.sort(function(a, b) {
+  if (a.entry.order && b.entry.order) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+  }
+});
+assemblyQuery[0].query2.sort(function(a, b) {
+  if (a.entry.order && b.entry.order) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+  }
+});
+
+/////////////////////////////
+////     DEBUG AREA     //// 
+///////////////////////////
+console.log( 'Render this jstree template : ' , assemblyQuery[0].jstreetemplate )
+console.log( 'assemblyQuery[0].items : ',assemblyQuery[0].items )
+console.log( 'assemblyQuery[0].query1 : ',assemblyQuery[0].query1 )
+console.log( 'assemblyQuery[0].query2 : ',assemblyQuery[0].query2 )
+console.log( 'assemblyQuery[0].query3 : ',assemblyQuery[0].query3 )
+console.log( 'assemblyQuery[0].query4 : ',assemblyQuery[0].query4 )
+console.log( 'assemblyQuery[0].tablelistdata : ',assemblyQuery[0].tablelistdata )
+console.log( 'assemblyQuery[0].formids : ',assemblyQuery[0].formids )
+console.log( 'assemblyQuery[0].templateload : ',assemblyQuery[0].templateload )
+console.log( '-------------------------' )
+
+
+/////////////////////////////
+////     LAYOUT VIEW    //// 
+///////////////////////////
+function layoutView() {
+  if (assemblyQuery[0].items.entry.layout) {
+   for (var i = 0; i < assemblyQuery[0].items.entry.layout.length; i++) {
+    templateLoad(assemblyQuery[0].items.entry.layout[i],'toolbar')
+  }
+}  else {
+  templateLoad(['parentraw'],'toolbar')
+  templateLoad(['add'],'toolbar')
+}
+}
+
+/////////////////////////////
+////     TABS VIEW      //// 
+///////////////////////////
+function tabview() {
+  if (assemblyQuery[0].items.entry.tabs) {
+   for (var i = 0; i < assemblyQuery[0].items.entry.tabs.length; i++) {
+    templateLoad(assemblyQuery[0].items.entry.tabs[i],'tab')
+  }
+}  else {
+  templateLoad(['table'],'tab')
+}
+}
+
+/////////////////////////////
+////    TABLIST         //// 
+///////////////////////////
+function tablist(){
+  var html = ''
+  if (assemblyQuery[0].items.entry.tabs) {
+   for (var i = 0; i < assemblyQuery[0].items.entry.tabs.length; i++) {
+//used for 0 length assemblyQuery[0].items
+if (i==0) {
+
+switch(true){
+  case (assemblyQuery[0].items.entry.tabs=='tablecomponent'):
+   html +='<li role="presentation" class="active"><a href="#'+assemblyQuery[0].items.entry.tabs[i]+'" aria-controls="'+assemblyQuery[0].items.entry.tabs[i]+'" role="tab" data-toggle="tab">Components</a></li>'
+  break;
+    case (assemblyQuery[0].items.entry.tabs=='producttable'):
+   html +='<li role="presentation" class="active"><a href="#'+assemblyQuery[0].items.entry.tabs[i]+'" aria-controls="'+assemblyQuery[0].items.entry.tabs[i]+'" role="tab" data-toggle="tab">Products</a></li>'
+  break;
+  default:
+    html +='<li role="presentation" class="active"><a href="#'+assemblyQuery[0].items.entry.tabs[i]+'" aria-controls="'+assemblyQuery[0].items.entry.tabs[i]+'" role="tab" data-toggle="tab">'+capitalize(assemblyQuery[0].items.entry.tabs[i])+'</a></li>'
+  break;
+}
+} else {
+  if (assemblyQuery[0].items.entry.tabs=='tablecomponent') {
+    html +='<li role="presentation"><a href="#'+assemblyQuery[0].items.entry.tabs[i]+'" aria-controls="'+assemblyQuery[0].items.entry.tabs[i]+'" role="tab" data-toggle="tab">Components</a></li>'
+  } else {
+   html +='<li role="presentation"><a href="#'+assemblyQuery[0].items.entry.tabs[i]+'" aria-controls="'+assemblyQuery[0].items.entry.tabs[i]+'" role="tab" data-toggle="tab">'+capitalize(assemblyQuery[0].items.entry.tabs[i])+'</a></li>'
+ }
+}
+}
+}  else {
+  html +='<li role="presentation" class="active"><a href="#'+'table'+'" aria-controls="'+'table'+'" role="tab" data-toggle="tab">'+'Table'+'</a></li>'
+}
+$('#tablist').html(html)
+}
+
+//////////////////////////////////////////
+//////  CAPATILIZE FIRST LETTER    //////
+////////////////////////////////////////
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+///////////////////////////////////
+////////  LOADING OF TOOLS ///////
+/////////////////////////////////
+function templateLoad(template,location){
+//Ensure that the first load error is covered , also any other errors.
+if(template){
+  jQuery.ajax({
+   'async': true,
+   'global': false,
+   'url': '/'+assemblyQuery[0].route+'/templatename?template='+template,
+   'success': function (dataSchemaObject) {
+     jQuery('#'+location).append(dataSchemaObject)
+   }
+ });
+}
+}
+
+//////////////////////////////////////////
+////        CREATE UNIQUE ID         //// 
+////////////////////////////////////////
+function create_uid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+  s4() + '-' + s4() + s4() + s4();
+}
+
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT assemblyQuery[0].ITEMS    //// 
+/////////////////////////////////////////////
+function uniqueIdforcformButton(){
+  jQuery('#formDelivery').attr("id",assemblyQuery[0].formids);
+}
+
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+$('document').ready(function(){
+  if (assemblyQuery[0].items.entry.moreinfotemp) { 
+  //more info button.
+  var html = '<a title="Click for design page." type="button" href="/Components/'+assemblyQuery[0].items.entry.moreinfotemp+'/'+assemblyQuery[0].templateload+'" class="btn btn-primary" style="position: absolute;right: 20px"><i class="fa fa-calculator" aria-hidden="true" ></i></a>'
+  $('#more').html(html)
+}
+//layoutView() 
+tabview()
+tablist()
+})
+
+
+/////////////////////////////////
+////////    UNIQUE ID  /////////
+///////////////////////////////
+function uniqueIdforparentraw(){
+if (assemblyQuery[0].items.elementID) {
+  $('#parentraw').attr('id', assemblyQuery[0].items.elementID+'_parentraw');
+} else {
+  $('#parentraw').attr('id', assemblyQuery[0].items._id+'_parentraw');
+}
+}
+
+///////////////////////////////////////////////
+////  MODIFY THE IDS OF RELEVANT assemblyQuery[0].ITEMS    //// 
+/////////////////////////////////////////////
+function uniqueIdforchangeButton(){
+  $('#changeButtonComp').attr('id', assemblyQuery[0].items.childType);
+}
+
+{{#if user}}
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+$( document ).ready(function() {
+  
+  uniqueIdforparentraw()
+uniqueIdforchangeButton()
+if(assemblyQuery[0].items.elementID) {
+  $("#formIdHere").html('id : '+assemblyQuery[0].items.elementID)
+}else{
+  $("#formIdHere").html('id : '+assemblyQuery[0].items._id)
+}
+
+});
+
+{{/if}}
+
+ 
+</script>

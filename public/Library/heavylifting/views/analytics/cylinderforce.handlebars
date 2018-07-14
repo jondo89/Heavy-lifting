@@ -1,0 +1,281 @@
+
+
+ 
+
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto;text-align:center">
+        <i class="fa fa-spinner fa-spin fa-3x"></i>
+    </div>
+    <h3>Graph Description</h3>
+    <p>This graph shows the maximum and minimum force the cylinder see's per day.</p>
+    <p>The maximum and minimum force lines show are the static design limits of the cylinders. These limits should not be exceeded by the cylinders.</p>
+
+</div>
+</div>
+
+ <div class="row">
+    <div class="col-md-12"><div id="cal-heatmap" style="overflow: auto;text-align: center;"></div></div>
+    </div>
+ <div class="row">
+    <div class="col-md-12"><div id="onClick-placeholder">Only items in color are available on the server.</div></div>
+</div>
+
+<div id="selectedMarker"></div>
+<script type="text/javascript">
+    console.log( 'Template Loading : plugins/entanglement/views/analytics/cylinderforce' )
+    console.log( '----------------------------------------------------------------------')
+    var data =[];
+    var seriesChart = []
+    var colours = [
+    'rgba(67,224,177,0.5)',
+    'rgba(3,85,159,0.5)',
+    'rgba(88,206,228,0.5)',
+    'rgba(234,38,42,0.5)'
+    ]
+
+var calendarData =[]
+///////////////////////////////// 
+//////  GET SCADA DATA    //////
+/////////////////////////////// 
+function getScada(){
+  jQuery.ajax({
+   'async': true,
+   'global': false,
+   'url': '/entanglement/getscada',
+   'success': function (dataSchemaObject) {
+     var scadadata = JSON.parse(dataSchemaObject)
+     for (var i = 0; i < scadadata.length; i++) {
+      for (var j = 0; j < scadadata[i].entry.length; j++) {
+        var temp = scadadata[i].entry[j]
+        var name = temp.date
+        var b = "-";
+        var position = 4;
+        var output = [name.slice(0, position), b, name.slice(position)].join('');
+        var b = "-";
+        var position = 7;
+        var output = [output.slice(0, position), b, output.slice(position)].join('');
+        calendarData.push({
+          "date":output,
+          "badge":false,
+          "entry": scadadata[i].entry[j]
+        })
+      }
+    }
+calendarData.sort(function(a, b){
+       var dateA=new Date(a.date), dateB=new Date(b.date)
+    return dateA-dateB //sort by date ascending
+})
+ 
+    heatmap(calendarData)
+    getdata()
+  }
+});
+}
+
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+$('document').ready(function(){
+    getScada()
+ 
+})
+
+ ///////////////////////////// 
+//////  HEAT MAP      //////
+/////////////////////////// 
+function heatmap(datas){
+  $('#cal-heatmap').html('')
+  var parserData = function (data) {
+    var dataJSON = {};
+    for(var i=0; i<data.length; i++) {
+    var date = new Date(data[i].date); // Date of activity 
+    var sec = date.getTime()/1000; // Convert to sec
+    // Pair "Key-Value" for calendar data
+    if(dataJSON[sec]) {
+      dataJSON[sec]++;
+    } else {
+      dataJSON[sec] = 1;
+    }
+  }
+  return dataJSON;
+}
+var cal = new CalHeatMap();
+cal.init({
+ itemSelector: "#cal-heatmap",
+ domain: "month",
+ subDomain: "day",
+ legendColors: {
+  empty: "#ededed",
+  min: "#ededed",
+  max: "#337ab7",
+},    
+onClick: function(date, nb) {
+  $("#onClick-placeholder").html("<b>" +
+    date + "</b> <br/>with <b>" +
+    (nb === null ? "0" : nb) + "</b> items<p></p>"
+    );
+  $("#onClick-placeholder").append("<a onclick='viewItem(this.id)' id='"+date+"' class='btn btn-default'>View</a>");
+},
+legend: [1,2,3,4,5],
+itemNamespace: "domainDynamicDimension",
+ // range: 11,
+//start: new Date(2016, 10),
+range: 9,
+  start:moment.utc(moment().subtract(8, 'months')).valueOf(),//get moment less range -1 months , then convert to UTC value of for cal heat map.
+   data: datas, // Dates Array
+   afterLoadData: parserData      // Parser function
+ });
+}
+
+//////////////////////////////////////// 
+//////  FORMAT FOR HIGHCHARTS    //////
+//////////////////////////////////////
+function getdata(){
+    var cylinderMax=[]
+    var cylinderMin=[]
+    var cylinderMax1=[]
+    var cylinderMin1=[]    
+    var catagories=[]
+    for (var i = 0; i < calendarData.length; i++) {
+        //console.log(calendarData[i]['entry']["coloums"])
+        cylinderMin.push(calendarData[i]['entry']["coloums"]["E641_SR01_WT01-STA_Analog"]["Min"])
+        cylinderMax.push(calendarData[i]['entry']["coloums"]["E641_SR01_WT01-STA_Analog"]["Max"])
+        cylinderMin1.push(calendarData[i]['entry']["coloums"]["E641_SR01_WT02-STA_Analog"]["Min"])
+        cylinderMax1.push(calendarData[i]['entry']["coloums"]["E641_SR01_WT02-STA_Analog"]["Max"])        
+        catagories.push(calendarData[i]["date"])
+    };
+
+    seriesChart.push(
+    {
+       data: cylinderMin,
+       color: colours[0],
+       name : "E641_SR01_WT01-STA_Analog Min",
+       marker: {
+        fillColor: 'white',
+        lineWidth: 2,
+        lineColor: colours[0]
+    },
+},
+{
+   data: cylinderMax,
+   color: colours[1],
+   name : "E641_SR01_WT01-STA_Analog Max",
+   marker: {
+    fillColor: 'white',
+    lineWidth: 2,
+    lineColor: colours[1]
+},
+},
+{
+    data: cylinderMin1,
+    color: colours[2],
+    name : "E641_SR01_WT02-STA_Analog Min",
+    marker: {
+        fillColor: 'white',
+        lineWidth: 2,
+        lineColor: colours[2]
+    },
+},
+{
+    data: cylinderMax1,
+    color: colours[4],
+    name : "E641_SR01_WT02-STA_Analog Max",
+    marker: {
+        fillColor: 'white',
+        lineWidth: 2,
+        lineColor: colours[4]
+    },
+}
+)
+    
+    
+
+    //console.log(calendarData)
+    highchartsAgain(seriesChart,catagories)
+}
+
+
+
+
+
+function highchartsAgain(seriesChart,catagories) {
+ jQuery('#container').highcharts({
+    title: {
+        text: 'Cylinder Maximum and Minimums ',
+            x: -20 //center
+        },
+        xAxis: {
+            categories: catagories
+        },
+        chart: {
+            zoomType: 'x'
+        },
+        plotOptions: {
+            series: {
+                cursor: 'pointer',
+                point: {
+                    events: {
+                        click: function () {
+                            html=""
+                            html+='<div class="panel panel-default"><div class="panel-body">'
+                            html+='<button type="button" class="btn btn-default">View</button>    '
+                            html+='Date: ' + this.category + ', value: ' + this.y
+                            html+='</div></div>'
+                            jQuery("#selectedMarker").html(html)
+
+                        }
+                    }
+                }
+            }
+        },
+        credits:false,
+        yAxis: {
+            title: {
+                text: 'Cylinder Force ( kN )'
+            },
+            min: -3000, 
+            max: 2500,
+            plotLines: [{
+                value: 1350,
+                width: 2,
+                color: '#ea262a',
+                dashStyle: 'shortdash',
+                label: {
+                    text: 'Maximum Force'
+                }
+            },{
+                value: -0,
+                width: 2,
+                color: 'green',
+                dashStyle: 'shortdash',
+                label: {
+                    text: 'Zero'
+                }
+            },
+            {
+                value: -1750,
+                width: 2,
+                color: '#ea262a',
+                dashStyle: 'shortdash',
+                label: {
+                    text: 'Minimum Force'
+                }
+            }]
+        },
+        tooltip: {
+            valueSuffix: 'kN'
+        },
+        legend: {
+            //layout: 'vertical',
+            //align: 'bottom',
+            //verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: seriesChart,
+
+    });
+}
+
+</script>

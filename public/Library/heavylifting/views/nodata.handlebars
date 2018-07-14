@@ -1,0 +1,165 @@
+<h1 id="name"></h1>
+<p id="detail"></p>
+<p></p>
+<div style="padding-bottom: 15px">
+  <div id="detail"></div>
+</div>
+<div class="row">
+  <div id= "groups">
+    <div class="well"><div style=" padding: 5px"><div style="padding:25px"><h3>Heads up! <small>This is an empty node, data is still to come.</p><a class="btn btn-primary" href="/contact" target="_blank">Add your product</a></div> </div></div></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+
+assemblyQuery[0].items =  {{{query}}}
+
+/////////////////////////////
+////     DEBUG AREA     //// 
+///////////////////////////
+console.log( 'Template loading : Group' )
+console.log( 'route : ',assemblyQuery[0].route )
+console.log( 'items : ',assemblyQuery[0].items )
+console.log( '-------------------------------------------' )
+
+/////////////////////////////////////
+////     HEADINGS AND STUFF     //// 
+///////////////////////////////////
+$('#name').html(assemblyQuery[0].items.name)
+$('#detail').html(assemblyQuery[0].items.detail)
+
+
+
+//////////////////////////////////////////
+////        CREATE UNIQUE ID         //// 
+////////////////////////////////////////
+function create_uid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+  s4() + '-' + s4() + s4() + s4();
+}
+
+$(document).ready(function() { 
+  var ids
+  if (!assemblyQuery[0].items.elementID) {
+    ids = assemblyQuery[0].items._id
+  } else {
+    ids = assemblyQuery[0].items.elementID
+  }
+
+///////////////////////////////// 
+//////  READ CHILDREN     //////
+/////////////////////////////// 
+jQuery.ajax({
+  'async': true,
+  'global': false,
+  'url': '/'+assemblyQuery[0].route+'/groups?data='+ids,
+  'success': function (dataSchemaObject) {
+    input = JSON.parse(dataSchemaObject);
+    groupShow(input)
+    {{#if user}}
+    templateLoad('tools','tools')
+    {{/if}}
+  }
+});
+})
+
+///////////////////////////// 
+//////  PRINT ALL     //////
+/////////////////////////// 
+function groupShow(data) {
+  if (data.length!=0) {
+    $('#groups').html('')
+  for (var i = 0; i < data.length; i++) {
+    $('#groups').append(printImageCatagory(data[i]))
+  } 
+  }
+}
+
+///////////////////////////////// 
+//////  PRINT IMAGE       //////
+/////////////////////////////// 
+function printImageCatagory (data) {
+  html=""
+  if ( data.entry.Image ) {
+    html+=  '<div class="col-sm-4 col-md-4" >'
+    html+='<div class="thumbnail" style="min-height:360px">'
+    html+='<img style="max-height:164px;min-height:90px" src="/img/catagories/'
+    html+= data.entry.Image
+    html+='" alt="...">'
+  } else {
+    html+=  '<div class="col-sm-4 col-md-4" >'
+    html+='<div class="thumbnail" style="min-height:250px">'
+  }
+  html+='<div class="caption">'
+  html+='<h3>'
+  html+=data.entry.description
+  html+='</h3>'
+  html+='<p>Click to view details on <strong>'
+  html+=data.entry.description
+  html+='</strong></p>'
+  html+='<p style="text-align:right">'
+  html+='<div style="text-align:right;position:absolute;bottom:25px">'
+  html+='<button type="button" class="btn btn-primary" id="' + data.elementID + '" onclick="viewCatagory(this.id);">View</button></p>'
+  html+='</div>'
+  html+='</div>'
+  html+='</div>'
+  html+='</div>'
+  return  html
+}
+
+
+///////////////////////////////
+////     JSTREE FIDDLE    //// 
+/////////////////////////////
+function viewCatagory(id){
+  $('#jstree').jstree(true)
+  .deselect_all(id);
+  $('#jstree').jstree(true)
+  .select_node(id);
+}
+
+//////////////////////////////////////////////
+////////    BUTTON CLICK OPEN FORM  /////////
+////////////////////////////////////////////
+function deployForm(parentid){
+  //Inputs into the form deployment.
+    //formdata,idItem,raw,parentid,headings,entry
+  //Which form to use.
+    //formdata:
+  //idItem:
+    //Which item to edit.
+  //Use the raw function for defining how to edit the data :
+    //raw:['use' , 'self' , 'edit']
+  //parentid:
+    //Inject a parent id.
+  //Inject a default entry.
+    //entry is used to manually add additional information to the form.
+  //Find and inject the group menu id number.
+  if (assemblyQuery[0].items.elementID) {
+    var parentIdTemp = assemblyQuery[0].items.elementID
+  } else {
+    var parentIdTemp = assemblyQuery[0].items._id
+  }
+  var headings = ["description","detail","icon","headings"]
+  var entry = {
+    parent : parentIdTemp,
+  }
+  loadformModal(parentid,'','use',assemblyQuery[0].items.parentid,headings,entry)
+}
+
+
+ 
+
+
+
+
+
+
+
+</script>

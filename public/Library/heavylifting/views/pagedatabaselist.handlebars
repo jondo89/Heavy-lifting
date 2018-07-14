@@ -1,0 +1,167 @@
+
+<div class="row">
+    <div class="col-md-12" style="text-align: right;vertical-align: middle;">
+    <a class="btn btn-primary "  onclick="treeClick()" id="backButton" data-treeitem=""  title="Back"><i class="fas fa-arrow-left"></i> Back</a>
+  </div>
+  <div class="col-md-12">
+    <div id="name"></div>
+  </div>
+
+  <div class="col-md-12">
+   <p id="more"></p>
+ </div>
+</div>
+<p></p>
+<div>
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist" id="tablist">
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content" id="tab">
+  </div>
+</div>
+<p></p>
+{{#if messages.info}}
+<div role="alert" class="alert alert-info">
+  {{#each messages.info}}
+  <div>{{msg}}</div>
+  {{/each}}
+</div>
+{{/if}}
+{{#if messages.error}}
+<div role="alert" class="alert alert-danger">
+  {{#each messages.error}}
+  <div>{{msg}}</div>
+  {{/each}}
+</div>
+{{/if}} 
+
+<script type="text/javascript">
+
+//define the first stage of the query
+assemblyQuery[0].items  =   {{{query}}}
+assemblyQuery[0].query1  =   {{{query1}}}
+assemblyQuery[0].query2  =   {{{query2}}}
+assemblyQuery[0].query3  =   {{{query3}}}
+assemblyQuery[0].query4  =   {{{query4}}}
+assemblyQuery[0].tablelistdata  =   {{{query3}}}
+assemblyQuery[0].jstreetemplate  =   {{{jstreetemplate}}}
+assemblyQuery[0].formids  =   create_uid()
+assemblyQuery[0].templateload  =   {{{templateload}}}
+
+/////////////////////////////
+////     DEBUG AREA     //// 
+///////////////////////////
+console.log( 'Render this jstree template : ' , assemblyQuery[0].jstreetemplate )
+console.log( 'items : ',assemblyQuery[0].items )
+console.log( 'templateload : ',assemblyQuery[0].templateload )
+console.log( '-------------------------' )
+
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+$('document').ready(function(){
+  if (assemblyQuery[0].items.entry) {
+
+    if (assemblyQuery[0].items.entry.moreinfotemp) { 
+  //more info button.
+  var html = '<a title="Click for design page." type="button" href="/Components/'+assemblyQuery[0].items.entry.moreinfotemp+'/'+assemblyQuery[0].templateload+'" class="btn btn-primary" style="position: absolute;right: 20px"><i class="fa fa-calculator" aria-hidden="true" ></i></a>'
+  $('#more').html(html)
+}
+if(!assemblyQuery[0].items.elementID){
+  assemblyQuery[0].items.elementID = assemblyQuery[0].items._id
+}
+}  
+//layoutView() 
+headingsAndStuff(assemblyQuery[0].items,assemblyQuery[0].query3,assemblyQuery[0].query3,assemblyQuery[0].query2)//Populate page headings and descriptions.
+tabview(assemblyQuery[0])
+tablist(assemblyQuery[0])
+})
+
+{{#if user}}
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+$( document ).ready(function() {
+  uniqueIdforparentraw(assemblyQuery[0].items)
+  uniqueIdforchangeButton(assemblyQuery[0].items)
+  if(assemblyQuery[0].items.elementID) {
+    $("#formIdHere").html('id : '+assemblyQuery[0].items.elementID)
+  }else{
+    $("#formIdHere").html('id : '+assemblyQuery[0].items._id)
+  }
+});
+{{/if}}
+
+
+
+/////////////////////////////
+////     LAYOUT VIEW    //// 
+///////////////////////////
+function layoutView() {
+  if (assemblyQuery[0].items.entry.layout) {
+   for (var i = 0; i < assemblyQuery[0].items.entry.layout.length; i++) {
+    templateLoad(assemblyQuery[0].items.entry.layout[i],'toolbar')
+  }
+}  else {
+  templateLoad(['parentraw'],'toolbar')
+  templateLoad(['add'],'toolbar')
+}
+}
+
+/////////////////////////////
+////     TABS VIEW      //// 
+///////////////////////////
+function tabview() {
+  if (assemblyQuery[0].items.entry.tabs) {
+   for (var i = 0; i < assemblyQuery[0].items.entry.tabs.length; i++) {
+    templateLoad(assemblyQuery[0].items.entry.tabs[i],'tab',assemblyQuery[0].route)
+  }
+}  else {
+  templateLoad(['table'],'tab',assemblyQuery[0].route)
+}
+}
+
+/////////////////////////////
+////    TABLIST         //// 
+///////////////////////////
+function tablist(){
+  var html = ''
+  if (assemblyQuery[0].items.entry.tabs) {
+   for (var i = 0; i < assemblyQuery[0].items.entry.tabs.length; i++) {
+//used for 0 length assemblyQuery[0].items
+if (i==0) {
+  switch(true){
+    case (assemblyQuery[0].items.entry.tabs[i]=='tablecomponent'):
+    html +='<li role="presentation" class="active"><a href="#'+assemblyQuery[0].items.entry.tabs[i]+'" aria-controls="'+assemblyQuery[0].items.entry.tabs[i]+'" role="tab" data-toggle="tab">Components</a></li>'
+    break;
+    case (assemblyQuery[0].items.entry.tabs[i]=='producttable'):
+    html +='<li role="presentation" class="active"><a href="#'+assemblyQuery[0].items.entry.tabs[i]+'" aria-controls="'+assemblyQuery[0].items.entry.tabs[i]+'" role="tab" data-toggle="tab">Products</a></li>'
+    break;
+    case (assemblyQuery[0].items.entry.tabs[i]=='New'):
+    html +='<li role="presentation" class="active"><a href="#'+assemblyQuery[0].items.entry.tabs[i]+'" aria-controls="'+assemblyQuery[0].items.entry.tabs[i]+'" role="tab" data-toggle="tab"><i class="fa fa-plus-circle" aria-hidden="true"></i> New</a></li>'
+    break;    
+    default:
+    html +='<li role="presentation" class="active"><a href="#'+assemblyQuery[0].items.entry.tabs[i]+'" aria-controls="'+assemblyQuery[0].items.entry.tabs[i]+'" role="tab" data-toggle="tab">'+capitalize(assemblyQuery[0].items.entry.tabs[i])+'</a></li>'
+    break;
+  }
+} else {
+  if (assemblyQuery[0].items.entry.tabs[i]=='tablecomponent') {
+    html +='<li role="presentation"><a href="#'+assemblyQuery[0].items.entry.tabs[i]+'" aria-controls="'+assemblyQuery[0].items.entry.tabs[i]+'" role="tab" data-toggle="tab">Components</a></li>'
+  } else {
+    if (assemblyQuery[0].items.entry.tabs=='producttable') {
+      html +='<li role="presentation"><a href="#'+assemblyQuery[0].items.entry.tabs[i]+'" aria-controls="'+assemblyQuery[0].items.entry.tabs[i]+'" role="tab" data-toggle="tab">Product</a></li>'
+    } else {
+      {{#if user}}
+      html +='<li role="presentation"><a href="#'+assemblyQuery[0].items.entry.tabs[i]+'" aria-controls="'+assemblyQuery[0].items.entry.tabs[i]+'" role="tab" data-toggle="tab">'+capitalize(assemblyQuery[0].items.entry.tabs[i])+'</a></li>'
+      {{/if}}
+    }
+  }
+}
+}
+}  else {
+  html +='<li role="presentation" class="active"><a href="#'+'table'+'" aria-controls="'+'table'+'" role="tab" data-toggle="tab">'+'Table'+'</a></li>'
+}
+$('#tablist').html(html)
+}
+</script>

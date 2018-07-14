@@ -1,0 +1,151 @@
+<h1>Bulk Edit <a class="btn btn-primary" id="activate" onclick="savemeall()" disabled>Save</a></h1>
+
+
+<style type="text/css">
+.hot-container {
+  width: 100%;
+  min-height: 600px;
+  overflow: auto;
+}
+</style>
+<div class="row">
+  <div class="col-md-12">
+    <div id="example3" class="hot-container" ></div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  var query = {{{query}}}
+  var query1 = {{{query1}}}
+  var query2 = {{{query2}}}
+  var query3 =  {{{query3}}} 
+  var query4 = {{{query4}}}
+  var formroute = 'database'
+  var hot;
+
+
+var changesToTable = []
+
+
+/////////////////////////////
+////     DEBUG AREA     //// 
+///////////////////////////
+console.log( 'TABLEBROWSER LOADING' )
+console.log( '-------------------------' )
+console.log( 'query : ',query )
+console.log( 'query1 : ',query1 )
+console.log( 'query2 : ',query2 )
+console.log( 'query3 : ',query3 )
+console.log( 'query4 : ',query4 )
+console.log( '-------------------------' )
+console.log( 'TABLEBROWSER LOADING' )
+
+///////////////////////////// 
+//////  INITIALISE    //////
+/////////////////////////// 
+$('document').ready(function(){
+  var columns =[]
+  var headings =[]
+  for (var i = 0; i < query2.length; i++) {  
+    columns.push({data: "entry."+query2[i].elementID})
+    headings.push(query2[i].entry.description)
+  }
+  var container3 = document.getElementById('example3')
+  hot = new Handsontable(container3, {
+    data: query3,
+    columns: columns,
+    colHeaders:headings,
+    rowHeaders: true,
+    minSpareRows: 1,
+    stretchH: 'all',
+    afterChange: onChange
+  });
+}) 
+
+function onChange(changes, source) {
+  if (!changes) {
+
+    return;
+  } 
+ 
+
+for (var i = 0; i < changes.length; i++) {
+changesToTable.push(changes[i][0])
+}
+ 
+  $('#activate').removeAttr('disabled');
+}
+
+/*
+function saveme(){
+  var dataset = hot.getSourceData()
+  for (var i = 0; i < dataset.length-1; i++) {
+    var primer = dataset[i]
+    primer.parentid=query.elementID 
+    if(primer.elementID == ''){
+      primer.revision = 'Bulk updated'
+    } else {
+      primer.revision = 'Bulk updated'
+    }
+    primer.active = "true"
+      //Jquery send to server
+      jQuery.ajax({
+        'url': '/'+formroute+'/create',
+        'type': 'POST', 
+        'dataType': 'json',
+        'contentType': 'application/json', 
+        'data': JSON.stringify(primer),
+        'success': function (dataSchemaObject) {
+          window.location.reload()
+        },
+        'error' : function (dataSchemaObject) {
+          console.log('returned error')
+        },
+      });   
+    } 
+  }
+*/
+
+function savemeall(){
+  var dataset = hot.getSourceData()
+  var postDataSet  =[]
+  var uniqueNames = [];
+  $.each(changesToTable, function(i, el){
+    if($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+  });
+  console.log(uniqueNames)
+  for (var i = 0; i < uniqueNames.length; i++) {
+    var primer = dataset[uniqueNames[i]]
+    primer.parentid=query.elementID 
+    if (!primer.revision) {
+      console.log('THIS ITEM IS NEW : ',i)  
+      primer.revision = 'created'  
+    } else {
+      console.log('THIS ITEM IS A REVISION : ',i)  
+      primer.revision = 'Bulk updated'  
+    }
+    primer.active = "true"
+    postDataSet.push(primer)
+  }
+  console.log("NUMBER OF DATASETS TO SAVE : ",postDataSet.length)
+  console.log('RECORD SET : ',postDataSet)  
+ //Post the Data to the server.
+ jQuery.ajax({
+  'url': '/'+formroute+'/bulkedit',
+  'type': 'POST', 
+  'dataType': 'json',
+  'contentType': 'application/json', 
+  'data': JSON.stringify(postDataSet),
+  'success': function (dataSchemaObject) {
+    window.location.reload()
+  },
+  'error' : function (dataSchemaObject) {
+    console.log('returned error')
+  },
+});   
+} 
+
+
+
+</script>    

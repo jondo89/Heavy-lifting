@@ -1,0 +1,120 @@
+
+<h1>SQL Query Creator</h1>
+<p>Downloading of CSV's is performed via a remote desktop interface on the Wonderware server. Click on the date below to generate the query for acquiring the daily SCADA data.</p>
+<p></p>
+<div class="row">
+<div class="col-md-6">
+<div style="text-align:center" ><div id="my-calendar"></div></div>
+</div>
+<div class="col-md-6">
+<div class="alert alert-info" role="alert"  >    
+<h3>Instructions</h3>  
+<li>Click on the Date to download</li>
+<li>Copy the SQL text into the SQL area on the Query Program on the remote desktop.</li>
+<li>Save the CSV in the FORMAT 2015-01-01, i.e the specific day that is extracted.</li>
+<li>Copy the CSV into the SCADA directory in the web root.</li>
+<p></p>
+</div>
+<h5>Date History</h5>
+<p id="dates"></p>
+</div>
+</div>
+<h3>Generated SQL Query</h3>
+<pre id="SQLarea"></pre>
+<script type="text/javascript">
+
+
+/////////////////////////////
+////     DEBUG AREA     //// 
+///////////////////////////
+console.log( 'Template Loading : plugins/entanglement/views/analytics/sqldata' )
+console.log( '----------------------------------------------------------------')
+
+var eventData=[];
+
+//////////////////
+// ADD CALENDER //
+//////////////////
+function loadCalendar() {
+$("#my-calendar").zabuto_calendar({
+data: eventData,
+cell_border: true,
+today: true,
+
+show_previous: 12,
+show_next: 12,
+action: function () {
+$("#loading").attr('style', 'width:5%');
+return myDateFunction(this.id);
+}
+});
+}
+
+///////////////////////
+// CALENDER DATA ADD //
+//////////////////////
+function myDateFunction(id) {
+$("#date-popover").hide();
+var date = $("#" + id).data("date");
+var hasEvent = $("#" + id).data("hasEvent");
+console.log(date)
+eventDatas(date)
+
+return true;
+}
+
+//////////////////////////
+// CALENDER DATA LISTNER//
+//////////////////////////
+function myNavFunction(id) {
+$("#date-popover").hide();
+var nav = $("#" + id).data("navigation");
+var to = $("#" + id).data("to");
+console.log('nav ' + nav + ' to: \ + to.month' + '/' + to.year);
+}
+
+function eventDatas(date){
+$( "#SQLarea" ).html('')
+$( "#dates" ).append(" "+date)
+$( "#SQLarea" ).html('<p>SET QUOTED_IDENTIFIER OFF</p>')
+$( "#SQLarea" ).append('<p>SELECT * FROM OPENQUERY(INSQL, "SELECT DateTime,</p>')
+$( "#SQLarea" ).append('[E641_CV01_UAC01.STA_Current],[E641_CV01_WIT01A.STA_Analog],[E641_CV01_ZT10.STA_PV],[E641_CV01_ZT10.STA_PV1],[E641_HY01_TT04.STA_Analog],[E641_SR01_PT01.STA_Analog],[E641_SR01_PT02.STA_Analog],[E641_SR01_PT03.STA_Analog],[E641_SR01_PT04.STA_Analog],[E641_SR01_ST01.STA_Analog],[E641_SR01_TT03.STA_Analog],[E641_SR01_UAC01.STA_Current],[E641_SR01_UAC04_07.STA_Current],[E641_SR01_UAC04_07.STA_SpeedFB],[E641_SR01_UAC13_19.STA_Current],[E641_SR01_UAC13_19.STA_SpeedFB],[E641_SR01_ZT04.STA_PV],[E641_SR01_ZT04.STA_PV1],[E790_WE01_WIT01a.STA_Analog],[E641_SR01_WT01.STA_Analog],[E641_SR01_WT02.STA_Analog],[E641_SR01_ZT11.STA_PV],[E641_CV01_ZT10.STA_Vel],[E641_SR01_ZT11.STA_Vel]')  
+$( "#SQLarea" ).append('<p>FROM WideHistory</p>')
+$( "#SQLarea" ).append("<p>WHERE wwRetrievalMode = 'Cyclic'</p>")
+$( "#SQLarea" ).append('<p>AND wwResolution = 1000</p>')
+$( "#SQLarea" ).append("<p>AND wwVersion = 'Latest'</p>")
+$( "#SQLarea" ).append("AND DateTime >= '")
+$( "#SQLarea" ).append(moment(date).format('YYYYMMDD'));
+$( "#SQLarea" ).append(" 06:00:00.000'</p>")
+$( "#SQLarea" ).append("AND DateTime <= '");
+$( "#SQLarea" ).append(moment(date).add(1, 'days').format('YYYYMMDD'));
+$( "#SQLarea" ).append(" 06:00:00.000'")
+$( "#SQLarea" ).append('")</p>')
+$('#SQLarea').select()
+}
+
+
+loadCalendar()
+var obj = JSON.stringify(eventData, undefined, 4);
+
+$( "#datedetail" ).append(obj)
+
+$(document).on('click', 'pre', function () {
+
+if (this.select) {
+this.select();
+}
+else if (document.selection) {
+var range = document.body.createTextRange();
+range.moveToElementText(this);
+range.select();
+} else if (window.getSelection) {
+var range = document.createRange();
+range.selectNode(this);
+window.getSelection().addRange(range);
+}
+});
+
+</script>
+
+

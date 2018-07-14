@@ -1,0 +1,602 @@
+var table
+var item = 2
+var theta = 0
+//fixed variables , modify if required.
+var sx = 1;
+var sy = 1;
+var tx = 0
+var ty = 0
+var height = $("canvasForm").height()
+var width = $("canvasForm").width()
+
+
+ ////////////////////////////////////
+////        INITIALIZE         //// 
+//////////////////////////////////
+$(document).ready(function(){
+  loadForm();
+  activateCanvasIdlerForm()
+});
+
+ 
+
+
+/////////////////////////////////////////////
+////////  EXPORT TO SCR FILE AUTOCAD ///////
+///////////////////////////////////////////
+function loadForm() {
+  var textFile = null,
+  makeTextFile = function (text) {
+    var data = new Blob([text], {type: 'text/plain'});
+    // If we are replacing a previously generated file we need to
+    // manually revoke the object URL to avoid memory leaks.
+    if (textFile !== null) {
+      window.URL.revokeObjectURL(textFile);
+    }
+    textFile = window.URL.createObjectURL(data);
+    return textFile;
+  };
+  var create = document.getElementById('downloadlinkForm')
+  var textbox = document.getElementById('CadExportAreaForm')
+  create.addEventListener('click', function () {
+    var link = document.getElementById('downloadlinkForm');
+    link.href = makeTextFile(textbox.value);
+  }, false);
+}
+
+
+/////////////////////////////// 
+//////  GET FORM DATA   //////
+/////////////////////////////
+      function getFormData($form){
+        var unindexed_array = $form.serializeArray();
+        var indexed_array = {};
+        $.map(unindexed_array, function(n, i){
+          indexed_array[n['name']] = n['value'];
+        });
+        return indexed_array;
+      }
+
+
+//////////////////////////////////////// 
+//////  START THE CANVAS DRAW    //////
+///////////////////////////////////////
+function activateCanvasIdlerForm(){
+
+
+ item = 2
+ theta = 0
+//fixed iables , modify if required.
+ sx = 1;
+ sy = 1;
+ tx = 0
+ ty = 0
+ height = $("#canvasForm").height()
+ width = $("#canvasForm").width()
+ $("#canvasForm").html('')
+
+
+
+  var canvas = document.getElementById('canvasForm');
+  canvas.width= $('#canvasFormWidth').width()-50
+  canvas.height = 150//$('#canvasFormWidth').width()-150
+  var gkhead = new Image;
+  var ball   = new Image;
+  var ctx = canvas.getContext('2d');
+  trackTransforms(ctx);
+  ctx.translate(canvas.width/2,canvas.height/2);
+
+  function redrawForm(){
+      // Clear the entire canvas
+      var p1 = ctx.transformedPoint(0,0);
+      var p2 = ctx.transformedPoint(canvas.width,canvas.height);
+      ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
+      ctx.save();
+      ctx.translate(6,2);
+      ctx.beginPath();
+      ctx.stroke();
+      ctx.scale(-.10,-.10)
+      ctx.beginPath();
+      var $form = $(".alpaca-form");
+      var filterdata = getFormData($form);
+     // console.log(filterdata)
+     $("#CadExportAreaForm").html('');
+     drawPulleyForm("canvasForm",filterdata,0)
+     ctx.restore();
+   }
+ 
+   redrawForm();
+ 
+   var lastX=canvas.width/2, lastY=canvas.height/2;
+   var dragStart,dragged;
+
+    ///////////////////////////
+    //////  TRIGGERS    //////
+    /////////////////////////
+   canvas.addEventListener('mousedown',function(evt){
+    document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
+    lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
+    lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
+    dragStart = ctx.transformedPoint(lastX,lastY);
+    dragged = false;
+  },false);
+   canvas.addEventListener('mousemove',function(evt){
+    lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
+    lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
+    dragged = true;
+    if (dragStart){
+      var pt = ctx.transformedPoint(lastX,lastY);
+      ctx.translate(pt.x-dragStart.x,pt.y-dragStart.y);
+      redrawForm();
+    }
+  },false);
+   canvas.addEventListener('mouseup',function(evt){
+    dragStart = null;
+    if (!dragged) zoom(evt.shiftKey ? -1 : 1 );
+  },false);
+    $('.alpaca-form').on("change", function(evt) {
+    lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
+    lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
+    dragged = true;
+    //i think this is where is is safe to draw
+    $("#CadExportAreaForm").html('');
+    redrawForm();
+    return false;
+    });
+
+
+
+  var scaleFactor = 1.1;
+  var zoom = function(clicks){
+    var pt = ctx.transformedPoint(lastX,lastY);
+    ctx.translate(pt.x,pt.y);
+    var factor = Math.pow(scaleFactor,clicks);
+    ctx.scale(factor,factor);
+    ctx.translate(-pt.x,-pt.y);
+    redrawForm();
+  }
+  var handleScroll = function(evt){
+    var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
+    if (delta) zoom(delta);
+    return evt.preventDefault() && false;
+  };
+  canvas.addEventListener('DOMMouseScroll',handleScroll,false);
+  canvas.addEventListener('mousewheel',handleScroll,false);
+  gkhead.src = '';
+  ball.src   = '';
+  // Adds ctx.getTransform() - returns an SVGMatrix
+  // Adds ctx.transformedPoint(x,y) - returns an SVGPoint
+
+
+  function trackTransforms(ctx){
+    var svg = document.createElementNS("http://www.w3.org/2000/svg",'svg');
+    var xform = svg.createSVGMatrix();
+    ctx.getTransform = function(){ return xform; };
+    var savedTransforms = [];
+    var save = ctx.save;
+    ctx.save = function(){
+      savedTransforms.push(xform.translate(0,0));
+      return save.call(ctx);
+    };
+    var restore = ctx.restore;
+    ctx.restore = function(){
+      xform = savedTransforms.pop();
+      return restore.call(ctx);
+    };
+    var scale = ctx.scale;
+    ctx.scale = function(sx,sy){
+      xform = xform.scaleNonUniform(sx,sy);
+      return scale.call(ctx,sx,sy);
+    };
+    var rotate = ctx.rotate;
+    ctx.rotate = function(radians){
+      xform = xform.rotate(radians*180/Math.PI);
+      return rotate.call(ctx,radians);
+    };
+    var translate = ctx.translate;
+    ctx.translate = function(dx,dy){
+      xform = xform.translate(dx,dy);
+      return translate.call(ctx,dx,dy);
+    };
+    var transform = ctx.transform;
+    ctx.transform = function(a,b,c,d,e,f){
+      var m2 = svg.createSVGMatrix();
+      m2.a=a; m2.b=b; m2.c=c; m2.d=d; m2.e=e; m2.f=f;
+      xform = xform.multiply(m2);
+      return transform.call(ctx,a,b,c,d,e,f);
+    };
+    var setTransform = ctx.setTransform;
+    ctx.setTransform = function(a,b,c,d,e,f){
+      xform.a = a;
+      xform.b = b;
+      xform.c = c;
+      xform.d = d;
+      xform.e = e;
+      xform.f = f;
+      return setTransform.call(ctx,a,b,c,d,e,f);
+    };
+    var pt  = svg.createSVGPoint();
+    ctx.transformedPoint = function(x,y){
+      pt.x=x; pt.y=y;
+      return pt.matrixTransform(xform.inverse());
+    }
+  }
+}
+
+
+
+/////////////////////////////// 
+//////  DRAW COUPLING   //////
+///////////////////////////// 
+function drawCoupling(locations){
+  couplingVar = getCoupling()
+  var coupling = drawrRectangle(couplingVar["594912798cda6431945a2fca"],couplingVar["594912a18cda6431945a2fd2"]);
+  //transformMatrix(coupling,sx,sy,0,0,pulleyPhys["ØE"]/2)  
+  autoCAD(coupling)   
+  drawidlerCanvas(locations,coupling,'grey')  
+  var coupling = drawrRectangle(couplingVar["594912748cda6431945a2fc9"],couplingVar["594912938cda6431945a2fcf"]);
+  transformMatrix(coupling,sx,sy,0,couplingVar["594912938cda6431945a2fcf"]/2,0)  
+  autoCAD(coupling)   
+  drawidlerCanvas(locations,coupling,'grey')  
+  var coupling = drawrRectangle(couplingVar["594912748cda6431945a2fc9"],couplingVar["594912938cda6431945a2fcf"]);
+  transformMatrix(coupling,sx,sy,0,-couplingVar["594912938cda6431945a2fcf"]/2,0) 
+  autoCAD(coupling)   
+  drawidlerCanvas(locations,coupling,'grey')  
+}
+
+/////////////////////////////// 
+//////  DRAW PULLEY     //////
+///////////////////////////// 
+function drawPulleyForm(locations,item,translates)
+{
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+var pulley ={}
+pulleyPhys = item
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Parse area
+pulleyPhys['594912988cda6431945a2fd0'] = parseFloat(pulleyPhys['594912988cda6431945a2fd0'])//Overall shaft length
+pulleyPhys['594912798cda6431945a2fca'] = parseFloat(pulleyPhys['594912798cda6431945a2fca'])
+pulleyPhys['594912748cda6431945a2fc9'] = parseFloat(pulleyPhys['594912748cda6431945a2fc9'])//ØA
+pulleyPhys['594912b08cda6431945a2fd5'] = parseFloat(pulleyPhys['594912b08cda6431945a2fd5'])
+pulleyPhys['5949128e8cda6431945a2fce'] = parseFloat(pulleyPhys['5949128e8cda6431945a2fce'])
+pulleyPhys['594912898cda6431945a2fcd'] = parseFloat(pulleyPhys['594912898cda6431945a2fcd'])//ØE
+pulleyPhys['594912028cda6431945a2fbe'] = parseFloat(pulleyPhys['594912028cda6431945a2fbe'])
+pulleyPhys['594912ac8cda6431945a2fd4'] = parseFloat(pulleyPhys['594912ac8cda6431945a2fd4'])
+pulleyPhys['5949127f8cda6431945a2fcb'] = parseFloat(pulleyPhys['5949127f8cda6431945a2fcb'])
+pulleyPhys['594912848cda6431945a2fcc'] = parseFloat(pulleyPhys['594912848cda6431945a2fcc'])
+pulleyPhys['594912588cda6431945a2fc6'] = parseFloat(pulleyPhys['594912588cda6431945a2fc6'])//Bearing Centers
+pulleyPhys['594912938cda6431945a2fcf'] =  parseFloat(pulleyPhys['594912588cda6431945a2fc6'])//G
+pulleyPhys['5952012c0986fc41b4bc3e83'] = parseFloat(pulleyPhys['5952012c0986fc41b4bc3e83'])
+pulleyPhys['5952013b0986fc41b4bc3e84'] = parseFloat(pulleyPhys['5952013b0986fc41b4bc3e84'])//H1 Dimension
+pulleyPhys['5952014a0986fc41b4bc3e85'] = parseFloat(pulleyPhys['5952014a0986fc41b4bc3e85'])//H2 Dimension
+pulleyPhys['595201510986fc41b4bc3e86'] = parseFloat(pulleyPhys['595201510986fc41b4bc3e86']) 
+pulleyPhys['5952015e0986fc41b4bc3e87'] = parseFloat(pulleyPhys['5952015e0986fc41b4bc3e87']) 
+pulleyPhys['594912a78cda6431945a2fd3'] =parseFloat(pulleyPhys['594912a78cda6431945a2fd3']) //L value
+pulleyPhys['59522a1774612409d4bfc04d'] =parseFloat(pulleyPhys['59522a1774612409d4bfc04d']) //bearing width
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Fixed values to be changed over time.   
+pulleyPhys["Number of Rigid Flange Couplings"] = 0
+pulleyPhys['594912988cda6431945a2fd0'] = pulleyPhys['594912588cda6431945a2fc6'] +pulleyPhys["59522a1774612409d4bfc04d"] /2 //Overall shaft length  
+pulleyPhys["Q"] = 10 // offset.
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//check how many couplings to draw.
+switch (true){
+  case (pulleyPhys["Number of Rigid Flange Couplings"]==1):
+  drawCoupling("canvas",pulleyPhys["594912988cda6431945a2fd0"]/2,0)
+  break;
+  case (pulleyPhys["Number of Rigid Flange Couplings"]==2):
+  drawCoupling("canvas",pulleyPhys["594912988cda6431945a2fd0"]/2,0)
+  drawCoupling("canvas",-pulleyPhys["594912988cda6431945a2fd0"]/2,0)
+  break;  
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////BEARING JOURNAL SHAFT//////////////////////////////////////////////////////////
+height = pulleyPhys["594912798cda6431945a2fca"]
+width =  pulleyPhys["594912988cda6431945a2fd0"]
+x1=0
+y1=0
+var bearingArea1 = drawrRectangle(height,width);
+pulley['bearingArea1'] = transformMatrixSimple(bearingArea1,sx,sy,0,x1,y1)
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+height = pulleyPhys["5952012c0986fc41b4bc3e83"]
+width = pulleyPhys["59522a1774612409d4bfc04d"]
+x1=pulleyPhys["594912938cda6431945a2fcf"]/2
+y1=pulleyPhys["5952012c0986fc41b4bc3e83"]/2-pulleyPhys["5952013b0986fc41b4bc3e84"]
+var bearingleft = drawrRectangle(height,width);
+pulley['bearingleft'] = transformMatrixSimple(bearingleft,sx,sy,0,x1,y1)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+height = pulleyPhys["5952014a0986fc41b4bc3e85"]
+width = pulleyPhys["59522a1774612409d4bfc04d"]
+x1=pulleyPhys["594912938cda6431945a2fcf"]/2
+y1=pulleyPhys["5952014a0986fc41b4bc3e85"]/2-pulleyPhys["5952013b0986fc41b4bc3e84"]
+var bearingright = drawrRectangle(height,width);
+pulley['bearingright1'] = transformMatrixSimple(bearingright,sx,sy,0,x1,y1)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+height = pulleyPhys["5952012c0986fc41b4bc3e83"]
+width = pulleyPhys["59522a1774612409d4bfc04d"]
+x1=-pulleyPhys["594912938cda6431945a2fcf"]/2
+y1=pulleyPhys["5952012c0986fc41b4bc3e83"]/2-pulleyPhys["5952013b0986fc41b4bc3e84"]
+var bearingleft = drawrRectangle(height,width);
+pulley['bearingleft1'] = transformMatrixSimple(bearingleft,sx,sy,0,x1,y1)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+height = pulleyPhys["5952014a0986fc41b4bc3e85"]
+width = pulleyPhys["59522a1774612409d4bfc04d"]
+x1=-pulleyPhys["594912938cda6431945a2fcf"]/2
+y1=pulleyPhys["5952014a0986fc41b4bc3e85"]/2-pulleyPhys["5952013b0986fc41b4bc3e84"]
+var bearingright = drawrRectangle(height,width);
+pulley['bearingright2'] = transformMatrixSimple(bearingright,sx,sy,0,x1,y1)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+var topshell = drawrRectangle(pulleyPhys["5949128e8cda6431945a2fce"],pulleyPhys["594912028cda6431945a2fbe"],0,pulleyPhys["594912898cda6431945a2fcd"]/2-pulleyPhys["5949128e8cda6431945a2fce"]/2);
+x1=0
+y1=-pulleyPhys["594912898cda6431945a2fcd"]/2+pulleyPhys["5949128e8cda6431945a2fce"]/2
+pulley['topshell'] = transformMatrixSimple(topshell,sx,sy,0,x1,y1)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+var bottomshell = drawrRectangle(pulleyPhys["5949128e8cda6431945a2fce"],pulleyPhys["594912028cda6431945a2fbe"],0,-pulleyPhys["594912898cda6431945a2fcd"]/2+pulleyPhys["5949128e8cda6431945a2fce"]/2);
+x1=0
+y1=pulleyPhys["594912898cda6431945a2fcd"]/2-pulleyPhys["5949128e8cda6431945a2fce"]/2
+pulley['bottomshell'] = transformMatrixSimple(bottomshell,sx,sy,0,x1,y1)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+height = ((pulleyPhys["594912ac8cda6431945a2fd4"]-pulleyPhys["594912748cda6431945a2fc9"])/2)
+width =(pulleyPhys["594912b08cda6431945a2fd5"])
+x1=((pulleyPhys["594912028cda6431945a2fbe"]-pulleyPhys["594912b08cda6431945a2fd5"])/2-pulleyPhys["Q"])
+y1=((pulleyPhys["594912748cda6431945a2fc9"])/2 +height/2)
+var hub1 = drawrRectangle(height,width);
+pulley['hub1'] = transformMatrixSimple(hub1,sx,sy,0,x1,y1)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+height = ((pulleyPhys["594912ac8cda6431945a2fd4"]-pulleyPhys["594912748cda6431945a2fc9"])/2)
+width =-(pulleyPhys["594912b08cda6431945a2fd5"])
+x1=-((pulleyPhys["594912028cda6431945a2fbe"]-pulleyPhys["594912b08cda6431945a2fd5"])/2-pulleyPhys["Q"])
+y1=((pulleyPhys["594912748cda6431945a2fc9"])/2 +height/2)
+var hub2 = drawrRectangle(height,width);
+pulley['hub2'] = transformMatrixSimple(hub2,sx,sy,0,x1,y1)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+height = -((pulleyPhys["594912ac8cda6431945a2fd4"]-pulleyPhys["594912748cda6431945a2fc9"])/2)
+width =(pulleyPhys["594912b08cda6431945a2fd5"])
+x1=((pulleyPhys["594912028cda6431945a2fbe"]-pulleyPhys["594912b08cda6431945a2fd5"])/2-pulleyPhys["Q"])
+y1=-((pulleyPhys["594912748cda6431945a2fc9"])/2 -height/2)
+var hub3 = drawrRectangle(height,width);
+pulley['hub3'] = transformMatrixSimple(hub3,sx,sy,0,x1,y1)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+height = -((pulleyPhys["594912ac8cda6431945a2fd4"]-pulleyPhys["594912748cda6431945a2fc9"])/2)
+width =-(pulleyPhys["594912b08cda6431945a2fd5"])
+x1=-((pulleyPhys["594912028cda6431945a2fbe"]-pulleyPhys["594912b08cda6431945a2fd5"])/2-pulleyPhys["Q"])
+y1=-((pulleyPhys["594912748cda6431945a2fc9"])/2 -height/2)
+var hub4 = drawrRectangle(height,width);
+pulley['hub4'] = transformMatrixSimple(hub4,sx,sy,0,x1,y1)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+height = ((pulleyPhys["594912898cda6431945a2fcd"]-pulleyPhys["5949128e8cda6431945a2fce"]*2-pulleyPhys["594912ac8cda6431945a2fd4"])/2)
+width =(pulleyPhys["594912a78cda6431945a2fd3"])
+x1=((pulleyPhys["594912028cda6431945a2fbe"]-pulleyPhys["594912b08cda6431945a2fd5"])/2-pulleyPhys["Q"])
+y1=((pulleyPhys["594912ac8cda6431945a2fd4"])/2 +height/2)
+var hub1shell = drawrRectangle(height,width);
+pulley['hub1shell'] = transformMatrixSimple(hub1shell,sx,sy,0,x1,y1)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+height = ((pulleyPhys["594912898cda6431945a2fcd"]-pulleyPhys["5949128e8cda6431945a2fce"]*2-pulleyPhys["594912ac8cda6431945a2fd4"])/2)
+width =-(pulleyPhys["594912a78cda6431945a2fd3"])
+x1=-((pulleyPhys["594912028cda6431945a2fbe"]-pulleyPhys["594912b08cda6431945a2fd5"])/2-pulleyPhys["Q"])
+y1=((pulleyPhys["594912ac8cda6431945a2fd4"])/2 +height/2)
+var hub1shell = drawrRectangle(height,width);
+pulley['hub2shell'] = transformMatrixSimple(hub1shell,sx,sy,0,x1,y1)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+height = -((pulleyPhys["594912898cda6431945a2fcd"]-pulleyPhys["5949128e8cda6431945a2fce"]*2-pulleyPhys["594912ac8cda6431945a2fd4"])/2)
+width =(pulleyPhys["594912a78cda6431945a2fd3"])
+x1=((pulleyPhys["594912028cda6431945a2fbe"]-pulleyPhys["594912b08cda6431945a2fd5"])/2-pulleyPhys["Q"])
+y1=-((pulleyPhys["594912ac8cda6431945a2fd4"])/2 -height/2)
+var hub1shell = drawrRectangle(height,width);
+pulley['hub3shell'] = transformMatrixSimple(hub1shell,sx,sy,0,x1,y1)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+height = -((pulleyPhys["594912898cda6431945a2fcd"]-pulleyPhys["5949128e8cda6431945a2fce"]*2-pulleyPhys["594912ac8cda6431945a2fd4"])/2)
+width =-(pulleyPhys["594912a78cda6431945a2fd3"])
+x1=-((pulleyPhys["594912028cda6431945a2fbe"]-pulleyPhys["594912b08cda6431945a2fd5"])/2-pulleyPhys["Q"])
+y1=-((pulleyPhys["594912ac8cda6431945a2fd4"])/2 -height/2)
+var hub1shell = drawrRectangle(height,width);
+pulley['hub4shell'] = transformMatrixSimple(hub1shell,sx,sy,0,x1,y1)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+height = pulleyPhys["594912748cda6431945a2fc9"]
+width = pulleyPhys["594912938cda6431945a2fcf"] - pulleyPhys["59522a1774612409d4bfc04d"]-70
+x1=0
+y1=0
+var majorShaft2 = drawrRectangle(height,width);
+pulley['majorShaft2'] = transformMatrixSimple(majorShaft2,sx,sy,0,x1,y1)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var ty = translates
+pulley = transformMatrix(pulley,sx,sy,theta,tx,ty)
+autoCAD(pulley)   
+drawidlerCanvas(locations,pulley,'#ED202A') 
+};
+
+/////////////////////////////// 
+//////  AUTOCAD SRC     //////
+///////////////////////////// 
+function autoCAD (transformArray) {
+    //start by clearing the belting paragraph text box.
+    for (var key in transformArray) {
+      var Roll = "pline "   
+     //change 0 to 1 in the loop below to skip the datum point.
+     for (var i = 1; i < transformArray[key].length; i++) {
+      Roll=Roll.concat((transformArray[key][i].x) +","+ (transformArray[key][i].y) + " ")
+    };
+    Roll=Roll.concat("c ")
+    $("#CadExportAreaForm").append(Roll);
+  }
+  $("#CadExportAreaForm").append(Roll);
+};
+
+/////////////////////////////////// 
+//////  DRAW THE PULLEY     //////
+///////////////////////////////// 
+function drawidlerCanvas(locations,transformArray,colour)
+{
+  var canvas = document.getElementById(locations);
+  var ctx = canvas.getContext('2d');
+  ctx.beginPath();
+  for (var key in transformArray) {
+    ctx.moveTo(transformArray[key][1].x,transformArray[key][1].y)
+    for (var i = 1; i < transformArray[key].length; i++) {
+      console.log(transformArray[key])
+      ctx.lineTo(transformArray[key][i].x,transformArray[key][i].y);
+    };
+    ctx.lineTo(transformArray[key][1].x,transformArray[key][1].y)
+    ctx.lineWidth = 1;
+     ctx.fillStyle = "#adabab";
+     ctx.fill();     
+    ctx.stroke();
+  }
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  ctx.lineTo(0,500);
+  ctx.moveTo(0,0);
+  ctx.lineTo(-1000,0);
+  ctx.moveTo(0,0);
+  ctx.lineTo(0,-500);
+  ctx.moveTo(0,0);
+  ctx.lineTo(1000,0);
+  ctx.lineWidth = .7;
+  ctx.fillStyle = colour;
+ // ctx.strokeStyle = '#0366d6';
+  ctx.stroke();
+};
+
+
+
+///////////////////////////////////// 
+//////  DRAW THE RECTANGLE    //////
+///////////////////////////////////  
+function drawrRectangle (height,width) {
+  x=0;
+  y=0;
+  var rectan=([]);//starting coordinate
+  //5 points in total
+  rectan.push(
+  {
+    "x":x,
+    "y":y,
+    "drawn" :"yes"
+  });
+  //5 points in total
+  rectan.push(
+  {
+    "x":-width/2,
+    "y":height/2,
+    "drawn" :"yes"
+  });
+  rectan.push(
+  {
+    "x":width/2,
+    "y":height/2,
+    "drawn" :"yes"
+  });
+  rectan.push(
+  {
+    "x":width/2,
+    "y":-height/2,
+    "drawn" :"yes"
+  });
+  rectan.push(
+  {
+    "x":-width/2,
+    "y":-height/2,
+    "drawn" :"yes"
+  });
+  return  rectan
+};
+
+///////////////////////////////////// 
+//////  TRANSFORM MATRIX      //////
+/////////////////////////////////// 
+function transformMatrix(transformArray,sx,sy,theta,tx,ty)
+{
+  for (var key in transformArray) {
+ //change 0 to 1 in the loop below to skip the datum point.
+ for (var i = 0; i < transformArray[key].length; i++) {
+    //scaling
+    transformArray[key][i].x = transformArray[key][i].x*sx
+    transformArray[key][i].y = transformArray[key][i].y*sy
+    //rotation
+    tempx = (Math.cos(theta)*transformArray[key][i].x)-(Math.sin(theta)*transformArray[key][i].y)
+    tempy = (Math.sin(theta)*transformArray[key][i].x)+(Math.cos(theta)*transformArray[key][i].y)
+    transformArray[key][i].x = tempx
+    transformArray[key][i].y = tempy
+    //translate
+    transformArray[key][i].x = transformArray[key][i].x+tx
+    transformArray[key][i].y = transformArray[key][i].y+ty
+  };
+}
+return transformArray
+};
+
+///////////////////////////////////// 
+//////  TRANSFORM MATRIX      //////
+/////////////////////////////////// 
+function transformMatrixSimple(transformArray,sx,sy,theta,tx,ty)
+{
+
+ //change 0 to 1 in the loop below to skip the datum point.
+ for (var i = 0; i < transformArray.length; i++) {
+    //scaling
+    transformArray[i].x = transformArray[i].x*sx
+    transformArray[i].y = transformArray[i].y*sy
+    //rotation
+    tempx = (Math.cos(theta)*transformArray[i].x)-(Math.sin(theta)*transformArray[i].y)
+    tempy = (Math.sin(theta)*transformArray[i].x)+(Math.cos(theta)*transformArray[i].y)
+    transformArray[i].x = tempx
+    transformArray[i].y = tempy
+    //translate
+    transformArray[i].x = transformArray[i].x+tx
+    transformArray[i].y = transformArray[i].y+ty
+  };
+
+  return transformArray
+};

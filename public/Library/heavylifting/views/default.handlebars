@@ -1,0 +1,44 @@
+     {{> hljavacommon}}
+     <div class="col-md-6 col-md-offset-3">
+<div  >
+      <h1 id="name"></h1>
+      <p id="description"></p>
+      <strong id="">Create a new item.</strong>
+</div>
+     <div id="newItem">
+     </div>  
+     </div>
+     
+     <script type="text/javascript"> 
+  //define the first stage of the query
+  var assemblyQuery = [{
+   navmenuHeadings : ['detail','description','icon','buttons','tabs','parent','template'],
+   locationPage : 'jstree',
+   items :{{{query}}},
+ }]
+
+ var query   =  {{{query}}}
+ var query1  =  {{{query1}}}
+ var query2  =  {{{query2}}}
+ var query3  =  {{{query3}}} 
+ var query4  =  {{{query4}}}
+ var table
+
+ query3.sort(function(a, b) {
+  if (a.entry.order && b.entry.order) {
+    return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+  }
+});
+ query2.sort(function(a, b) {
+  return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+});
+
+/////////////////////////////
+////     INITIALIZE     //// 
+///////////////////////////
+$('document').ready(function(){
+  deployFormComponent(query.childType,'newItem')
+$('#name').html(query.name)
+$('#description').html(query.detail)
+})
+</script>

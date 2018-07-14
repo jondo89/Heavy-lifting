@@ -1,0 +1,1194 @@
+<div id="error">
+ <div id="mapLoad"></div>
+ <div id="formDelivery">
+  <div class="col-md-12" >
+    <div class="row">    
+      <div style="text-align: center;">
+        <i class="fa fa-circle-o-notch fa-spin fa-1x fa-fw"></i>
+        <span>Loading...</span>  
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  //The route defines the plugin to use when posting , getting and loading.
+ 
+
+  var username = "{{user.username}}"
+  var formdata = {{{formdata}}}
+  var owner
+  var userpermission
+  var idItem = {{{idItem}}}
+  var raw = {{{raw}}}
+  var parentid = {{{parentid}}}
+  var formid1 = create_uid()
+  var parentItem = {{{parentItem}}}
+  var htmlcompile  ={}
+  var lat 
+  var long
+  var alt
+  var myMarker
+  var googleMapsObject
+
+  {{#if query2}}
+  var query2 = {{{query2}}}
+  {{else}}
+  var query2
+  {{/if}}
+  
+
+  var WYSIWYG = []
+
+
+  {{#if headings}}
+  var headingsTemp = {{{headings}}}
+  {{else}}
+  var headingsTemp = ''
+  {{/if}}
+
+////////////////////////////////////
+////        DEBUG AREA         //// 
+//////////////////////////////////
+console.log( 'Tempalte Name : /node_modules/heavylifting/views/formassemblies' )
+console.log( '-------------------------' )
+console.log( 'formdata :',formdata )
+console.log( 'idItem :',idItem )
+console.log( 'raw :',raw )
+console.log( 'parentid :',parentid )
+console.log( 'formid1 :',formid1 )
+console.log( 'parentItem :',parentItem )
+console.log( 'headingsTemp :',headingsTemp )
+{{#if entry}}
+var entry = {{{entry}}}
+console.log( 'entry :',entry )
+{{else}}
+var entry
+{{/if}}
+console.log( '-------------------------' )
+console.log( 'Tempalte Name : /node_modules/heavylifting/views/formassemblies' )
+////////////////////////////////////
+////        DEBUG AREA         //// 
+//////////////////////////////////
+
+
+//////////////////////////////////////////
+////        CREATE UNIQUE ID         //// 
+////////////////////////////////////////
+function create_uid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+  s4() + '-' + s4() + s4() + s4();
+}
+
+////////////////////////////////////
+////        INITIALIZE         //// 
+//////////////////////////////////
+$(document).ready(function(){
+  $('#titles').html('<h1>'+parentItem.name+'   <small>'+parentItem.detail+'</small></h1>')
+  //create a unique id for the form deployment.
+  jQuery('#formDelivery').attr("id",formid1);
+  //check if the data id was sent as well as the form id
+  //switch between component elements and raw elements.
+  if (raw == 'component' || raw == 'componentedit' || raw =='componentcopy') {
+    getdatacomp(formdata,idItem,raw)
+  } else {
+    getdata(formdata,idItem,raw)
+  }
+});
+
+/////////////////////////////////////////////////////////
+////////    GET FORM  AND DATA WITH COMPONENTS /////////
+///////////////////////////////////////////////////////
+function getdatacomp(formdata,idItem,raw){
+  jQuery.ajax({
+    'url': '/'+route+'/getdatacomp?formdata='+formdata+'&idItem='+idItem+'&raw='+raw,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+
+
+      if (dataSchemaObject.error) {
+        $('#error').html(dataSchemaObject.error)
+      } else {
+        dataSchemaObject['formdata'].sort(function(a, b) {
+          return parseFloat(a.entry.order) - parseFloat(b.entry.order);
+        });
+        formatAlpaca(dataSchemaObject)
+      }
+
+      
+
+    }
+  });
+}
+
+/////////////////////////////////////////
+////////    GET FORM  AND DATA /////////
+///////////////////////////////////////
+function getdata(formdata,idItem,raw){
+
+  jQuery.ajax({
+    'url': '/'+route+'/getdata?formdata='+formdata+'&idItem='+idItem+'&raw='+raw,
+    'async': true,
+    'global': false,
+    'success': function (dataSchemaObject) {
+      console.log('getdata ajax loaded : ',dataSchemaObject)
+      initiateForm(dataSchemaObject)
+    }
+  });
+}
+
+/////////////////////////////////////////////
+////////    FROM VARIABLE CREATION /////////
+///////////////////////////////////////////
+function formatAlpaca(objectOld) {
+  var tempSchema ={
+    "type" : "object",
+    "properties" : {
+    }
+  }
+  var tempoptions ={
+    "form" : {
+      "buttons" : {
+        "submit" : {
+          "title" : "Save",
+          "id" : "submit",
+          "click" : ""
+        }
+      }
+    },
+    "fields" : {
+    },
+    "focus" : ""
+  }
+  for (var i = 0; i < objectOld.formdata.length; i++) {
+//Adding dependancies.
+if (objectOld.formdata[i].entry.dependencies) {
+  tempDepend = [objectOld.formdata[i].entry.dependencies]
+} else {
+  tempDepend = ''
+}
+//swithcing for the type of input on alpaca.
+switch (true){
+  case(objectOld.formdata[i].entry.type =='string'):
+  tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+    'type' : objectOld.formdata[i].entry.type,
+    "title":objectOld.formdata[i].entry.description,
+    "dependencies": tempDepend
+  }
+  tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+    "helper":objectOld.formdata[i].entry.detail
+  }   
+  break;
+  case(objectOld.formdata[i].entry.type =='checkbox'):
+  tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+
+    "dependencies": tempDepend,
+  }
+  tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+    'type' : objectOld.formdata[i].entry.type,
+    "rightLabel":[objectOld.formdata[i].entry.detail],  
+    "data": {
+      "toggle":1   ,
+      "value" : "value"
+    },
+
+  }   
+  break;
+  case(objectOld.formdata[i].entry.type =='text'):
+  tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+    "title":'',
+    "dependencies": tempDepend,
+  }
+  tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+    "helper":objectOld.formdata[i].entry.description,
+    'view' : 'bootstrap-display',
+  }  
+  break;
+  case(objectOld.formdata[i].entry.type =='field'):
+  tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+    "title":objectOld.formdata[i].entry.description,
+    "dependencies": tempDepend,
+  }
+  tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+    "helper":objectOld.formdata[i].entry.detail,
+    'type' : "select",
+    'field':objectOld.formdata[i].entry.objectType
+  }
+  break;
+
+
+  case(objectOld.formdata[i].entry.type =='field'):
+  tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+    "title":objectOld.formdata[i].entry.description,
+    "dependencies": tempDepend,
+  }
+  tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+    "helper":objectOld.formdata[i].entry.detail,
+    'type' : "select",
+    'field':objectOld.formdata[i].entry.objectType
+  }
+  break;
+
+  case(objectOld.formdata[i].entry.type =='WYSIWYG'):
+  tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+    "title":objectOld.formdata[i].entry.description,
+    "dependencies": tempDepend
+  }
+  tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+    "type": "textarea",
+    "rightLabel":[objectOld.formdata[i].entry.detail]
+  }   
+
+  WYSIWYG.push(objectOld.formdata[i]['elementID'])    
+
+
+  break;
+
+
+  case(objectOld.formdata[i].entry.type =='multi'):
+  tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+    "title":objectOld.formdata[i].entry.description,
+    "dependencies": tempDepend,
+  }
+  tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+    "helper":objectOld.formdata[i].entry.detail,
+    'type' : "select",
+    "multiple": true,
+    'field':objectOld.formdata[i].entry.objectType
+  }
+  break;
+
+
+  case(objectOld.formdata[i].entry.type =='Latitude' || objectOld.formdata[i].entry.type =='Longitude' || objectOld.formdata[i].entry.type =='Altitude'):
+  var location = 'mapLoad'
+  if (objectOld.formdata[i].entry.type =='Latitude') {
+   lat = objectOld.formdata[i].elementID
+   tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+    "title":objectOld.formdata[i].entry.description,
+    "dependencies": tempDepend
+  }
+  tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+    "helper":objectOld.formdata[i].entry.detail 
+  }
+}
+if (objectOld.formdata[i].entry.type =='Longitude') {
+ long = objectOld.formdata[i].elementID
+ tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+  "title":objectOld.formdata[i].entry.description,
+  "dependencies": tempDepend 
+}
+tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+  "helper":objectOld.formdata[i].entry.detail 
+} 
+}  
+if (objectOld.formdata[i].entry.type =='Altitude') {
+ alt = objectOld.formdata[i].elementID
+ tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+  "title":objectOld.formdata[i].entry.description,
+  "dependencies": tempDepend
+}
+tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+  "helper":objectOld.formdata[i].entry.detail
+} 
+}  
+loadMap(location,lat,long)
+
+
+break;
+
+
+///////////////////////////////////////////
+////////  CROPIT IMAGE HANDLING //////////
+/////////////////////////////////////////
+case(objectOld.formdata[i].entry.type =='image'):
+//Croppit html injection
+var html =''
+html +=  '<div class="form-group">'
+html += '<div class="col-sm-12">'
+html += '<!-- This wraps the whole cropper -->'
+html += '<div id="image-cropper" >'
+html += '<!-- This is where the preview image is displayed -->'
+html += '<div class="cropit-preview"  style="border: 1px solid #eee;position: relative;text-align: center;"><img src="/img/defaults/default_product.png" style="padding-top: 15px"></div>'
+html += '<!-- This range input controls zoom -->'
+html += '<!-- You can add additional elements here, e.g. the image icons -->'
+html += '<input type="range" id="slideritem" class="cropit-image-zoom-input" style="width: 200px" min="100" max="500" step="10" />'
+html += '<p></p>'
+html += '<!-- This is where user selects new image -->'
+html += '<input type="file" class="cropit-image-input"  />'
+html += '<input style="display: none;"   name="croppedImg" id="croppedImg"/>'
+html += '<!-- The cropit- classes above are needed'
+'so cropit can identify these elements -->'
+html += '</div>'
+html += '<p></p>'
+' <small>The profile picture change will not save. <a href="https://stackoverflow.com/questions/28480058/cant-upload-images-on-heroku-server" target="_blank">Why?</a></small>'
+html += '</div>'
+html += '</div>'
+//Create element on page
+$('#cropit').html(html)
+//////////////////////
+///// ACTIVATE //////
+////////////////////
+var imageSrc = '/uploads/'+idItem+'.jpg'
+console.log(objectOld.formdata[i]['elementID'])
+$('#image-cropper').cropit({ 
+  imageState: { src: imageSrc  },
+  onImageLoaded : function(){
+    var imageData = $('#image-cropper').cropit('export', {
+      type: 'image/jpeg',
+      quality: .4,
+      originalSize: false,
+    });
+    $('[name="image"]').val(imageData);
+  },
+  onOffsetChange : function(){
+    var imageData = $('#image-cropper').cropit('export', {
+      type: 'image/jpeg',
+      quality: .4,
+      originalSize: true,
+    });
+    $('[name="image"]').val(imageData);
+  }
+});
+////////////////////////////////
+///// LISTEN FOR CHANGES //////
+//////////////////////////////
+$('#image-cropper').change(function() {
+  var imageData = $('#image-cropper').cropit('export', {
+    type: 'image/jpeg',
+    quality: .4,
+    originalSize: true,
+  });
+  $('[name="image"]').val(imageData);
+});
+
+tempSchema.properties['image'] = {
+  "title":objectOld.formdata[i].entry.description,
+  "dependencies": tempDepend
+}
+tempoptions.fields['image'] = {
+  "helper":objectOld.formdata[i].entry.detail,
+  'type' : "hidden"
+}
+
+
+break;
+
+
+
+default:
+tempSchema.properties[objectOld.formdata[i]['elementID']] = {
+  "title":objectOld.formdata[i].entry.description,
+  "dependencies": tempDepend
+}
+tempoptions.fields[objectOld.formdata[i]['elementID']] = {
+  "helper":objectOld.formdata[i].entry.detail
+}
+break;
+}
+}
+ //Compile the json for the form.
+ var data =  {
+  formdata : {
+    entry : {
+      schema :  tempSchema,
+      options :  tempoptions
+    }
+  },  idItem : objectOld.idItem
+} 
+data.idItem.entry
+initiateForm(data)
+}
+
+////////////////////////////////////////
+////        CREATE THE FORM        //// 
+////////////////////////////////////////
+function initiateForm(data){
+
+
+  if (!data.formdata) {
+    if (raw!='raw' && raw!='copyraw' && raw!='edit' && raw!='self' && raw!='use') {
+    $('#'+formid1).html('<div class="alert alert-danger" role="alert"><strong>Heads Up!</strong> Try adding a childType to the raw json entry for this element or just copy one of the existing elements.</div>')
+  }
+    return
+  }
+
+  var form = {
+    schema : data.formdata.entry['schema'],
+    options : data.formdata.entry['options']
+  }
+ //----------------------------------------------------------------------------------------------
+ if (raw!='component' && raw!='componentedit' && raw!='componentcopy') {
+  if (raw!='raw' && raw!='copyraw' && raw!='edit' && raw!='self' && raw!='use') {
+  //Used for the limiting of visible fields on the form. Specically the 'headings' field.
+  //----------------------------------------------------------------------------------------------
+  var tableHeadings =[]
+  //General Heading error trap.  
+  //When the heading is only 1 item , the printing of the headings loops throguh each character . THis checks if it is an array .
+  if (!headingsTemp) {
+    if (items.entry.headings) {
+      var tableHeadings = JSON.parse(JSON.stringify(items.entry.headings))
+      if (!(Array.isArray(tableHeadings))) {
+        tableHeadings = [tableHeadings]
+      }  
+    } else {
+      var tableHeadings = ['name','detail','userID','id','parentid','childType','description']
+    }
+  }
+//Check if there is an overwrite on the headings.
+if(headingsTemp){
+ var tableHeadings = headingsTemp
+}  
+    //check if there is a heading.
+    if (tableHeadings) {
+      for (key in form.schema['properties']){
+        if (jQuery.inArray( key, tableHeadings ) == -1 ) {
+          delete form.schema['properties'][key]
+        } else {
+        }
+      }
+      for (key in form.schema['options']){
+        if (jQuery.inArray( key, tableHeadings ) == -1 ) {
+          delete form.schema['options'][key]
+        } else {
+        }
+      }
+    }
+    //--------------------------------------------------------------------------------
+  }
+}
+$('#'+formid1).html("<div id='form_"+formdata+idItem+formid1+"'></div>")
+$("#form_"+formdata+idItem+formid1).html("")
+  //Test alpaca form for true , i.e if it exists , then destroy it.
+  control = $("#form_"+formdata+idItem+formid1).alpaca("destroy");
+  if (control) {
+    formInit(form.schema,form.options,data)
+  } else { 
+    formInit(form.schema,form.options,data)
+  }
+} 
+
+//////////////////////////////////////
+////        CREATE FORM          //// 
+////////////////////////////////////
+function formInit(schema,options,data){
+
+  //work areound for the special requirments on the submit button.
+  if (options) {
+    options.form.buttons.submit.click = function(e){
+      e.preventDefault()
+      var value = this.getValue();
+      if (value) {
+        formPost(value,data)
+      }
+    }
+//Special case varible use to ensure timing issue the index variable passing into the form dropdown.
+var arr = options.fields
+
+$.each(arr, function(index, value) { 
+  if (arr[index]['type'] == 'select' ) {
+
+   var temp = ''
+//Drop down call for the active 
+switch (true) {
+  case (index =="active"):
+  temp = "58fd8d190c8b981ccc7c2402"
+  break;
+  case (index =="units"):
+  temp = "58fdeb040c8b981ccc7c2444"
+  break;
+  default:
+  temp = arr[index]['field']
+  break;
+}
+
+if (temp != undefined) {
+  arr[index]["dataSource"] = function(callback) {
+    jQuery.ajax({
+      'async': true,
+      'global': false,
+    'url': '/'+route+'/getformfield?data='+temp ,
+      'success': function (dataSchemaObject) {
+        if (dataSchemaObject) {
+          var dataSchemaObject = JSON.parse(dataSchemaObject);
+          htmlPicker(dataSchemaObject,temp)
+          var tempVar =[]
+          for (var i = 0; i < dataSchemaObject.length; i++) {
+            tempVar.push(dataSchemaObject[i].entry[temp])
+          }
+          callback(tempVar);
+        }  
+      }
+    }); 
+  }
+}
+}
+});
+
+
+/////////////////////////////////////////////////////////
+////        ACTIVATE WYSIWYG FORMS ELEMENTS         //// 
+/////////////////////////////////////////////////////////
+function wysiwyg(){
+  for (var i = 0; i < WYSIWYG.length; i++) {
+    $('[name="'+WYSIWYG[i]+'"]').froalaEditor({ 
+      toolbarButtons: ['undo', 'redo' , 'bold', '|', 'alert', 'clear', 'insert'],
+      heightMin: 250,
+      heightMax: 250,
+    })
+
+
+
+
+
+  } 
+  $( "input[type=checkbox]" ).bootstrapToggle({
+    on: 'Closed',
+    off: 'Open',
+    width : "120",
+    onstyle:"danger"
+  })
+
+
+}
+
+
+switch(true){
+  //the use button will require the form to remove any element ids as this will be a new entry.
+  case(raw=='use'):
+  $("#form_"+formdata+idItem+formid1).alpaca({
+    "schema": schema,
+    "options": options
+  });
+  break;
+  case(raw=='edit'):
+  $("#form_"+formdata+idItem+formid1).alpaca({
+    "schema": schema,
+    "options": options,
+    "postRender": function(control) {
+      //only set the data if the form is for use.
+      if (idItem !='') {
+        $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(data.idItem.entry)
+      }
+      wysiwyg()
+    }    
+  });
+  break;
+  case(raw=='raw' || raw=='copyraw'):
+  $("#form_"+formdata+idItem+formid1).alpaca({
+    "schema": schema,
+    "options": options,
+    "postRender": function(control) {
+      //only set the data if the form is for use.
+      if (idItem !='') {
+        $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(data.idItem)
+      }
+      wysiwyg() 
+    }    
+  });
+  break;
+  case(raw=='self'):
+  $("#form_"+formdata+idItem+formid1).alpaca({
+    "schema": schema,
+    "options": options,
+    "postRender": function(control) {
+      //only set the data if the form is for use.
+      if (idItem !='') {
+        $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(data.idItem.entry)
+      }
+      wysiwyg()
+    }    
+  });
+  break;
+  case(raw=='component'):
+  $("#form_"+formdata+idItem+formid1).alpaca({
+    "schema": schema,
+    "options": options,
+    "postRender": function(control) {
+      //only set the data if the form is for use.
+      findandappendSelect()
+      if (idItem !='') {
+        $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(data.idItem.entry)
+        lat = 0
+        long = 0
+        mapset(data.idItem.entry)
+      }
+      wysiwyg()
+    }    
+  });
+  break;
+  case(raw=='componentedit' || raw=='componentcopy'):
+  $("#form_"+formdata+idItem+formid1).alpaca({
+    "schema": schema,
+    "options": options,
+    "postRender": function(control) {
+      //only set the data if the form is for use.
+      if (idItem !='') {
+        $("#form_"+formdata+idItem+formid1).alpaca('get').setValue(data.idItem.entry)
+        findandappendSelect()
+        if (lat && long) {
+          mapset(data.idItem.entry)
+        }
+      }
+      wysiwyg()
+    }    
+  });
+  break;
+  default :
+  var html = ''
+  html += '<div class="alert alert-danger" role="alert"> '
+  html += '<strong>'
+  html += 'Oh Snap!'
+  html += '</strong> '
+  html += 'Form error , form usage type is not defined.'
+  html += '</div>'
+  $("#form_"+formdata+idItem+formid1).html(html)
+  break;
+}
+} else {
+  var html = ''
+  html += '<div class="alert alert-danger" role="alert"> '
+  html += '<strong>'
+  html += 'Oh Snap!'
+  html += '</strong> '
+  html += 'Form error , This dataset is not a form , Please let us know about this.'
+  html += '</div>'
+  $("#form_"+formdata+idItem+formid1).html(html)
+}
+}
+
+//////////////////////////////////////////////
+////        SUBMIT BUTTON CLICK          //// 
+////////////////////////////////////////////
+function formPost(dataset,data){
+//work around for naming of the from .
+var name = $('#nameArea').val()
+var detail = $('#DetailArea').val()
+//routing for the various use cases on the switch
+switch(true){
+  case(raw=='use'):
+  var primer = data.idItem
+  primer.entry = dataset
+  //spice the entry parameter into the form.
+  for(var key in entry){
+    if(entry.hasOwnProperty(key)){
+      primer.entry[key]=entry[key];
+    }
+  }
+  if (name || detail) {
+    primer.name = name
+    primer.detail = detail
+  }
+  if (parentid) {
+    primer.parentid=parentid
+  }
+  primer.elementID = ''
+  primer.revision = 'created'
+  primer.active = "true"
+  break;
+
+  case(raw=='self'):
+  var primer = data.idItem
+  primer.entry = dataset
+  primer.revision = 'updated'
+  primer.elementID = data.idItem.elementID
+  primer.active = "true"
+  break;
+
+  case(raw=='edit'):
+  var primer = data.idItem
+  primer.entry = dataset
+  primer.revision = 'updated'
+  primer.elementID = data.idItem.elementID
+  primer.active = "true"
+  break;
+
+  case(raw=='raw'):
+  var primer = dataset
+  primer.active = "true"
+  break;
+
+  case(raw=='copyraw'):
+  var primer = dataset
+  primer.elementID = ''
+  primer.revision = 'created'
+  primer.active = "true"
+  break;
+
+  case(raw=='component'):
+  var primer = {
+  }
+  primer.entry = dataset
+  //spice the entry parameter into the form.
+  for(var key in entry){
+    if(entry.hasOwnProperty(key)){
+      primer.entry[key]=entry[key];
+    }
+  }
+  if (name || detail) {
+    primer.name = name
+    primer.detail = detail
+  }
+  if (parentid) {
+    primer.parentid=parentid
+  }
+  primer.elementID = ''
+  primer.revision = 'created'
+  primer.active = "true"
+  //permission routing for the ownership of components.
+  if (owner) {
+    if (owner==username) {
+      primer.userowner = owner
+    } else {
+      primer.organizationowner = owner
+    }
+  } else {
+    primer.userowner = username
+  }
+  if (detail) {
+    primer.detail = detail
+  }
+  if (userpermission) {
+    if (userpermission == "member" | userpermission == "superadmin") {
+      if (visibility =="private") {
+        primer.visibility = visibility
+      }
+    }
+  }
+  break;
+
+  case(raw=='componentedit'):
+  var primer = {
+  }
+  primer.entry = dataset
+  //spice the entry parameter into the form.
+  for(var key in entry){
+    if(entry.hasOwnProperty(key)){
+      primer.entry[key]=entry[key];
+    }
+  }
+  if (name || detail) {
+    primer.name = name
+    primer.detail = detail
+  }
+  if (parentid) {
+    primer.parentid=parentid
+  }
+  primer.elementID = ''
+  primer.revision = 'updated'
+  primer.active = "true"
+  break;
+
+  case(raw=='componentcopy'):
+  var primer = {
+  }
+  primer.entry = dataset
+  //spice the entry parameter into the form.
+  for(var key in entry){
+    if(entry.hasOwnProperty(key)){
+      primer.entry[key]=entry[key];
+    }
+  }
+  if (name || detail) {
+    primer.name = name
+    primer.detail = detail
+  }
+  if (parentid) {
+    primer.parentid=parentid
+  }
+  primer.elementID = ''
+  primer.revision = 'created'
+  primer.active = "true"
+  break;
+
+  default :
+  var html = ''
+  html += '<div class="alert alert-danger" role="alert"> '
+  html += '<strong>'
+  html += 'Oh Snap!'
+  html += '</strong> '
+  html += 'Form error , form usage type is not defined.'
+  html += '</div>'
+  $("#form_"+formdata+idItem+formid1).html(html)
+  break;
+}
+
+//Jquery send to server
+jQuery.ajax({
+  'url': '/'+route+'/create',
+  'type': 'POST', 
+  'dataType': 'json',
+  'contentType': 'application/json', 
+  'data': JSON.stringify(primer),
+  'success': function (dataSchemaObject) {
+    $('#myModal').modal('hide')
+          //pageLoad(databaseid)
+          if (dataSchemaObject.redirect =="/signin") {
+            window.location =dataSchemaObject.redirect
+          } else { 
+            if (parentItem.route) {
+             window.location = parentItem.route
+           } else {
+             window.location.reload()
+           }
+         }
+       },
+       'error' :function (dataSchemaObject) {
+        console.log(dataSchemaObject)
+        $('#myModal').modal('hide')
+      //pageLoad(databaseid)
+      if (parentItem.route) {
+       //window.location = parentItem.route
+       var temp = '/signin'
+       window.dataSchemaObject
+     } else {
+      var temp = '/signin'
+      window.temp
+    }
+  },
+});    
+}
+
+//////////////////////////////////////////////
+//////////   GOOGLE MAPS CONTROL    /////////
+////////////////////////////////////////////
+function loadMap(location,lat,long){
+  if($('#'+location).html() == ""){
+    $('#'+location).html('loading')  
+    $('#'+location).html('<div id="map_form" style="height:250px;width:100%"></div> <div class="alert alert-info" role="alert" id="current">Click and drag the marker to select the location of the item.</div>')
+    googleMapsObject = new google.maps.Map(document.getElementById('map_form'), {
+      zoom: 3,
+      center: new google.maps.LatLng(0, 0),
+      mapTypeId: google.maps.MapTypeId.HYBRID
+    });
+    myMarker = new google.maps.Marker({
+      position: new google.maps.LatLng(0, 0),
+      draggable: true
+    });
+    googleMapsObject.setZoom(0)
+    myMarker.setMap(googleMapsObject);
+  }
+  google.maps.event.trigger(googleMapsObject, 'resize');
+}
+
+/////////////////////////////////////////////////////////
+//////////   GOOGLE MAPS LISTNERS AND VALUE    /////////
+///////////////////////////////////////////////////////
+function mapset(input) {
+  var latitude = $('[name="'+lat+'"]').val()
+  var longitude = $('[name="'+long+'"]').val()
+  var altitude = $('[name="'+alt+'"]').val()
+  var elevator = new google.maps.ElevationService; 
+  switch (true){
+    case (latitude == 0 || longitude == 0) :
+    googleMapsObject.setZoom(4)
+    break;
+    case (!latitude || !longitude ) :
+    googleMapsObject.setZoom(4)
+    break;
+    default:
+    myMarker.setMap(null);
+    myMarker = new google.maps.Marker({
+      position: new google.maps.LatLng(latitude, longitude),
+      draggable: true
+    });
+    myMarker.setMap(googleMapsObject);
+    googleMapsObject.setZoom(13)
+    googleMapsObject.setCenter(myMarker.position);
+    break;
+  }
+  google.maps.event.trigger(googleMapsObject, 'resize');
+  google.maps.event.addListener(myMarker, 'dragend', function (evt) {
+    document.getElementById('current').innerHTML = '<p>Marker dropped: Current Lat: ' + evt.latLng.lat().toFixed(3) + ' Current Lng: ' + evt.latLng.lng().toFixed(3) + '</p>';
+    $('[name="'+lat+'"]').val(evt.latLng.lat().toFixed(4))
+    $('[name="'+long+'"]').val(evt.latLng.lng().toFixed(4))
+      //trigger form change
+      $('[name="'+lat+'"]').alpaca('blur')
+      $('[name="'+long+'"]').alpaca('blur')
+      displayLocationElevation(evt.latLng, elevator);
+    });
+}
+
+
+/////////////////////////////////////////////////////////
+//////////   GOOGLE MAPS ELEVATION PICKER      /////////
+///////////////////////////////////////////////////////
+function displayLocationElevation(location, elevator) {
+        // Initiate the location request
+        elevator.getElevationForLocations({
+          'locations': [location]
+        }, function(results, status) {
+          if (status === 'OK') {
+            // Retrieve the first result
+            if (results[0]) {
+              $('[name="'+alt+'"]').val(results[0].elevation.toFixed(2) )
+            } else {
+              console.log('No results found');
+            }
+          } else {
+            console.log('Elevation service failed due to: ' + status);
+          }
+        });
+      }
+
+/////////////////////////////////////////////////////////
+//////////   ADDING THE MORE INFO BUTTON       /////////
+///////////////////////////////////////////////////////
+function findandappendSelect(){
+  if (query2) { 
+    for (var i = 0; i < query2.length; i++) {
+      if(query2[i].entry.objectType ){
+      //console.log('//////////////////////////////////')
+      //console.log(query2[i].elementID)
+      //console.log('//////////////////////////////////')
+      html=''
+      html+='<button type="button" id="'+query2[i].entry.objectType+'_findme" onclick="findme(this.id)" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal"><i class="far fa-hand-pointer"></i></button>'
+      html+=$('[name="'+query2[i].elementID+'"]').before(html)
+    }
+  }
+}  
+}
+
+////////////////////////////////////////////////////////////
+//////////   AJAX IN MORE INFORMATION TABLE       /////////
+//////////////////////////////////////////////////////////
+function findme(ids){
+  ids = ids.replace('_findme', '');
+
+  var html = ''
+  if (htmlcompile[ids]) {
+    html += htmlcompile[ids].html
+  } else {
+    html = 'Error getting extra detail on table.'
+  }
+  $('#pickerArea').html(html)
+//create the datatable
+table = $('#pickertable').DataTable({
+  'destroy':true,
+  "pagingType": "numbers",  
+  "dom": 'Bfrtip', 
+  "bFilter": false,
+  "buttons": [{}]
+});
+
+
+showhidefilter()
+
+tableid ='pickertable'
+function filterGlobal () {
+  $('#'+tableid).DataTable().search(
+    $('#global_filter').val()
+    ).draw();
+}
+function filterColumn ( i ) {
+  console.log($('#col'+i+'_filters').val())
+  $('#'+tableid).DataTable().column( i ).search(
+    $('#col'+i+'_filters').val()
+
+    ).draw();
+}
+$('input.global_filter').on( 'keyup click', function () {
+  filterGlobal();
+} );
+$('input.column_filter').on( 'keyup click', function () {
+  filterColumn( $(this).parents('tr').attr('data-column') );
+} );
+
+//toggle visibility of columns
+$('input.column-visible').on( 'keyup click', function (e) {
+         // Get the column API object
+         var column = table.column( $(this).attr('data-column') );
+        // Toggle the visibility
+        column.visible( ! column.visible() );
+      });
+}
+
+////////////////////////////////////////////////////////////////////
+////////////        Show Hide Column filter.             ///////////
+///////////////////////////////////////////////////////////////////
+function showhidefilter(){
+var html=''
+html += '<table class="table table-bordered" style="width:100%">' 
+html += '<tbody> '
+html += '<tr id="filter_global"> '
+html += '<td align="center">'
+html += '<input type="text" class="global_filter form-control" id="global_filter" placeholder="Search all"></td>  '
+html += '<td align="center"></td>  '
+html += '</tr>'
+$( "#pickertable thead tr th" ).each(function( index ) {
+  var title = $(this).text();
+//remove the blank table header for plus sign
+if (title !=="") {
+  html +='<tr id="filter_col'+index+1+'" data-column="'+index+'">'
+  html +='<td align="center"><input type="text" class="column_filter form-control" id="col'+index+'_filters" placeholder="Search '+title+'"></td>'
+  html +='<td align="center"><input type="checkbox" class="column-visible" data-column='+index+' id="col'+index+'_show" checked="checked"></td>'
+  html +='</tr>'
+}
+});
+html +='</tbody></table>'
+$('#searchtable').html(html)
+}
+
+////////////////////////////////////////////////////////////
+//////////   CREATES THE HTML INJECTION           /////////
+//////////////////////////////////////////////////////////
+function htmlPicker(htmldata,index){
+ if (htmldata && index) {
+  indexOverwrite =  JSON.parse(JSON.stringify(index))
+  if (htmldata) {
+    jQuery.ajax({
+      'async': true,
+      'global': false,
+      'url': '/'+route+'/findme?ids='+htmldata[0].parentid ,
+      'success': function (dataSchemaObject) {
+        if (dataSchemaObject) {
+          var temp =   dataFormatAddedDetail(htmldata,dataSchemaObject.query1) 
+//heading , id and inject into form listner
+var html = '<h4>'+dataSchemaObject.query.name+'  <small>'+dataSchemaObject.query.detail+'</small>'+'</h4>'
+html += '<div style="overflow:auto">'
+html += '<table id="pickertable" class="table table-bordered table-hover">  '
+html += '<thead>'
+html += '<tr>'
+for (var i = 0; i < dataSchemaObject.query.entry.headings.length; i++) {
+  html += '<th>'
+  html+=   dataSchemaObject.query.entry.headings[i]
+  html += '</th>'
+}
+html += '</tr>'
+html += '</thead>'
+html += '<tbody>'
+for (var j = 0; j < temp.length; j++) {
+  html += '<tr id="'+temp[j]._id+'_rowidmpre" onclick="rowClickComp(this.id)">'
+  for (var i = 0; i < dataSchemaObject.query.entry.headings.length; i++) {
+   if (dataSchemaObject.query.entry.headings[i]=='url' || dataSchemaObject.query.entry.headings[i]=='Url') {
+    if (temp[j][dataSchemaObject.query.entry.headings[i]] != undefined) {
+      html += '<td>'
+      html += '<a href="'+temp[j][dataSchemaObject.query.entry.headings[i]]+'" target="_blank">Link</a>'
+    } else {
+      html += '<td>'
+      html += "Blank"
+    }
+  } else  {
+    if ( temp[j][dataSchemaObject.query.entry.headings[i]] == undefined) {
+      html += '<td style=" vertical-align:middle;background-color:#f5f5f5">'
+      html += "-"
+    }else {
+
+
+
+
+      
+ 
+if (  dataSchemaObject.query.entry.headings[i]  == 'image') { 
+html += '<td style="text-align:center; vertical-align:middle">'
+html += '<img style="max-width:150px" src="'+temp[j][dataSchemaObject.query.entry.headings[i]]+'" alt="..." class="img-rounded">'
+
+} else {
+  html += '<td style="vertical-align:middle">'
+  html += temp[j][dataSchemaObject.query.entry.headings[i]]
+}
+
+      
+
+
+
+
+    }
+  }
+  html += '</td>'
+}
+html += '</tr>'
+}
+html += '</tbody>'
+html += '</table>'
+
+
+html +='<div class="row">'
+html +='<div class="col-md-6">'
+html += '<div id="searchtable">'
+html += '</div>'
+html += '</div>'
+html += '<div class="col-md-6">'
+html+='<div class="well" role="alert"><div style="background-color: #fff !important;padding: 5px"> <strong>Click on the Table!</strong> Selected items will populate the form. </div></div>'
+html += '</div>'
+html += '</div>'
+
+html += '</div>'
+html += '</div>  '
+
+htmlcompile[indexOverwrite] = {
+  'html' : html,
+  'data' : temp, 
+  'rawData' : htmldata
+}
+}  
+}
+}); 
+  } else {
+    var html = '<div class="alert alert-danger" role="alert"> <strong>Oh Snap!</strong> An error occured loading database information. Please let us know about this. </div>'
+    htmlcompile[indexOverwrite] = {
+      'html' : html,
+      'rawData' : htmldata,
+      'data' : ''
+    }
+  }
+}
+}
+
+///////////////////////////////////////////////////
+////        REQUIRED FORMATING OF DATA        //// 
+/////////////////////////////////////////////////
+function dataFormatAddedDetail(tableData,formData){
+  var temp =[]
+  //This is where the id is injected into the menu item . Crude hacky work around , not sure how to improve.
+  for (var i = 0; i < tableData.length; i++) {
+    for(key in tableData[i].entry){
+      for (var j = 0; j < formData.length; j++) {
+        if (formData[j].elementID == key) {
+          tableData[i].entry[formData[j]['entry']['description']] = tableData[i].entry[formData[j].elementID]
+         // delete tableData[i].entry[formData[j].elementID]
+       }
+     }
+   }
+      //the add the id to the array going into the menu .
+      if (tableData[i]['elementID'].length == 0) {
+        tableData[i].entry._id = tableData[i]['_id']
+      }else{
+        tableData[i].entry._id = tableData[i]['elementID']
+      }
+      temp.push(tableData[i].entry)
+    }
+    return temp
+  }
+
+////////////////////////////////////////////////////////////////////
+////        GET THE DATA POPULATED INTO THE ALAPCA FORM        //// 
+//////////////////////////////////////////////////////////////////
+function rowClickComp(ids){
+  ids = ids.replace('_rowidmpre', '');
+  $('#myModal').modal('toggle')
+  for(key in htmlcompile){
+    for (var i = 0; i < htmlcompile[key]['rawData'].length; i++) {
+    //console.log('loop throuh and replace alpaca data with this!',htmlcompile[key]['rawData'][i],ids)
+    if (htmlcompile[key]['rawData'][i].elementID == ids ) {
+      for (keys in htmlcompile[key]['rawData'][i].entry){
+        for (var j = 0; j < query2.length; j++) {
+            //console.log(keys,'Change this')
+            if(query2[j].entry.objectType == keys){
+              $('[name="'+query2[j].elementID+'"]').val(htmlcompile[key]['rawData'][i].entry[keys])
+              $('[name="'+query2[j].elementID+'"]').fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+</script>
